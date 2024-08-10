@@ -47,6 +47,7 @@ const sellerSchema  = new mongoose.Schema(
                 storeName : {type: String}
             }
         },
+        additionalDocuments: {type: [String]},
         individualInfo:{ 
             type: {
                 nationalID : {type: String , required : true},
