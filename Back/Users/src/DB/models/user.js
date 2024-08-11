@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 
 const userSchema  = new mongoose.Schema(
     {
-
         password: {type: String , required : true},
         firstName: {type: String , required : true},
         lastName: {type: String , required : true},
@@ -43,8 +42,11 @@ const userSchema  = new mongoose.Schema(
                 y : {type: String, required : true}
             } , required: true}
         }, required : true},
+        sentGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
+        receivedGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
         socialInteractions :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "comments" }]},
+        favoriteList : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "products"}]},
         wishLists :  { type :[{title : {type: String, required: true},products:[{type : mongoose.Schema.Types.ObjectId , ref: "products"}] }]},
         notifications :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "notifications" }]},
         lastVisited :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "products" }]},

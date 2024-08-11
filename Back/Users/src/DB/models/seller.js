@@ -15,10 +15,7 @@ const sellerSchema  = new mongoose.Schema(
                 email: {type: String , required : true},
                 nationalID: {type: String , required : true}
             },
-            required: true},
-        // financialInfo:{
-
-        // }    
+            required: true},  
         isCompelete: Boolean,
         phoneNumber: {type: String , required : true},
         entityType: {type: String,enum: ["individual" , "legal"], required: true,
