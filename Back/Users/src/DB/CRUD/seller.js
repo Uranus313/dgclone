@@ -9,13 +9,14 @@ export async function saveSeller(sellerCreate){
     return result;
 }
 
-export async function getSellers(id){
+export async function getSellers(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await SellerModel.find();
-        return result;
-    }else{
+    if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
+        return result;
+        
+    }else{
+        result.response = await SellerModel.find(search);
         return result;
     }
 }

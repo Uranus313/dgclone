@@ -8,13 +8,14 @@ export async function saveGiftCard(giftCardCreate){
     return result;
 }
 
-export async function getGiftCards(id){
+export async function getGiftCards(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await GiftCardModel.find();
-        return result;
-    }else{
+    if(id){
         result.response = await GiftCardModel.find({_id : id}).findOne();
+        return result;
+        
+    }else{
+        result.response = await GiftCardModel.find(search);
         return result;
     }
 }

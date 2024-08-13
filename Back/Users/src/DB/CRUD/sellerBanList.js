@@ -1,4 +1,4 @@
-import { SellerBanListModel } from "../models/sellerBanList";
+import { SellerBanListModel } from "../models/sellerBanList.js";
 export async function saveBannedSeller(bannedSellerCreate){
     const result = {};
     const bannedSeller = new SellerBanListModel(bannedSellerCreate);
@@ -7,13 +7,14 @@ export async function saveBannedSeller(bannedSellerCreate){
     return result;
 }
 
-export async function getBannedSellers(sellerID){
+export async function getSellerBans(id , search){
     const result = {};
-    if(sellerID === undefined){
-        result.response = await SellerBanListModel.find();
+    if(id){
+        result.response = await SellerBanListModel.find({_id : id}).findOne();
         return result;
+        
     }else{
-        result.response = await SellerBanListModel.find({sellerID : sellerID}).findOne();
+        result.response = await SellerBanListModel.find(search);
         return result;
     }
 }

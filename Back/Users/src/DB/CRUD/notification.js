@@ -8,13 +8,14 @@ export async function saveNotification(notificationCreate){
     return result;
 }
 
-export async function getNotifications(id){
+export async function getNotifications(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await NotificationModel.find();
-        return result;
-    }else{
+    if(id){
         result.response = await NotificationModel.find({_id : id}).findOne();
+        return result;
+        
+    }else{
+        result.response = await NotificationModel.find(search);
         return result;
     }
 }

@@ -8,13 +8,13 @@ export async function saveTransaction(transactionCreate){
     return result;
 }
 
-export async function getTransactions(id){
+export async function getTransactions(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await TransactionModel.find();
+    if(id){
+        result.response = await TransactionModel.find({_id : id}).findOne();
         return result;
     }else{
-        result.response = await TransactionModel.find({_id : id}).findOne();
+        result.response = await TransactionModel.find(search);
         return result;
     }
 }

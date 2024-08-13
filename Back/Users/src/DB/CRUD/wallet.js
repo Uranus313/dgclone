@@ -1,4 +1,4 @@
-import { WalletModel } from "../models/wallet";
+import { WalletModel } from "../models/wallet.js";
 export async function saveWallet(walletCreate){
     const result = {};
     const wallet = new WalletModel(walletCreate);
@@ -7,17 +7,17 @@ export async function saveWallet(walletCreate){
     return result;
 }
 
-export async function getWallets(id){
+
+export async function getWallets(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await WalletModel.find();
+    if(id){
+        result.response = await WalletModel.find({_id : id}).findOne();
         return result;
     }else{
-        result.response = await WalletModel.find({_id : id}).findOne();
+        result.response = await WalletModel.find(search);
         return result;
     }
 }
-
 
 export async function updateWallet(id,walletUpdate ){
     const result = {};

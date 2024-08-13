@@ -9,17 +9,17 @@ export async function saveUser(userCreate){
     return result;
 }
 
-export async function getUsers(id){
+export async function getUsers(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await UserModel.find();
+    if(id){
+        result.response = await UserModel.find({_id : id}).findOne();
         return result;
     }else{
-        result.response = await UserModel.find({_id : id}).findOne();
+        result.response = await UserModel.find(search);
         return result;
     }
 }
-//unique email and username
+
 export async function logIn(email , phoneNumber , password){
     const result = {};
     let user = null;

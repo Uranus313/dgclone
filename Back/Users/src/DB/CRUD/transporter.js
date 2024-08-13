@@ -9,13 +9,13 @@ export async function saveTransporter(transporterCreate){
     return result;
 }
 
-export async function getTransporters(id){
+export async function getTransporters(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await TransporterModel.find();
+    if(id){
+        result.response = await TransporterModel.find({_id : id}).findOne();
         return result;
     }else{
-        result.response = await TransporterModel.find({_id : id}).findOne();
+        result.response = await TransporterModel.find(search);
         return result;
     }
 }

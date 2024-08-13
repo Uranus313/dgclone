@@ -9,13 +9,14 @@ export async function saveAdmin(adminCreate){
     return result;
 }
 
-export async function getAdmins(id){
+export async function getAdmins(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await AdminModel.find();
-        return result;
-    }else{
+    if(id){
         result.response = await AdminModel.find({_id : id}).findOne();
+        return result;
+        
+    }else{
+        result.response = await AdminModel.find(search);
         return result;
     }
 }

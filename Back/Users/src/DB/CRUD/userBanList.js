@@ -1,4 +1,4 @@
-import { UserBanListModel } from "../models/userBanList";
+import { UserBanListModel } from "../models/userBanList.js";
 export async function saveBannedUser(bannedUserCreate){
     const result = {};
     const bannedUser = new UserBanListModel(bannedUserCreate);
@@ -7,13 +7,14 @@ export async function saveBannedUser(bannedUserCreate){
     return result;
 }
 
-export async function getBannedUsers(id){
+export async function getUserBans(id , search){
     const result = {};
-    if(id === undefined){
-        result.response = await UserBanListModel.find();
-        return result;
-    }else{
+    if(id){
         result.response = await UserBanListModel.find({_id : id}).findOne();
+        return result;
+        
+    }else{
+        result.response = await UserBanListModel.find(search);
         return result;
     }
 }
