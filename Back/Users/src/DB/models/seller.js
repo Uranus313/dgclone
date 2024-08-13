@@ -14,8 +14,7 @@ const sellerSchema  = new mongoose.Schema(
                 birthDate: {type: Date, required: true},
                 email: {type: String , required : true},
                 nationalID: {type: String , required : true}
-            },
-            required: true},  
+            }},  
         isCompelete: Boolean,
         isVerified: Boolean,
         phoneNumber: {type: String , required : true},
@@ -78,8 +77,7 @@ const sellerSchema  = new mongoose.Schema(
                 aboutSeller : {type: String},
                 sellerWebsite : {type: String},
                 offDays : {type: [String]}
-            },
-            required: true
+            }
         },
         walletID: {type : mongoose.Schema.Types.ObjectId , ref: "jobs" },
         moneyReturn:{type : {
@@ -103,23 +101,23 @@ const sellerSchema  = new mongoose.Schema(
             province: {type: String, required : true},
             city: {type: String, required : true},
             postalCode : {type: String, required : true},
-            additionalInfo : {type: String, required : true},
+            additionalInfo : {type: String},
             coordinates : {type:{
                 x : {type: String, required : true},
                 y : {type: String, required : true}
             } , required: true}
-        }, required : true},
+        }},
         warehouseAddress:{type:{
             country: {type: String , required : true},
             province: {type: String, required : true},
             city: {type: String, required : true},
             postalCode : {type: String, required : true},
-            additionalInfo : {type: String, required : true},
+            additionalInfo : {type: String},
             coordinates : {type:{
                 x : {type: String, required : true},
                 y : {type: String, required : true}
             } , required: true}
-        }, required : true},
+        }},
         productList : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "products" }]},
         saleHistory : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orders" }]},
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
@@ -229,7 +227,7 @@ export function validateSellerChangeinfo (data){
             province: Joi.string().required(),
             city: Joi.string().required(),
             postalCode : Joi.string().required(),
-            additionalInfo : Joi.string().required(),
+            additionalInfo : Joi.string(),
             coordinates : Joi.object({
                     x : Joi.string().required(),
                     y : Joi.string().required()
@@ -241,7 +239,7 @@ export function validateSellerChangeinfo (data){
             province: Joi.string().required(),
             city: Joi.string().required(),
             postalCode : Joi.string().required(),
-            additionalInfo : Joi.string().required(),
+            additionalInfo : Joi.string(),
             coordinates : Joi.object({
                     x : Joi.string().required(),
                     y : Joi.string().required()

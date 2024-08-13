@@ -36,7 +36,7 @@ const userSchema  = new mongoose.Schema(
             province: {type: String, required : true},
             city: {type: String, required : true},
             postalCode : {type: String, required : true},
-            additionalInfo : {type: String, required : true},
+            additionalInfo : {type: String},
             coordinates : {type:{
                 x : {type: String, required : true},
                 y : {type: String, required : true}
@@ -107,7 +107,7 @@ export function validateUserChangeinfo (data){
             province: Joi.string().required(),
             city: Joi.string().required(),
             postalCode : Joi.string().required(),
-            additionalInfo : Joi.string().required(),
+            additionalInfo : Joi.string(),
             coordinates : Joi.object({
                     x : Joi.string().required(),
                     y : Joi.string().required()
