@@ -8,7 +8,7 @@ import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/
 import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard";
 import { generateRandomString } from "../functions/randomString";
 import { changeWalletMoney, updateWallet } from "../DB/CRUD/wallet";
-import { saveTransaction } from "../DB/CRUD/transaction";
+import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction";
 import { getNotifications } from "../DB/CRUD/notification";
 
 
@@ -497,5 +497,26 @@ router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) 
     }
     next();
 });
+
+router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
+    try {
+        
+        const result = await getAllUserTransactions(undefined,undefined,req.user._id)
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
+
 
 export default router;

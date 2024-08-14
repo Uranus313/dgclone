@@ -81,6 +81,31 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
     next();
 });
 
+router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+    const {error} = validateChangeMoney(req.body);
+    if (error){
+        res.status(400).send(error.details[0].message);
+        res.body = error.details[0].message;
+        next();
+        return;
+    } 
+    try {
+        const result = await changeWalletMoney(req.body.userID,req.body.amount);
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
 
 
 export default router;
