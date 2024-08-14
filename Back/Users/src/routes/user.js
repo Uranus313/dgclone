@@ -490,11 +490,11 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
             money : giftCard.amount,
             sender: {
                 method: "wallet",
-                type : "giftCard"
+                entityType : "giftCard"
             },
             receiver:{
                 method: "wallet",
-                type : "user",
+                entityType : "user",
                 receiverID : req.user._id
             }
         })
@@ -554,7 +554,7 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,
     }
     next();
 });
-lastVisited
+
 router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
         await validateLastVisitedPost(req.body); 

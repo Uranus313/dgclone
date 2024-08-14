@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
-import { UserModel } from "./user";
-import { SellerModel } from "./seller";
+import { UserModel } from "./user.js";
+import { SellerModel } from "./seller.js";
 Joi.objectId = joiObjectid(Joi);
 
 const transactionSchema  = new mongoose.Schema(
@@ -10,7 +10,7 @@ const transactionSchema  = new mongoose.Schema(
         money: {type: Number , required : true},
         sender:{type : {
             method : {type: String,enum: ["bankAccount" , "wallet"], required: true},
-            type : {type: String,enum: ["digikala" , "user","company","giftCard"], required: true},
+            entityType : {type: String,enum: ["digikala" , "user","company","giftCard"], required: true},
             bankAccount : {type: String, required: true , validate: {
                 validator : function(value){
                     if(this.method === "bankAccount" && (!value || value.trim() == "")){
@@ -24,7 +24,7 @@ const transactionSchema  = new mongoose.Schema(
             }},
             senderID : {type: mongoose.Schema.Types.ObjectId, required: true , validate: {
                 validator : function(value){
-                    if((this.type === "user" || this.type === "company") && (!value || value.trim() == "")){
+                    if((this.entityType === "user" || this.entityType === "company") && (!value || value.trim() == "")){
                         return false;
                     }
                     return true;
@@ -34,10 +34,10 @@ const transactionSchema  = new mongoose.Schema(
                 }
             }},
             additionalInfo : {type : String}
-        }, required : true},
+        }},
         receiver:{type : {
             method : {type: String,enum: ["bankAccount" , "wallet"], required: true},
-            type : {type: String,enum: ["digikala" , "user","company","giftCard"], required: true},
+            entityType : {type: String,enum: ["digikala" , "user","company","giftCard"], required: true},
             bankAccount : {type: String, required: true , validate: {
                 validator : function(value){
                     if(this.method === "bankAccount" && (!value || value.trim() == "")){
@@ -51,7 +51,7 @@ const transactionSchema  = new mongoose.Schema(
             }},
             receiverID : {type: mongoose.Schema.Types.ObjectId, required: true , validate: {
                 validator : function(value){
-                    if((this.type === "user" || this.type === "company") && (!value || value.trim() == "")){
+                    if((this.entityType === "user" || this.entityType === "company") && (!value || value.trim() == "")){
                         return false;
                     }
                     return true;
@@ -61,7 +61,7 @@ const transactionSchema  = new mongoose.Schema(
                 }
             }},
             additionalInfo : {type : String}
-        }, required : true},
+        },required : true },
         orderHistoryID: {type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" },
         date : {type: Date, required: true, default : Date.now()}
     }
@@ -73,13 +73,13 @@ export function validateTeransactionPost (data){
         money: Joi.number().required(),
         sender: Joi.object({
             method : Joi.string().valid("bankAccount" , "wallet"),
-            type : Joi.string().valid("digikala" , "user","company","giftCard"),
+            entityType : Joi.string().valid("digikala" , "user","company","giftCard"),
             bankAccount : Joi.when('method', {
                 is: 'bankAccount',
                 then: Joi.string().required(),
                 otherwise: Joi.string()
             }),
-            senderID: Joi.alternatives().conditional('type', [
+            senderID: Joi.alternatives().conditional('entityType', [
                 { is: 'user', then: Joi.string().external( async (id) => {
                     const result = await UserModel.find({_id : id}).findOne();
                     if(!result){
@@ -98,13 +98,13 @@ export function validateTeransactionPost (data){
         }).required(),
         receiver: Joi.object({
             method : Joi.string().valid("bankAccount" , "wallet"),
-            type : Joi.string().valid("digikala" , "user","company","giftCard"),
+            entityType : Joi.string().valid("digikala" , "user","company","giftCard"),
             bankAccount : Joi.when('method', {
                 is: 'bankAccount',
                 then: Joi.string().required(),
                 otherwise: Joi.string()
             }),
-            receiverID: Joi.alternatives().conditional('type', [
+            receiverID: Joi.alternatives().conditional('entityType', [
                 { is: 'user', then: Joi.string().external( async (id) => {
                     const result = await UserModel.find({_id : id}).findOne();
                     if(!result){

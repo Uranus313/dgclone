@@ -9,6 +9,10 @@ import { validateAdminPost } from "../DB/models/admin.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateUserLogIn } from "../DB/models/user.js";
 import { validateUserBan } from "../DB/models/userBanList.js";
+import express from "express"
+
+
+const router = express.Router();
 
 router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
     try {
@@ -152,3 +156,4 @@ router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async 
     }
     next();
 });
+export default router;

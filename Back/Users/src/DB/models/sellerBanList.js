@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { SellerModel } from "./seller";
+import { SellerModel } from "./seller.js";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
 Joi.objectId = joiObjectid(Joi);
