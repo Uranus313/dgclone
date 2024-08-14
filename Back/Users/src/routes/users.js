@@ -2,7 +2,7 @@ import express from "express"
 import { auth } from "../authorization/auth";
 import validateId from "../functions/validateId";
 import _ from "lodash";
-import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user";
 import { logIn, saveUser, updateUser } from "../DB/CRUD/user";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard";
 import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard";
@@ -499,9 +499,10 @@ router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) 
 });
 
 router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
+    
     try {
         
-        const result = await getAllUserTransactions(undefined,undefined,req.user._id)
+        const result = await getAllUserTransactions(req.user._id)
         if (result.error){
             res.status(400).send(result.error);
             res.body = result.error;
@@ -517,6 +518,41 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,
     }
     next();
 });
-
+lastVisited
+router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
+    const {error} = validateLastVisitedPost(req.body); 
+    if (error){
+        res.status(400).send(error.details[0].message);
+        res.body = error.details[0].message;
+        next();
+        return;
+    }
+    try {
+        const foundIndex = req.user.lastVisited.indexOf(req.body.productID);
+        if (foundIndex != -1){
+            for (let index = foundIndex; index > 0; index--) {
+                req.user.lastVisited[index] = req.user.lastVisited[index-1];
+            }
+            req.user.lastVisited[0] = req.body.productID;
+        }else{
+            req.user.lastVisited.pop();
+            req.user.lastVisited.unshift(req.body.productID);
+        }
+        const result = await updateUser(req.user._id,{lastVisited: req.user.lastVisited})
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
 
 export default router;

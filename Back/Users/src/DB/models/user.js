@@ -69,7 +69,18 @@ export function validateUserPost (data){
     return schema.validateAsync(data);
 }
 
-
+export function validateLastVisitedPost (data){
+    const schema = Joi.object({
+        productID : Joi.objectId().external( async (productID) => {
+            const result = await fetch("http://getProduct/"+productID);
+            const product = await result.json();
+            if (!product._id){
+                throw new Error("this product does not exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
 export function validateUserChangeinfo (data){
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100),
