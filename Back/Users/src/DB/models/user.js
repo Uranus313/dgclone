@@ -188,3 +188,19 @@ export function validateAddToFavoriteList(data , favoriteList){
     })
     return schema.validateAsync(data);
 }
+
+export function validateAddress(data ){
+    const schema = Joi.object({
+        country: Joi.string().required(),
+        province: Joi.string().required(),
+        city: Joi.string().required(),
+        postalCode : Joi.string().required(),
+        additionalInfo : Joi.string(),
+        coordinates : Joi.object({
+                x : Joi.string().required(),
+                y : Joi.string().required()
+            }
+        ).required(),
+    })
+    return schema.validate(data);
+}

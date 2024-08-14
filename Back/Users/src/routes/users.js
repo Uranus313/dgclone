@@ -1,7 +1,8 @@
 import express from "express"
 import { auth } from "../authorization/auth";
 import validateId from "../functions/validateId";
-import { validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user";
+import _ from "lodash";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user";
 import { logIn, saveUser, updateUser } from "../DB/CRUD/user";
 
 
@@ -235,6 +236,87 @@ router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"
     try {
         const result = await updateUser(req.user._id,{
             favoriteList : [...req.user.favoriteList , req.body.productID]
+        });
+        
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
+
+
+router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
+    const {error} = validateAddress(req.body); 
+    if (error){
+        res.status(400).send(error.details[0].message);
+        res.body = error.details[0].message;
+        next();
+        return;
+    }
+    try {
+        req.user.addresses.forEach(address => {
+            if (_.isEqual(address,req.nody)){
+                res.status(400).send("this address is already submitted");
+                res.body = "this address is already submitted";
+                next();
+                return;
+            }
+        })
+        const result = await updateUser(req.user._id,{
+            addresses : [...req.user.addresses ,  req.nody]
+        });
+        
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
+
+router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
+    const {error} = validateAddress(req.body); 
+    if (error){
+        res.status(400).send(error.details[0].message);
+        res.body = error.details[0].message;
+        next();
+        return;
+    }
+    try {
+        let checker = false;
+        for (let index = 0; index < req.user.addresses.length; index++) {
+            if (_.isEqual(req.user.addresses[index],req.nody)){
+                checker = true;
+                req.user.addresses.splice(index,1);
+                break;
+            } 
+        }
+        if (!checker){
+            res.status(400).send("this address does not submitted");
+            res.body = "this address does not submitted";
+            next();
+            return;
+        }
+        const result = await updateUser(req.user._id,{
+            addresses : req.user.addresses
         });
         
         if (result.error){
