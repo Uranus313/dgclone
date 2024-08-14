@@ -25,4 +25,11 @@ export async function updateWallet(id,walletUpdate ){
     result.response = response.toJSON();
     return(result);
 }
+export async function changeWalletMoney(id,amount ){
+    const result = {};
+    const response = await WalletModel.findByIdAndUpdate(id,{$inc :{amount : amount}},{new : true});
+    result.response = response.toJSON();
+    return(result);
+}
+
 

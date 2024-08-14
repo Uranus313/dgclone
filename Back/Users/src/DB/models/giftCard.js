@@ -26,7 +26,7 @@ export function validateGiftCardPost (data){
                 throw new Error("no user found with this ID");
             }
         }).required(),
-        code : Joi.string().length(16).required(),
+        // code : Joi.string().length(16).required(),
         amount : Joi.number().required(),
         buyDate : Joi.date()
     });
@@ -35,13 +35,7 @@ export function validateGiftCardPost (data){
 
 export function validateGiftCardUse (data){
     const schema = Joi.object({
-        userID: Joi.objectId().external( async (userID) => {
-            const user = await UserModel.find({_id : userID}).findOne();
-            if(!user){
-                throw new Error("no user found with this ID");
-            }
-        }).required(),
-        useDate : Joi.date()
+        code : Joi.string().length(16).required()
     });
     return schema.validateAsync(data);
 }

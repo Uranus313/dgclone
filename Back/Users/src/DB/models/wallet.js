@@ -5,7 +5,7 @@ Joi.objectId = joiObjectid(Joi);
 
 const walletSchema  = new mongoose.Schema(
     {
-        money: {type: Number , required : true},
+        money: {type: Number , required : true , default: 0},
         userID: {type : mongoose.Schema.Types.ObjectId,required : true }
     }
 );
