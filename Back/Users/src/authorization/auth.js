@@ -4,7 +4,7 @@ import { getSellers } from "../DB/CRUD/seller";
 import { getAdmins } from "../DB/CRUD/admin";
 import { getTransporters } from "../DB/CRUD/transporter";
 
-export async function auth(req,res,next,status){
+export async function auth(req,res,next,acceptedStatuses){
     const token = req.header("x-auth-token");
     if(!token){
         res.status(401).send("access denied. no token provided.");
@@ -13,12 +13,18 @@ export async function auth(req,res,next,status){
     }
     try {
         const decoded = jwt.verify(token,process.env.JWTSECRET);
-        if (decoded.status != status){
-            res.status(401).send("access denied. invalid " + status);
-            res.body = "access denied. invalid " + status;
+        let checker = false;
+        for (let index = 0; index < acceptedStatuses.length; index++) {
+            if (decoded.status == acceptedStatuses[index]){
+                checker = true
+            }  
+        }
+        if (!checker){
+            res.status(401).send("access denied. invalid " + acceptedStatuses.join(', '));
+            res.body = "access denied. invalid " + acceptedStatuses.join(', ');
             return 
         }
-        switch (status) {
+        switch (decoded.status) {
             case "user":
                 const user = await getUsers(decoded._id);
                 if(!user){

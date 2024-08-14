@@ -118,3 +118,73 @@ export function validateUserChangeinfo (data){
     return schema.validateAsync(data);
 }
 
+export function validateUserLogIn(data){
+    const schema = Joi.object({
+        phoneNumber : Joi.string().min(11).max(12),
+        email: Joi.string().email(),
+        password : Joi.string().min(8).max(50).required()
+    }).xor("phoneNumber","email");
+    return schema.validateAsync(data);
+}
+
+export function validateCreateWishList(data , wishLists){
+    const schema = Joi.object({
+        title : Joi.string().min(1).max(100).external( (title) => {
+            wishLists.forEach(wishList => {
+                if (wishList.title == title ){
+                    throw new Error("an wish list with this title already exists");
+                }
+            })
+        }).required()
+    })
+    return schema.validate(data);
+}
+export function validateAddToWishList(data , wishLists){
+    const schema = Joi.object({
+        title : Joi.string().min(1).max(100).external( (title) => {
+            let checker = false;
+            wishLists.forEach(wishList => {
+                if (wishList.title == title ){
+                    checker = true;
+                }
+            });
+            if (!checker){
+                throw new Error("no wish list with this title exists");
+            }
+        }).required(),
+        productID : Joi.objectId().external( async (productID) => {
+            wishLists.forEach(wishList => {
+                if (wishList.title == title ){
+                    wishList.forEach(listProductID => {
+                        if(listProductID == productID){
+                            throw new Error("this product is already in your wishlist");
+                        }
+                    })
+                }
+            });
+            const result = await fetch("http://getProduct/"+productID);
+            const product = await result.json();
+            if (!product._id){
+                throw new Error("this product does not exists");
+            }
+        }).required()
+    })
+    return schema.validateAsync(data);
+}
+export function validateAddToFavoriteList(data , favoriteList){
+    const schema = Joi.object({
+        productID : Joi.objectId().external( async (productID) => {
+            favoriteList.forEach(listProductID => {
+                    if(listProductID == productID){
+                    throw new Error("this product is already in your favorite List");
+                }
+            })
+            const result = await fetch("http://getProduct/"+productID);
+            const product = await result.json();
+            if (!product._id){
+                throw new Error("this product does not exists");
+            }
+        }).required()
+    })
+    return schema.validateAsync(data);
+}
