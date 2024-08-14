@@ -22,7 +22,7 @@ func (d CommentType) EnumIndex() int {
 	return int(d)
 }
 
-type likeNDisslike struct {
+type LikeOrDisslike struct {
 	UserID primitive.ObjectID
 	Liked  bool
 }
@@ -37,6 +37,6 @@ type Comment struct {
 	Content           string             `json:"content" bson:"content"`
 	Pictures          []string           `json:"pictures,omitempty" bson:"pictures,omitempty"` // regular comments
 	Videos            []string           `json:"videos,omitempty" bson:"videos,omitempty"`     // regular comments
-	LikesAndDisslikes likeNDisslike      `json:"likes&disslikes" bson:"likes&disslikes"`
+	LikesAndDisslikes []LikeOrDisslike   `json:"likes&disslikes" bson:"likes&disslikes"`
 	DateSent          time.Time          `json:"date_sent" bson:"date_sent"`
 }
