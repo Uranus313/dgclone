@@ -85,7 +85,7 @@ func AddProduct(c *fiber.Ctx) error {
 	insertResult, err := database.ProductCollection.InsertOne(context.Background(), product)
 
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to add news"})
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to add product"})
 	}
 
 	product.ID = insertResult.InsertedID.(primitive.ObjectID)

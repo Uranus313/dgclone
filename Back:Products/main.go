@@ -46,6 +46,10 @@ func main() {
 
 	app.Post("/products", crud.AddProduct)
 
+	app.Post("/order", crud.AddOrder)
+
+	app.Get("/order/orderhistory/:OHID")
+
 	app.Post("/addpost", func(c *fiber.Ctx) error {
 		// Get the Authorization header
 		authHeader := c.Get("Authorization")
