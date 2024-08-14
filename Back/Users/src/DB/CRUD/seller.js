@@ -9,12 +9,15 @@ export async function saveSeller(sellerCreate){
     return result;
 }
 
-export async function getSellers(id , search){
+export async function getSellers(id , search , idArray){
     const result = {};
     if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
         return result;
         
+    }else if(idArray){
+        result.response = await SellerModel.find({_id : { $in : idArray}});
+        return result;
     }else{
         result.response = await SellerModel.find(search);
         return result;

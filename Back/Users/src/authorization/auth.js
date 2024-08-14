@@ -5,6 +5,7 @@ import { getAdmins } from "../DB/CRUD/admin";
 import { getTransporters } from "../DB/CRUD/transporter";
 
 export async function auth(req,res,next,acceptedStatuses){
+    
     const token = req.header("x-auth-token");
     if(!token){
         res.status(401).send("access denied. no token provided.");

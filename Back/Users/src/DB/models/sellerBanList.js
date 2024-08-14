@@ -13,7 +13,7 @@ const sellerBanListSchema  = new mongoose.Schema(
 
 export const SellerBanListModel = mongoose.model("sellerBanLists",sellerBanListSchema);
 
-export function validateBan (data){
+export function validateSellerBan (data){
     const schema = Joi.object({
         sellerID : Joi.objectId().external( async (sellerID) => {
             const user = await SellerModel.find({_id : sellerID}).findOne();

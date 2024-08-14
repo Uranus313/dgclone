@@ -45,7 +45,7 @@ router.post("/signUp",  async (req, res, next) =>{
             next();
             return;
         }
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET);
+        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -87,7 +87,7 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
             next();
             return;
         }
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET);
+        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -126,7 +126,7 @@ router.post("/logIn",  async (req, res, next) =>{
             next();
             return;
         }
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET);
+        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
