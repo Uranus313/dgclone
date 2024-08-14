@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { SellerModel } from "./seller";
-// import Joi from "joi";
-// import joiObjectid from "joi-objectid";
-// Joi.objectId = joiObjectid(Joi);
+import Joi from "joi";
+import joiObjectid from "joi-objectid";
+Joi.objectId = joiObjectid(Joi);
 
 const sellerBanListSchema  = new mongoose.Schema(
     {

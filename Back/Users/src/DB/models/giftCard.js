@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
-import { UserModel } from "./user";
+import { UserModel } from "./user.js";
 Joi.objectId = joiObjectid(Joi);
 
 const giftCardSchema  = new mongoose.Schema(

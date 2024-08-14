@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-// import Joi from "joi";
-// import joiObjectid from "joi-objectid";
+import Joi from "joi";
+import joiObjectid from "joi-objectid";
 
 const adminSchema  = new mongoose.Schema(
     {

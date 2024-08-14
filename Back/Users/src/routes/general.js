@@ -1,16 +1,16 @@
 import express from "express"
-import { auth } from "../authorization/auth";
-import { getUsers } from "../DB/CRUD/user";
-import validateId from "../functions/validateId";
-import { validateNotificationPost } from "../DB/models/notification";
-import { saveNotification } from "../DB/CRUD/notification";
-import { validateChangeMoney } from "../DB/models/wallet";
-import { changeWalletMoney } from "../DB/CRUD/wallet";
-import { getSellers } from "../DB/CRUD/seller";
-import { getAdmins } from "../DB/CRUD/admin";
-import { getGiftCards } from "../DB/CRUD/giftCard";
-import { getTransactions } from "../DB/CRUD/transaction";
-import { getTransporters } from "../DB/CRUD/transporter";
+import { auth } from "../authorization/auth.js";
+import { getUsers } from "../DB/CRUD/user.js";
+import validateId from "../functions/validateId.js";
+import { validateNotificationPost } from "../DB/models/notification.js";
+import { saveNotification } from "../DB/CRUD/notification.js";
+import { validateChangeMoney } from "../DB/models/wallet.js";
+import { changeWalletMoney } from "../DB/CRUD/wallet.js";
+import { getSellers } from "../DB/CRUD/seller.js";
+import { getAdmins } from "../DB/CRUD/admin.js";
+import { getGiftCards } from "../DB/CRUD/giftCard.js";
+import { getTransactions } from "../DB/CRUD/transaction.js";
+import { getTransporters } from "../DB/CRUD/transporter.js";
 
 
 const router = express.Router();
@@ -286,13 +286,19 @@ router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin
     next();
 });
 router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
-    const {error} = validateNotificationPost(req.body);
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateNotificationPost(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
-    } 
+    }
     try {
         const result = await saveNotification(req.body);
         if (result.error){
@@ -312,13 +318,19 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
 });
 
 router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
-    const {error} = validateChangeMoney(req.body);
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateChangeMoney(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
-    } 
+    }
     try {
         const result = await changeWalletMoney(req.body.userID,req.body.amount);
         if (result.error){

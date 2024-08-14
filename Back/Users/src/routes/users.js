@@ -1,25 +1,31 @@
 import express from "express"
-import { auth } from "../authorization/auth";
-import validateId from "../functions/validateId";
+import { auth } from "../authorization/auth.js";
+import validateId from "../functions/validateId.js";
 import _ from "lodash";
-import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user";
-import { logIn, saveUser, updateUser } from "../DB/CRUD/user";
-import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard";
-import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard";
-import { generateRandomString } from "../functions/randomString";
-import { changeWalletMoney, updateWallet } from "../DB/CRUD/wallet";
-import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction";
-import { getNotifications } from "../DB/CRUD/notification";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user.js";
+import { logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
+import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
+import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
+import { generateRandomString } from "../functions/randomString.js";
+import { changeWalletMoney, updateWallet } from "../DB/CRUD/wallet.js";
+import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
+import { getNotifications } from "../DB/CRUD/notification.js";
 
 
 const router = express.Router();
 
 
 router.post("/signUp",  async (req, res, next) =>{
-    const {error} = validateUserPost(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateUserPost(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -58,10 +64,16 @@ router.post("/signUp",  async (req, res, next) =>{
 
 
 router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) ,  async (req, res, next) =>{
-    const {error} = validateUserChangeinfo(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateUserChangeinfo(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -210,10 +222,16 @@ router.post("/createWishList", (req, res,next) => auth(req, res,next, ["user"]) 
 });
 
 router.post("/addToWishList", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
-    const {error} = validateAddToWishList(req.body , req.user.wishLists); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateAddToWishList(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -245,10 +263,16 @@ router.post("/addToWishList", (req, res,next) => auth(req, res,next, ["user"]) ,
 });
 
 router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
-    const {error} = validateAddToFavoriteList(req.body , req.user.favoriteList); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateAddToFavoriteList(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -373,10 +397,16 @@ router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,asy
 });
 
 router.post("/addGiftCard", async (req, res,next) =>{
-    const {error} = validateGiftCardPost(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateGiftCardPost(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -414,10 +444,16 @@ router.post("/addGiftCard", async (req, res,next) =>{
 });
 
 router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), async (req, res,next) =>{
-    const {error} = validateGiftCardUse(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateGiftCardUse(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -520,10 +556,16 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,
 });
 lastVisited
 router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
-    const {error} = validateLastVisitedPost(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateLastVisitedPost(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }

@@ -135,7 +135,7 @@ export function validateUserLogIn(data){
         email: Joi.string().email(),
         password : Joi.string().min(8).max(50).required()
     }).xor("phoneNumber","email");
-    return schema.validateAsync(data);
+    return schema.validate(data);
 }
 
 export function validateCreateWishList(data , wishLists){

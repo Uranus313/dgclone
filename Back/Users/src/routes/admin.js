@@ -1,19 +1,26 @@
-import { adminSignUpAuth } from "../authorization/adminSignUpAuth";
-import { auth } from "../authorization/auth";
-import { logIn, saveAdmin } from "../DB/CRUD/admin";
-import { updateSeller } from "../DB/CRUD/seller";
-import { saveBannedSeller } from "../DB/CRUD/sellerBanList";
-import { updateUser } from "../DB/CRUD/user";
-import { saveBannedUser } from "../DB/CRUD/userBanList";
-import { validateAdminPost } from "../DB/models/admin";
-import { validateSellerBan } from "../DB/models/sellerBanList";
-import { validateUserBan } from "../DB/models/userBanList";
+import { adminSignUpAuth } from "../authorization/adminSignUpAuth.js";
+import { auth } from "../authorization/auth.js";
+import { logIn, saveAdmin } from "../DB/CRUD/admin.js";
+import { updateSeller } from "../DB/CRUD/seller.js";
+import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
+import { updateUser } from "../DB/CRUD/user.js";
+import { saveBannedUser } from "../DB/CRUD/userBanList.js";
+import { validateAdminPost } from "../DB/models/admin.js";
+import { validateSellerBan } from "../DB/models/sellerBanList.js";
+import { validateUserLogIn } from "../DB/models/user.js";
+import { validateUserBan } from "../DB/models/userBanList.js";
 
 router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
-    const {error} = validateAdminPost(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateAdminPost(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -37,10 +44,16 @@ router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
 });
 
 router.post("/logIn",  async (req, res, next) =>{
-    const {error} = validateUserLogIn(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateUserLogIn(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -64,10 +77,16 @@ router.post("/logIn",  async (req, res, next) =>{
 });
 
 router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
-    const {error} = validateUserBan(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateUserBan(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -96,10 +115,16 @@ router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (r
     next();
 });
 router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
-    const {error} = validateSellerBan(req.body); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateSellerBan(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }

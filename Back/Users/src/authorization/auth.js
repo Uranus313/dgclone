@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { getUsers } from "../DB/CRUD/user";
-import { getSellers } from "../DB/CRUD/seller";
-import { getAdmins } from "../DB/CRUD/admin";
-import { getTransporters } from "../DB/CRUD/transporter";
+import { getUsers } from "../DB/CRUD/user.js";
+import { getSellers } from "../DB/CRUD/seller.js";
+import { getAdmins } from "../DB/CRUD/admin.js";
+import { getTransporters } from "../DB/CRUD/transporter.js";
 
 export async function auth(req,res,next,acceptedStatuses){
     
