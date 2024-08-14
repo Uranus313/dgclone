@@ -31,7 +31,7 @@ const userSchema  = new mongoose.Schema(
         }, required : true , default : {
             method : "wallet"
         }},
-        address:{type:{
+        addresses:[{type:{
             country: {type: String , required : true},
             province: {type: String, required : true},
             city: {type: String, required : true},
@@ -41,7 +41,7 @@ const userSchema  = new mongoose.Schema(
                 x : {type: String, required : true},
                 y : {type: String, required : true}
             } , required: true}
-        }},
+        }}],
         sentGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         receivedGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
@@ -102,7 +102,7 @@ export function validateUserChangeinfo (data){
                 otherwise: Joi.string()
             }),
         }),
-        address: Joi.object({
+        address: Joi.array().items(Joi.object({
             country: Joi.string().required(),
             province: Joi.string().required(),
             city: Joi.string().required(),
@@ -113,7 +113,7 @@ export function validateUserChangeinfo (data){
                     y : Joi.string().required()
                 }
             ).required(),
-        })
+        }))
     }).min(1);
     return schema.validateAsync(data);
 }
