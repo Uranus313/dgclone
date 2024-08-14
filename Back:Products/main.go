@@ -34,11 +34,17 @@ func main() {
 	}))
 	app.Use(logger.New())
 
-	app.Get("/comment/:ProdID", crud.GetCommentsByProductID)
+	app.Get("/comments/:ProdID", crud.GetCommentsByProductID)
 
-	app.Post("/comment", crud.PostComment)
+	app.Post("/comments", crud.PostComment)
 
-	app.Patch("/comment/:CommentID", crud.UpdateCommentScore)
+	app.Patch("/comments/:CommentID", crud.UpdateCommentScore)
+
+	app.Get("/products", crud.GetAllProducts)
+
+	app.Get("/products/:ProdID", crud.GetProductByID)
+
+	app.Post("/products", crud.AddProduct)
 
 	app.Post("/addpost", func(c *fiber.Ctx) error {
 		// Get the Authorization header
