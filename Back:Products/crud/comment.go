@@ -79,7 +79,7 @@ func PostComment(c *fiber.Ctx) error {
 
 	comment.DateSent = time.Now()
 
-	return c.Status(http.StatusOK).JSON(comment)
+	return c.Status(http.StatusCreated).JSON(comment)
 }
 
 func UpdateCommentScore(c *fiber.Ctx) error {
