@@ -9,6 +9,7 @@ import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard"
 import { generateRandomString } from "../functions/randomString";
 import { changeWalletMoney, updateWallet } from "../DB/CRUD/wallet";
 import { saveTransaction } from "../DB/CRUD/transaction";
+import { getNotifications } from "../DB/CRUD/notification";
 
 
 const router = express.Router();
@@ -469,6 +470,26 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         }
         res.send(result3.response);
         res.body = result3.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
+
+router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
+    try {
+        
+        const result = await getNotifications(undefined,undefined,req.user.notifications)
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
     } catch (err) {
         console.log("Error",err);
         res.body = "internal server error";

@@ -8,6 +8,15 @@ export async function saveTransaction(transactionCreate){
     return result;
 }
 
+export async function getAllUserTransactions(userID ){
+    const result = {};
+    result.response = await TransactionModel.find({$or : [
+        {"sender.senderID" : userID},
+        {"receiver.receiverID" : userID}
+    ]}).sort({date : -1});
+    return result;
+}
+
 export async function getTransactions(id , search){
     const result = {};
     if(id){

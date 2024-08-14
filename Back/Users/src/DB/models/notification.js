@@ -8,7 +8,7 @@ Joi.objectId = joiObjectid(Joi);
 const notificationSchema  = new mongoose.Schema(
     {
         content: {type: String , required : true},
-        userEmail: {type: String , required : true},
+        userEmail: {type: String },
         userPhone: {type: String , required : true},
         userType: {type: String , enum : ["seller","user"], required : true, validate:{
             validator : function(value){
@@ -36,7 +36,7 @@ export const NotificationModel = mongoose.model("notifications",notificationSche
 export function validateNotificationPost (notification){
     const schema = Joi.object({
         content: Joi.string().min(1).max(2000).required(),
-        userEmail : Joi.string().email().required(),
+        userEmail : Joi.string().email(),
         userPhone : Joi.string().required(),
         userType : Joi.string().valid("seller" , "user").required().custom((value , helpers) => {
             if(value.userType == "seller" && !value.sellerID){

@@ -8,12 +8,15 @@ export async function saveNotification(notificationCreate){
     return result;
 }
 
-export async function getNotifications(id , search){
+export async function getNotifications(id , search, idArray){
     const result = {};
     if(id){
         result.response = await NotificationModel.find({_id : id}).findOne();
         return result;
         
+    }else if(idArray){
+        result.response = await NotificationModel.find({_id : { $in : idArray}});
+        return result;
     }else{
         result.response = await NotificationModel.find(search);
         return result;
