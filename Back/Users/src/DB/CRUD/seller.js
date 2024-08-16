@@ -40,6 +40,10 @@ export async function logIn(email , phoneNumber , password){
             return result;
         }
     }
+    if(!seller.password){
+        result.error = "this user does not have a password";
+        return result;
+    }
     const passwordCheck = await comparePassword(password , seller.password);
     if(!passwordCheck){
         result.error = "wrong password";

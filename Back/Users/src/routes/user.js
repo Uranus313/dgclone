@@ -15,7 +15,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-
+// checked
 router.post("/signUp",  async (req, res, next) =>{
     try {
         await validateUserPost(req.body); 
@@ -110,6 +110,10 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
     }
     next();
 });
+
+
+// checked
+
 router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) ,  async (req, res, next) =>{
     console.log(req.user)
     try {
@@ -144,7 +148,7 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) , 
     }
     next();
 });
-
+//  checked
 router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async (req,res) =>{
     try {
         res.send(req.user);
@@ -155,6 +159,8 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async
         res.status(500).send("internal server error");
     }
 })
+
+
 
 router.post("/logIn",  async (req, res, next) =>{
     const {error} = validateUserLogIn(req.body); 
