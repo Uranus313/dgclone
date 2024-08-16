@@ -13,10 +13,15 @@ export async function getAdmins(id , search){
     const result = {};
     if(id){
         result.response = await AdminModel.find({_id : id}).findOne();
+        if(result.response){
+            result.response = result.response.toJSON();
+        }
         return result;
-        
     }else{
         result.response = await AdminModel.find(search);
+        for (let index = 0; index < result.response.length; index++) {
+            result.response[index] = result.response[index].toJSON();
+        }
         return result;
     }
 }

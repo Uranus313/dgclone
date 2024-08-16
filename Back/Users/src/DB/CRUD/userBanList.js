@@ -11,10 +11,15 @@ export async function getUserBans(id , search){
     const result = {};
     if(id){
         result.response = await UserBanListModel.find({_id : id}).findOne();
+        if(result.response){
+            result.response = result.response.toJSON();
+        }
         return result;
-        
     }else{
         result.response = await UserBanListModel.find(search);
+        for (let index = 0; index < result.response.length; index++) {
+            result.response[index] = result.response[index].toJSON();
+        }
         return result;
     }
 }

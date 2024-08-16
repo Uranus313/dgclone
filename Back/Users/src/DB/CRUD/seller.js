@@ -13,13 +13,22 @@ export async function getSellers(id , search , idArray){
     const result = {};
     if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
+        if(result.response){
+            result.response = result.response.toJSON();
+        }
         return result;
         
     }else if(idArray){
-        result.response = await SellerModel.find({_id : { $in : idArray}});
+        result.response = await SellerModel.find(search);
+        for (let index = 0; index < result.response.length; index++) {
+            result.response[index] = result.response[index].toJSON();
+        }
         return result;
     }else{
         result.response = await SellerModel.find(search);
+        for (let index = 0; index < result.response.length; index++) {
+            result.response[index] = result.response[index].toJSON();
+        }
         return result;
     }
 }
@@ -41,7 +50,7 @@ export async function logIn(email , phoneNumber , password){
         }
     }
     if(!seller.password){
-        result.error = "this user does not have a password";
+        result.error = "this seller does not have a password";
         return result;
     }
     const passwordCheck = await comparePassword(password , seller.password);

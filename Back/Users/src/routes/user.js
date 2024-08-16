@@ -11,6 +11,7 @@ import { changeWalletMoney, saveWallet, updateWallet } from "../DB/CRUD/wallet.j
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
 import { getNotifications } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
+import { innerAuth } from "../authorization/innerAuth.js";
 
 
 const router = express.Router();
@@ -115,7 +116,6 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
 // checked
 
 router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) ,  async (req, res, next) =>{
-    console.log(req.user)
     try {
         await validateUserChangeinfo(req.body); 
     } catch (error) {
@@ -161,7 +161,7 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async
 })
 
 
-
+// checked
 router.post("/logIn",  async (req, res, next) =>{
     const {error} = validateUserLogIn(req.body); 
     if (error){
@@ -189,6 +189,9 @@ router.post("/logIn",  async (req, res, next) =>{
     next();
 });
 
+// half checked
+
+
 router.get("/myLists", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
         const neededProducts = {};
@@ -196,11 +199,20 @@ router.get("/myLists", (req, res,next) => auth(req, res,next, ["user"]) ,async (
             neededProducts[productID] = null
         });
         req.user.wishLists.forEach(list => {
-            list.forEach(productID => {
+            list.products.forEach(productID => {
              neededProducts[productID] = null
             })
         });
-        
+        if(Object.keys(neededProducts).length == 0){
+            const response = {
+                favoriteList : req.user.favoriteList,
+                wishLists : req.user.wishLists
+            }
+            res.body = response;
+            res.send(response);
+            next();
+            return;
+        }
         const result = await fetch("http://products/fillList",{
             method : "POST",
             headers: {
@@ -214,8 +226,8 @@ router.get("/myLists", (req, res,next) => auth(req, res,next, ["user"]) ,async (
             req.user.favoriteList[index] = products[productID]; 
         });
         req.user.wishLists.forEach(list => {
-            list.forEach((productID,index) => {
-                list[index] = products[productID]; 
+            list.products.forEach((productID,index) => {
+                list.products[index] = products[productID]; 
             })
         });
         const response = {
@@ -231,12 +243,20 @@ router.get("/myLists", (req, res,next) => auth(req, res,next, ["user"]) ,async (
     }
     next();
 });
+// half checked
 
 router.post("/createWishList", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
-    const {error} = validateCreateWishList(req.body , req.user.wishLists); 
-    if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+    try {
+        await validateCreateWishList(req.body,req.user.wishLists); 
+    } catch (error) {
+        console.log(error)
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
         next();
         return;
     }
@@ -337,7 +357,7 @@ router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"
     next();
 });
 
-
+// checked
 router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
     const {error} = validateAddress(req.body); 
     if (error){
@@ -347,16 +367,21 @@ router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , asy
         return;
     }
     try {
+        let checker = false
         req.user.addresses.forEach(address => {
-            if (_.isEqual(address,req.nody)){
-                res.status(400).send("this address is already submitted");
+            if (_.isEqual({...address , _id : undefined , coordinates:{...address.coordinates, _id : undefined}},{...req.body, _id : undefined , coordinates:{...req.body.coordinates, _id : undefined}})){
+                checker = true;
+            }
+        })
+        if(checker){
+            res.status(400).send("this address is already submitted");
                 res.body = "this address is already submitted";
                 next();
                 return;
-            }
-        })
+        }
+
         const result = await updateUser(req.user._id,{
-            addresses : [...req.user.addresses ,  req.nody]
+            addresses : [...req.user.addresses ,  req.body]
         });
         
         if (result.error){
@@ -374,6 +399,7 @@ router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , asy
     }
     next();
 });
+// checked
 
 router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
     const {error} = validateAddress(req.body); 
@@ -386,7 +412,7 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
     try {
         let checker = false;
         for (let index = 0; index < req.user.addresses.length; index++) {
-            if (_.isEqual(req.user.addresses[index],req.nody)){
+            if (_.isEqual({...req.user.addresses[index], _id : undefined , coordinates:{...req.user.addresses[index].coordinates, _id : undefined}},{...req.body, _id : undefined , coordinates:{...req.body.coordinates, _id : undefined}})){
                 checker = true;
                 req.user.addresses.splice(index,1);
                 break;
@@ -418,6 +444,9 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
     next();
 });
 
+
+// half checked 
+
 router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
         const sentGiftCards = (await getGiftCards(undefined,undefined,req.sentGiftCards)).response;
@@ -436,7 +465,7 @@ router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,asy
     next();
 });
 
-router.post("/addGiftCard", async (req, res,next) =>{
+router.post("/addGiftCard",innerAuth, async (req, res,next) =>{
     try {
         await validateGiftCardPost(req.body); 
     } catch (error) {
@@ -554,6 +583,9 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
     next();
 });
 
+// half checked 
+
+
 router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
         
@@ -573,6 +605,9 @@ router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) 
     }
     next();
 });
+
+// half checked 
+
 
 router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     

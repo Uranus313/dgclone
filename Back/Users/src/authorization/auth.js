@@ -5,7 +5,6 @@ import { getAdmins } from "../DB/CRUD/admin.js";
 import { getTransporters } from "../DB/CRUD/transporter.js";
 
 export async function auth(req,res,next,acceptedStatuses){
-    console.log(acceptedStatuses)
     const token = req.header("x-auth-token");
     if(!token){
         res.status(401).send("access denied. no token provided.");
@@ -28,6 +27,7 @@ export async function auth(req,res,next,acceptedStatuses){
         switch (decoded.status) {
             case "user":
                 const user = (await getUsers(decoded._id)).response;
+                // console.log(user.addresses)
                 if(!user){
                     res.status(401).send("access denied. invalid user.");
                     res.body = "access denied. invalid user.";

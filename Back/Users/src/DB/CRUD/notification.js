@@ -12,13 +12,22 @@ export async function getNotifications(id , search, idArray){
     const result = {};
     if(id){
         result.response = await NotificationModel.find({_id : id}).findOne();
+        if(result.response){
+            result.response = result.response.toJSON();
+        }
         return result;
         
     }else if(idArray){
-        result.response = await NotificationModel.find({_id : { $in : idArray}});
+        result.response = await NotificationModel.find(search);
+        for (let index = 0; index < result.response.length; index++) {
+            result.response[index] = result.response[index].toJSON();
+        }
         return result;
     }else{
         result.response = await NotificationModel.find(search);
+        for (let index = 0; index < result.response.length; index++) {
+            result.response[index] = result.response[index].toJSON();
+        }
         return result;
     }
 }

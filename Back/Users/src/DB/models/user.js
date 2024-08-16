@@ -157,7 +157,7 @@ export function validateCreateWishList(data , wishLists){
             })
         }).required()
     })
-    return schema.validate(data);
+    return schema.validateAsync(data);
 }
 export function validateAddToWishList(data , wishLists){
     const schema = Joi.object({
