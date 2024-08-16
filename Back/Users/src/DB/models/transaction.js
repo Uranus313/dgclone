@@ -122,6 +122,9 @@ export function validateTeransactionPost (data){
             additionalInfo : Joi.string().max(2000)
         }).required(),
         orderHistoryID : Joi.objectId().email().external( async (id) => {
+            if(!id){
+                return
+            }
             const result = await fetch("http://products/orderHistory/"+id);
             const orderHistory = await result.json();
             if(!orderHistory._id){

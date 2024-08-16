@@ -81,10 +81,9 @@ const sellerSchema  = new mongoose.Schema(
         },
         walletID: {type : mongoose.Schema.Types.ObjectId , ref: "jobs" },
         moneyReturn:{type : {
-            method : {type: String,enum: ["bankAccount" , "wallet"], required: true , default : "wallet"},
-            bankAccount : {type: String, required: true , validate: {
+            method : {type: String,enum: ["bankAccount" , "wallet"], required: true , default : "wallet" ,  validate: {
                 validator : function(value){
-                    if(this.method === "bankAccount" && (!value || value.trim() == "")){
+                    if(value === "bankAccount" && (!this.bankAccount || this.bankAccount.trim() == "")){
                         return false;
                     }
                     return true;
@@ -92,7 +91,8 @@ const sellerSchema  = new mongoose.Schema(
                 message : (props) => {
                     return "bankAccount needed";
                 }
-            }}
+            }},
+            bankAccount : {type: String }
         }, required : true , default : {
             method : "wallet"
         }},
@@ -149,6 +149,9 @@ export function validateSellerChangeinfo (data){
     const schema = Joi.object({
         password: Joi.string().min(8).max(50),
         phoneNumber : Joi.string().min(11).max(12).external( async (phoneNumber) => {
+            if(!phoneNumber){
+                return
+            }
             const seller = await SellerModel.find({phoneNumber : phoneNumber}).findOne();
             if(seller){
                 throw new Error("an account with this phone number already exists");
@@ -215,7 +218,7 @@ export function validateSellerChangeinfo (data){
             offDays : Joi.array().items(Joi.string())
         }), 
         moneyReturn:Joi.object({
-            method : Joi.string().valid("bankAccount" , "wallet").custom().required(),
+            method : Joi.string().valid("bankAccount" , "wallet").required(),
             bankAccount : Joi.when('method', {
                 is: 'bankAccount',
                 then: Joi.string().required(),

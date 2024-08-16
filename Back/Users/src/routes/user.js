@@ -7,9 +7,10 @@ import { logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
-import { changeWalletMoney, updateWallet } from "../DB/CRUD/wallet.js";
+import { changeWalletMoney, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
 import { getNotifications } from "../DB/CRUD/notification.js";
+import jwt from "jsonwebtoken";
 
 
 const router = express.Router();
@@ -30,30 +31,30 @@ router.post("/signUp",  async (req, res, next) =>{
         return;
     }
     try {
-        let result = await saveUser(req.body);
-        if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+        const result1 = await saveUser(req.body);
+        if (result1.error){
+            res.status(400).send(result1.error);
+            res.body = result1.error;
             next();
             return;
         }
-        result = await saveWallet({userID : result.response._id});
-        if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+        const result2 = await saveWallet({userID : result1.response._id});
+        if (result2.error){
+            res.status(400).send(result2.error);
+            res.body = result2.error;
             next();
             return;
         }
-        result = await updateUser({walletID: result.response._id});
-        if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+        const result3 = await updateUser(result1.response._id,{walletID: result2.response._id});
+        if (result3.error){
+            res.status(400).send(result3.error);
+            res.body = result3.error;
             next();
             return;
         }
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-        res.header("x-auth-token",token).send(result.response);
-        res.body = result.response;
+        const token = jwt.sign({...result3.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.header("x-auth-token",token).send(result3.response);
+        res.body = result3.response;
     } catch (err) {
         console.log("Error",err);
         res.body = "internal server error";
@@ -109,7 +110,40 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
     }
     next();
 });
-
+router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) ,  async (req, res, next) =>{
+    console.log(req.user)
+    try {
+        await validateUserChangeinfo(req.body); 
+    } catch (error) {
+        console.log(error)
+        if (error.details){
+            res.status(400).send(error.details[0].message);
+            res.body = error.details[0].message;
+        }else{
+            res.status(400).send(error.message);
+            res.body = error.message;
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await updateUser(req.user._id,req.body);
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.header("x-auth-token",token).send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
 
 router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async (req,res) =>{
     try {
@@ -381,7 +415,7 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
 router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
         const sentGiftCards = (await getGiftCards(undefined,undefined,req.sentGiftCards)).response;
-        const receivedGiftCards = await getGiftCards(undefined,undefined,req.receivedGiftCards).response;
+        const receivedGiftCards = (await getGiftCards(undefined,undefined,req.receivedGiftCards)).response;
         const response = {
             sentGiftCards : sentGiftCards,
             receivedGiftCards : receivedGiftCards
@@ -458,7 +492,7 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         return;
     }
     try {
-        const giftCards = await getGiftCards(undefined,{code : code}).response;
+        const giftCards = (await getGiftCards(undefined,{code : code})).response;
         if(giftCards.length == 0){
             res.status(400).send("invalid code");
             res.body = "invalid code";

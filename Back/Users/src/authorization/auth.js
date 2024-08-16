@@ -5,7 +5,7 @@ import { getAdmins } from "../DB/CRUD/admin.js";
 import { getTransporters } from "../DB/CRUD/transporter.js";
 
 export async function auth(req,res,next,acceptedStatuses){
-    
+    console.log(acceptedStatuses)
     const token = req.header("x-auth-token");
     if(!token){
         res.status(401).send("access denied. no token provided.");
@@ -27,7 +27,7 @@ export async function auth(req,res,next,acceptedStatuses){
         }
         switch (decoded.status) {
             case "user":
-                const user = await getUsers(decoded._id);
+                const user = (await getUsers(decoded._id)).response;
                 if(!user){
                     res.status(401).send("access denied. invalid user.");
                     res.body = "access denied. invalid user.";
@@ -37,7 +37,7 @@ export async function auth(req,res,next,acceptedStatuses){
                 break;
             
             case "seller":
-                const seller = await getSellers(decoded._id);
+                const seller = (await getSellers(decoded._id)).response;
                 if(!seller){
                     res.status(401).send("access denied. invalid seller.");
                     res.body = "access denied. invalid seller.";
@@ -46,7 +46,7 @@ export async function auth(req,res,next,acceptedStatuses){
                 req.seller = seller;
                 break;  
             case "admin":
-                const admin = await getAdmins(decoded._id);
+                const admin = (await getAdmins(decoded._id)).response;
                 if(!admin){
                     res.status(401).send("access denied. invalid admin.");
                     res.body = "access denied. invalid admin.";
@@ -55,7 +55,7 @@ export async function auth(req,res,next,acceptedStatuses){
                 req.admin = admin;
                 break;    
             case "transporter":
-                const transporter = await getTransporters(decoded._id);
+                const transporter = (await getTransporters(decoded._id)).response;
                 if(!transporter){
                     res.status(401).send("access denied. invalid transporter.");
                     res.body = "access denied. invalid transporter.";

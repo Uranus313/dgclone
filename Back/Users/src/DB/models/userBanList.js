@@ -21,7 +21,7 @@ export function validateUserBan (data){
             }else if (user.isBanned){
                 throw new Error("user is already banned")    
             }
-        })
+        }).required()
     });
     return schema.validateAsync(data);
 }

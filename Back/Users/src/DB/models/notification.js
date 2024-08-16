@@ -48,12 +48,18 @@ export function validateNotificationPost (notification){
             return value;
         },"you should provide seller/user ID"),
         sellerID : Joi.objectId().external( async (data) => {
+            if(!data){
+                return
+            }
             const seller = await SellerModel.find({_id : data}).findOne();
             if(!seller){
                 throw new Error("seller not found")
             }
         }),
         userID : Joi.objectId().external( async (data) => {
+            if(!data){
+                return
+            }
             const user = await UserModel.find({_id : data}).findOne();
             if(!user){
                 throw new Error("user not found")

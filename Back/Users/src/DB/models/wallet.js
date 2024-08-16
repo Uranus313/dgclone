@@ -21,7 +21,7 @@ export function validateChangeMoney (data){
             if(!user){
                 throw new Error("user not found")
             }
-        })
+        }).required()
     });
     return schema.validateAsync(data);
 }

@@ -16,13 +16,13 @@ export const SellerBanListModel = mongoose.model("sellerBanLists",sellerBanListS
 export function validateSellerBan (data){
     const schema = Joi.object({
         sellerID : Joi.objectId().external( async (sellerID) => {
-            const user = await SellerModel.find({_id : sellerID}).findOne();
-            if(!user){
-                throw new Error("user not found")
-            }else if (user.isBanned){
-                throw new Error("user is already banned")    
+            const seller = await SellerModel.find({_id : sellerID}).findOne();
+            if(!seller){
+                throw new Error("seller not found")
+            }else if (seller.isBanned){
+                throw new Error("seller is already banned")    
             }
-        })
+        }).required()
     });
     return schema.validateAsync(data);
 }

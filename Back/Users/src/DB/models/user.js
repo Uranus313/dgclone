@@ -16,10 +16,9 @@ const userSchema  = new mongoose.Schema(
         isBanned : Boolean,
         nationalID: {type: String},
         moneyReturn:{type : {
-            method : {type: String,enum: ["bankAccount" , "wallet"], required: true , default : "wallet"},
-            bankAccount : {type: String, required: true , validate: {
+            method : {type: String,enum: ["bankAccount" , "wallet"], required: true , default : "wallet" ,  validate: {
                 validator : function(value){
-                    if(this.method === "bankAccount" && (!value || value.trim() == "")){
+                    if(value === "bankAccount" && (!this.bankAccount || this.bankAccount.trim() == "")){
                         return false;
                     }
                     return true;
@@ -27,7 +26,8 @@ const userSchema  = new mongoose.Schema(
                 message : (props) => {
                     return "bankAccount needed";
                 }
-            }}
+            }},
+            bankAccount : {type: String }
         }, required : true , default : {
             method : "wallet"
         }},
@@ -87,6 +87,9 @@ export function validateUserChangeinfo (data){
         lastName: Joi.string().min(1).max(100),
         password : Joi.string().min(8).max(50),
         phoneNumber : Joi.string().min(11).max(12).external( async (phoneNumber) => {
+            if(!phoneNumber){
+                return
+            }
             const user = await UserModel.find({phoneNumber : phoneNumber}).findOne();
             if(user){
                 throw new Error("an account with this phone number already exists");
@@ -94,19 +97,25 @@ export function validateUserChangeinfo (data){
         }),
         birthDate : Joi.date(),
         email: Joi.string().email().external( async (email) => {
+            if(!email){
+                return
+            }
             const user = await UserModel.find({email : email}).findOne();
             if(user){
                 throw new Error("an account with this email already exists");
             }
         }),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external( async (nationalID) => {
+            if(!nationalID){
+                return
+            }
             const user = await UserModel.find({nationalID : nationalID}).findOne();
             if(user){
                 throw new Error("an account with this national ID number already exists");
             }
         }),
         moneyReturn:Joi.object({
-            method : Joi.string().valid("bankAccount" , "wallet").custom().required(),
+            method : Joi.string().valid("bankAccount" , "wallet").required(),
             bankAccount : Joi.when('method', {
                 is: 'bankAccount',
                 then: Joi.string().required(),
