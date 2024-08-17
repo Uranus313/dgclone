@@ -21,6 +21,7 @@ export async function getUsers(id , search){
         result.response = await UserModel.find(search);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
+            delete result.response[index].password;
         }
         return result;
     }
@@ -67,6 +68,7 @@ export async function updateUser(id,userUpdate ){
     }
     const response = await UserModel.findByIdAndUpdate(id,{$set :userUpdate},{new : true});
     result.response = response.toJSON();
+    delete result.response.password;
     return(result);
 }
 

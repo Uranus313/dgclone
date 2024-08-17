@@ -3,6 +3,7 @@ import { comparePassword, hashPassword } from "../../functions/hashing.js";
 
 export async function saveAdmin(adminCreate){
     const result = {};
+    adminCreate.password = await hashPassword(adminCreate.password);
     const admin = new AdminModel(adminCreate);
     const response = await admin.save();
     result.response = response.toJSON();
@@ -21,6 +22,7 @@ export async function getAdmins(id , search){
         result.response = await AdminModel.find(search);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
+            delete result.response[index].password;
         }
         return result;
     }
@@ -63,6 +65,7 @@ export async function updateAdmin(id,adminUpdate ){
     }
     const response = await AdminModel.findByIdAndUpdate(id,{$set :adminUpdate},{new : true});
     result.response = response.toJSON();
+    delete result.response.password;
     return(result);
 }
 

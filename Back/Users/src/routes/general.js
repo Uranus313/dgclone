@@ -24,6 +24,7 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transp
             next();
             return;
         }
+
         res.body = result.response;
         res.send(result.response);
     } catch (err) {
@@ -50,6 +51,7 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "tra
             next();
             return;
         }
+        delete result.response.password;
         res.body = result.response;
         res.send(result.response);
     } catch (err) {
@@ -95,6 +97,7 @@ router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "t
             next();
             return;
         }
+        delete result.response.password;
         res.body = result.response;
         res.send(result.response);
     } catch (err) {
@@ -140,6 +143,7 @@ router.get("/allAdmins/:id",(req, res,next) => auth(req, res,next, ["admin"]) , 
             next();
             return;
         }
+        delete result.response.password;
         res.body = result.response;
         res.send(result.response);
     } catch (err) {
@@ -276,6 +280,7 @@ router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin
             next();
             return;
         }
+        delete result.response.password;
         res.body = result.response;
         res.send(result.response);
     } catch (err) {

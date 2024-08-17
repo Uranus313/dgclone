@@ -9,11 +9,12 @@ import { validateAdminPost } from "../DB/models/admin.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateUserLogIn } from "../DB/models/user.js";
 import { validateUserBan } from "../DB/models/userBanList.js";
-import express from "express"
+import express from "express";
+import jwt from "jsonwebtoken";
 
 
 const router = express.Router();
-
+//checked
 router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
     try {
         await validateAdminPost(req.body); 
@@ -37,6 +38,7 @@ router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
             return;
         }
         const token = jwt.sign({...result.response , status: "admin"},process.env.JWTSECRET,{expiresIn : '6h'});
+        delete result.response.password;
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -46,6 +48,7 @@ router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
     }
     next();
 });
+//checked
 
 router.post("/logIn",  async (req, res, next) =>{
     try {
@@ -70,6 +73,7 @@ router.post("/logIn",  async (req, res, next) =>{
             return;
         }
         const token = jwt.sign({...result.response , status: "admin"},process.env.JWTSECRET,{expiresIn : '6h'});
+        delete result.response.password;
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -95,7 +99,7 @@ router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (r
         return;
     }
     try {
-        const result1 = await saveBannedUser(req.body);
+        const result1 = await saveBannedUser({...req.body , endDate: new Date(Date.now() + 6 * 60 * 60 * 1000 )});
         if (result1.error){
             res.status(400).send(result1.error);
             res.body = result1.error;
@@ -156,4 +160,17 @@ router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async 
     }
     next();
 });
+//checked
+router.get("/checkToken",(req, res,next) => auth(req, res,next, ["admin"]), async (req,res) =>{
+    try {
+        delete req.admin.password;
+        res.send(req.admin);
+        res.body = req.admin;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+})
+
 export default router;

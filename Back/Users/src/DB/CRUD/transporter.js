@@ -21,6 +21,7 @@ export async function getTransporters(id , search){
         result.response = await TransporterModel.find(search);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
+            delete result.response[index].password;
         }
         return result;
     }
@@ -63,6 +64,7 @@ export async function updateTransporter(id,transporterUpdate ){
     }
     const response = await TransporterModel.findByIdAndUpdate(id,{$set :transporterUpdate},{new : true});
     result.response = response.toJSON();
+    delete result.response.password;
     return(result);
 }
 

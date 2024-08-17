@@ -53,6 +53,7 @@ router.post("/signUp",  async (req, res, next) =>{
             next();
             return;
         }
+        delete result.response.password;
         const token = jwt.sign({...result3.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.header("x-auth-token",token).send(result3.response);
         res.body = result3.response;
@@ -101,7 +102,10 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
             next();
             return;
         }
+        
         const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        delete result.response.password;
+
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -139,6 +143,8 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) , 
             return;
         }
         const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        delete result.response.password;
+
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -151,6 +157,7 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) , 
 //  checked
 router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async (req,res) =>{
     try {
+        delete req.user.password;
         res.send(req.user);
         res.body = req.user;
     } catch (err) {
@@ -179,6 +186,7 @@ router.post("/logIn",  async (req, res, next) =>{
             return;
         }
         const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
     } catch (err) {

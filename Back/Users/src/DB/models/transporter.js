@@ -40,7 +40,7 @@ export function validateTransporterPost (data){
             }
         }).required(),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external( async (nationalID) => {
-            const user = await UserModel.find({nationalID : nationalID}).findOne();
+            const user = await TransporterModel.find({nationalID : nationalID}).findOne();
             if(user){
                 throw new Error("an account with this national ID number already exists");
             }

@@ -22,12 +22,14 @@ export async function getSellers(id , search , idArray){
         result.response = await SellerModel.find(search);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
+            delete result.response[index].password;
         }
         return result;
     }else{
         result.response = await SellerModel.find(search);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
+            delete result.response[index].password;
         }
         return result;
     }
@@ -74,6 +76,7 @@ export async function updateSeller(id,sellerUpdate ){
     }
     const response = await SellerModel.findByIdAndUpdate(id,{$set :sellerUpdate},{new : true});
     result.response = response.toJSON();
+    delete result.response.password;
     return(result);
 }
 
