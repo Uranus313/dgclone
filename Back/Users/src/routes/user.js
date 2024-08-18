@@ -46,7 +46,7 @@ router.post("/signUp",  async (req, res, next) =>{
             next();
             return;
         }
-        const result3 = await updateUser(result1.response._id,{walletID: result2.response._id});
+        const result3 = await updateUser(result1.response._id,{walletID: result2.response._id , password : "12345678"});
         if (result3.error){
             res.status(400).send(result3.error);
             res.body = result3.error;
