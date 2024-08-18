@@ -39,7 +39,7 @@ router.post("/signUp",  async (req, res, next) =>{
             next();
             return;
         }
-        const result2 = await saveWallet({userID : result1.response._id});
+        const result2 = await saveWallet({userID : result1.response._id ,userType : "user"});
         if (result2.error){
             res.status(400).send(result2.error);
             res.body = result2.error;

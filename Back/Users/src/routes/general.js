@@ -342,7 +342,12 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
         return;
     }
     try {
-        const user = await getUsers(req.body.userID);
+        let user;
+        if (req.body.userType == "user"){
+            user = await getUsers(req.body.userID);
+        }else{
+            user = await getSellers(req.body.userID);
+        }
         if(!user.response){
             res.status(400).send("no user found with this ID");
             res.body = "no user found with this ID";
@@ -366,7 +371,7 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
     next();
 });
 
-router.post("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send(error.details[0].message);
@@ -383,6 +388,39 @@ router.post("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"
             return;
         }
         const result = await getWallets(user.response.walletID);
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
+
+router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send(error.details[0].message);
+        res.body = error.details[0].message;
+        next();
+        return;
+    } 
+    try {
+        const seller = await getSellers(req.body.sellerID);
+        if(!seller.response){
+            res.status(400).send("no seller found with this ID");
+            res.body = "no seller found with this ID";
+            next();
+            return;
+        }
+        const result = await getWallets(seller.response.walletID);
         if (result.error){
             res.status(400).send(result.error);
             res.body = result.error;
