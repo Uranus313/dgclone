@@ -53,6 +53,7 @@ export async function logIn(email , phoneNumber , password){
         return result;
     }
     result.response = user.toJSON();
+    delete result.response.password;
     return result;
 }
 export async function deleteUser(id){

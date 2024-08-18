@@ -83,7 +83,7 @@ router.post("/logIn",  async (req, res, next) =>{
     }
     next();
 });
-
+//checked
 router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateUserBan(req.body); 

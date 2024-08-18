@@ -5,16 +5,17 @@ import validateId from "../functions/validateId.js";
 import { validateNotificationPost } from "../DB/models/notification.js";
 import { saveNotification } from "../DB/CRUD/notification.js";
 import { validateChangeMoney } from "../DB/models/wallet.js";
-import { changeWalletMoney } from "../DB/CRUD/wallet.js";
+import { changeWalletMoney, getWallets } from "../DB/CRUD/wallet.js";
 import { getSellers } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
 import { getTransactions } from "../DB/CRUD/transaction.js";
 import { getTransporters } from "../DB/CRUD/transporter.js";
+import { UserModel } from "../DB/models/user.js";
 
 
 const router = express.Router();
-
+//checked
 router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transporter"]) ,async (req, res,next) =>{
     try {
         const result = await getUsers(undefined,req.query);
@@ -107,6 +108,7 @@ router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "t
     }
     next();
 });
+//checked
 
 router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
@@ -290,6 +292,9 @@ router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin
     }
     next();
 });
+
+// checked 
+
 router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     try {
         await validateNotificationPost(req.body); 
@@ -337,7 +342,14 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
         return;
     }
     try {
-        const result = await changeWalletMoney(req.body.userID,req.body.amount);
+        const user = await getUsers(req.body.userID);
+        if(!user.response){
+            res.status(400).send("no user found with this ID");
+            res.body = "no user found with this ID";
+            next();
+            return;
+        }
+        const result = await changeWalletMoney(user.response.walletID,req.body.amount);
         if (result.error){
             res.status(400).send(result.error);
             res.body = result.error;
@@ -354,5 +366,37 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
     next();
 });
 
+router.post("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send(error.details[0].message);
+        res.body = error.details[0].message;
+        next();
+        return;
+    } 
+    try {
+        const user = await getUsers(req.body.userID);
+        if(!user.response){
+            res.status(400).send("no user found with this ID");
+            res.body = "no user found with this ID";
+            next();
+            return;
+        }
+        const result = await getWallets(user.response.walletID);
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+    next();
+});
 
 export default router;

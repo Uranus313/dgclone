@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
+import { UserModel } from "./user.js";
 Joi.objectId = joiObjectid(Joi);
 
 const walletSchema  = new mongoose.Schema(
@@ -16,12 +17,7 @@ export const WalletModel = mongoose.model("wallets",walletSchema);
 export function validateChangeMoney (data){
     const schema = Joi.object({
         amount: Joi.number().required(),
-        userID : Joi.objectId().external( async (userID) => {
-            const user = await UserModel.find({_id : userID}).findOne();
-            if(!user){
-                throw new Error("user not found")
-            }
-        }).required()
+        userID : Joi.objectId().required()
     });
     return schema.validateAsync(data);
 }

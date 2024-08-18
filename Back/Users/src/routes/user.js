@@ -7,7 +7,7 @@ import { logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
-import { changeWalletMoney, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
+import { changeWalletMoney, getWallets, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
 import { getNotifications } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
@@ -53,7 +53,6 @@ router.post("/signUp",  async (req, res, next) =>{
             next();
             return;
         }
-        delete result.response.password;
         const token = jwt.sign({...result3.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.header("x-auth-token",token).send(result3.response);
         res.body = result3.response;
@@ -104,7 +103,6 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
         }
         
         const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-        delete result.response.password;
 
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
@@ -143,7 +141,6 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) , 
             return;
         }
         const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-        delete result.response.password;
 
         res.header("x-auth-token",token).send(result.response);
         res.body = result.response;
@@ -591,7 +588,7 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
     next();
 });
 
-// half checked 
+// checked 
 
 
 router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
@@ -615,7 +612,24 @@ router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) 
 });
 
 // half checked 
-
+router.get("/myWallet", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
+    try {
+        
+        const result = await getWallets(req.user.walletID);
+        if (result.error){
+            res.status(400).send(result.error);
+            res.body = result.error;
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = "internal server error";
+        res.status(500).send("internal server error");
+    }
+});
 
 router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     

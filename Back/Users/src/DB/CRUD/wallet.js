@@ -33,7 +33,7 @@ export async function updateWallet(id,walletUpdate ){
 }
 export async function changeWalletMoney(id,amount ){
     const result = {};
-    const response = await WalletModel.findByIdAndUpdate(id,{$inc :{amount : amount}},{new : true});
+    const response = await WalletModel.findByIdAndUpdate(id,{$inc :{money : amount}},{new : true});
     result.response = response.toJSON();
     return(result);
 }

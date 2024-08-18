@@ -50,6 +50,8 @@ export async function logIn(email , phoneNumber , password){
         return result;
     }
     result.response = admin.toJSON();
+    delete result.response.password;
+
     return result;
 }
 export async function deleteAdmin(id){
