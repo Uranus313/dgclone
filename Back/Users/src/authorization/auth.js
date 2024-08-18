@@ -24,6 +24,11 @@ export async function auth(req,res,next,acceptedStatuses){
             res.body = "access denied. invalid " + acceptedStatuses.join(', ');
             return 
         }
+        if (decoded.isBanned){
+            res.status(401).send("access denied. you are banned.");
+            res.body = "access denied. you are banned.";
+            return 
+        }
         switch (decoded.status) {
             case "user":
                 const user = (await getUsers(decoded._id)).response;
