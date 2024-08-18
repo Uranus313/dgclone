@@ -8,11 +8,11 @@ export async function saveTransaction(transactionCreate){
     return result;
 }
 
-export async function getAllUserTransactions(userID ){
+export async function getAllUserTransactions(userID ,userType ){
     const result = {};
     result.response = await TransactionModel.find({$or : [
-        {"sender.senderID" : userID},
-        {"receiver.receiverID" : userID}
+        {"sender.senderID" : userID, "entity.entityType" : userType},
+        {"receiver.receiverID" : userID , "entity.entityType" : userType}
     ]}).sort({date : -1});
     return result;
 }

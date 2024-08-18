@@ -635,7 +635,7 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,
     
     try {
         
-        const result = await getAllUserTransactions(req.user._id)
+        const result = await getAllUserTransactions(req.user._id , "user")
         if (result.error){
             res.status(400).send(result.error);
             res.body = result.error;
