@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&family=Vazirmatn:wght@100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+
+  }
+} */
+
+
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: #F4F7FF;
+  height: 100vh;
+}
+
+@layer base {
+  h1 {
+    @apply font-bold text-2xl;
+  }
+}
