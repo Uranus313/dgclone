@@ -20,7 +20,7 @@ import { validateAdminPost } from "./src/DB/models/admin.js";
 // asynctest();
 DBConnection();
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3005;
 // winston.add(new winston.transports.File({filename : "C:\\Users\\Hico\\Desktop\\smslogs\\users.log"}));
 app.use(cors());
 app.use(express.json());

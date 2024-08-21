@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-
+import { useSession } from "next-auth/react";
 interface Category {
   title: string;
   list: string[];
@@ -19,7 +19,6 @@ const NavBar = () => {
   let firstlayerIds = useRef<string[]>([]);
   let secondlayerIds = useRef<string[]>([]);
   let thirdlayerIds = useRef<string[]>([]);
-
   const Categories: Category[] = [
     {
       title: "کالای دیجیتال",

@@ -168,17 +168,21 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async
 // checked
 router.post("/logIn",  async (req, res, next) =>{
     const {error} = validateUserLogIn(req.body); 
+    console.log("login")
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        // console.log(error.details[0].message)
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
         next();
         return;
     }
+    console.log(req.body)
+    
     try {
         const result = await logIn(req.body.email,req.body.phoneNumber, req.body.password);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
