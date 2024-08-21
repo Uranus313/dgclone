@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 interface Category {
   title: string;
-  list: string[];
+  children?: Category[];
   details: { title: string; list: string[] }[];
-  parentID: string;
+  parentID?: string;
   id: string;
   pictures: string[];
 }
@@ -22,93 +22,120 @@ const NavBar = () => {
   const Categories: Category[] = [
     {
       title: "کالای دیجیتال",
-      list: ["2", "3", "4", "5", "6", "7"],
+      children: [
+        {
+          title: "لپتاپ",
+          children: [
+            {
+              title: "لپتاپ اپل",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "2",
+              id: "8",
+              pictures: ["sth"],
+            },
+            {
+              title: "لپتاپ ایسوس",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "2",
+              id: "9",
+              pictures: ["sth"],
+            },
+          ],
+          details: [{ title: "specs", list: ["brand", "sth"] }],
+          parentID: "1",
+          id: "2",
+          pictures: ["sth"],
+        },
+        {
+          title: "موبایل",
+          children: [
+            {
+              title: "موبایل اپل",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "3",
+              id: "30",
+              pictures: ["sth"],
+            },
+            {
+              title: "موبایل سامسونگ",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "3",
+              id: "31",
+              pictures: ["sth"],
+            },
+          ],
+          details: [{ title: "specs", list: ["brand", "sth"] }],
+       
+          id: "3",
+          pictures: ["sth"],
+        },
+    
+      ],
       details: [{ title: "specs", list: ["brand", "sth"] }],
       parentID: "",
       id: "1",
       pictures: ["sth"],
     },
-    {
-      title: "کالای دیجیتال",
-      list: ["2", "3", "4", "5", "6", "7"],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "",
-      id: "23",
-      pictures: ["sth"],
-    },
-    {
-      title: "کالای دیجیتال",
-      list: ["2", "3", "4", "5", "6", "7"],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "",
-      id: "22",
-      pictures: ["sth"],
-    },
-    {
-      title: "کالای دیجیتال",
-      list: ["2", "3", "4", "5", "6", "7"],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "",
-      id: "21",
-      pictures: ["sth"],
-    },
-    {
-      title: "کالای دیجیتال",
-      list: ["2", "3", "4", "5", "6", "7"],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "",
-      id: "20",
-      pictures: ["sth"],
-    },
-    {
-      title: "لپتاپ",
-      list: ["8", "9", "10"],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "1",
-      id: "2",
-      pictures: ["sth"],
-    },
-    {
-      title: "موبایل",
-      list: ["11", "12", "13"],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "1",
-      id: "3",
-      pictures: ["sth"],
-    },
-    {
-      title: "لپتاپ اپل",
-      list: [],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "2",
-      id: "8",
-      pictures: ["sth"],
-    },
-    {
-      title: "لپتاپ ایسوس",
-      list: [],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "2",
-      id: "9",
-      pictures: ["sth"],
-    },
 
     {
-      title: "موبایل اپل",
-      list: [],
+      title: "کالایس دیجیتال",
+      children: [
+        {
+          title: "لپجتاپ",
+          children: [
+            {
+              title: "لپتاپ اپل",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "2",
+              id: "8",
+              pictures: ["sth"],
+            },
+            {
+              title: "لپتاپ ایسوس",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "2",
+              id: "9",
+              pictures: ["sth"],
+            },
+          ],
+          details: [{ title: "specs", list: ["brand", "sth"] }],
+          parentID: "1",
+          id: "2",
+          pictures: ["sth"],
+        },
+        {
+          title: "موبایل",
+          children: [
+            {
+              title: "موبایل اپل",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "3",
+              id: "30",
+              pictures: ["sth"],
+            },
+            {
+              title: "موبایل سامسونگ",
+              details: [{ title: "specs", list: ["brand", "sth"] }],
+              parentID: "3",
+              id: "31",
+              pictures: ["sth"],
+            },
+          ],
+          details: [{ title: "specs", list: ["brand", "sth"] }],
+       
+          id: "3",
+          pictures: ["sth"],
+        },
+    
+      ],
       details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "3",
-      id: "30",
+      parentID: "",
+      id: "1",
       pictures: ["sth"],
     },
-    {
-      title: "موبایل سامسونگ",
-      list: [],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "3",
-      id: "31",
-      pictures: ["sth"],
-    },
+    
+    
+    
   ];
 
   function ShowSubCategories(id: string) {
@@ -127,41 +154,6 @@ const NavBar = () => {
       console.error("Element with ID 'test' not found.");
     }
   }
-
-  useEffect(() => {
-    Categories.map((category) => {
-      if (
-        category.parentID == "" &&
-        !firstlayerIds.current.includes(category.id)
-      ) {
-        setFirstLayer((firstlayer) => [...firstlayer, category]);
-        firstlayerIds.current.push(category.id);
-      }
-    });
-
-    Categories.map((category) => {
-      console.log(firstlayerIds, "f");
-      if (
-        firstlayerIds.current.includes(category.parentID) &&
-        !secondlayerIds.current.includes(category.id)
-      ) {
-        setSecondLayer((secondlayer) => [...secondlayer, category]);
-        secondlayerIds.current.push(category.id);
-      }
-    });
-
-    Categories.map((category) => {
-      if (
-        secondlayerIds.current.includes(category.parentID) &&
-        !thirdlayerIds.current.includes(category.id)
-      ) {
-        setThirdLayer((thirdlayer) => [...thirdlayer, category]);
-        thirdlayerIds.current.push(category.id);
-      }
-    });
-
-    console.log(firstlayer, secondlayerIds.current, secondlayer, "g");
-  }, []);
 
   return (
     <div className="text-grey-dark text-lg bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
@@ -252,7 +244,7 @@ const NavBar = () => {
               className="dropdown-content pt-5 text-black flex bg-white"
             >
               <div className="bg-neutral-200 ">
-                {firstlayer.map((category, index) => {
+                {Categories.map((category, index) => {
                   return (
                     <div className="p-5">
                       <button
@@ -269,8 +261,7 @@ const NavBar = () => {
               </div>
 
               <div className="pr-5">
-                {secondlayer.map((category2) => {
-                  if (category2.parentID == firstlayer[selected]?.id) {
+                {Categories[selected].children?.map((category2) => {
                     return (
                       <div>
                         <button>
@@ -279,8 +270,7 @@ const NavBar = () => {
                           </p>
                         </button>
 
-                        {thirdlayer.map((category3) => {
-                          if (category3.parentID == category2.id) {
+                        {category2.children?.map((category3) => {
                             return (
                               <div>
                                 <button>
@@ -289,10 +279,10 @@ const NavBar = () => {
                               </div>
                             );
                           }
-                        })}
+                        )}
                       </div>
                     );
-                  }
+                  
                 })}
               </div>
 
