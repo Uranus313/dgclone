@@ -10,18 +10,31 @@ const NavBar = () => {
   const [selected, setSelected] = useState(0);
   const [navcollaps , setNavcollaps] = useState<boolean>(false)
   const lastScroll = useRef<number>(0);
+  const [display , setDisplay] = useState('100')
 
   window.onscroll = function(e) {
       let currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // Get Current Scroll Value
+      const collapsableElement = document.getElementById('collapsable');
 
       if (currentScroll > 0 && lastScroll.current < currentScroll){
         lastScroll.current = currentScroll;
         console.log('down')
-        setNavcollaps(true)
+        // setNavcollaps(true)
+        setDisplay('0')
+        if (collapsableElement) {
+          collapsableElement.style.display = 'none';
+      }
+        
       }else if(currentScroll > 0 && lastScroll.current > currentScroll){
         lastScroll.current = currentScroll;
         console.log('up')
-        setNavcollaps(false)
+        // setNavcollaps(false)
+        setDisplay('100')
+        if (collapsableElement) {
+          collapsableElement.style.display = 'flex';
+      }
+        
+        
       }
   };
 
@@ -88,8 +101,9 @@ const NavBar = () => {
           </Link>
         </div>
       </div>
-
-      { !navcollaps && <div className="flex justify-between" >
+      
+      { !navcollaps && 
+      <div id='collapsable' className= {`flex justify-between opacity-${display} duration-500 transition-all`} >
         <div className="flex">
           <div onMouseEnter={()=>setIsCategory(true)} onMouseLeave={()=> setIsCategory(false)} className="">
 
@@ -258,7 +272,8 @@ const NavBar = () => {
 
           <p className="mx-2">لطفا شهرتان را انتخاب کنید</p>
         </div>
-      </div>}
+      </div>
+      }
     </div>
   );
 };
