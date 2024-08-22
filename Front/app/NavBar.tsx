@@ -2,139 +2,31 @@
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-interface Category {
-  title: string;
-  children?: Category[];
-  details: { title: string; list: string[] }[];
-  parentID?: string;
-  id: string;
-  pictures: string[];
-}
+import { Categories , Category } from "./page";
+
 
 const NavBar = () => {
   const [isCategory , setIsCategory] = useState(false)
   const [selected, setSelected] = useState(0);
-  const Categories: Category[] = [
-    {
-      title: "کالای دیجیتال",
-      children: [
-        {
-          title: "لپتاپ",
-          children: [
-            {
-              title: "لپتاپ اپل",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "2",
-              id: "8",
-              pictures: ["sth"],
-            },
-            {
-              title: "لپتاپ ایسوس",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "2",
-              id: "9",
-              pictures: ["sth"],
-            },
-          ],
-          details: [{ title: "specs", list: ["brand", "sth"] }],
-          parentID: "1",
-          id: "2",
-          pictures: ["sth"],
-        },
-        {
-          title: "موبایل",
-          children: [
-            {
-              title: "موبایل اپل",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "3",
-              id: "30",
-              pictures: ["sth"],
-            },
-            {
-              title: "موبایل سامسونگ",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "3",
-              id: "31",
-              pictures: ["sth"],
-            },
-          ],
-          details: [{ title: "specs", list: ["brand", "sth"] }],
-       
-          id: "3",
-          pictures: ["sth"],
-        },
-    
-      ],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "",
-      id: "1",
-      pictures: ["sth"],
-    },
+  const [navcollaps , setNavcollaps] = useState<boolean>(false)
+  const lastScroll = useRef<number>(0);
 
-    {
-      title: "کالایس دیجیتال",
-      children: [
-        {
-          title: "لپجتاپ",
-          children: [
-            {
-              title: "لپتاپ اپل",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "2",
-              id: "8",
-              pictures: ["sth"],
-            },
-            {
-              title: "لپتاپ ایسوس",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "2",
-              id: "9",
-              pictures: ["sth"],
-            },
-          ],
-          details: [{ title: "specs", list: ["brand", "sth"] }],
-          parentID: "1",
-          id: "2",
-          pictures: ["sth"],
-        },
-        {
-          title: "موبایل",
-          children: [
-            {
-              title: "موبایل اپل",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "3",
-              id: "30",
-              pictures: ["sth"],
-            },
-            {
-              title: "موبایل سامسونگ",
-              details: [{ title: "specs", list: ["brand", "sth"] }],
-              parentID: "3",
-              id: "31",
-              pictures: ["sth"],
-            },
-            
-          ],
-          details: [{ title: "specs", list: ["brand", "sth"] }],
-       
-          id: "3",
-          pictures: ["sth"],
-        },
-    
-      ],
-      details: [{ title: "specs", list: ["brand", "sth"] }],
-      parentID: "",
-      id: "1",
-      pictures: ["sth"],
-    },  
-    
-  ];
+  window.onscroll = function(e) {
+      let currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // Get Current Scroll Value
 
+      if (currentScroll > 0 && lastScroll.current < currentScroll){
+        lastScroll.current = currentScroll;
+        console.log('down')
+        setNavcollaps(true)
+      }else if(currentScroll > 0 && lastScroll.current > currentScroll){
+        lastScroll.current = currentScroll;
+        console.log('up')
+        setNavcollaps(false)
+      }
+  };
 
   return (
-    <div className="text-grey-dark text-md bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
+    <div style={{position:'fixed'}} className="text-grey-dark text-md w-full bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
       <div className="mb-6 flex justify-between">
         <div className="flex w-7/12">
           <h2 className="text-primary-color font-Logo text-5xl ml-8">
@@ -197,7 +89,7 @@ const NavBar = () => {
         </div>
       </div>
 
-      <div className="flex justify-between" >
+      { !navcollaps && <div className="flex justify-between" >
         <div className="flex">
           <div onMouseEnter={()=>setIsCategory(true)} onMouseLeave={()=> setIsCategory(false)} className="">
 
@@ -366,7 +258,7 @@ const NavBar = () => {
 
           <p className="mx-2">لطفا شهرتان را انتخاب کنید</p>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

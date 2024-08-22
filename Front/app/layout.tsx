@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google'
 import NavBar from './NavBar'
 import { SessionProvider } from 'next-auth/react'
 import localFont from 'next/font/local'
+import Footer from './Footer';
 
 const inter = Inter({ subsets: ['latin'] })
 const pimaryFont = localFont({
@@ -22,9 +23,10 @@ export default function RootLayout({
       <body className={pimaryFont.className}>
          <SessionProvider>
          <NavBar/>
-         <main className=''>
-          {children}
-         </main>
+          <main className=''>
+            {children}
+          </main>
+         <Footer/>
          </SessionProvider>
          
       </body>
