@@ -113,8 +113,9 @@ const BestSellerProducts:ProductCard[] = [
 interface Props{
     filter:string;
     categoryID?:string;
+    color?:string;
 }
-const BestProducts = ({filter,categoryID=''}:Props) => {
+const BestProducts = ({filter,categoryID='',color=''}:Props) => {
   return (
     <div>
         <div className='grid-flow-col grid-rows-3 grid overflow-auto rounded-md mx-auto border-grey-border border-2 w-10/12 bg-white'>
@@ -123,7 +124,7 @@ const BestProducts = ({filter,categoryID=''}:Props) => {
               return <Link className='w-72' href={'/product/'+BestSeller.id} key={BestSeller.id}>
                 <div className='flex items-center p-3' >
                   <img width='70px' src={BestSeller.picture}/>
-                  <h1 className='m-3 text-primary-color font-extrabold text-3xl'>{index+1}</h1>
+                  <h1 className={`m-3 ${color===""?'text-primary-color':''}  font-extrabold text-3xl`} style={{color:color}}>{index+1}</h1>
                   <h1 className=' line-clamp-2 text-sm font-thin text-grey-dark'>{BestSeller.title}</h1>
                   
                 </div>

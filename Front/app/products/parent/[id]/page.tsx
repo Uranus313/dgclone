@@ -59,7 +59,7 @@ if(temp){
           </h1>
 
         <div className='w-full'>    
-          <BestProducts filter='best-sellers' categoryID={category.id}/>
+          <BestProducts filter='best-sellers' color={category.theme} categoryID={category.id}/>
         </div>
       
       </div>
