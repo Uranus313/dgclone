@@ -13,6 +13,9 @@ export interface Category {
   parentID?: string;
   id: string;
   pictures: string[];
+  desc?:string;
+  link?:string;
+  theme?:string;
 }
 
 
@@ -44,7 +47,7 @@ export const Categories: Category[] = [
         details: [{ title: "specs", list: ["brand", "sth"] }],
         parentID: "1",
         id: "2",
-        pictures: ["" , ''],
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/dcb735863856217c8f64d891269b876c621772d7_1672570805.jpg'],
       },
       {
         title: "موبایل",
@@ -67,14 +70,136 @@ export const Categories: Category[] = [
         details: [{ title: "specs", list: ["brand", "sth"] }],
      
         id: "3",
-        pictures: ["" , ''],
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/40026b18c2b053ac4a68c3288556dc899a77aecd_1673784561.jpg'],
+      },
+
+      {
+        title: "کنسول بازی",
+        children: [
+          {
+            title: "پلی استیشن",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "41",
+            pictures: ["" , ''],
+          },
+          {
+            title: "ایکس باکس",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "42",
+            pictures: ["" , ''],
+          },
+        ],
+        details: [{ title: "specs", list: ["brand", "sth"] }],
+     
+        id: "40",
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+      },
+
+      {
+        title: "کنسول بازی",
+        children: [
+          {
+            title: "پلی استیشن",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "41",
+            pictures: ["" , ''],
+          },
+          {
+            title: "ایکس باکس",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "42",
+            pictures: ["" , ''],
+          },
+        ],
+        details: [{ title: "specs", list: ["brand", "sth"] }],
+     
+        id: "40",
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+      },
+
+      {
+        title: "کنسول بازی",
+        children: [
+          {
+            title: "پلی استیشن",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "41",
+            pictures: ["" , ''],
+          },
+          {
+            title: "ایکس باکس",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "42",
+            pictures: ["" , ''],
+          },
+        ],
+        details: [{ title: "specs", list: ["brand", "sth"] }],
+     
+        id: "40",
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+      },
+
+      {
+        title: "کنسول بازی",
+        children: [
+          {
+            title: "پلی استیشن",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "41",
+            pictures: ["" , ''],
+          },
+          {
+            title: "ایکس باکس",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "42",
+            pictures: ["" , ''],
+          },
+        ],
+        details: [{ title: "specs", list: ["brand", "sth"] }],
+     
+        id: "40",
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+      },
+
+      {
+        title: "کنسول بازی",
+        children: [
+          {
+            title: "پلی استیشن",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "41",
+            pictures: ["" , ''],
+          },
+          {
+            title: "ایکس باکس",
+            details: [{ title: "specs", list: ["brand", "sth"] }],
+            parentID: "40",
+            id: "42",
+            pictures: ["" , ''],
+          },
+        ],
+        details: [{ title: "specs", list: ["brand", "sth"] }],
+     
+        id: "40",
+        pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
       },
   
     ],
     details: [{ title: "specs", list: ["brand", "sth"] }],
     parentID: "",
     id: "1",
-    pictures: ["" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/aba1e5dca8958ac1176e25cd194ff8ac622cd383_1692600155.png'],
+    theme:'#492885',
+    desc:'تکنولوژی انقلابی / بهترین قیمت ها / همین حالا سفارش بده',
+    pictures: ["https://i.postimg.cc/L6Wbd2K9/Digital-Productss.png" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/aba1e5dca8958ac1176e25cd194ff8ac622cd383_1692600155.png'],
   },
 
   {

@@ -3,19 +3,21 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Categories , Category } from "./page";
+import {useRouter} from 'next/navigation'
+import MegaMenu from "./MegaMenu";
 
 
 const NavBar = () => {
   const [isCategory , setIsCategory] = useState(false)
-  const [selected, setSelected] = useState(0);
   const [navcollaps , setNavcollaps] = useState<boolean>(false)
   const lastScroll = useRef<number>(0);
   const [display , setDisplay] = useState('100')
+  const manage = useRouter()
 
   window.onscroll = function(e) {
       let currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // Get Current Scroll Value
       const collapsableElement = document.getElementById('collapsable');
-
+      console.log(display)
       if (currentScroll > 0 && lastScroll.current < currentScroll){
         lastScroll.current = currentScroll;
         console.log('down')
@@ -32,19 +34,21 @@ const NavBar = () => {
         setDisplay('100')
         if (collapsableElement) {
           collapsableElement.style.display = 'flex';
-      }
+        }
         
         
       }
   };
 
   return (
-    <div style={{position:'fixed'}} className="text-grey-dark text-md w-full bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
+    <div style={{position:'fixed'}} className="text-grey-dark text-md w-full z-50 bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
       <div className="mb-6 flex justify-between">
         <div className="flex w-7/12">
-          <h2 className="text-primary-color font-Logo text-5xl ml-8">
-            DigiMarket
-          </h2>
+          <Link href='/'>     
+            <h2 className="text-primary-color font-Logo text-5xl ml-8">
+              DigiMarket
+            </h2>
+          </Link>
 
           <label className="input w-full bg-primary-bg input-bordered flex items-center gap-2">
             <input type="text" className="grow " placeholder="...جستجو کنید" />
@@ -125,55 +129,7 @@ const NavBar = () => {
               <p className="mx-2">دسته بندی</p>
             </Link>
 
-            {isCategory && <div 
-             
-              className=" absolute pl-20 shadow-md border-t-2 border-solid  border-grey-border  text-black flex bg-white"
-            >
-              <div className="bg-neutral-200 pt-3 border-l-2 border-grey-border">
-                {Categories.map((category, index) => (
-                  <div
-                    className={`py-5 pr-3 pl-10 w-full ${
-                      selected === index ? 'bg-white text-primary-color'  : 'hover:bg-white hover:text-primary-color hover:duration-300'
-                    } overflow-auto`}
-                    style={{ direction: 'ltr' }}
-                    key={category.id}
-                    onMouseEnter={() => {
-                      setSelected(index);
-                    }}
-                  >
-                    <button className="">{category.title}</button>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pr-5 h-96  text-right overflow-auto " style={{direction:'ltr'}}>
-                {Categories[selected].children?.map((category2) => {
-                    return (
-                      <div className="">
-                        <Link className="" href={'products/' + category2.id}>
-                          <p className="mb-2 border-r-4 pr-2 border-solid border-primary-color mt-3 font-bold hover:text-primary-color">
-                            {category2?.title}
-                          </p>
-                        </Link>
-
-                        {category2.children?.map((category3) => {
-                            return (
-                              <div className="py-2 text-sm text-grey-dark">
-                                <Link href={'products/' + category3.id}>
-                                  <p className="hover:text-primary-color">{category3.title}</p>
-                                </Link>
-                              </div>
-                            );
-                          }
-                        )}
-                      </div>
-                    );
-                  
-                })}
-              </div>
-
-              <div className="pr-5" id="test"></div>
-            </div>}
+            {isCategory && <MegaMenu/>}
           </div>
 
           <p className="mx-4 text-grey-light">|</p>

@@ -76,9 +76,15 @@ const incredibles : incredible[] = [
     },
 ]
 
-const Incredibles = () => {
+
+interface Props{
+    color?:string;
+    categoryID?: string;
+}
+
+const Incredibles = ({color ='', categoryID=''}:Props) => {
   return (
-    <div className='bg-primary-color flex w-full rounded-lg overflow-x-scroll p-5 '>
+    <div style={{backgroundColor:color}} className={`${ color === '' ? 'bg-primary-color'  : '' } flex w-full rounded-lg overflow-x-scroll p-5 `}>
          <div className='pl-10 pr-5'>
             <h1 className='text-white text-center'>پیشنهاد</h1>
             <h1 className='text-white text-center'>شگفت</h1>
@@ -86,6 +92,7 @@ const Incredibles = () => {
          </div>
          <div className=' flex rounded-lg '>
             {incredibles.map((incredible)=>{
+                console.log(categoryID)
                 return <div  className='bg-white text-black rounded-md w-44 ml-2 pt-1 pb-3' key={incredible.id}>
                     <img className='rounded-t-md' src={incredible.image} alt='product picture'/>
                     <p className='px-3 text-grey-dark line-clamp-2'>{incredible.title}</p>

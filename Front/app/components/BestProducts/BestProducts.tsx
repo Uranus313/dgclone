@@ -111,13 +111,15 @@ const BestSellerProducts:ProductCard[] = [
 
 
 interface Props{
-    filter:string
+    filter:string;
+    categoryID?:string;
 }
-const BestProducts = ({filter}:Props) => {
+const BestProducts = ({filter,categoryID=''}:Props) => {
   return (
     <div>
         <div className='grid-flow-col grid-rows-3 grid overflow-auto rounded-md mx-auto border-grey-border border-2 w-10/12 bg-white'>
             {BestSellerProducts.map((BestSeller , index)=>{
+              console.log(categoryID)
               return <Link className='w-72' href={'/product/'+BestSeller.id} key={BestSeller.id}>
                 <div className='flex items-center p-3' >
                   <img width='70px' src={BestSeller.picture}/>
