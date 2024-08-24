@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import banner from './assets/images/banner.png'
 import Incredibles from './components/Incredibles/Incredibles'
-import { ProductCard } from './components/Interfaces/interfaces'
+import { ProductCardInterface } from './components/Interfaces/interfaces'
 import BestProducts from './components/BestProducts/BestProducts'
 
 export interface Category {
@@ -104,14 +104,14 @@ export const Categories: Category[] = [
             title: "پلی استیشن",
             details: [{ title: "specs", list: ["brand", "sth"] }],
             parentID: "40",
-            id: "41",
+            id: "43",
             pictures: ["" , ''],
           },
           {
             title: "ایکس باکس",
             details: [{ title: "specs", list: ["brand", "sth"] }],
             parentID: "40",
-            id: "42",
+            id: "44",
             pictures: ["" , ''],
           },
         ],
@@ -128,7 +128,7 @@ export const Categories: Category[] = [
             title: "پلی استیشن",
             details: [{ title: "specs", list: ["brand", "sth"] }],
             parentID: "40",
-            id: "41",
+            id: "45",
             pictures: ["" , ''],
           },
           {
@@ -225,7 +225,7 @@ export const Categories: Category[] = [
         ],
         details: [{ title: "specs", list: ["brand", "sth"] }],
         parentID: "1",
-        id: "2",
+        id: "60",
         pictures: [""  , ''],
       },
       {
@@ -297,7 +297,6 @@ export default function Home() {
 
   return (
    <main className='overflow-auto h-fit' >
-       <Image className='' src='/banner.png' width='380' height='300' alt='banner'/>
       <Image className='' src='/banner.png' width='2000' height='1000' alt='banner'/>
 
       <div className='p-5 mt-10'>

@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import React from 'react'
-import { ProductCard } from '../Interfaces/interfaces'
+import { ProductCardInterface } from '../Interfaces/interfaces'
 
 //#region 
-const BestSellerProducts:ProductCard[] = [
+const BestSellerProducts:ProductCardInterface[] = [
     {
       id:'1',
       title:'گوشی سامسونگ a15',

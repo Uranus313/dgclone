@@ -19,11 +19,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" dir='rtl'>
+    <html lang="en" dir='rtl' data-theme = "light">
       <body className={pimaryFont.className}>
          <SessionProvider>
          <NavBar/>
-          <main className=''>
+          <main style={{paddingTop:'120px'}} >
             {children}
           </main>
          <Footer/>

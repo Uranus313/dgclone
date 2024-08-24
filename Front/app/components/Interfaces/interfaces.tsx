@@ -1,4 +1,4 @@
-export interface ProductCard{
+export interface ProductCardInterface{
     id:string,
     title:string,
     price:number,
