@@ -15,6 +15,7 @@ export async function getUsers(id , search){
         result.response = await UserModel.find({_id : id}).findOne();
         if(result.response){
             result.response = result.response.toJSON();
+            delete result.response.password;
         }
         return result;
     }else{
@@ -68,6 +69,25 @@ export async function updateUser(id,userUpdate ){
         userUpdate.password = await hashPassword(userUpdate.password);
     }
     const response = await UserModel.findByIdAndUpdate(id,{$set :userUpdate},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}
+export async function changeUserPassword(id,newPassword , oldPassword ){
+    const result = {};
+    const user = await UserModel.find({_id : id}).findOne();
+    if (user.password){
+        const answer = await comparePassword(oldPassword,user.password);
+        if(!answer){
+            result.error = "wrong password"
+            return result;
+        }
+    }else if (oldPassword){
+        result.error = "wrong password"
+        return result;
+    }
+    const hashedPassword = await hashPassword(newPassword);
+    const response = await UserModel.findByIdAndUpdate(id,{$set :{password : hashedPassword}},{new : true});
     result.response = response.toJSON();
     delete result.response.password;
     return(result);

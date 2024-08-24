@@ -15,6 +15,8 @@ export async function getSellers(id , search , idArray){
         result.response = await SellerModel.find({_id : id}).findOne();
         if(result.response){
             result.response = result.response.toJSON();
+        delete result.response.password;
+
         }
         return result;
         
@@ -82,3 +84,22 @@ export async function updateSeller(id,sellerUpdate ){
     return(result);
 }
 
+export async function changeSellerPassword(id,newPassword , oldPassword ){
+    const result = {};
+    const seller = await SellerModel.find({_id : id}).findOne();
+    if (seller.password){
+        const answer = await comparePassword(oldPassword,seller.password);
+        if(!answer){
+            result.error = "wrong password"
+            return result;
+        }
+    }else if (oldPassword){
+        result.error = "wrong password"
+        return result;
+    }
+    const hashedPassword = await hashPassword(newPassword);
+    const response = await SellerModel.findByIdAndUpdate(id,{$set :{password : hashedPassword}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}

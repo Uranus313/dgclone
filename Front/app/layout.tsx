@@ -3,7 +3,13 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import NavBar from './NavBar'
-import { SessionProvider } from 'next-auth/react'
+// import { SessionProvider } from 'next-auth/react'
+import { usePathname } from 'next/navigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import userContext from './contexts/userContext';
+import useUserCheckToken from './users/hooks/useCheckToken';
+import SecondLayout from './SecondLayout';
 import localFont from 'next/font/local'
 import Footer from './Footer';
 
@@ -12,22 +18,21 @@ const pimaryFont = localFont({
   src: './assets/fonts/Estedad-Regular.ttf',
   // display: 'swap',
 })
-
+const queryClient = new QueryClient();
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  
   return (
     <html lang="en" dir='rtl'>
-      <body className={pimaryFont.className}>
-         <SessionProvider>
-         <NavBar/>
-          <main className=''>
-            {children}
-          </main>
-         <Footer/>
-         </SessionProvider>
+
+      <body className={inter.className}>
+         <QueryClientProvider client={queryClient}>
+          <SecondLayout children={children}/>
+         </QueryClientProvider>
+         
          
       </body>
       

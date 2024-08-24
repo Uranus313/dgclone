@@ -4,7 +4,7 @@ import cors from "cors";
 import generalRouter from "./src/routes/general.js"
 import userRouter from "./src/routes/user.js"
 import adminRouter from "./src/routes/admin.js"
-
+import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
 // async function asynctest(){
 //     try {
@@ -22,8 +22,12 @@ DBConnection();
 const app = express();
 const port = process.env.PORT || 3005;
 // winston.add(new winston.transports.File({filename : "C:\\Users\\Hico\\Desktop\\smslogs\\users.log"}));
-app.use(cors());
+app.use(cors({
+    origin: true, // Allow all origins
+    credentials: true // Allow credentials
+}));
 app.use(express.json());
+app.use(cookieParser());
 app.use("/users/user",userRouter);
 app.use("/users/admin",adminRouter);
 app.use("/users/general",generalRouter);
