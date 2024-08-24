@@ -4,6 +4,7 @@ import useUserCheckToken from './users/hooks/useCheckToken';
 import userContext from './contexts/userContext';
 import NavBar from './NavBar';
 import _ from 'lodash'
+import Footer from './Footer';
 
 const SecondLayout = ({
     children,
@@ -26,9 +27,10 @@ const SecondLayout = ({
   return (
     <userContext.Provider value={{user : user , setUser : setUser , isLoading : loading}}>
             {showNavbar && <NavBar />}
-            <main className='p-5'>
+            <main style={{paddingTop:'120px'}} >
               {children}
             </main>
+            <Footer/>
     </userContext.Provider>
   )
 }
