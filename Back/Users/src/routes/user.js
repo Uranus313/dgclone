@@ -2,8 +2,8 @@ import express from "express"
 import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
-import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user.js";
-import { logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user.js";
+import { changeUserPassword, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
@@ -22,11 +22,11 @@ router.post("/signUp",  async (req, res, next) =>{
         await validateUserPost(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -34,32 +34,38 @@ router.post("/signUp",  async (req, res, next) =>{
     try {
         const result1 = await saveUser(req.body);
         if (result1.error){
-            res.status(400).send(result1.error);
-            res.body = result1.error;
+            res.status(400).send({error : result1.error});
+            res.body = {error : result1.error};
             next();
             return;
         }
         const result2 = await saveWallet({userID : result1.response._id ,userType : "user"});
         if (result2.error){
-            res.status(400).send(result2.error);
-            res.body = result2.error;
+            res.status(400).send({error : result2.error});
+            res.body = {error : result2.error};
             next();
             return;
         }
         const result3 = await updateUser(result1.response._id,{walletID: result2.response._id , password : "12345678"});
         if (result3.error){
-            res.status(400).send(result3.error);
-            res.body = result3.error;
+            res.status(400).send({error : result3.error});
+            res.body = {error : result3.error};
             next();
             return;
         }
-        const token = jwt.sign({...result3.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-        res.header("x-auth-token",token).send(result3.response);
+        const token = jwt.sign({_id : result3.response._id , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.cookie('x-auth-token',token,{
+            httpOnly: true,
+            // secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result3.response);
         res.body = result3.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -70,11 +76,11 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
         await validateUserChangeinfo(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -96,20 +102,25 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
     try {
         const result = await updateUser(req.params.id,req.body);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
         
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-
-        res.header("x-auth-token",token).send(result.response);
+        const token = jwt.sign({_id : result.response._id , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.cookie('x-auth-token',token,{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result.response);
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -123,11 +134,11 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) , 
     } catch (error) {
         console.log(error)
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -135,19 +146,52 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["user"]) , 
     try {
         const result = await updateUser(req.user._id,req.body);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-
-        res.header("x-auth-token",token).send(result.response);
+        const token = jwt.sign({_id : result.response._id , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.cookie('x-auth-token',token,{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result.response);
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["user"]) ,  async (req, res, next) =>{
+    const {error} = validateChangePassword(req.body); 
+    console.log("login")
+    if (error){
+        // console.log({error : error.details[0].message})
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
+        next();
+        return;
+    }
+    try {
+
+        const result = await changeUserPassword(req.user._id,req.body.newPassword,req.body.oldPassword);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -159,8 +203,8 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async
         res.body = req.user;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
 })
 
@@ -170,7 +214,7 @@ router.post("/logIn",  async (req, res, next) =>{
     const {error} = validateUserLogIn(req.body); 
     console.log("login")
     if (error){
-        // console.log(error.details[0].message)
+        // console.log({error : error.details[0].message})
         res.status(400).send({error : error.details[0].message});
         res.body = {error : error.details[0].message};
         next();
@@ -186,14 +230,19 @@ router.post("/logIn",  async (req, res, next) =>{
             next();
             return;
         }
-        const token = jwt.sign({...result.response , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
-        
-        res.header("x-auth-token",token).send(result.response);
+        const token = jwt.sign({_id : result.response._id , status: "user"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.cookie('x-auth-token',token,{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result.response);
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -247,8 +296,8 @@ router.get("/myLists", (req, res,next) => auth(req, res,next, ["user"]) ,async (
         res.send(response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -260,11 +309,11 @@ router.post("/createWishList", (req, res,next) => auth(req, res,next, ["user"]) 
     } catch (error) {
         console.log(error)
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -275,8 +324,8 @@ router.post("/createWishList", (req, res,next) => auth(req, res,next, ["user"]) 
         });
         
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -284,8 +333,8 @@ router.post("/createWishList", (req, res,next) => auth(req, res,next, ["user"]) 
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -295,11 +344,11 @@ router.post("/addToWishList", (req, res,next) => auth(req, res,next, ["user"]) ,
         await validateAddToWishList(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -316,8 +365,8 @@ router.post("/addToWishList", (req, res,next) => auth(req, res,next, ["user"]) ,
         });
         
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -325,8 +374,8 @@ router.post("/addToWishList", (req, res,next) => auth(req, res,next, ["user"]) ,
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -336,11 +385,11 @@ router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"
         await validateAddToFavoriteList(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -351,8 +400,8 @@ router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"
         });
         
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -360,8 +409,8 @@ router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -370,8 +419,8 @@ router.post("/addToFavoriteList", (req, res,next) => auth(req, res,next, ["user"
 router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
     const {error} = validateAddress(req.body); 
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
         next();
         return;
     }
@@ -394,8 +443,8 @@ router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , asy
         });
         
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -403,8 +452,8 @@ router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , asy
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -413,8 +462,8 @@ router.put("/addAddress", (req, res,next) => auth(req, res,next, ["user"]) , asy
 router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , async (req, res, next) =>{
     const {error} = validateAddress(req.body); 
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
         next();
         return;
     }
@@ -438,8 +487,8 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
         });
         
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -447,8 +496,8 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -468,8 +517,8 @@ router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,asy
         res.send(response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -479,11 +528,11 @@ router.post("/addGiftCard",innerAuth, async (req, res,next) =>{
         await validateGiftCardPost(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -500,14 +549,14 @@ router.post("/addGiftCard",innerAuth, async (req, res,next) =>{
             }
             if(counter > 40){
                 console.log("Error","couldnt generate unique random code");
-                res.body = "internal server error";
-                res.status(500).send("internal server error");
+                res.body = {error:"internal server error"};
+                res.status(500).send({error:"internal server error"});
             }
         }
         const result = await saveGiftCard({...req.body, code: code})
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -515,8 +564,8 @@ router.post("/addGiftCard",innerAuth, async (req, res,next) =>{
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -526,11 +575,11 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         await validateGiftCardUse(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -552,15 +601,15 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         }
         const result1 = await updateGiftCard(giftCard._id,{userID : req.user._id , isUsed : true , useDate : Date.now()})
         if (result1.error){
-            res.status(400).send(result1.error);
-            res.body = result1.error;
+            res.status(400).send({error : result1.error});
+            res.body = {error : result1.error};
             next();
             return;
         }
         const result2 = await changeWalletMoney(req.user.walletID , giftCard.amount)
         if (result2.error){
-            res.status(400).send(result2.error);
-            res.body = result2.error;
+            res.status(400).send({error : result2.error});
+            res.body = {error : result2.error};
             next();
             return;
         }
@@ -577,8 +626,8 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
             }
         })
         if (result3.error){
-            res.status(400).send(result3.error);
-            res.body = result3.error;
+            res.status(400).send({error : result3.error});
+            res.body = {error : result3.error};
             next();
             return;
         }
@@ -586,8 +635,8 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         res.body = result3.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -600,8 +649,8 @@ router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) 
         
         const result = await getNotifications(undefined,undefined,req.user.notifications)
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -609,8 +658,8 @@ router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) 
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -621,8 +670,8 @@ router.get("/myWallet", (req, res,next) => auth(req, res,next, ["user"]) ,async 
         
         const result = await getWallets(req.user.walletID);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -630,8 +679,8 @@ router.get("/myWallet", (req, res,next) => auth(req, res,next, ["user"]) ,async 
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
 });
 
@@ -641,8 +690,8 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,
         
         const result = await getAllUserTransactions(req.user._id , "user")
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -650,8 +699,8 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["user"]) ,
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -661,11 +710,11 @@ router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["user"]) ,as
         await validateLastVisitedPost(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -683,8 +732,8 @@ router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["user"]) ,as
         }
         const result = await updateUser(req.user._id,{lastVisited: req.user.lastVisited})
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -692,8 +741,8 @@ router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["user"]) ,as
         res.body = result.response;
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });

@@ -20,8 +20,8 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transp
     try {
         const result = await getUsers(undefined,req.query);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -30,8 +30,8 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transp
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -39,16 +39,16 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transp
 router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "transporter"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getUsers(req.params.id);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -57,8 +57,8 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "tra
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -67,8 +67,8 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "tran
     try {
         const result = await getSellers(undefined,req.query);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -76,8 +76,8 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "tran
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -85,16 +85,16 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "tran
 router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "transporter"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getSellers(req.params.id);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -103,8 +103,8 @@ router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "t
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -114,8 +114,8 @@ router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,asyn
     try {
         const result = await getAdmins(undefined,req.query);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -123,8 +123,8 @@ router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,asyn
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -132,16 +132,16 @@ router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,asyn
 router.get("/allAdmins/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getAdmins(req.params.id);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -150,8 +150,8 @@ router.get("/allAdmins/:id",(req, res,next) => auth(req, res,next, ["admin"]) , 
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -160,8 +160,8 @@ router.get("/allGiftCards", (req, res,next) => auth(req, res,next, ["admin"]) ,a
     try {
         const result = await getGiftCards(undefined,req.query);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -169,8 +169,8 @@ router.get("/allGiftCards", (req, res,next) => auth(req, res,next, ["admin"]) ,a
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -178,16 +178,16 @@ router.get("/allGiftCards", (req, res,next) => auth(req, res,next, ["admin"]) ,a
 router.get("/allGiftCards/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getGiftCards(req.params.id);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -195,8 +195,8 @@ router.get("/allGiftCards/:id",(req, res,next) => auth(req, res,next, ["admin"])
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -206,8 +206,8 @@ router.get("/allTransactions", (req, res,next) => auth(req, res,next, ["admin"])
     try {
         const result = await getTransactions(undefined,req.query);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -215,8 +215,8 @@ router.get("/allTransactions", (req, res,next) => auth(req, res,next, ["admin"])
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -224,16 +224,16 @@ router.get("/allTransactions", (req, res,next) => auth(req, res,next, ["admin"])
 router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getTransactions(req.params.id);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -241,8 +241,8 @@ router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -251,8 +251,8 @@ router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"])
     try {
         const result = await getTransporters(undefined,req.query);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -260,8 +260,8 @@ router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"])
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -269,16 +269,16 @@ router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"])
 router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getTransporters(req.params.id);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -287,8 +287,8 @@ router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -300,11 +300,11 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
         await validateNotificationPost(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.details[0].message};
         }
         next();
         return;
@@ -312,8 +312,8 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
     try {
         const result = await saveNotification(req.body);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -321,8 +321,8 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -332,11 +332,11 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
         await validateChangeMoney(req.body); 
     } catch (error) {
         if (error.details){
-            res.status(400).send(error.details[0].message);
-            res.body = error.details[0].message;
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send(error.message);
-            res.body = error.message;
+            res.status(400).send({error : error.message});
+            res.body = {error : error.details[0].message};
         }
         next();
         return;
@@ -356,8 +356,8 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
         }
         const result = await changeWalletMoney(user.response.walletID,req.body.amount);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -365,8 +365,8 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -374,8 +374,8 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
 router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
@@ -389,8 +389,8 @@ router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]
         }
         const result = await getWallets(user.response.walletID);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -398,8 +398,8 @@ router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
@@ -407,8 +407,8 @@ router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]
 router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send(error.details[0].message);
-        res.body = error.details[0].message;
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
@@ -422,8 +422,8 @@ router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin
         }
         const result = await getWallets(seller.response.walletID);
         if (result.error){
-            res.status(400).send(result.error);
-            res.body = result.error;
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
@@ -431,10 +431,27 @@ router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin
         res.send(result.response);
     } catch (err) {
         console.log("Error",err);
-        res.body = "internal server error";
-        res.status(500).send("internal server error");
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });
+
+
+router.get('/logOut',async (req,res,next) =>{
+    try {
+        res.cookie('x-auth-token',' ',{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            expires: new Date(0)
+        });
+        res.send({message: "successfully logged out"})
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+})
 
 export default router;

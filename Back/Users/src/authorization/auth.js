@@ -5,10 +5,10 @@ import { getAdmins } from "../DB/CRUD/admin.js";
 import { getTransporters } from "../DB/CRUD/transporter.js";
 
 export async function auth(req,res,next,acceptedStatuses){
-    const token = req.header("x-auth-token");
+    const token = req.cookies["x-auth-token"];
     if(!token){
-        res.status(401).send("access denied. no token provided.");
-        res.body = "access denied. no token provided.";
+        res.status(401).send({error:"access denied. no token provided."});
+        res.body = {error:"access denied. no token provided."};
         return 
     }
     try {
@@ -20,22 +20,23 @@ export async function auth(req,res,next,acceptedStatuses){
             }  
         }
         if (!checker){
-            res.status(401).send("access denied. invalid " + acceptedStatuses.join(', '));
-            res.body = "access denied. invalid " + acceptedStatuses.join(', ');
+            res.status(401).send({error:"access denied. invalid " + acceptedStatuses.join(', ')});
+            res.body = {error:"access denied. invalid " + acceptedStatuses.join(', ')};
             return 
         }
-        if (decoded.isBanned){
-            res.status(401).send("access denied. you are banned.");
-            res.body = "access denied. you are banned.";
-            return 
-        }
+        
         switch (decoded.status) {
             case "user":
                 const user = (await getUsers(decoded._id)).response;
                 // console.log(user.addresses)
                 if(!user){
-                    res.status(401).send("access denied. invalid user.");
-                    res.body = "access denied. invalid user.";
+                    res.status(401).send({error:"access denied. invalid user."});
+                    res.body = {error:"access denied. invalid user."};
+                    return 
+                }
+                if (user.isBanned){
+                    res.status(401).send({error:"access denied. you are banned."});
+                    res.body = {error:"access denied. you are banned."};
                     return 
                 }
                 req.user = user;
@@ -44,8 +45,13 @@ export async function auth(req,res,next,acceptedStatuses){
             case "seller":
                 const seller = (await getSellers(decoded._id)).response;
                 if(!seller){
-                    res.status(401).send("access denied. invalid seller.");
-                    res.body = "access denied. invalid seller.";
+                    res.status(401).send({error:"access denied. invalid seller."});
+                    res.body = {error:"access denied. invalid seller."};
+                    return 
+                }
+                if (seller.isBanned){
+                    res.status(401).send({error:"access denied. you are banned."});
+                    res.body = {error:"access denied. you are banned."};
                     return 
                 }
                 req.seller = seller;
@@ -53,8 +59,8 @@ export async function auth(req,res,next,acceptedStatuses){
             case "admin":
                 const admin = (await getAdmins(decoded._id)).response;
                 if(!admin){
-                    res.status(401).send("access denied. invalid admin.");
-                    res.body = "access denied. invalid admin.";
+                    res.status(401).send({error:"access denied. invalid admin."});
+                    res.body = {error:"access denied. invalid admin."};
                     return 
                 }
                 req.admin = admin;
@@ -62,8 +68,8 @@ export async function auth(req,res,next,acceptedStatuses){
             case "transporter":
                 const transporter = (await getTransporters(decoded._id)).response;
                 if(!transporter){
-                    res.status(401).send("access denied. invalid transporter.");
-                    res.body = "access denied. invalid transporter.";
+                    res.status(401).send({error:"access denied. invalid transporter."});
+                    res.body = {error:"access denied. invalid transporter."};
                     return 
                 }
                 req.transporter = transporter;
@@ -73,7 +79,8 @@ export async function auth(req,res,next,acceptedStatuses){
         }
         next();
     } catch (error) {
-        res.status(400).send("invalid token");
-        res.body = "invalid token";
+        console.log(error)
+        res.status(400).send({error:"invalid token"});
+        res.body = {error:"invalid token"};
     }
 }

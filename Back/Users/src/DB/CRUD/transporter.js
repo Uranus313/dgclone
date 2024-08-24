@@ -15,6 +15,8 @@ export async function getTransporters(id , search){
         result.response = await TransporterModel.find({_id : id}).findOne();
         if(result.response){
             result.response = result.response.toJSON();
+            delete result.response.password;
+
         }
         return result;
     }else{
@@ -70,3 +72,22 @@ export async function updateTransporter(id,transporterUpdate ){
     return(result);
 }
 
+export async function changeTransporterPassword(id,newPassword , oldPassword ){
+    const result = {};
+    const transporter = await TransporterModel.find({_id : id}).findOne();
+    if (transporter.password){
+        const answer = await comparePassword(oldPassword,transporter.password);
+        if(!answer){
+            result.error = "wrong password"
+            return result;
+        }
+    }else if (oldPassword){
+        result.error = "wrong password"
+        return result;
+    }
+    const hashedPassword = await hashPassword(newPassword);
+    const response = await TransporterModel.findByIdAndUpdate(id,{$set :{password : hashedPassword}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}

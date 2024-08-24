@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import useUserCheckToken from "./users/hooks/useCheckToken";
+import userContext from "./contexts/userContext";
 import { Categories , Category } from "./page";
 import {useRouter} from 'next/navigation'
 import MegaMenu from "./MegaMenu";
@@ -9,6 +10,7 @@ import MegaMenu from "./MegaMenu";
 
 const NavBar = () => {
   const [isCategory , setIsCategory] = useState(false)
+  const {user , setUser , isLoading} = useContext(userContext);
   const [navcollaps , setNavcollaps] = useState<boolean>(false)
   const lastScroll = useRef<number>(0);
   const [display , setDisplay] = useState('100')
@@ -68,22 +70,27 @@ const NavBar = () => {
         </div>
 
         <div className="flex">
-          <Link href="/">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="black"
-              className="size-8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-              />
-            </svg>
-          </Link>
+          {isLoading? <span className="loading loading-dots loading-lg"></span>:
+          user? <Link href="/users/menu/changeInfo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="black"
+            className="size-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+            />
+          </svg>
+        </Link>: <Link href="/users/signIn">
+          ثبت نام کنید/وارد شوید
+        </Link>
+          }
+          
 
           <p className="mx-4 text-grey-light">|</p>
 

@@ -10,6 +10,8 @@ const userSchema  = new mongoose.Schema(
         lastName: {type: String },
         birthDate: {type: Date},
         email: {type: String },
+        job: {type: String },
+        economicCode: {type: String },
         isCompelete: Boolean,
         phoneNumber: {type: String , required : true},
         walletID: {type : mongoose.Schema.Types.ObjectId , ref: "jobs" },
@@ -81,11 +83,18 @@ export function validateLastVisitedPost (data){
     });
     return schema.validateAsync(data);
 }
+export function validateChangePassword(data){
+    const schema = Joi.object({
+        oldPassword : Joi.string().min(8).max(50),
+        newPassword : Joi.string().min(8).max(50).required()
+    })
+    return schema.validate(data);
+}
 export function validateUserChangeinfo (data){
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100),
         lastName: Joi.string().min(1).max(100),
-        password : Joi.string().min(8).max(50),
+        job : Joi.string().min(8).max(200),
         phoneNumber : Joi.string().min(11).max(12).external( async (phoneNumber) => {
             if(!phoneNumber){
                 return
@@ -112,6 +121,15 @@ export function validateUserChangeinfo (data){
             const user = await UserModel.find({nationalID : nationalID}).findOne();
             if(user){
                 throw new Error("an account with this national ID number already exists");
+            }
+        }),
+        economicCode: Joi.string().pattern(/^\d+$/).external( async (economicCode) => {
+            if(!economicCode){
+                return
+            }
+            const user = await UserModel.find({economicCode : economicCode}).findOne();
+            if(user){
+                throw new Error("an account with this economic code already exists");
             }
         }),
         moneyReturn:Joi.object({

@@ -16,6 +16,8 @@ export async function getAdmins(id , search){
         result.response = await AdminModel.find({_id : id}).findOne();
         if(result.response){
             result.response = result.response.toJSON();
+        delete result.response.password;
+
         }
         return result;
     }else{
@@ -71,3 +73,22 @@ export async function updateAdmin(id,adminUpdate ){
     return(result);
 }
 
+export async function changeAdminPassword(id,newPassword , oldPassword ){
+    const result = {};
+    const admin = await AdminModel.find({_id : id}).findOne();
+    if (admin.password){
+        const answer = await comparePassword(oldPassword,admin.password);
+        if(!answer){
+            result.error = "wrong password"
+            return result;
+        }
+    }else if (oldPassword){
+        result.error = "wrong password"
+        return result;
+    }
+    const hashedPassword = await hashPassword(newPassword);
+    const response = await AdminModel.findByIdAndUpdate(id,{$set :{password : hashedPassword}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}
