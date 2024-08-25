@@ -2,8 +2,9 @@ import ProductCard from '@/app/components/ProductCar/ProductCard'
 import React from 'react'
 import { ProductCardInterface } from '@/app/components/Interfaces/interfaces'
 import Link from 'next/link'
-import { getCategory } from '@/app/Functions/functions'
+import { getCategory } from '@/app/Functions/ServerFunctions'
 import Filter from './Filter'
+import Sort from './Sort'
 
 
 const products : ProductCardInterface[] = [
@@ -110,11 +111,7 @@ const ProductPage = ({params:{id},searchParams:{sortOrder}}:Props) => {
             </svg>
 
             <p className='font-bold'>مرتب سازی :</p>
-            <Link className={`text-sm ${sortOrder==='mostViewed'?'text-primary-color' :''}`} href={`/products/${id}/?sortOrder=mostViewed`}>پربازدید ترین</Link>
-            <Link className={`text-sm ${sortOrder==='bestSellers'?'text-primary-color' :''}`} href={`/products/${id}/?sortOrder=bestSellers`}>پرفروش ترین</Link>
-            <Link className={`text-sm ${sortOrder==='cheapest'?'text-primary-color' :''}`} href={`/products/${id}/?sortOrder=cheapest`}>ارزان ترین</Link>
-            <Link className={`text-sm ${sortOrder==='mostExpensive'?'text-primary-color' :''}`} href={`/products/${id}/?sortOrder=mostExpensive`}>گران ترین</Link>
-            <Link className={`text-sm ${sortOrder==='newest'?'text-primary-color' :''}`} href={`/products/${id}/?sortOrder=newest`}>جدید ترین</Link>
+            <Sort/>
           </div>
           <div className=' grid grid-cols-3 mt-4 place-items-center'>
               {products.map((product)=>(

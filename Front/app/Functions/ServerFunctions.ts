@@ -1,3 +1,5 @@
+
+import { ReadonlyURLSearchParams } from "next/navigation";
 import { Categories, Category } from "../page";
 
 export function getCategory(id: string): Category | undefined {
@@ -29,3 +31,26 @@ export function getCategory(id: string): Category | undefined {
 
     return category;
 }
+
+interface QueryProp {
+    dicts: { param: string, value: string }[],
+    searchParams: ReadonlyURLSearchParams
+}
+
+export function updateQueries({ dicts, searchParams }: QueryProp) {
+    const params = new URLSearchParams(searchParams.toString())
+    dicts.forEach(dict => {
+        params.set(dict.param, dict.value)
+    });
+    window.history.pushState(null, '', `?${params.toString()}`)
+}
+
+
+// const handleRemoveQueryParam = (paramToRemove:string , searchParams:URLSearchParams , pathname:string , searchquery:string , router ) => {
+//   searchParams.delete(paramToRemove);
+//   const newUrl = `${router.pathname}?${searchParams.toString()}`;
+//   router.replace(newUrl);
+// };
+
+
+

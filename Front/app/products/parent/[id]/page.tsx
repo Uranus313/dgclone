@@ -4,7 +4,7 @@ import { Categories, Category } from '@/app/page';
 import Incredibles from '@/app/components/Incredibles/Incredibles';
 import BestProducts from '@/app/components/BestProducts/BestProducts';
 import Link from 'next/link';
-import { getCategory } from '@/app/Functions/functions';
+import { getCategory } from '@/app/Functions/ServerFunctions';
 
 
 interface Props {

@@ -1,7 +1,10 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MultiRangeSlider from './MultiRangeSlider/MultiRangeSlider';
-import { usePathname, useRouter } from 'next/navigation';
+import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams,  } from 'next/navigation';
+import useDebounce from '@/app/hooks/useDebounce';
+import { updateQueries } from '@/app/Functions/ServerFunctions';
+
 
 interface FilterInterface{
     title: string;
@@ -9,15 +12,15 @@ interface FilterInterface{
     query: string;
 }
 
+
+
 interface FilterResponseInterface{
     filters:FilterInterface[];
     priceRange:{max:number , min:number};
 }
 
 const Filter = () => {
-  const manage = useRouter()
-  const pathname = usePathname()
-
+  
   const filtersRes : FilterResponseInterface = {
     filters : [
         {
@@ -35,8 +38,32 @@ const Filter = () => {
     priceRange:{max:90000000 , min:0}
   }
 
+  const manage = useRouter()
+  const pathname = usePathname()
+
+  
   const [minVal, setMinVal] = useState<number>(filtersRes.priceRange.min);
   const [maxVal, setMaxVal] = useState<number>(filtersRes.priceRange.max);
+  
+  const [value, setValue] = useState<string[]>([])
+  const debouncedSearch = useDebounce([minVal ,maxVal ], 1000)
+  
+  const searchParams = useSearchParams()
+  const c = new URLSearchParams(searchParams)
+
+  
+    const handleRemoveQueryParam = (paramToRemove:string) => {
+      c.delete(paramToRemove);
+      const newUrl = `${pathname}?${c.toString()}`;
+      manage.replace(newUrl);
+    };
+
+
+  useEffect(() => {
+    if (debouncedSearch) {
+        updateQueries({dicts:[{param:'min',value:minVal.toString()},{param:'max' ,value:maxVal.toString()}] , searchParams:searchParams})
+    }
+  }, [debouncedSearch])
 
   return (
     <div>
@@ -44,7 +71,8 @@ const Filter = () => {
         <div className="form-control m-2 ">
             <label className="label  cursor-pointer">
                 <span className="label-text text-xl">فقط موجود</span>
-                <input type="checkbox" className=" toggle toggle-primary disabled:bg-black"  />
+                <input type="checkbox" className=" toggle toggle-primary disabled:bg-black"  
+                 onChange={(e)=>{updateQueries({dicts:[{param:'isAvailable',value:String(e.target.checked)}] , searchParams:searchParams})}}/>
             </label>
             <hr className='text-grey-border mt-2 w-10/12 text-center'></hr>
         </div>
@@ -57,14 +85,14 @@ const Filter = () => {
                 <div className='w-full' >
                     <label className="label w-full cursor-pointer">
                     <span className="label-text text-xl text-black">از</span>
-                    <input className='w-4/5 text-3xl' value={minVal} onChange={(e)=>{setMinVal(Number(e.target.value)) , manage.push(`${pathname}& min=${e.target.value}`)}} type='number'/>
+                    <input className='w-4/5 text-3xl' value={minVal} onChange={(e)=>{setMinVal(Number(e.target.value)) , setValue([e.target.value ,maxVal.toString()])}} type='number'/>
                     </label>
                 </div>
 
                 <div className='w-full' >
                     <label className="label w-full cursor-pointer">
                     <span className="label-text text-black">تا</span>
-                    <input className='w-4/5 text-3xl' value={maxVal} onChange={(e)=>{setMaxVal(Number(e.target.value))}} type='number'/>
+                    <input className='w-4/5 text-3xl' value={maxVal} onChange={(e)=>{setMaxVal(Number(e.target.value)), setValue([e.target.value ,maxVal.toString()])}} type='number'/>
                     </label>
                 </div>
 
@@ -81,12 +109,13 @@ const Filter = () => {
                 <div className="collapse-title text-xl font-medium">{filter.title}</div>
                 <div className="collapse-content">
                     {<div>
-                        {filter.options.map(option=>(
+                        {filter.options.map((option ,index)=>(
                             <label className="label cursor-pointer">
                             {filter.query=='color' 
                                 ? <div style={{backgroundColor:option , height:'30px',width:'30px'}} className='border border-grey-dark rounded-sm'></div>
                                 : <span className="label-text text-black">{option}</span>}
-                                <input type="checkbox" className="checkbox border-2 border-primary-color [--chkbg:theme(colors.primary-color)] [--chkfg:white] checked:border-primary-color" />
+                                <input type="checkbox" className="checkbox border-2 border-primary-color [--chkbg:theme(colors.primary-color)] [--chkfg:white] checked:border-primary-color" 
+                                    onChange={(e)=>{e.target.checked? updateQueries({dicts:[{param:`${filter.query}[${index}]`,value:option}] , searchParams:searchParams}) : handleRemoveQueryParam(`${filter.query}[${index}]`) , console.log(c)}}/>
                             </label>
                         ))}
                     </div>}
