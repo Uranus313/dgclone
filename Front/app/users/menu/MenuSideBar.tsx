@@ -49,7 +49,7 @@ function MenuSideBar(){
                     <li><Link href={"/"}>سفارشات</Link></li>
                     <li><Link href={"/"}>لیست های من</Link></li>
                     <li><Link href={"/"}>نظرات و سوالات</Link></li>
-                    <li><Link href={"/"}>آدرس ها</Link></li>
+                    <li><Link href={"/users/menu/changeAddress"}>آدرس ها</Link></li>
                     <li><Link href={"/"}>کارت های هدیه</Link></li>
                     <li><Link href={"/"}>اعلان ها</Link></li>
                     <li><Link href={"/"}>اطلاعات کاربری</Link></li>

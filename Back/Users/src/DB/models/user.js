@@ -39,9 +39,16 @@ const userSchema  = new mongoose.Schema(
             city: {type: String, required : true},
             postalCode : {type: String, required : true},
             additionalInfo : {type: String},
+            number : {type: String, required : true},
+            unit : {type: String},
             coordinates : {type:{
                 x : {type: String, required : true},
                 y : {type: String, required : true}
+            } , required: true},
+            receiver : {type:{
+                firstName : {type: String, required : true},
+                lastName : {type: String, required : true},
+                phoneNumber : {type: String, required : true}
             } , required: true}
         }}],
         sentGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
@@ -234,11 +241,19 @@ export function validateAddress(data ){
         city: Joi.string().required(),
         postalCode : Joi.string().required(),
         additionalInfo : Joi.string(),
+        number : Joi.string().required(),
+        unit : Joi.string().required(),
         coordinates : Joi.object({
                 x : Joi.string().required(),
                 y : Joi.string().required()
             }
         ).required(),
+        receiver : Joi.object({
+            firstName : Joi.string().required(),
+            lastName : Joi.string().required(),
+            phoneNumber: Joi.string().min(11).max(12).required()
+        }
+    ).required(),
     })
     return schema.validate(data);
 }
