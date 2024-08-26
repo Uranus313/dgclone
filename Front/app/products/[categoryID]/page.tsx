@@ -90,12 +90,12 @@ const products : ProductCardInterface[] = [
 ]
 
 interface Props {
-    params: {id: string} 
+    params: {categoryID: string} 
     searchParams:{sortOrder: string}
 }
 
-const ProductPage = ({params:{id},searchParams:{sortOrder}}:Props) => {
-  let category = getCategory(id)
+const ProductPage = ({params:{categoryID},searchParams:{sortOrder}}:Props) => {
+  let category = getCategory(categoryID)
   return (
     <div>
       <h1 className='mt-10 mb-8 mx-5 text-3xl font-black'>{category?.title}</h1>
@@ -115,10 +115,11 @@ const ProductPage = ({params:{id},searchParams:{sortOrder}}:Props) => {
           </div>
           <div className=' grid grid-cols-3 mt-4 place-items-center'>
               {products.map((product)=>(
-                <div className='m-2 p-4 bg-white rounded-md' key={product.id}>
+                <Link href={`/products/${categoryID}/${product.id}`} className='m-2 p-4 bg-white rounded-md' key={product.id}>
                   <img src={product.picture}/>
                   <p>{product.title}</p>
-                </div>
+                  <p>{product.price}</p>
+                </Link>
               )
 
               )}
