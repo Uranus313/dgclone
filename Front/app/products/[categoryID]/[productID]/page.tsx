@@ -1,7 +1,31 @@
 import React from 'react'
-import { ProductInterface , shipmentMethod} from '@/app/components/Interfaces/interfaces'
+import { ProductInterface , shipmentMethod , Comment , commentType} from '@/app/components/Interfaces/interfaces'
 import ClientPart from './ClientPart'
 
+const comments:Comment[]=[
+    {
+    type:commentType.comment,
+    // answerto?:string  //for answer comments
+    id:'1',
+    productID:'1',
+    orderID:'5', //for normal comments
+    userID:'1',
+    content:'',
+    disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
+    dateSent:'2024/5/1 22:20:01'
+    },
+    {
+    type:commentType.comment,
+    // answerto?:string  //for answer comments
+    id:'2',
+    productID:'1',
+    // orderID:'5', //for normal comments
+    userID:'2',
+    content:'',
+    disAndlike:[{userid:'3',disOlike:false},{userid:'1',disOlike:false},{userid:'4',disOlike:true},],
+    dateSent:'2024/5/1 22:20:02'
+    },
+]
 
 const product:ProductInterface = {
     id:'1',
@@ -50,6 +74,7 @@ const product:ProductInterface = {
             'https://dkstatics-public.digikala.com/digikala-products/2ed8f1fbfd7586a8d579d22b4d5e05419effebb5_1713162171.jpg',
             'https://dkstatics-public.digikala.com/digikala-products/7b033b72c507b7989072ce0bbe1736faf09f7210_1713162172.jpg',
             'https://dkstatics-public.digikala.com/digikala-products/32f0175a55bffa787c1c0e6b6edfcd566adc6f93_1713162172.jpg',
+            'https://dkstatics-public.digikala.com/digikala-products/e0ceb58624f648429fa3ba2c2ec4eebde6b51f79_1713162171.jpg',
            ] , 
     dimentions:{length:36 , width:23 , height:17} , 
     wieght:1.7 , 
@@ -63,9 +88,81 @@ const ProductPage = ({params:{productID}}:Props) => {
     
 
     return (
-        <div>
+        <div className='p-5 m-10 bg-white rounded-lg'>
             <ClientPart product={product} />
+            
+            <div className='mt-20'>
+                <div className="collapse collapse-arrow  bg-propBubble-bg text-black mb-3 ">
+                    <input type="checkbox" className="peer"/>
+                    <div 
+                     className="collapse-title text-xl font-medium bg-propBubble-bg ">
+                       <h2 className=''>معرفی</h2> 
+                    </div>
+                    <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
+                    className="collapse-content bg-white border-2 border-propBubble-bg">
+                        <p className='mt-5'>{product.description}</p>
+                    </div>
+                </div>
+
+                <div className="collapse collapse-arrow  bg-propBubble-bg text-black mb-3 ">
+                    <input type="checkbox" className="peer"/>
+                    <div 
+                     className="collapse-title text-xl font-medium bg-propBubble-bg ">
+                       <h2 className=''>مشخصات</h2> 
+                    </div>
+                    <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
+                    className="collapse-content bg-white border-2 border-propBubble-bg">
+                        <div className='mt-5 '>
+                                    <table className="w-full text-right table-auto min-w-max">
+                                        <tbody>
+                            {product.details.map(detail=>(
+                               
+
+                                            <tr className="hover:bg-slate-50">
+                                                <td className="p-4 w-1/5">
+                                                    <p className="block text-grey-dark text-sm text-slate-800">
+                                                        {detail.key}:
+                                                    </p>
+                                                </td>
+                                                <td className="p-4 border-b border-grey-border">
+                                                    <p className="block text-sm text-slate-800">
+                                                        {detail.value}
+                                                    </p>
+                                                </td>
+                                            </tr> 
+                            ))}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="collapse collapse-arrow  bg-propBubble-bg text-black mb-3 ">
+                    <input type="checkbox" className="peer"/>
+                    <div 
+                     className="collapse-title text-xl font-medium bg-propBubble-bg ">
+                       <h2 className=''>بازخورد ها</h2> 
+                    </div>
+                    <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
+                    className="collapse-content max-h-96 overflow-auto bg-white border-2 border-propBubble-bg">
+                        <p className='mt-5'>{product.description}</p>
+                    </div>
+                </div>
+
+                <div className="collapse collapse-arrow  bg-propBubble-bg text-black mb-3 ">
+                    <input type="checkbox" className="peer"/>
+                    <div 
+                     className="collapse-title text-xl font-medium bg-propBubble-bg ">
+                       <h2 className=''>پرسش ها</h2> 
+                    </div>
+                    <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
+                    className="collapse-content bg-white border-2 border-propBubble-bg">
+                        <p className='mt-5'>{product.description}</p>
+                    </div>
+                </div>
+            </div>
         </div>
+
     )
 }
 

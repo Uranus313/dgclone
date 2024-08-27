@@ -3,6 +3,7 @@ import { ProductInterface, SellerInfosOnProduct } from '@/app/components/Interfa
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import f from '../../../assets/images/tomann.png'
+import Gallery from './Gallery'
 interface Props{
     product : ProductInterface
 }
@@ -12,6 +13,8 @@ const ClientPart = ({product}:Props) => {
     let ColorsWithSellers:{color:string,sellers:string[]}[] = []
     const [selectedColor , setSelectedColor] = useState(product.sellers[0].quantity[0].color)
     const [selectedSeller , setSelectedSeller] = useState<SellerInfosOnProduct>()
+    
+    
 
     product.sellers.forEach(seller => {
         seller.quantity.forEach(colorQuantity=>{
@@ -39,10 +42,12 @@ const ClientPart = ({product}:Props) => {
     },[selectedColor])
     
   return (
-    <div className='grid grid-cols-12 gap-4 p-5 m-10 bg-white rounded-lg overflow-x-hidden'>
+    <div className='grid grid-cols-12 gap-4  overflow-x-hidden'>
         <div className='col-span-4'>
-            <img src={product.images[0]}></img>
+            <Gallery images={product.images} />
         </div>
+
+
         <div className='col-span-8'>
             <h1 className='text-lg font-black'>{product.title}</h1>
             <div className='my-3 flex'>

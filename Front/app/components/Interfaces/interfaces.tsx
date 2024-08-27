@@ -43,3 +43,17 @@ export interface ProductInterface{
     prosNcons?:{pros:string[],cons:string[]},
 }
 
+export enum commentType{comment , answer, question}
+
+export interface Comment{
+    type: commentType
+    answerto?:string  //for answer comments
+    id:string
+    productID:string
+    orderID?:string //for normal comments
+    userID:string
+    content:string
+    disAndlike:{userid:string,disOlike:boolean}[]
+    dateSent:string
+}
+
