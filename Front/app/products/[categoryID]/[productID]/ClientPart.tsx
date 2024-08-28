@@ -72,7 +72,7 @@ const ClientPart = ({product}:Props) => {
 
                     <p className='text-xl mt-10 mb-3'>ویژگی ها:</p>
                     <div className='grid grid-cols-3 gap-2'>    
-                        {product.details.map((detail)=>{
+                        {product.details[0].map.map((detail)=>{
                             return <div className='mb-1 rounded-lg text-sm bg-propBubble-bg py-3 px-5'>
                                 <p className='line-clamp-1 mb-2 text-grey-dark'>{detail.key}</p>
                                 <p className='line-clamp-1'>{detail.value}</p>

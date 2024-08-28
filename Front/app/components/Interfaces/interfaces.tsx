@@ -3,6 +3,7 @@ export interface ProductCardInterface{
     title:string,
     price:number,
     picture:string,
+    discountID?:string
 }
 
 export enum shipmentMethod{
@@ -34,13 +35,14 @@ export interface ProductInterface{
     brand:string,
     original:boolean,
     categoryID:string,
-    details:{key:string , value:string}[],
+    details: {title :string , map:{key:string , value:string}[]}[],
     madeInIran:boolean
     images:string[] , 
     dimentions:{length:number , width:number , height:number} , 
     wieght:number , 
     description?: string, 
     prosNcons?:{pros:string[],cons:string[]},
+    recentComments:Comment[]
 }
 
 export enum commentType{comment , answer, question}
