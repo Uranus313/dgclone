@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-function useUserCheckToken(){
+import { Wallet } from "../menu/layout";
+function useGetUserWallet(){
     return useQuery({
-        queryKey : ['user'],
+        queryKey : ['userWallet'],
         queryFn : async () => {
-            const result = await fetch("http://localhost:3005/users/user/checkToken", {
+            const result = await fetch("http://localhost:3005/users/user/myWallet", {
                             credentials: 'include'});
             const jsonResult = await result.json();
             console.log(jsonResult)
@@ -15,7 +16,7 @@ function useUserCheckToken(){
         },
         staleTime: 6 * 60 * 60 * 1000,
         refetchOnWindowFocus: false,
-        retry: 1
+        retry: 2
     })
 }
-export default useUserCheckToken;
+export default useGetUserWallet;

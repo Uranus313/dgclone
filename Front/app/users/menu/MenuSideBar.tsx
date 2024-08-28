@@ -5,8 +5,17 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import { Wallet } from "./layout";
 
-function MenuSideBar(){
+
+
+
+interface Props{
+    wallet : Wallet,
+    isWalletLoading : boolean
+}
+
+function MenuSideBar( {wallet , isWalletLoading} : Props){
     const router = useRouter();
     const [error,setError] = useState<string|null>(null);
     const logOut = useMutation({
@@ -38,6 +47,10 @@ function MenuSideBar(){
         // setError(error)
       }
     });
+    useEffect(() =>{
+        console.log(isWalletLoading);
+        console.log(wallet);
+    },[wallet,isWalletLoading])
     const {user , setUser , isLoading} = useContext(userContext);
     return(
         <div className="flex flex-col bg-white">
@@ -45,7 +58,11 @@ function MenuSideBar(){
             {
                 user && 
                 <ul className="flex flex-col">
-                    <li><Link href={"/"}>کیف پول</Link></li>
+                    <li className="flex justify-between">
+                        <Link href={"/"}>کیف پول</Link>
+                        {isWalletLoading && <span className="loading loading-dots loading-lg"></span>}
+                        {wallet?.money && <p>{wallet?.money}</p>}
+                    </li>
                     <li><Link href={"/"}>سفارشات</Link></li>
                     <li><Link href={"/"}>لیست های من</Link></li>
                     <li><Link href={"/"}>نظرات و سوالات</Link></li>

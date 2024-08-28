@@ -27,7 +27,7 @@ const AddAddressPopUp = () => {
     <div>
        <div>
         <h1>hello</h1>
-        <button className="btn" onClick={openModal}>open modal</button>
+        <button className="btn" onClick={openModal}>اضافه کردن آدرس</button>
         <dialog ref={dialogRef} className="modal">
           <div className="modal-box">
             

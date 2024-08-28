@@ -11,7 +11,8 @@ import "./mapComponent.css";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import userContext from "@/app/contexts/userContext";
-
+import {provinces} from "@/data/cities";
+import _ from "lodash";
 interface SearchLocResult {
   title?: string;
   address?: string;
@@ -31,7 +32,16 @@ interface Props {
 const AddAddress = ({ afterCancel, afterSuccess }: Props) => {
   const mapRef = useRef<any>(null);
   const postLocationRef = useRef<any>(null);
+  const provinceRef = useRef<any>(null);
+  const cityRef = useRef<any>(null);
+
   const [error,setError] = useState<string | null>(null);
+  // const [provinces,setError] = useState<string[] | null>(null);
+  const [cities,setCities] = useState<string[] >([]);
+  const [cityInput,setCityInput] = useState<string >('');
+  const [provinceInput,setProvinceInput] = useState<string >('');
+
+
   const [searchData, setSearchData] = useState<SearchLocResult[]>([]);
   const [longitude, setLongitude] = useState<number | null | undefined>(51.389);
   const [latitude, setLatitude] = useState<number | null | undefined>(35.6892);
@@ -152,12 +162,31 @@ const AddAddress = ({ afterCancel, afterSuccess }: Props) => {
   }
   function secondPageFormSubmit(formData: any) {
     console.log(formData);
-    console.log(postLocationRef.current.value);
+    // console.log(postLocationRef.current.value);
+    if(_.isEqual(cities ,[])){
+      setError("لطفا یک استان انتخاب کنید");
+      return;
+    }
+    let checker = false; 
+    for (let index = 0; index < cities.length; index++) {
+      if(cityRef.current.value ==  cities[index]){
+        checker = true;
+        break;
+      }
+      
+    }
+    if(!checker){
+      setError("لطفا یک شهر انتخاب کنید");
+      return;
+    }
     formData.coordinates = {
       x : longitude?.toString(),
       y: latitude?.toString()
     }
     formData.country = "Iran";
+    formData.additionalInfo = postLocationRef.current.value.trim();
+    formData.province = provinceRef.current.value.trim();
+    formData.city = cityRef.current.value.trim();
     update.mutate(formData);
     
   }
@@ -227,14 +256,117 @@ const AddAddress = ({ afterCancel, afterSuccess }: Props) => {
             <input type="text" className=" w-11/12" ref={postLocationRef} />
           </label>
           <button type="button" onClick={() => {setShowFirstPage(true); setShowSecondPage(false)}}>بازگشت به انتخاب از روی نقشه</button>
-          <label className="block">
+          <div
+          className="dropdown block"
+          // onChange={(e) => searchLoc(e as ChangeEvent<HTMLInputElement>)}
+        >
+          <input
+            tabIndex={0}
+            role="button"
+            className=" m-1"
+            placeholder="استان"
+            ref = {provinceRef}
+            onBlur={(e) => {
+              console.log(e.target.value)
+              let checker = false;
+              provinces.forEach(data => {
+                if(e.target.value == data.name){
+                  setCities(data.cities);
+                  console.log("checked")
+                  console.log(cities);
+                  checker = true;
+                }
+              })
+              // if(!checker){
+              //   setCities([]);
+              // }
+            }}
+            onChange={e => setProvinceInput(e.target.value)}
+          />
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+          >
+            {provinces.map((data, index) => {
+              if(data.name.includes(provinceInput)){
+                return (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      provinceRef.current.value= data.name;
+                      setCities(data.cities);
+
+                    }}
+                  >
+                    <div className=" flex-col">
+                      <p className=" text-lg block">{data.name} </p>
+  
+                      {/* {
+                      data.address == data.region? 
+                      <p className=' text-sm'>{data.address}</p> 
+                      :
+                      <p className=' text-sm'>{data.address}{" "+ data.region}</p>
+                  } */}
+                    </div>
+                  </li>
+                );
+              }else{
+                return null;
+              }
+            })}
+          </ul>
+        </div>
+        <div
+          className="dropdown block"
+          // onChange={(e) => searchLoc(e as ChangeEvent<HTMLInputElement>)}
+        >
+          <input
+            tabIndex={0}
+            role="button"
+            className=" m-1"
+            placeholder="شهر"
+            ref = {cityRef}
+            onChange={e => setCityInput(e.target.value)}
+          />
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+          >
+            {cities?.map((data, index) => {
+              if(data.includes(cityInput)){
+                return (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      cityRef.current.value= data
+                    }}
+                  >
+                    <div className=" flex-col">
+                      <p className=" text-lg block">{data} </p>
+  
+                      {/* {
+                      data.address == data.region? 
+                      <p className=' text-sm'>{data.address}</p> 
+                      :
+                      <p className=' text-sm'>{data.address}{" "+ data.region}</p>
+                  } */}
+                    </div>
+                  </li>
+                );
+              }else{
+                return null;
+              }
+            })}
+          </ul>
+        </div>
+          {/* <label className="block">
             استان
             <input type="text" {...register("province")} />
-          </label>
-          <label className="block">
+          </label> */}
+          {/* <label className="block">
             شهر
             <input type="text" {...register("city")} />
-          </label>
+          </label> */}
           <label className="block">
             پلاک
             <input type="text" {...register("number")} />
