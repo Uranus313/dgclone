@@ -593,15 +593,15 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         console.log(1)
         const giftCards = (await getGiftCards(undefined,{code : req.body.code})).response;
         if(giftCards.length == 0){
-            res.status(400).send("invalid code");
-            res.body = "invalid code";
+            res.status(400).send({error:"invalid code"});
+            res.body = {error:"invalid code"};
             next();
             return;
         }
         const giftCard = giftCards[0];
         if(giftCard.isUsed){
-            res.status(400).send("this gift card is already used");
-            res.body = "this gift card is already used";
+            res.status(400).send({error:"this gift card is already used"});
+            res.body = {error:"this gift card is already used"};
             next();
             return;
         }
