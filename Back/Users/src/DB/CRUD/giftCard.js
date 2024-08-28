@@ -1,6 +1,6 @@
 import { GiftCardModel } from "../models/giftCard.js";
 import { UserModel } from "../models/user.js";
-
+import _ from "lodash"
 export async function saveGiftCard(giftCardCreate){
     const result = {};
     const giftCard = new GiftCardModel(giftCardCreate);
@@ -38,7 +38,11 @@ export async function getBoughtGiftCards( idArray){
         result.response = await GiftCardModel.find({_id :{ $in: idArray}});
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
-            if(result.response[index].isUsed && result.response[index].buyerID != result.response[index].userID){
+            if(result.response[index].isUsed && result.response[index].buyerID.toString() != result.response[index].userID.toString()){
+                console.log(result.response[index].buyerID.toString());
+                console.log(result.response[index].userID.toString());
+                console.log(result.response[index].buyerID.toString() != result.response[index].userID)
+
                 let user = await UserModel.find({_id : result.response[index].userID}).findOne();
                 user = user.toJSON();
                 if(user){

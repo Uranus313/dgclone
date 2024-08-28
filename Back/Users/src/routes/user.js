@@ -3,7 +3,7 @@ import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
 import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user.js";
-import { addreceivedGiftCard, changeUserPassword, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
+import { addBoughtGiftCard, addreceivedGiftCard, changeUserPassword, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
@@ -507,8 +507,9 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
 
 router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
-        const boughtGiftCards = (await getBoughtGiftCards(req.boughtGiftCards)).response;
-        const receivedGiftCards = (await getReceivedGiftCards(req.receivedGiftCards)).response;
+        // console.log()
+        const boughtGiftCards = (await getBoughtGiftCards(req.user.boughtGiftCards)).response;
+        const receivedGiftCards = (await getReceivedGiftCards(req.user.receivedGiftCards)).response;
         
         const response = {
             boughtGiftCards : boughtGiftCards,
@@ -545,13 +546,15 @@ router.post("/addGiftCard",innerAuth, async (req, res,next) =>{
             counter++;
             code = generateRandomString(16);
             const result = await getGiftCards(undefined,{code : code})
-            if(result.length==0){
+            console.log(result)
+            if(result.response.length==0){
                 break;
             }
             if(counter > 40){
                 console.log("Error","couldnt generate unique random code");
                 res.body = {error:"internal server error"};
                 res.status(500).send({error:"internal server error"});
+                return
             }
         }
         const result = await saveGiftCard({...req.body, code: code});
@@ -587,7 +590,8 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
         return;
     }
     try {
-        const giftCards = (await getGiftCards(undefined,{code : code})).response;
+        console.log(1)
+        const giftCards = (await getGiftCards(undefined,{code : req.body.code})).response;
         if(giftCards.length == 0){
             res.status(400).send("invalid code");
             res.body = "invalid code";
@@ -601,10 +605,13 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
             next();
             return;
         }
-        if(giftCard.buyerID != req.user._id){
+        console.log(2)
+        if(giftCard.buyerID.toString() != req.user._id){
             const user = await addreceivedGiftCard(req.user._id,giftCard._id );
 
         }
+        console.log(3)
+
         const result1 = await updateGiftCard(giftCard._id,{userID : req.user._id , isUsed : true , useDate : Date.now()})
         if (result1.error){
             res.status(400).send({error : result1.error});

@@ -9,11 +9,9 @@ const transactionSchema  = new mongoose.Schema(
     {
         money: {type: Number , required : true},
         sender:{type : {
-            method : {type: String,enum: ["bankAccount" , "wallet"], required: true},
-            entityType : {type: String,enum: ["digikala" , "user","company","giftCard"], required: true},
-            bankAccount : {type: String, required: true , validate: {
+            method : {type: String,enum: ["bankAccount" , "wallet"], required: true, validate:{
                 validator : function(value){
-                    if(this.method === "bankAccount" && (!value || value.trim() == "")){
+                    if(value === "bankAccount" && (!this.bankAccount)){
                         return false;
                     }
                     return true;
@@ -22,9 +20,9 @@ const transactionSchema  = new mongoose.Schema(
                     return "bankAccount needed";
                 }
             }},
-            senderID : {type: mongoose.Schema.Types.ObjectId, required: true , validate: {
+            entityType : {type: String,enum: ["digikala" , "user","seller","giftCard"], required: true, validate: {
                 validator : function(value){
-                    if((this.entityType === "user" || this.entityType === "company") && (!value || value.trim() == "")){
+                    if((value === "user" || value === "seller") && (!this.senderID)){
                         return false;
                     }
                     return true;
@@ -33,14 +31,14 @@ const transactionSchema  = new mongoose.Schema(
                     return "id needed";
                 }
             }},
+            bankAccount : {type: String},
+            senderID : {type: mongoose.Schema.Types.ObjectId },
             additionalInfo : {type : String}
         }},
         receiver:{type : {
-            method : {type: String,enum: ["bankAccount" , "wallet"], required: true},
-            entityType : {type: String,enum: ["digikala" , "user","company","giftCard"], required: true},
-            bankAccount : {type: String, required: true , validate: {
+            method : {type: String,enum: ["bankAccount" , "wallet"], required: true, validate:{
                 validator : function(value){
-                    if(this.method === "bankAccount" && (!value || value.trim() == "")){
+                    if(value === "bankAccount" && (!this.bankAccount)){
                         return false;
                     }
                     return true;
@@ -49,9 +47,9 @@ const transactionSchema  = new mongoose.Schema(
                     return "bankAccount needed";
                 }
             }},
-            receiverID : {type: mongoose.Schema.Types.ObjectId, required: true , validate: {
+            entityType : {type: String,enum: ["digikala" , "user","seller","giftCard"], required: true, validate: {
                 validator : function(value){
-                    if((this.entityType === "user" || this.entityType === "company") && (!value || value.trim() == "")){
+                    if((value === "user" || value === "seller") && (!this.receiverID)){
                         return false;
                     }
                     return true;
@@ -60,6 +58,8 @@ const transactionSchema  = new mongoose.Schema(
                     return "id needed";
                 }
             }},
+            bankAccount : {type: String},
+            receiverID : {type: mongoose.Schema.Types.ObjectId },
             additionalInfo : {type : String}
         },required : true },
         orderHistoryID: {type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" },
