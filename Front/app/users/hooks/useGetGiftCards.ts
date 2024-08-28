@@ -15,7 +15,8 @@ export interface GiftCard{
         phoneNumber : string,
         firstName? : string,
         lastName? : string
-    }
+    },
+    buyDate : string
 }
 
 function useGetUserGiftCards(){

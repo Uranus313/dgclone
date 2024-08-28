@@ -1,6 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { Wallet } from "../menu/layout";
+export interface Notification{
+    _id: string,
+    content:string,
+    title:string,
+    teaser:string,
+    imageUrl? : string,
+    orderID? : string,
+    isSeen? : boolean,
+    date : string,
+    type : string
+}
 function useGetUserNotifications(){
+    
     return useQuery({
         queryKey : ['notifications'],
         queryFn : async () => {

@@ -13,9 +13,10 @@ interface Props{
         firstName? : string,
         lastName? : string
     }
+    buyDate : string
 }
 
-const GiftCardCard = ( {code , amount , buyer , user } : Props) => {
+const GiftCardCard = ( {code , amount , buyer , user , buyDate } : Props) => {
   return (
     <div className=' m-3'>
       <div>
@@ -44,6 +45,7 @@ const GiftCardCard = ( {code , amount , buyer , user } : Props) => {
                 </p>
             </div>}
         </div>  }
+        <p>{buyDate}</p>
       </div>
     </div>
   )

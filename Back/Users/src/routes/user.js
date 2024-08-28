@@ -9,7 +9,7 @@ import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, u
 import { generateRandomString } from "../functions/randomString.js";
 import { changeWalletMoney, getWallets, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
-import { getNotifications } from "../DB/CRUD/notification.js";
+import { getNotifications, updateNotification } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
 import { innerAuth } from "../authorization/innerAuth.js";
 
@@ -87,8 +87,8 @@ router.patch("/changeinfo/:id",(req, res,next) => auth(req, res,next, ["user"]) 
     }
     const {error : e} = validateId(req.params.id);
     if (e){
-        res.status(400).send(e.details[0].message);
-        res.body = e.details[0].message;
+        res.status(400).send({error : e.details[0].message});
+        res.body = {error : e.details[0].message};
         next();
         return;
     } 
@@ -657,11 +657,71 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
 
 // checked 
 
+router.patch("/seeNotification/:id",(req, res,next) => auth(req, res,next, ["user","seller"]) , async (req, res,next) => {
+    const {error : e} = validateId(req.params.id);
+    if (e){
+        res.status(400).send({error : e.details[0].message});
+        res.body = {error : e.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        
+    
+    let result = await getNotifications(req.params.id);
+    if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+    }
+    if(!result.response){
+        res.status(400).send({error : "notifiction not found"});
+            res.body = {error : "notifiction not found"};
+            next();
+            return;
+    }
+    if(req.seller){
+        if(req.seller._id != result.response.sellerID.toString()){
+            res.status(400).send({error : "this is not your notification"});
+            res.body = {error : "this is not your notification"};
+            next();
+            return; 
+        }
+    }else{
+        if(req.user._id != result.response.userID.toString()){
+            res.status(400).send({error : "this is not your notification"});
+            res.body = {error : "this is not your notification"};
+            next();
+            return; 
+        }
+    }
+    result = await updateNotification(req.params.id , {
+        isSeen : true
+    })
+    if (result.error){
+        res.status(400).send({error : result.error});
+        res.body = {error : result.error};
+        next();
+        return;
+    }   
+    res.send(result.response);
+    res.body = result.response;
+    } catch (err) {
+    console.log("Error",err);
+    res.body = {error:"internal server error"};
+    res.status(500).send({error:"internal server error"});
+    }
+    next();
+
+})
 
 router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
         
         const result = await getNotifications(undefined,undefined,req.user.notifications)
+        console.log(result)
+        console.log(req.user.notifications)
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

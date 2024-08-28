@@ -8,8 +8,12 @@ Joi.objectId = joiObjectid(Joi);
 const notificationSchema  = new mongoose.Schema(
     {
         content: {type: String , required : true},
+        title: {type: String , required : true},
+        teaser: {type: String , required : true},
         userEmail: {type: String },
         userPhone: {type: String , required : true},
+        imageUrl: {type: String},
+        orderID: {type : mongoose.Schema.Types.ObjectId },
         userType: {type: String , enum : ["seller","user"], required : true, validate:{
             validator : function(value){
                 if(value === "seller" && (!this.sellerID)){
@@ -36,8 +40,21 @@ export const NotificationModel = mongoose.model("notifications",notificationSche
 export function validateNotificationPost (notification){
     const schema = Joi.object({
         content: Joi.string().min(1).max(2000).required(),
+        title: Joi.string().min(1).max(100).required(),
+        teaser: Joi.string().min(1).max(100).required(),
         userEmail : Joi.string().email(),
         userPhone : Joi.string().required(),
+        imageUrl: Joi.string(),
+        orderID : Joi.objectId().external( async (data) => {
+            if(!data){
+                return
+            }
+            const result = await fetch("http://getorders/"+orderID);
+            const order = await result.json();
+            if (!order._id){
+                throw new Error("this order does not exists");
+            }
+        }),
         userType : Joi.string().valid("seller" , "user").required().custom((value , helpers) => {
             if(value.userType == "seller" && !value.sellerID){
                 return helpers.error("seller ID needed");

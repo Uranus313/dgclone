@@ -23,8 +23,8 @@ router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
             res.status(400).send({error : error.details[0].message});
             res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -64,8 +64,8 @@ router.post("/logIn",  async (req, res, next) =>{
             res.status(400).send({error : error.details[0].message});
             res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -104,8 +104,8 @@ router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (r
             res.status(400).send({error : error.details[0].message});
             res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;
@@ -170,8 +170,8 @@ router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async 
             res.status(400).send({error : error.details[0].message});
             res.body = {error : error.details[0].message};
         }else{
-            res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
         }
         next();
         return;

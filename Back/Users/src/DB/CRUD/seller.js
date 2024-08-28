@@ -83,7 +83,13 @@ export async function updateSeller(id,sellerUpdate ){
     delete result.response.password;
     return(result);
 }
-
+export async function sellerAddNotification(id,notificationID ){
+    const result = {};
+    const response = await SellerModel.findByIdAndUpdate(id,{$push :{notifications : notificationID}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}
 export async function changeSellerPassword(id,newPassword , oldPassword ){
     const result = {};
     const seller = await SellerModel.find({_id : id}).findOne();

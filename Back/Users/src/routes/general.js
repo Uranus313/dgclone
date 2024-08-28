@@ -1,12 +1,12 @@
 import express from "express"
 import { auth } from "../authorization/auth.js";
-import { getUsers } from "../DB/CRUD/user.js";
+import { addNotification, getUsers } from "../DB/CRUD/user.js";
 import validateId from "../functions/validateId.js";
 import { validateNotificationPost } from "../DB/models/notification.js";
 import { saveNotification } from "../DB/CRUD/notification.js";
 import { validateChangeMoney } from "../DB/models/wallet.js";
 import { changeWalletMoney, getWallets } from "../DB/CRUD/wallet.js";
-import { getSellers } from "../DB/CRUD/seller.js";
+import { getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
 import { getTransactions } from "../DB/CRUD/transaction.js";
@@ -316,6 +316,23 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
             res.body = {error : result.error};
             next();
             return;
+        }
+        if(req.body.userID && result.response._id){
+            const user = await addNotification(req.body.userID,result.response._id)
+            if (user.error){
+                res.status(400).send({error : user.error});
+                res.body = {error : user.error};
+                next();
+                return;
+            }
+        }else if (result.response._id){
+            const seller = await sellerAddNotification(req.body.sellerID,result.response._id)
+            if (seller.error){
+                res.status(400).send({error : seller.error});
+                res.body = {error : seller.error};
+                next();
+                return;
+            }
         }
         res.body = result.response;
         res.send(result.response);

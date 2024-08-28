@@ -12,26 +12,26 @@ const GiftCardList = () => {
             case 'pending':
                 return giftCards.boughtGiftCards.map((giftCard : GiftCard , index : any) =>{
                     if(!giftCard.isUsed){
-                        return <GiftCardCard code={giftCard.code} amount={giftCard.amount} />
+                        return <GiftCardCard code={giftCard.code} amount={giftCard.amount} buyDate={giftCard.buyDate}/>
                     }
                 }); 
                 break;
             case 'received':
                 return giftCards.receivedGiftCards.map((giftCard : GiftCard , index : any) =>{
-                    return <GiftCardCard buyer={giftCard.buyer} code={giftCard.code} amount={giftCard.amount} />
+                    return <GiftCardCard buyer={giftCard.buyer} code={giftCard.code} amount={giftCard.amount} buyDate={giftCard.buyDate}/>
                 }); 
                 break;
             case 'gifted':
                 return giftCards.boughtGiftCards.map((giftCard : GiftCard , index : any) =>{
                     if(giftCard.isUsed && giftCard.user){
-                        return <GiftCardCard user={giftCard.user} code={giftCard.code} amount={giftCard.amount} />
+                        return <GiftCardCard user={giftCard.user} code={giftCard.code} amount={giftCard.amount} buyDate={giftCard.buyDate} />
                     }
                 }); 
                 break;
             case 'used':
                 return giftCards.boughtGiftCards.map((giftCard : GiftCard , index : any) =>{
                     if(giftCard.isUsed && !giftCard.user){
-                        return <GiftCardCard code={giftCard.code} amount={giftCard.amount} />
+                        return <GiftCardCard code={giftCard.code} amount={giftCard.amount} buyDate={giftCard.buyDate}/>
                     }
                 }); 
                 break;

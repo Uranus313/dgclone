@@ -80,6 +80,13 @@ export async function addBoughtGiftCard(id,giftCardID ){
     delete result.response.password;
     return(result);
 }
+export async function addNotification(id,notificationID ){
+    const result = {};
+    const response = await UserModel.findByIdAndUpdate(id,{$push :{notifications : notificationID}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}
 export async function addreceivedGiftCard(id,giftCardID ){
     const result = {};
     const response = await UserModel.findByIdAndUpdate(id,{$push :{receivedGiftCards : giftCardID}},{new : true});
