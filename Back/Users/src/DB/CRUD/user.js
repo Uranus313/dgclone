@@ -73,6 +73,20 @@ export async function updateUser(id,userUpdate ){
     delete result.response.password;
     return(result);
 }
+export async function addBoughtGiftCard(id,giftCardID ){
+    const result = {};
+    const response = await UserModel.findByIdAndUpdate(id,{$push :{boughtGiftCards : giftCardID}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}
+export async function addreceivedGiftCard(id,giftCardID ){
+    const result = {};
+    const response = await UserModel.findByIdAndUpdate(id,{$push :{receivedGiftCards : giftCardID}},{new : true});
+    result.response = response.toJSON();
+    delete result.response.password;
+    return(result);
+}
 export async function changeUserPassword(id,newPassword , oldPassword ){
     const result = {};
     const user = await UserModel.find({_id : id}).findOne();

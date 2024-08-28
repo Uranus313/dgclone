@@ -51,7 +51,7 @@ const userSchema  = new mongoose.Schema(
                 phoneNumber : {type: String, required : true}
             } , required: true}
         }}],
-        sentGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
+        boughtGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         receivedGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
         socialInteractions :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "comments" }]},

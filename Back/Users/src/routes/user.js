@@ -3,9 +3,9 @@ import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
 import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost } from "../DB/models/user.js";
-import { changeUserPassword, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
+import { addreceivedGiftCard, changeUserPassword, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
-import { getGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
+import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
 import { changeWalletMoney, getWallets, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
@@ -507,10 +507,11 @@ router.put("/deleteAddress", (req, res,next) => auth(req, res,next, ["user"]) , 
 
 router.get("/myGiftCards", (req, res,next) => auth(req, res,next, ["user"]) ,async (req, res,next) =>{
     try {
-        const sentGiftCards = (await getGiftCards(undefined,undefined,req.sentGiftCards)).response;
-        const receivedGiftCards = (await getGiftCards(undefined,undefined,req.receivedGiftCards)).response;
+        const boughtGiftCards = (await getBoughtGiftCards(req.boughtGiftCards)).response;
+        const receivedGiftCards = (await getReceivedGiftCards(req.receivedGiftCards)).response;
+        
         const response = {
-            sentGiftCards : sentGiftCards,
+            boughtGiftCards : boughtGiftCards,
             receivedGiftCards : receivedGiftCards
         }
         res.body = response;
@@ -553,13 +554,14 @@ router.post("/addGiftCard",innerAuth, async (req, res,next) =>{
                 res.status(500).send({error:"internal server error"});
             }
         }
-        const result = await saveGiftCard({...req.body, code: code})
+        const result = await saveGiftCard({...req.body, code: code});
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
             next();
             return;
         }
+        const user = await addBoughtGiftCard(req.body.buyerID,result.response._id)
         res.send(result.response);
         res.body = result.response;
     } catch (err) {
@@ -599,6 +601,10 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
             next();
             return;
         }
+        if(giftCard.buyerID != req.user._id){
+            const user = await addreceivedGiftCard(req.user._id,giftCard._id );
+
+        }
         const result1 = await updateGiftCard(giftCard._id,{userID : req.user._id , isUsed : true , useDate : Date.now()})
         if (result1.error){
             res.status(400).send({error : result1.error});
@@ -625,6 +631,7 @@ router.post("/useGiftCard", (req, res,next) => auth(req, res,next, ["user"]), as
                 receiverID : req.user._id
             }
         })
+        
         if (result3.error){
             res.status(400).send({error : result3.error});
             res.body = {error : result3.error};
