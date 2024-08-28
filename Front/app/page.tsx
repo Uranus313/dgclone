@@ -3,13 +3,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 import banner from './assets/images/banner.png'
 import Incredibles from './components/Incredibles/Incredibles'
-import { ProductCard } from './components/Interfaces/interfaces'
+import { ProductCardInterface } from './components/Interfaces/interfaces'
 import BestProducts from './components/BestProducts/BestProducts'
 
+
+export interface detail{
+  title: string,
+  keys: string[]
+}
 export interface Category {
   title: string;
   children?: Category[];
-  details: { title: string; list: string[] }[];
+  details: detail[]; //fix
   parentID?: string;
   id: string;
   pictures: string[];
@@ -31,20 +36,20 @@ export const Categories: Category[] = [
         children: [
           {
             title: "لپتاپ اپل",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "2",
             id: "8",
             pictures: ["" , ''],
           },
           {
             title: "لپتاپ ایسوس",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "2",
             id: "9",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
         parentID: "1",
         id: "2",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/dcb735863856217c8f64d891269b876c621772d7_1672570805.jpg'],
@@ -54,20 +59,20 @@ export const Categories: Category[] = [
         children: [
           {
             title: "موبایل اپل",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "3",
             id: "30",
             pictures: ["" , ''],
           },
           {
             title: "موبایل سامسونگ",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "3",
             id: "31",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "3",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/40026b18c2b053ac4a68c3288556dc899a77aecd_1673784561.jpg'],
@@ -78,20 +83,20 @@ export const Categories: Category[] = [
         children: [
           {
             title: "پلی استیشن",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "41",
             pictures: ["" , ''],
           },
           {
             title: "ایکس باکس",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "42",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
@@ -102,20 +107,20 @@ export const Categories: Category[] = [
         children: [
           {
             title: "پلی استیشن",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
-            id: "41",
+            id: "43",
             pictures: ["" , ''],
           },
           {
             title: "ایکس باکس",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
-            id: "42",
+            id: "44",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
@@ -126,20 +131,20 @@ export const Categories: Category[] = [
         children: [
           {
             title: "پلی استیشن",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
-            id: "41",
+            id: "45",
             pictures: ["" , ''],
           },
           {
             title: "ایکس باکس",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "42",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
@@ -150,20 +155,20 @@ export const Categories: Category[] = [
         children: [
           {
             title: "پلی استیشن",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "41",
             pictures: ["" , ''],
           },
           {
             title: "ایکس باکس",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "42",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
@@ -174,27 +179,27 @@ export const Categories: Category[] = [
         children: [
           {
             title: "پلی استیشن",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "41",
             pictures: ["" , ''],
           },
           {
             title: "ایکس باکس",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
             id: "42",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
       },
   
     ],
-    details: [{ title: "specs", list: ["brand", "sth"] }],
+    details: [{ title: "specs", keys: ["brand", "sth"] }],
     parentID: "",
     id: "1",
     theme:'#492885',
@@ -210,22 +215,22 @@ export const Categories: Category[] = [
         children: [
           {
             title: "یخچال ساید بای ساید",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "2",
             id: "8",
             pictures: ['' , ''],
           },
           {
             title: "یخچال کمپی",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "2",
             id: "9",
             pictures: ["" , ''],
           },
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
         parentID: "1",
-        id: "2",
+        id: "60",
         pictures: [""  , ''],
       },
       {
@@ -233,28 +238,28 @@ export const Categories: Category[] = [
         children: [
           {
             title: "ماکروویو",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "3",
             id: "30",
             pictures: ["" , ''],
           },
           {
             title: "توستر",
-            details: [{ title: "specs", list: ["brand", "sth"] }],
+            details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "3",
             id: "31",
             pictures: ["" , ''],
           },
           
         ],
-        details: [{ title: "specs", list: ["brand", "sth"] }],
+        details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "3",
         pictures: ["" , ''],
       },
   
     ],
-    details: [{ title: "specs", list: ["brand", "sth"] }],
+    details: [{ title: "specs", keys: ["brand", "sth"] }],
     parentID: "",
     id: "1",
     pictures: ["" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/c16b7dff700a9d99880174c32ec233d20ddb531c_1703057953.png'],
@@ -262,25 +267,25 @@ export const Categories: Category[] = [
 
   { 
     title: 'کتاب و لوازم تحریر',
-    details: [{ title: 'sth' , list: ["brand", "sth"] }],
+    details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/3582bbed0a53318c2332d2c79b051b226f02a3bb_1692600677.png'],
   },
   { 
     title: 'مد و پوشاک',
-    details: [{ title: 'sth' , list: ["brand", "sth"] }],
+    details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/5795b31a635f1e23df96a908c009f31744ede38f_1692600481.png'],
   },
   { 
     title: 'کارت هدیه',
-    details: [{ title: 'sth' , list: ["brand", "sth"] }],
+    details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/20c179dff5c513104599d33858b6b11e77ced9b4_1692601532.png'],
   },
   { 
     title: 'اسباب بازی',
-    details: [{ title: 'sth' , list: ["brand", "sth"] }],
+    details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/0c46d2532d61dd3a5b6a3afc17552c23c1b4d39e_1692600773.png'],
   },
@@ -297,7 +302,6 @@ export default function Home() {
 
   return (
    <main className='overflow-auto h-fit' >
-       <Image className='' src='/banner.png' width='380' height='300' alt='banner'/>
       <Image className='' src='/banner.png' width='2000' height='1000' alt='banner'/>
 
       <div className='p-5 mt-10'>

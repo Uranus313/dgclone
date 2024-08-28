@@ -25,13 +25,11 @@ export default function RootLayout({
 }) {
   
   return (
-    <html lang="en" dir='rtl'>
-
-      <body className={inter.className}>
-         <QueryClientProvider client={queryClient}>
+    <html lang="en" dir='rtl' data-theme = "light">
+      <body className={pimaryFont.className}>
+        <QueryClientProvider client={queryClient}>
           <SecondLayout children={children}/>
-         </QueryClientProvider>
-         
+        </QueryClientProvider>
          
       </body>
       

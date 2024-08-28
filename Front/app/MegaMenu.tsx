@@ -31,7 +31,7 @@ const [selected, setSelected] = useState(0);
                 {Categories[selected].children?.map((category2) => {
                     return (
                       <div className="">
-                        <Link className="" href={`/products/${category2.id}`}>
+                        <Link className="" href={`/products/${category2.id}/?sortOrder=mostViewed`}>
                           <p className="mb-2 border-r-4 pr-2 border-solid border-primary-color mt-3 font-bold hover:text-primary-color">
                             {category2?.title}
                           </p>
@@ -40,7 +40,7 @@ const [selected, setSelected] = useState(0);
                         {category2.children?.map((category3) => {
                             return (
                               <div className="py-2 text-sm text-grey-dark">
-                                <Link href={`/products/${category3.id}`}>
+                                <Link href={`/products/${category3.id}/?sortOrder=mostViewed`}>
                                   <p className="hover:text-primary-color">{category3.title}</p>
                                 </Link>
                               </div>

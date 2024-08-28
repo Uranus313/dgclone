@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -35,5 +36,25 @@ const config: Config = {
   plugins: [
     require('daisyui'),
   ],
+
+  daisyui: {
+    themes: [
+      {
+        digimarket: {
+          neutral: '#717171',
+          primary: "#BD1684",
+          secondary: "#FF5700",
+          accent: "#888888",
+          "base-100": "#ffffff",
+          info: "#3ABFF8",
+          success: "#36D399",
+          warning: "#FBBD23",
+          error: "#F87272",
+          disabled: "#717171",
+
+        },
+      },
+    ],
+  }
 }
 export default config
