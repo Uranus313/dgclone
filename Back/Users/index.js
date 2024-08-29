@@ -26,15 +26,18 @@ app.use(cors({
     origin: true, // Allow all origins
     credentials: true // Allow credentials
 }));
+process.env.JWTSECRET = 'mysecret'
+console.log(process.env.JWTSECRET)
+
 app.use(express.json());
 app.use(cookieParser());
-app.use("/users/user",userRouter);
-app.use("/users/admin",adminRouter);
-app.use("/users/general",generalRouter);
+app.use("/users/user", userRouter);
+app.use("/users/admin", adminRouter);
+app.use("/users/general", generalRouter);
 
-app.get("/",(req,res,next) => {
+app.get("/", (req, res, next) => {
     res.send("hello world");
 });
-app.listen(port, () =>{
-    console.log("server is running on port "+port);
+app.listen(port, () => {
+    console.log("server is running on port " + port);
 });
