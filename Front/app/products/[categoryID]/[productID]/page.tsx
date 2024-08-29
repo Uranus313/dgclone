@@ -2,30 +2,30 @@ import React from 'react'
 import { ProductInterface , shipmentMethod , Comment , commentType} from '@/app/components/Interfaces/interfaces'
 import ClientPart from './ClientPart'
 
-const comments:Comment[]=[
-    {
-    type:commentType.comment,
-    // answerto?:string  //for answer comments
-    id:'1',
-    productID:'1',
-    orderID:'5', //for normal comments
-    userID:'1',
-    content:'',
-    disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
-    dateSent:'2024/5/1 22:20:01'
-    },
-    {
-    type:commentType.comment,
-    // answerto?:string  //for answer comments
-    id:'2',
-    productID:'1',
-    // orderID:'5', //for normal comments
-    userID:'2',
-    content:'',
-    disAndlike:[{userid:'3',disOlike:false},{userid:'1',disOlike:false},{userid:'4',disOlike:true},],
-    dateSent:'2024/5/1 22:20:02'
-    },
-]
+// const comments:Comment[]=[
+//     {
+//     type:commentType.comment,
+//     // answerto?:string  //for answer comments
+//     id:'1',
+//     productID:'1',
+//     orderID:'5', //for normal comments
+//     userID:'1',
+//     content:'دستگاه خوب با امکانات خوبیه،سفارش منم به موقع سالم وپلمپ تحویل دادن',
+//     disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
+//     dateSent:'2024/5/1 22:20:01'
+//     },
+//     {
+//     type:commentType.comment,
+//     // answerto?:string  //for answer comments
+//     id:'2',
+//     productID:'1',
+//     // orderID:'5', //for normal comments
+//     userID:'2',
+//     content:'برای دخترم گرفتم تازه به دستش رسیده ولی فوق العاده دوستش داره ',
+//     disAndlike:[{userid:'3',disOlike:false},{userid:'1',disOlike:false},{userid:'4',disOlike:true},],
+//     dateSent:'2024/5/1 22:20:02'
+//     },
+// ]
 
 const product:ProductInterface = {
     id:'1',
@@ -91,9 +91,10 @@ const product:ProductInterface = {
             // answerto?:string  //for answer comments
             id:'1',
             productID:'1',
-            orderID:'5', //for normal comments
-            userID:'1',
-            content:'',
+            order:{color:'#ffffff',sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+            rate:3,
+            user:{userid:'2' , firstname:'لوگان',lastname:'پال'},
+            content:'برای دخترم گرفتم تازه به دستش رسیده ولی فوق العاده دوستش داره ',
             disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
             dateSent:'2024/5/1 22:20:01'
             },
@@ -103,8 +104,8 @@ const product:ProductInterface = {
             id:'2',
             productID:'1',
             // orderID:'5', //for normal comments
-            userID:'2',
-            content:'',
+            user:{userid:'1' , firstname:'ممد',lastname:'علی کلی'},
+            content:'دستگاه خوب با امکانات خوبیه،سفارش منم به موقع سالم وپلمپ تحویل دادن',
             disAndlike:[{userid:'3',disOlike:false},{userid:'1',disOlike:false},{userid:'4',disOlike:true},],
             dateSent:'2024/5/1 22:20:02'
             },
@@ -177,8 +178,33 @@ const ProductPage = ({params:{productID}}:Props) => {
                        <h2 className=''>بازخورد ها</h2> 
                     </div>
                     <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
-                    className="collapse-content max-h-96 overflow-auto bg-white border-2 border-propBubble-bg">
-                        <p className='mt-5'>{product.description}</p>
+                    
+                    className="collapse-content max-h-96 overflow-auto bg-primary-bg border-2 border-propBubble-bg">
+                        {product.recentComments.map((comment , index) =>{
+                            console.log(comment)
+                            return <div key={comment.id} className='mt-5 p-4 bg-white border border-grey-border'>
+                                <div className='flex mt-5'>
+                                    <p className='text-grey-dark text-sm'>{comment.user.firstname} {comment.user.lastname}</p>
+                                    {comment.order && <p className=' bg-primary-color text-white p-1 text-xs rounded-md mx-2'>خریدار</p>}
+                                </div>
+                                {comment.rate && <div className="rating mt-5 ">
+                                <input  disabled = {!(comment.rate==1)} checked= {comment.rate==1}  type="radio" name={`rating-${index}`} className="mask mask-star-2 bg-primary-color" />
+                                <input  disabled = {!(comment.rate==2)} checked= {comment.rate==2}  type="radio"name={`rating-${index}`} className="mask mask-star-2 bg-primary-color" />
+                                <input  disabled = {!(comment.rate==3)} checked= {comment.rate==3}  type="radio" name={`rating-${index}`} className="mask mask-star-2 bg-primary-color" />
+                                <input  disabled = {!(comment.rate==4)} checked= {comment.rate==4}  type="radio" name={`rating-${index}`} className="mask mask-star-2 bg-primary-color" />
+                                <input  disabled = {!(comment.rate==5)} checked= {comment.rate==5}  type="radio" name={`rating-${index}`} className="mask mask-star-2 bg-primary-color" />
+                                </div>}
+                                <p className='my-5'>{comment.content}</p>
+                                {comment.order && <div className='flex my-5'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 ml-2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                                    </svg>
+                                        
+                                    <p className='text-xs'>{comment.order?.sellerTitle}</p>
+                                    <div className='h-4 w-4 mx-2 border-grey-dark border rounded-full' style={{backgroundColor:comment.order.color}}></div>
+                                </div>}
+                            </div>
+})}
                     </div>
                 </div>
 

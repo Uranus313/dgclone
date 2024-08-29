@@ -52,8 +52,9 @@ export interface Comment{
     answerto?:string  //for answer comments
     id:string
     productID:string
-    orderID?:string //for normal comments
-    userID:string
+    rate?:number //for buyers
+    order?:{color:string , sellerTitle:string} //for normal comments
+    user:{userid:string ,firstname:string ,lastname:string}
     content:string
     disAndlike:{userid:string,disOlike:boolean}[]
     dateSent:string
