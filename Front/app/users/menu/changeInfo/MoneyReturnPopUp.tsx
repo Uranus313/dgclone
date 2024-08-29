@@ -101,7 +101,7 @@ const MoneyReturnPopUp = () => {
         
         <label className="block">
         روش بازگشت پول
-        <input className='block' readOnly onClick={openModal} defaultValue={user.moneyReturn.method} type="text" />
+        <input className='block' readOnly onClick={openModal} defaultValue={user?.moneyReturn?.method} type="text" />
         </label>
 
         <dialog ref={dialogRef} className="modal">
