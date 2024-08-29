@@ -43,7 +43,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="text-grey-dark text-md w-full z-50 bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
+    <div className="text-grey-dark fixed text-md w-full z-50 bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">
       <div className="mb-6 flex justify-between">
         <div className="flex w-7/12">
           <Link href='/'>     
