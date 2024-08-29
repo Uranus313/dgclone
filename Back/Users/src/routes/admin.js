@@ -1,11 +1,13 @@
 import { adminSignUpAuth } from "../authorization/adminSignUpAuth.js";
 import { auth } from "../authorization/auth.js";
 import { changeAdminPassword, logIn, saveAdmin } from "../DB/CRUD/admin.js";
+import { updateEmployee } from "../DB/CRUD/employee.js";
 import { updateSeller } from "../DB/CRUD/seller.js";
 import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
 import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
 import { validateAdminPost } from "../DB/models/admin.js";
+import { validateEmployeeChangeRole } from "../DB/models/employee.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js";
 import { validateUserBan } from "../DB/models/userBanList.js";
@@ -134,6 +136,37 @@ router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (r
     }
     next();
 });
+router.post("/changeEmployeeRole",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+    try {
+        await validateEmployeeChangeRole(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await updateEmployee(req.body.employeeID, {roleID: req.body.roleID});
+        if (result.error){
+            res.status(400).send({error : result1.error});
+            res.body = {error : result1.error};
+            next();
+            return;
+        }
+        res.send(result1.response);
+        res.body = result1.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["admin"]) ,  async (req, res, next) =>{
     const {error} = validateChangePassword(req.body); 
     console.log("login")
@@ -212,5 +245,6 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["admin"]), asyn
         res.status(500).send({error:"internal server error"});
     }
 })
+
 
 export default router;

@@ -61,6 +61,12 @@ export function validateEmployeeChangeRole (data){
                 throw new Error("no role with this id exists");
             }
         }).required(),
+        employeeID : Joi.objectid().external( async (employeeID) => {
+            const employee = await EmployeeModel.find({_id : employeeID}).findOne();
+            if(!employee){
+                throw new Error("no employee with this id exists");
+            }
+        }).required()
     });
     return schema.validateAsync(data);
 }
