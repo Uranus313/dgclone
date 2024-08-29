@@ -146,6 +146,16 @@ const MyFormComponent = () => {
       />
       <InputPopUp
         inputDetails={[
+          { title: "شماره ملی", type: "text", name: "nationalID" },
+        ]}
+        buttonMode="input"
+        titleLabel="شماره ملی"
+        inputDefaultValue={user?.nationalID}
+        inputType="number"
+        mainText="سلام"
+      />
+      <InputPopUp
+        inputDetails={[
           { title: "شماره اقتصادی", type: "text", name: "economicCode" },
         ]}
         buttonMode="input"

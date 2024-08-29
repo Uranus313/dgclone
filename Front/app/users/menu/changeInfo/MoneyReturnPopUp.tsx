@@ -31,6 +31,7 @@ const MoneyReturnPopUp = () => {
       };
     const update = useMutation({
         mutationFn: async (formData : any) => {
+          console.log(formData)
             const result = await fetch("http://localhost:3005/users/user/changeMyinfo", {
                   method: "PATCH",
                   credentials: 'include',
@@ -71,8 +72,10 @@ const MoneyReturnPopUp = () => {
     const firstSubmit = async () => {
         if(selectedOption == "wallet"){
             if (user?.moneyReturn?.method != "wallet"){
+                const moneyReturn = {...user?.moneyReturn , method: "wallet"};
+                delete moneyReturn._id;
                 update.mutate({
-                    moneyReturn : {...user?.moneyReturn , method: "wallet"}
+                    moneyReturn : moneyReturn
                 });
                 return
             }
@@ -101,7 +104,7 @@ const MoneyReturnPopUp = () => {
         
         <label className="block">
         روش بازگشت پول
-        <input className='block' readOnly onClick={openModal} defaultValue={user?.moneyReturn?.method} type="text" />
+        <input className='block' readOnly onClick={openModal} value={user?.moneyReturn?.method} type="text" />
         </label>
 
         <dialog ref={dialogRef} className="modal">

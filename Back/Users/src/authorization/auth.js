@@ -9,6 +9,7 @@ export async function auth(req,res,next,acceptedStatuses){
     if(!token){
         res.status(401).send({error:"access denied. no token provided."});
         res.body = {error:"access denied. no token provided."};
+        next();
         return 
     }
     try {
@@ -22,6 +23,7 @@ export async function auth(req,res,next,acceptedStatuses){
         if (!checker){
             res.status(401).send({error:"access denied. invalid " + acceptedStatuses.join(', ')});
             res.body = {error:"access denied. invalid " + acceptedStatuses.join(', ')};
+            next();
             return 
         }
         
@@ -32,11 +34,13 @@ export async function auth(req,res,next,acceptedStatuses){
                 if(!user){
                     res.status(401).send({error:"access denied. invalid user."});
                     res.body = {error:"access denied. invalid user."};
+                    next();
                     return 
                 }
                 if (user.isBanned){
-                    res.status(401).send({error:"access denied. you are banned."});
+                    res.status(403).send({error:"access denied. you are banned."});
                     res.body = {error:"access denied. you are banned."};
+                    next();
                     return 
                 }
                 req.user = user;
@@ -47,11 +51,13 @@ export async function auth(req,res,next,acceptedStatuses){
                 if(!seller){
                     res.status(401).send({error:"access denied. invalid seller."});
                     res.body = {error:"access denied. invalid seller."};
+                    next();
                     return 
                 }
                 if (seller.isBanned){
-                    res.status(401).send({error:"access denied. you are banned."});
+                    res.status(403).send({error:"access denied. you are banned."});
                     res.body = {error:"access denied. you are banned."};
+                    next();
                     return 
                 }
                 req.seller = seller;
@@ -61,6 +67,8 @@ export async function auth(req,res,next,acceptedStatuses){
                 if(!admin){
                     res.status(401).send({error:"access denied. invalid admin."});
                     res.body = {error:"access denied. invalid admin."};
+                    next();
+
                     return 
                 }
                 req.admin = admin;
@@ -70,6 +78,8 @@ export async function auth(req,res,next,acceptedStatuses){
                 if(!transporter){
                     res.status(401).send({error:"access denied. invalid transporter."});
                     res.body = {error:"access denied. invalid transporter."};
+                    next();
+
                     return 
                 }
                 req.transporter = transporter;
