@@ -49,14 +49,14 @@ export enum commentType{comment , answer, question}
 
 export interface Comment{
     type: commentType
-    answerto?:string  //for answer comments
+    answers?:Comment[]  //for question comments
     id:string
     productID:string
     rate?:number //for buyers
     order?:{color:string , sellerTitle:string} //for normal comments
     user:{userid:string ,firstname:string ,lastname:string}
     content:string
-    disAndlike:{userid:string,disOlike:boolean}[]
+    disAndlike?:{userid:string,disOlike:boolean}[] //for questions
     dateSent:string
 }
 

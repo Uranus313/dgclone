@@ -27,8 +27,7 @@ const ParentCategoryPage = ({params:{id}}:Props) => {
             </h1>
           ))}
 
-          <button style={{backgroundColor:category?.theme}} className='text-white py-2 px-4 mt-4 text-lg font-black rounded-md'>بزن بریم</button>
-
+          <Link href={'/products/'+id}><button style={{backgroundColor:category?.theme}} className='text-white py-2 px-4 mt-4 text-lg font-black rounded-md'>بزن بریم</button></Link>
         </div>
       </div>
 
