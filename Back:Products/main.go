@@ -40,15 +40,23 @@ func main() {
 
 	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
 
-	// app.Get("/products/products", crud.GetAllProducts)
+	// app.Get("/products/product", crud.GetAllProducts)
 
-	app.Get("/products/products/:ProdID", crud.GetProductByID)
+	app.Get("/products/product/:ProdID", crud.GetProductByID)
 
-	app.Post("/products/products", crud.AddProduct)
+	app.Post("/products/product", crud.AddProduct)
 
 	app.Post("/products/order", crud.AddOrder)
 
 	app.Get("/products/order/orderhistory/:OHID")
+
+	app.Post("/products/category", crud.AddCategory)
+
+	app.Get("/products/category", crud.GetAllCategories)
+
+	app.Get("/products/category/:CateID", crud.GetCategoryByID)
+
+	app.Patch("/products/category/:CateID", crud.EditCategory)
 
 	app.Post("/products/addpost", func(c *fiber.Ctx) error {
 		// Get the Authorization header
