@@ -35,8 +35,8 @@ type Comment struct {
 	OrderID           primitive.ObjectID `json:"order_id,omitempty" bson:"order_id,omitempty"` // regular comments
 	UserID            primitive.ObjectID `json:"user_id" bson:"user_id"`
 	Content           string             `json:"content" bson:"content"`
-	Pictures          []string           `json:"pictures,omitempty" bson:"pictures,omitempty"` // regular comments
-	Videos            []string           `json:"videos,omitempty" bson:"videos,omitempty"`     // regular comments
 	LikesAndDisslikes []LikeOrDisslike   `json:"likes&disslikes" bson:"likes&disslikes"`
 	DateSent          time.Time          `json:"date_sent" bson:"date_sent"`
+	// Pictures          []string           `json:"pictures,omitempty" bson:"pictures,omitempty"` // regular comments
+	// Videos            []string           `json:"videos,omitempty" bson:"videos,omitempty"`     // regular comments
 }

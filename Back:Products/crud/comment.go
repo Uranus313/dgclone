@@ -60,12 +60,12 @@ func PostComment(c *fiber.Ctx) error {
 	}
 
 	if comment.CommentType.String() != "Comment" {
-		if len(comment.Pictures) > 0 {
-			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have pictures"})
-		}
-		if len(comment.Videos) > 0 {
-			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have videos"})
-		}
+		// if len(comment.Pictures) > 0 {
+		// 	return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have pictures"})
+		// }
+		// if len(comment.Videos) > 0 {
+		// 	return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have videos"})
+		// }
 		if comment.OrderID != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments do not contain an order id field"})
 		}

@@ -34,23 +34,23 @@ func main() {
 	}))
 	app.Use(logger.New())
 
-	app.Get("/comments/:ProdID", crud.GetCommentsByProductID)
+	app.Get("/products/comments/:ProdID", crud.GetCommentsByProductID)
 
-	app.Post("/comments", crud.PostComment)
+	app.Post("/products/comments", crud.PostComment)
 
-	app.Patch("/comments/:CommentID", crud.UpdateCommentScore)
+	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
 
-	app.Get("/products", crud.GetAllProducts)
+	// app.Get("/products/products", crud.GetAllProducts)
 
-	app.Get("/products/:ProdID", crud.GetProductByID)
+	app.Get("/products/products/:ProdID", crud.GetProductByID)
 
-	app.Post("/products", crud.AddProduct)
+	app.Post("/products/products", crud.AddProduct)
 
-	app.Post("/order", crud.AddOrder)
+	app.Post("/products/order", crud.AddOrder)
 
-	app.Get("/order/orderhistory/:OHID")
+	app.Get("/products/order/orderhistory/:OHID")
 
-	app.Post("/addpost", func(c *fiber.Ctx) error {
+	app.Post("/products/addpost", func(c *fiber.Ctx) error {
 		// Get the Authorization header
 		authHeader := c.Get("Authorization")
 

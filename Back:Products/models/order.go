@@ -10,7 +10,7 @@ type order_product struct {
 	ProdID    primitive.ObjectID
 	Price     int
 	Color     string
-	Guarantee guarantee
+	Guarantee Guarantee
 	SellerID  primitive.ObjectID
 	Picture   string
 }
