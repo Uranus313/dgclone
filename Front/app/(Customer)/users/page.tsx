@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import ProductCard from '../components/ProductCar/ProductCard'
+import ProductCard from '../../components/ProductCar/ProductCard'
 import UserTable from './UserTable';
 import Link from 'next/link';
 

@@ -1,6 +1,6 @@
 
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Categories, Category } from "../page";
+import { Categories, Category } from "../(Customer)/page";
 
 export function getCategory(id: string): Category | undefined {
     let category: Category | undefined;

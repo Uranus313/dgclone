@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './BG.module.css'
-import { Categories, Category } from '@/app/page';
+import { Categories, Category } from '@/app/(Customer)/page';
 import Incredibles from '@/app/components/Incredibles/Incredibles';
 import BestProducts from '@/app/components/BestProducts/BestProducts';
 import Link from 'next/link';

@@ -1,7 +1,7 @@
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import useUserCheckToken from './users/hooks/useCheckToken';
-import userContext from './contexts/userContext';
+import userContext from '../contexts/userContext';
 import NavBar from './NavBar';
 import _ from 'lodash'
 import Footer from './Footer';
