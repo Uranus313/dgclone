@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
-import { RoleModel } from "./role";
+import { RoleModel } from "./role.js";
 Joi.objectId = joiObjectid(Joi);
 
 const employeeSchema  = new mongoose.Schema(

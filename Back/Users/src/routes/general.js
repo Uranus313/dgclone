@@ -10,14 +10,14 @@ import { getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
 import { getTransactions } from "../DB/CRUD/transaction.js";
-import { getTransporters } from "../DB/CRUD/transporter.js";
+import { getEmployees } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
 
 
 const router = express.Router();
 //checked
-router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transporter"]) ,async (req, res,next) =>{
+router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
         const result = await getUsers(undefined,req.query);
         if (result.error){
@@ -37,7 +37,7 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transp
     next();
 });
 
-router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "transporter"]) , async (req, res, next) =>{
+router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -64,7 +64,7 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "tra
     next();
 });
 
-router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "transporter"]) ,async (req, res,next) =>{
+router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
         const result = await getSellers(undefined,req.query);
         if (result.error){
@@ -83,7 +83,7 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "tran
     next();
 });
 
-router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "transporter"]) , async (req, res, next) =>{
+router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -248,9 +248,9 @@ router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin
     next();
 });
 
-router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
-        const result = await getTransporters(undefined,req.query);
+        const result = await getEmployees(undefined,req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -267,7 +267,7 @@ router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"])
     next();
 });
 
-router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -276,7 +276,7 @@ router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin
         return;
     } 
     try {
-        const result = await getTransporters(req.params.id);
+        const result = await getEmployees(req.params.id);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -497,21 +497,21 @@ router.get("/checkToken/:token",innerAuth,async (req, res, next) => {
                 });
                 next();
                 break;    
-            case "transporter":
-                const transporter = (await getTransporters(decoded._id)).response;
-                if(!transporter){
-                    res.status(401).send({error:"access denied. invalid transporter."});
-                    res.body = {error:"access denied. invalid transporter."};
+            case "employee":
+                const employee = (await getEmployees(decoded._id)).response;
+                if(!employee){
+                    res.status(401).send({error:"access denied. invalid employee."});
+                    res.body = {error:"access denied. invalid employee."};
                     next();
                     return 
                 }
                 res.body = {
                     status : decoded.status,
-                    entity: transporter
+                    entity: employee
                 };
                 res.send({
                     status : decoded.status,
-                    entity: transporter
+                    entity: employee
                 });
                 next();
                 break;               

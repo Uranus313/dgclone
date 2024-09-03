@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Joi, { required } from "joi";
+import Joi from "joi";
 import joiObjectid from "joi-objectid";
-import { levels } from "../../authorization/accessLevels";
-import { EmployeeModel } from "./employee";
+import { levels } from "../../authorization/accessLevels.js";
+import { EmployeeModel } from "./employee.js";
 Joi.objectId = joiObjectid(Joi);
 
 const roleSchema  = new mongoose.Schema(
