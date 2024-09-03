@@ -2,9 +2,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import banner from './assets/images/banner.png'
-import Incredibles from './components/Incredibles/Incredibles'
-import { ProductCardInterface } from './components/Interfaces/interfaces'
-import BestProducts from './components/BestProducts/BestProducts'
+import Incredibles from '../components/Incredibles/Incredibles'
+import { ProductCardInterface } from '../components/Interfaces/interfaces'
+import BestProducts from '../components/BestProducts/BestProducts'
 
 
 export interface detail{

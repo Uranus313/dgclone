@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './BG.module.css'
-import { Categories, Category } from '@/app/page';
+import { Categories, Category } from '@/app/(Customer)/page';
 import Incredibles from '@/app/components/Incredibles/Incredibles';
 import BestProducts from '@/app/components/BestProducts/BestProducts';
 import Link from 'next/link';
@@ -27,8 +27,7 @@ const ParentCategoryPage = ({params:{id}}:Props) => {
             </h1>
           ))}
 
-          <button style={{backgroundColor:category?.theme}} className='text-white py-2 px-4 mt-4 text-lg font-black rounded-md'>بزن بریم</button>
-
+          <Link href={'/products/'+id}><button style={{backgroundColor:category?.theme}} className='text-white py-2 px-4 mt-4 text-lg font-black rounded-md'>بزن بریم</button></Link>
         </div>
       </div>
 

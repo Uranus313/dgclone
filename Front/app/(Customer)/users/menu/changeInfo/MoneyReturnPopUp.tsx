@@ -137,7 +137,7 @@ const MoneyReturnPopUp = () => {
         <form onSubmit={handleSubmit(secondSubmit)} className={showBankNumberPage? "block" : "hidden"}>
         <label className="block">
             شماره کارت بانکی متصل به حساب
-            <input type="number" defaultValue={user.moneyReturn.bankAccount} className='block' {...register("bankAccountNumber")}/>
+            <input type="number" defaultValue={user?.moneyReturn?.bankAccount} className='block' {...register("bankAccountNumber")}/>
            
         </label>
             <button className='btn btn-primary' type='submit'>تایید</button>

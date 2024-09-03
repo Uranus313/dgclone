@@ -4,13 +4,14 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import f from '../../../assets/images/tomann.png'
 import Gallery from './Gallery'
+import SeeMore from '@/app/components/SeeMore/SeeMore'
 interface Props{
     product : ProductInterface
 }
 
 const ClientPart = ({product}:Props) => {
     
-    let ColorsWithSellers:{color:string,sellers:string[]}[] = []
+    let ColorsWithSellers:{color:string,sellers:SellerInfosOnProduct[]}[] = []
     const [selectedColor , setSelectedColor] = useState(product.sellers[0].quantity[0].color)
     const [selectedSeller , setSelectedSeller] = useState<SellerInfosOnProduct>()
     
@@ -19,20 +20,20 @@ const ClientPart = ({product}:Props) => {
     product.sellers.forEach(seller => {
         seller.quantity.forEach(colorQuantity=>{
             if (colorQuantity.quantity != 0 ){
-                const foundColor:{color:string,sellers:string[]}|undefined = ColorsWithSellers.find((item)=> item.color === colorQuantity.color)
+                const foundColor:{color:string,sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color === colorQuantity.color)
 
                 if(foundColor){
-                    foundColor.sellers.push(seller.sellerid)
+                    foundColor.sellers.push(seller)
                 }
                 else{
-                    ColorsWithSellers.push({color:colorQuantity.color , sellers:[seller.sellerid]})
+                    ColorsWithSellers.push({color:colorQuantity.color , sellers:[seller]})
                 }
             }
         })
     });
 
 
-
+    let otherSellersCount = (ColorsWithSellers.find(item => item.color === selectedColor)?.sellers.length ?? 0) - 1
     useEffect(()=>{
         const sellers = product.sellers.filter(seller=>seller.quantity.some(color=>color.color==selectedColor))
         const bestSellerman = sellers.reduce((prevSeller, currentSeller) => {
@@ -42,7 +43,7 @@ const ClientPart = ({product}:Props) => {
     },[selectedColor])
     
   return (
-    <div className='grid grid-cols-12 gap-4  overflow-x-hidden'>
+    <div className='grid grid-cols-12 gap-4 overflow-hidden'>
         <div className='col-span-4'>
             <Gallery images={product.images} />
         </div>
@@ -95,7 +96,8 @@ const ClientPart = ({product}:Props) => {
                     <div className='bg-primary-bg rounded-lg border-grey-border border p-5 mx-auto w-10/12'>
                         <div className='flex justify-between '>
                             <h2 className='text-lg font-bold'>فروشنده</h2>
-                            <h2 className='text-sm text-primary-color'>{product.sellers.length} فروشنده دیگر</h2>
+                            
+                            {otherSellersCount > 0 && <h2 className='text-sm text-primary-color'>{otherSellersCount} فروشنده دیگر</h2>}
                         </div>
                         <div className='flex my-2 justify-between border-b pb-3 border-grey-border'>
                             <div className='flex'>
@@ -146,10 +148,47 @@ const ClientPart = ({product}:Props) => {
                 </div>
 
             </div>
-
-
-
         </div>
+
+        {otherSellersCount > 0 && <div className='mt-20 col-span-full'>
+            <SeeMore minItemsCount={3}>
+  {[
+    ...(ColorsWithSellers.find(item => item.color === selectedColor)?.sellers || []).map(seller => (
+      <div className='w-full border grid grid-cols-4 border-primary-color py-5 rounded-md mb-5' key={seller.sellerid}>
+        <div className='flex items-center'>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+          </svg>
+          <div>
+            <p className='mb-4 text-xl'>{seller.sellerTitle}</p>
+            <div className='flex'>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 text-primary-color">
+                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
+              </svg>
+              <p className='text-lg'>{seller.sellerRating}</p>
+            </div>
+          </div>
+        </div>
+        <div className='flex items-center justify-center'>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-2 ">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+          </svg>
+          <p className=''>{seller.garante.title}</p>
+        </div>
+        <div className='flex items-center justify-center'>
+          <p className='text-3xl'>{seller.price}</p>
+          <Image className='mx-1 object-contain' objectFit='contain' src={f} width='30' height='100' alt='تومان'/>
+        </div>
+        <div className='flex items-center justify-end'>
+          <button className='bg-primary-color text-white w-9/12 py-3 mx-4 rounded-md'>افزودن به سبد</button>
+        </div>
+      </div>
+    ))
+  ]}
+</SeeMore>
+
+        </div>}
+            
     </div>
   )
 }
