@@ -1,13 +1,13 @@
 import { adminSignUpAuth } from "../authorization/adminSignUpAuth.js";
 import { auth } from "../authorization/auth.js";
-import { changeAdminPassword, logIn, saveAdmin } from "../DB/CRUD/admin.js";
+import { changeAdminPassword, logIn, saveAdmin, updateAdmin } from "../DB/CRUD/admin.js";
 import { updateEmployee } from "../DB/CRUD/employee.js";
 import { updateSeller } from "../DB/CRUD/seller.js";
 import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
 import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
 import { validateAdminPost } from "../DB/models/admin.js";
-import { validateEmployeeChangeRole } from "../DB/models/employee.js";
+import { validateEmployeeBan, validateEmployeeChangeRole } from "../DB/models/employee.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js";
 import { validateUserBan } from "../DB/models/userBanList.js";
@@ -233,18 +233,90 @@ router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async 
     }
     next();
 });
-//checked
-router.get("/checkToken",(req, res,next) => auth(req, res,next, ["admin"]), async (req,res) =>{
+
+
+router.post("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
-        delete req.admin.password;
-        res.send(req.admin);
-        res.body = req.admin;
+        await validateEmployeeBan(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await updateEmployee(req.body.sellerID , {isBanned : true})
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
     } catch (err) {
         console.log("Error",err);
         res.body = {error:"internal server error"};
         res.status(500).send({error:"internal server error"});
     }
-})
+    next();
+});
+//checked
+// router.get("/checkToken",(req, res,next) => auth(req, res,next, ["admin"]), async (req,res) =>{
+//     try {
+//         delete req.admin.password;
+//         res.send(req.admin);
+//         res.body = req.admin;
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+// })
 
+router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["admin"]) ,  async (req, res, next) =>{
+    try {
+        await validateAdminChangeinfo(req.body); 
+    } catch (error) {
+        console.log(error)
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await updateAdmin(req.admin._id,req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        const token = jwt.sign({_id : result.response._id , status: "admin"},process.env.JWTSECRET,{expiresIn : '6h'});
+        res.cookie('x-auth-token',token,{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 
 export default router;

@@ -10,14 +10,14 @@ import { getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
 import { getTransactions } from "../DB/CRUD/transaction.js";
-import { getTransporters } from "../DB/CRUD/transporter.js";
+import { getEmployees } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
 
 
 const router = express.Router();
 //checked
-router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transporter"]) ,async (req, res,next) =>{
+router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
         const result = await getUsers(undefined,req.query);
         if (result.error){
@@ -37,7 +37,7 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "transp
     next();
 });
 
-router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "transporter"]) , async (req, res, next) =>{
+router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -64,7 +64,7 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "tra
     next();
 });
 
-router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "transporter"]) ,async (req, res,next) =>{
+router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
         const result = await getSellers(undefined,req.query);
         if (result.error){
@@ -83,7 +83,7 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "tran
     next();
 });
 
-router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "transporter"]) , async (req, res, next) =>{
+router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -248,9 +248,9 @@ router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin
     next();
 });
 
-router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
-        const result = await getTransporters(undefined,req.query);
+        const result = await getEmployees(undefined,req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -267,7 +267,7 @@ router.get("/allTransporters", (req, res,next) => auth(req, res,next, ["admin"])
     next();
 });
 
-router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -276,7 +276,7 @@ router.get("/allTransporters/:id",(req, res,next) => auth(req, res,next, ["admin
         return;
     } 
     try {
-        const result = await getTransporters(req.params.id);
+        const result = await getEmployees(req.params.id);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -422,109 +422,47 @@ router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]
     next();
 });
 
-
-router.get("/checkToken/:token",innerAuth,async (req, res, next) => {
+router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller","employee","admin"]), async (req,res) =>{
     try {
-        const decoded = jwt.verify(req.params.token,process.env.JWTSECRET);
-        switch (decoded.status) {
-            case "user":
-                const user = (await getUsers(decoded._id)).response;
-                // console.log(user.addresses)
-                if(!user){
-                    res.status(401).send({error:"access denied. invalid user."});
-                    res.body = {error:"access denied. invalid user."};
-                    next()
-                    return 
-                }
-                if (user.isBanned){
-                    res.status(403).send({error:"access denied. you are banned."});
-                    res.body = {error:"access denied. you are banned."};
-                    next();
-                    return 
-                }
-                
-                res.body = {
-                    status : decoded.status,
-                    entity: user
-                };
-                res.send({
-                    status : decoded.status,
-                    entity: user
-                });
-                next();
-
-                break;
-            
-            case "seller":
-                const seller = (await getSellers(decoded._id)).response;
-                if(!seller){
-                    res.status(401).send({error:"access denied. invalid seller."});
-                    res.body = {error:"access denied. invalid seller."};
-                    next();
-                    return 
-                }
-                if (seller.isBanned){
-                    res.status(403).send({error:"access denied. you are banned."});
-                    res.body = {error:"access denied. you are banned."};
-                    next();
-                    return 
-                }
-                res.body = {
-                    status : decoded.status,
-                    entity: seller
-                };
-                res.send({
-                    status : decoded.status,
-                    entity: seller
-                });
-                next();
-                break;  
-            case "admin":
-                const admin = (await getAdmins(decoded._id)).response;
-                if(!admin){
-                    res.status(401).send({error:"access denied. invalid admin."});
-                    res.body = {error:"access denied. invalid admin."};
-                    next();
-                    return 
-                }
-                res.body = {
-                    status : decoded.status,
-                    entity: admin
-                };
-                res.send({
-                    status : decoded.status,
-                    entity: admin
-                });
-                next();
-                break;    
-            case "transporter":
-                const transporter = (await getTransporters(decoded._id)).response;
-                if(!transporter){
-                    res.status(401).send({error:"access denied. invalid transporter."});
-                    res.body = {error:"access denied. invalid transporter."};
-                    next();
-                    return 
-                }
-                res.body = {
-                    status : decoded.status,
-                    entity: transporter
-                };
-                res.send({
-                    status : decoded.status,
-                    entity: transporter
-                });
-                next();
-                break;               
-            default:
-                break;
+        if(req.user){
+            delete req.user.password;
+            res.send(req.user);
+            res.body = req.user;
+            next();
+            return;
         }
+        if(req.seller){
+            delete req.seller.password;
+            res.send(req.seller);
+            res.body = req.seller;
+            next();
+            return;
+        }
+        if(req.employee){
+            delete req.employee.password;
+            res.send(req.employee);
+            res.body = req.employee;
+            next();
+            return;
+        }
+        if(req.admin){
+            delete req.admin.password;
+            res.send(req.admin);
+            res.body = req.admin;
+            next();
+            return;
+        }
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
         next();
-    } catch (error) {
-        console.log(error)
-        res.status(400).send({error:"invalid token"});
-        res.body = {error:"invalid token"};
+        return;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
 })
+
 router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){

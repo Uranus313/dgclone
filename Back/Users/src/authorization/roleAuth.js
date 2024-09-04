@@ -59,6 +59,12 @@ export async function auth(req, res, next, acceptedLevels) {
 
           return;
         }
+        if (employee.isBanned) {
+          res.status(403).send({ error: "access denied. you are banned." });
+          res.body = { error: "access denied. you are banned." };
+
+          return;
+        }
         let checker = false;
         let role = await getRoles(employee.roleID);
         if(!role.response){

@@ -28,7 +28,7 @@ const MenuLayout = ({
         // console.log(user)
         // console.log(!isLoading)
 
-        if(!user && !isLoading){
+        if(!user && !isLoading && user.status != "user"){
             router.push("/users/signIn");
         }
     },

@@ -17,6 +17,7 @@ const sellerSchema  = new mongoose.Schema(
             }},  
         isCompelete: Boolean,
         isVerified: Boolean,
+        rating: {type: Number , required: true , default: 0},
         phoneNumber: {type: String , required : true},
         entityType: {type: String,enum: ["individual" , "legal"], required: true,
             validate: {
@@ -129,6 +130,14 @@ const sellerSchema  = new mongoose.Schema(
         transactionHistory : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "transactions" }]}
     }
 );
+
+
+sellerSchema.virtual("status").get(() => {
+    return "seller";
+});
+
+sellerSchema.set('toJSON',{virtuals: true});
+sellerSchema.set('toObject',{virtuals: true});
 
 export const SellerModel = mongoose.model("sellers",sellerSchema);
 

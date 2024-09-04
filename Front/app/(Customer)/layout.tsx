@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import userContext from '../contexts/userContext';
-import useUserCheckToken from './users/hooks/useCheckToken';
 import SecondLayout from './SecondLayout';
 import localFont from 'next/font/local'
 import Footer from './Footer';

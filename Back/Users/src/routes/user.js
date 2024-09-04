@@ -197,17 +197,17 @@ router.patch("/changePassword", (req, res, next) => auth(req, res, next, ["user"
     next();
 });
 //  checked
-router.get("/checkToken", (req, res, next) => auth(req, res, next, ["user"]), async (req, res) => {
-    try {
-        delete req.user.password;
-        res.send(req.user);
-        res.body = req.user;
-    } catch (err) {
-        console.log("Error", err);
-        res.body = { error: "internal server error" };
-        res.status(500).send({ error: "internal server error" });
-    }
-})
+// router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user"]), async (req,res) =>{
+//     try {
+//         delete req.user.password;
+//         res.send(req.user);
+//         res.body = req.user;
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+// })
 
 
 // checked

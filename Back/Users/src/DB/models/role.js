@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Joi, { required } from "joi";
+import Joi from "joi";
 import joiObjectid from "joi-objectid";
-import { levels } from "../../authorization/accessLevels";
-import { EmployeeModel } from "./employee";
+import { levels } from "../../authorization/accessLevels.js";
+import { EmployeeModel } from "./employee.js";
 Joi.objectId = joiObjectid(Joi);
 
 const roleSchema  = new mongoose.Schema(
@@ -29,10 +29,10 @@ export function validateRolePost (data){
                 throw new Error("a role with this name already exists");
             }
         }).required(),
-        accessLevels : Joi.object({
+        accessLevels : Joi.array().items(Joi.object({
             level : Joi.string().valid(levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage).required(),
             writeAccess : Joi.boolean().required()
-        }).required(true)
+        })).required(true)
     });
     return schema.validateAsync(data);
 }
