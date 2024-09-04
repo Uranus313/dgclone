@@ -3,7 +3,7 @@ function useUserCheckToken(){
     return useQuery({
         queryKey : ['user'],
         queryFn : async () => {
-            const result = await fetch("http://localhost:3005/users/user/checkToken", {
+            const result = await fetch("http://localhost:3005/users/general/checkToken", {
                             credentials: 'include'});
             const jsonResult = await result.json();
             console.log(jsonResult)
