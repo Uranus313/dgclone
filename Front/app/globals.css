@@ -23,7 +23,7 @@ body {
 }
 
 @layer base {
-  h1 {
+  /* h1 {
     @apply font-bold text-2xl;
-  }
+  } */
 }

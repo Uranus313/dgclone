@@ -4,9 +4,14 @@ import { Inter } from 'next/font/google'
 import NavbarSeller from './NavbarSeller'
 import Footer from '../../(Customer)/Footer'
 import FooterSeller from './FooterSeller'
+import localFont from 'next/font/local'
 
 
 const inter = Inter({ subsets: ['latin'] })
+const pimaryFont = localFont({
+  src: '../../assets/fonts/Estedad-Regular.ttf',
+  // display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -20,9 +25,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" dir='rtl'>
-      <body className={inter.className}>
+      <body className={pimaryFont.className}>
          <NavbarSeller/>
-         <main className='p-5'>
+         <main className='p-5' style={{paddingTop:'85px'}}>
           {children}
          </main>
          <FooterSeller/>

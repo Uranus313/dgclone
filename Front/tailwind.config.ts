@@ -23,6 +23,7 @@ const config: Config = {
       'propBubble-bg': '#E5EBFA',
       'white': '#fff',
       'black': '#000',
+      'primary-seller': '#395F82'
 
     },
     extend: {
