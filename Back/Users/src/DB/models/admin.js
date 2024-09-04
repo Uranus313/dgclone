@@ -45,6 +45,33 @@ export function validateAdminPost (data){
     return schema.validateAsync(data);
 }
 
+export function validateAdminChangeinfo (data){
+    const schema = Joi.object({
+        firstName: Joi.string().min(1).max(100),
+        lastName: Joi.string().min(1).max(100),
+        birthDate : Joi.date(),
+        phoneNumber : Joi.string().min(11).max(12).external( async (phoneNumber) => {
+            const user = await AdminModel.find({phoneNumber : phoneNumber}).findOne();
+            if(user){
+                throw new Error("an account with this phone number already exists");
+            }
+        }),
+        email: Joi.string().email().external( async (email) => {
+            const user = await AdminModel.find({email : email}).findOne();
+            if(user){
+                throw new Error("an account with this email already exists");
+            }
+        }),
+        nationalID: Joi.string().length(10).pattern(/^\d+$/).external( async (nationalID) => {
+            const user = await AdminModel.find({nationalID : nationalID}).findOne();
+            if(user){
+                throw new Error("an account with this national ID number already exists");
+            }
+        }),
+    }).min(1);
+    return schema.validateAsync(data);
+}
+
 
 
 

@@ -29,10 +29,10 @@ export function validateRolePost (data){
                 throw new Error("a role with this name already exists");
             }
         }).required(),
-        accessLevels : Joi.object({
+        accessLevels : Joi.array().items(Joi.object({
             level : Joi.string().valid(levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage).required(),
             writeAccess : Joi.boolean().required()
-        }).required(true)
+        })).required(true)
     });
     return schema.validateAsync(data);
 }
