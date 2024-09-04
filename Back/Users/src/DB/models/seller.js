@@ -131,6 +131,14 @@ const sellerSchema  = new mongoose.Schema(
     }
 );
 
+
+sellerSchema.virtual("status").get(() => {
+    return "seller";
+});
+
+sellerSchema.set('toJSON',{virtuals: true});
+sellerSchema.set('toObject',{virtuals: true});
+
 export const SellerModel = mongoose.model("sellers",sellerSchema);
 
 export function validateSellerPost (data){

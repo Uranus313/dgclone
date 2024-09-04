@@ -64,6 +64,14 @@ const userSchema  = new mongoose.Schema(
     }
 );
 
+
+userSchema.virtual("status").get(() => {
+    return "user";
+});
+
+userSchema.set('toJSON',{virtuals: true});
+userSchema.set('toObject',{virtuals: true});
+
 export const UserModel = mongoose.model("users",userSchema);
 
 export function validateUserPost (data){

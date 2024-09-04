@@ -1,7 +1,7 @@
-import { accessLevels } from "../authorization/accessLevels";
-import { changeEmployeePassword, saveEmployee, updateEmployee } from "../DB/CRUD/employee";
-import { validateEmployeeChangeinfo, validateEmployeePost } from "../DB/models/employee";
-import { validateChangePassword } from "../DB/models/user";
+import { accessLevels } from "../authorization/accessLevels.js";
+import { changeEmployeePassword, saveEmployee, updateEmployee } from "../DB/CRUD/employee.js";
+import { validateEmployeeChangeinfo, validateEmployeePost } from "../DB/models/employee.js";
+import { validateChangePassword } from "../DB/models/user.js";
 import express from "express";
 import jwt from "jsonwebtoken";
 

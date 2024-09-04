@@ -15,6 +15,13 @@ const adminSchema  = new mongoose.Schema(
     }
 );
 
+adminSchema.virtual("status").get(() => {
+    return "admin";
+});
+
+adminSchema.set('toJSON',{virtuals: true});
+adminSchema.set('toObject',{virtuals: true});
+
 export const AdminModel = mongoose.model("admins",adminSchema);
 
 export function validateAdminPost (data){

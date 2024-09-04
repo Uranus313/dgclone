@@ -22,6 +22,12 @@ const employeeSchema  = new mongoose.Schema(
 );
 
 
+employeeSchema.virtual("status").get(() => {
+    return "employee";
+});
+
+employeeSchema.set('toJSON',{virtuals: true});
+employeeSchema.set('toObject',{virtuals: true});
 
 export const EmployeeModel = mongoose.model("employees",employeeSchema);
 

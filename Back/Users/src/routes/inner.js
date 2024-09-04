@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import { innerAuth } from "../authorization/innerAuth";
-import { getSellers } from "../DB/CRUD/seller";
+import { innerAuth } from "../authorization/innerAuth.js";
+import { getSellers } from "../DB/CRUD/seller.js";
 
 
 const router = express.Router();
