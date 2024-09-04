@@ -112,17 +112,17 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["seller"]) 
     next();
 });
 //  checked
-router.get("/checkToken",(req, res,next) => auth(req, res,next, ["seller"]), async (req,res) =>{
-    try {
-        delete req.seller.password;
-        res.send(req.seller);
-        res.body = req.seller;
-    } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
-    }
-})
+// router.get("/checkToken",(req, res,next) => auth(req, res,next, ["seller"]), async (req,res) =>{
+//     try {
+//         delete req.seller.password;
+//         res.send(req.seller);
+//         res.body = req.seller;
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+// })
 
 router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["seller"]) ,  async (req, res, next) =>{
     const {error} = validateChangePassword(req.body); 

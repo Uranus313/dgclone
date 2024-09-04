@@ -267,17 +267,17 @@ router.post("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  asyn
     next();
 });
 //checked
-router.get("/checkToken",(req, res,next) => auth(req, res,next, ["admin"]), async (req,res) =>{
-    try {
-        delete req.admin.password;
-        res.send(req.admin);
-        res.body = req.admin;
-    } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
-    }
-})
+// router.get("/checkToken",(req, res,next) => auth(req, res,next, ["admin"]), async (req,res) =>{
+//     try {
+//         delete req.admin.password;
+//         res.send(req.admin);
+//         res.body = req.admin;
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+// })
 
 router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["admin"]) ,  async (req, res, next) =>{
     try {
