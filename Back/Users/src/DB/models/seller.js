@@ -17,6 +17,7 @@ const sellerSchema  = new mongoose.Schema(
             }},  
         isCompelete: Boolean,
         isVerified: Boolean,
+        rating: {type: Number , required: true , default: 0},
         phoneNumber: {type: String , required : true},
         entityType: {type: String,enum: ["individual" , "legal"], required: true,
             validate: {
