@@ -195,6 +195,12 @@ router.post("/verifyRequest",(req, res,next) => auth(req, res,next, ["seller"]),
             next();
             return;
         }
+        if(!req.seller.storeInfo || !req.seller.warehouseAddress){
+            res.status(400).send("pls first fill out your store information and warehouse address");
+            res.body = "pls first fill out your store information and warehouse address";
+            next();
+            return;
+        }
         const oldRequests = await getVerifyRequests(undefined , {sellerID : req.seller._id , state : "pending"});
         if (oldRequests.response.length > 0){
             res.status(400).send("you already have a verify request waiting to be aswered");
