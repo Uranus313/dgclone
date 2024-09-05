@@ -4,6 +4,7 @@ import MultiRangeSlider from './MultiRangeSlider/MultiRangeSlider';
 import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams,  } from 'next/navigation';
 import useDebounce from '@/app/hooks/useDebounce';
 import { updateQueries } from '@/app/Functions/ServerFunctions';
+import useQueryNext from '@/app/hooks/useQueryNext';
 
 
 interface FilterInterface{
@@ -38,9 +39,8 @@ const Filter = () => {
     priceRange:{max:90000000 , min:0}
   }
 
-  const manage = useRouter()
-  const pathname = usePathname()
-
+//   const pathname = usePathname()
+  
   
   const [minVal, setMinVal] = useState<number>(filtersRes.priceRange.min);
   const [maxVal, setMaxVal] = useState<number>(filtersRes.priceRange.max);
@@ -48,15 +48,17 @@ const Filter = () => {
   const [value, setValue] = useState<string[]>([])
   const debouncedSearch = useDebounce([minVal ,maxVal ], 1000)
   
-  const searchParams = useSearchParams()
-  const c = new URLSearchParams(searchParams)
+//   const manage = useRouter()
+//   const searchParams = useSearchParams()
+//   const c = new URLSearchParams(searchParams)
 
-  
-    const handleRemoveQueryParam = (paramToRemove:string) => {
-      c.delete(paramToRemove);
-      const newUrl = `${pathname}?${c.toString()}`;
-      manage.replace(newUrl);
-    };
+//     const handleRemoveQueryParam = (paramToRemove:string) => {
+//       c.delete(paramToRemove);
+//       const newUrl = `${pathname}?${c.toString()}`;
+//       manage.replace(newUrl);
+//     };
+
+    const {searchParams, handleRemoveQueryParam} = useQueryNext()
 
 
   useEffect(() => {
@@ -115,7 +117,7 @@ const Filter = () => {
                                 ? <div style={{backgroundColor:option , height:'30px',width:'30px'}} className='border border-grey-dark rounded-sm'></div>
                                 : <span className="label-text text-black">{option}</span>}
                                 <input type="checkbox" className="checkbox border-2 border-primary-color [--chkbg:theme(colors.primary-color)] [--chkfg:white] checked:border-primary-color" 
-                                    onChange={(e)=>{e.target.checked? updateQueries({dicts:[{param:`${filter.query}[${index}]`,value:option}] , searchParams:searchParams}) : handleRemoveQueryParam(`${filter.query}[${index}]`) , console.log(c)}}/>
+                                    onChange={(e)=>{e.target.checked? updateQueries({dicts:[{param:`${filter.query}[${index}]`,value:option}] , searchParams:searchParams}) : handleRemoveQueryParam(`${filter.query}[${index}]`)}}/>
                             </label>
                         ))}
                     </div>}

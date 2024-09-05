@@ -3,6 +3,7 @@ import ProfileSide from './ProfileSide'
 import { bankNumberType, commentType, EntitiyType, moneyReturn, notifTypeSeller, Seller, State } from '@/app/components/Interfaces/interfaces'
 import OrderWidget from './OrderWidget'
 import SellChart from './SellChart'
+import Link from 'next/link'
 
 
 export const seller:Seller={
@@ -117,7 +118,7 @@ const SellersHome = () => {
       <div className='bg-white col-span-2 row-span-1 p-4 rounded-lg'>
         <div className='my-3 flex justify-between'>
           <p className='text-lg'>فروخته‌شده</p>
-          <button className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</button>
+          <Link href='/sellers/orders/?filter=sold' className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</Link>
         </div>
         <p className='text-lg'>{seller.saleInfo.sold} کالا</p>
       </div>
@@ -130,7 +131,7 @@ const SellersHome = () => {
       <div className='bg-white col-span-2 row-span-1 p-4 rounded-lg'>
       <div className='my-3 flex justify-between'>
           <p className='text-lg'>تمام کالا ها</p>
-          <button className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</button>
+          <Link href='/sellers/products' className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</Link>
         </div>
         <p className='text-lg'>{seller.saleInfo.productCount} کالا</p>
       </div>

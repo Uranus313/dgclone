@@ -234,3 +234,20 @@ export interface Seller{
 }
 
 //#endregion
+export enum StateProduct{
+    accepted='پذیرفته شده',
+    rejected='لغو شده',
+    inCheckingOrder='در صف بررسی'
+    
+}
+
+export interface ProductCardSeller{
+    title:string,
+    categoryTitle:string,
+    categoryID:string,
+    productID:string,
+    brand:string,
+    state:StateProduct,
+    varientCount:number,
+    picture:string,
+}

@@ -1,5 +1,6 @@
 import React from 'react'
 import { seller } from './page'
+import Link from 'next/link'
 
 const ProfileSide = () => {
   return (
@@ -25,7 +26,7 @@ const ProfileSide = () => {
           <div className=''>
             <div className='flex justify-between'>
               <p>اعلان ها</p>
-              <button className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>همه</button>
+              <Link href='/sellers/notifications' className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>همه</Link>
             </div>
             {seller.recentNotifications.slice(0,2).map(notif=>(
               <div className='flex justify-between my-3 overflow-hidden border-b border-grey-border py-2'>
