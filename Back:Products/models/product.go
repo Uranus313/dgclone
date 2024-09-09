@@ -12,7 +12,7 @@ type Guarantee struct {
 	Desc  string
 }
 
-type rating struct {
+type Rating struct {
 	Rate    float32
 	RateNum int
 }
@@ -48,7 +48,7 @@ func (d ShipmentMethod) EnumIndex() int {
 	return int(d)
 }
 
-type seller struct {
+type SellerCart struct {
 	SellerID       primitive.ObjectID
 	SellerTitle    string
 	SellerRating   float32
@@ -70,8 +70,8 @@ type Product struct {
 	VisitCount  int                `json:"visit_count" bson:"visit_count"`
 	Vists       []time.Time        `json:"visits" bson:"visits"`
 	Title       string             `json:"title" bson:"title"`
-	Sellers     []seller           `json:"sellers" bson:"sellers"`
-	Rating      rating             `json:"rating" bson:"rating"`
+	Sellers     []SellerCart       `json:"sellers" bson:"sellers"`
+	Rating      Rating             `json:"rating" bson:"rating"`
 	BrandID     primitive.ObjectID `json:"brand_id" bson:"brand_id"`
 	Is_original bool               `json:"is_original" bson:"is_original"`
 	CategoryID  primitive.ObjectID `json:"category_id" bson:"category_id"`
@@ -86,4 +86,16 @@ type Product struct {
 	// Price       int                `json:"price" bson:"price"`
 	// DiscountID  primitive.ObjectID `json:"discount_id,omitempty" bson:"discount_id,omitempty"`
 	// Color       string             `json:"color" bson:"color"`
+}
+
+type UpdatableProd struct {
+	// Patch => edit product -> title, desc, images, details, dimentions, weight, pros&cons
+	ID          primitive.ObjectID
+	Title       string
+	Description string
+	Images      []string
+	Details     []productDetail
+	Dimentions  dimentions
+	Weight_KG   int
+	ProsNCons   pros_cons
 }

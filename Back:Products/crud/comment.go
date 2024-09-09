@@ -14,6 +14,7 @@ import (
 )
 
 func GetCommentsByProductID(c *fiber.Ctx) error {
+	// make infinite scroll function
 
 	var ProdComments []models.Comment
 

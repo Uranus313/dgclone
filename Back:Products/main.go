@@ -34,11 +34,15 @@ func main() {
 	}))
 	app.Use(logger.New())
 
+	// ------------comemnts------------
+
 	app.Get("/products/comments/:ProdID", crud.GetCommentsByProductID)
 
 	app.Post("/products/comments", crud.PostComment)
 
 	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
+
+	// ------------products-------------
 
 	// app.Get("/products/product", crud.GetAllProducts)
 
@@ -46,9 +50,21 @@ func main() {
 
 	app.Post("/products/product", crud.AddProduct)
 
-	app.Post("/products/order", crud.AddOrder)
+	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query => SellerID, ProdID
 
-	app.Get("/products/order/orderhistory/:OHID")
+	app.Patch("/products/product/UpdateRating", crud.UpdateProductRating) // query => ProductID, Rating
+
+	app.Patch("/products/product/UpdateQuantity", crud.UpdateProdQuantity) // query => ProductID, SellerID, Quantity
+
+	app.Delete("/products/product/:ProdID", crud.DeleteProductByID)
+
+	app.Patch("/products/product", crud.EditProduct)
+
+	app.Get("/products/product/MostDiscounts", crud.GetMostDiscounts)
+
+	app.Get("/products/product", crud.InfiniteScrolProds) // query => limit, offset, CateID
+
+	// --------------category-----------------
 
 	app.Post("/products/category", crud.AddCategory)
 
@@ -57,6 +73,28 @@ func main() {
 	app.Get("/products/category/:CateID", crud.GetCategoryByID)
 
 	app.Patch("/products/category/:CateID", crud.EditCategory)
+
+	// -------------brand---------------
+
+	app.Post("/products/brand", crud.AddBrand)
+
+	app.Get("/products/brand/:BrandID", crud.GetBrandByID)
+
+	app.Delete("/products/brand/:BrandID", crud.DeleteBrandByID)
+
+	// ------------discount code-----------
+
+	app.Post("/products/discountcode", crud.AddDiscountCode)
+
+	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query => DCodeID, UserID
+
+	// -------------orders--------------
+
+	app.Post("/products/order", crud.AddOrder)
+
+	app.Get("/products/order/orderhistory/:OHID")
+
+	// ------------tests-------------
 
 	app.Post("/products/addpost", func(c *fiber.Ctx) error {
 		// Get the Authorization header
@@ -78,6 +116,22 @@ func main() {
 		// Continue processing
 		return c.Next()
 
+	})
+
+	app.Get("/products/query-parameters", func(c *fiber.Ctx) error {
+		// Retrieve query parameters
+		category := c.Query("category") // "electronics"
+		sort := c.Query("sort")         // "price"
+
+		// You can also provide a default value if the parameter is not present
+		limit := c.Query("limit", "10") // if limit is not provided, it will default to "10"
+
+		// Output for demonstration purposes
+		// fmt.Printf("Category: %s, Sort: %s, Limit: %s\n", category, sort, limit)
+		log.Printf("Category: %s, Sort: %s, Limit: %s\n", category, sort, limit)
+
+		// Return a response
+		return c.SendString("Query parameters received")
 	})
 
 	log.Fatal(app.Listen(":8080"))
