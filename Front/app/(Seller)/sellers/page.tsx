@@ -118,7 +118,7 @@ const SellersHome = () => {
       <div className='bg-white col-span-2 row-span-1 p-4 rounded-lg'>
         <div className='my-3 flex justify-between'>
           <p className='text-lg'>فروخته‌شده</p>
-          <Link href='/sellers/orders/?filter=sold' className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</Link>
+          <Link href='/sellers/orderHistory/?filter=sold' className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</Link>
         </div>
         <p className='text-lg'>{seller.saleInfo.sold} کالا</p>
       </div>

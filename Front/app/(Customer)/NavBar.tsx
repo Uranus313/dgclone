@@ -16,31 +16,31 @@ const NavBar = () => {
   const [display , setDisplay] = useState('100')
   const manage = useRouter()
 
-  window.onscroll = function(e) {
-      let currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // Get Current Scroll Value
-      const collapsableElement = document.getElementById('collapsable');
-      console.log(display)
-      if (currentScroll > 0 && lastScroll.current < currentScroll){
-        lastScroll.current = currentScroll;
-        console.log('down')
-        // setNavcollaps(true)
-        setDisplay('0')
-        if (collapsableElement) {
-          collapsableElement.style.display = 'none';
-      }
+  // window.onscroll = function(e) {
+  //     let currentScroll = document.documentElement.scrollTop || document.body.scrollTop; // Get Current Scroll Value
+  //     const collapsableElement = document.getElementById('collapsable');
+  //     console.log(display)
+  //     if (currentScroll > 0 && lastScroll.current < currentScroll){
+  //       lastScroll.current = currentScroll;
+  //       console.log('down')
+  //       // setNavcollaps(true)
+  //       setDisplay('0')
+  //       if (collapsableElement) {
+  //         collapsableElement.style.display = 'none';
+  //     }
         
-      }else if(currentScroll > 0 && lastScroll.current > currentScroll){
-        lastScroll.current = currentScroll;
-        console.log('up')
-        // setNavcollaps(false)
-        setDisplay('100')
-        if (collapsableElement) {
-          collapsableElement.style.display = 'flex';
-        }
+  //     }else if(currentScroll > 0 && lastScroll.current > currentScroll){
+  //       lastScroll.current = currentScroll;
+  //       console.log('up')
+  //       // setNavcollaps(false)
+  //       setDisplay('100')
+  //       if (collapsableElement) {
+  //         collapsableElement.style.display = 'flex';
+  //       }
         
         
-      }
-  };
+  //     }
+  // };
 
   return (
     <div className="text-grey-dark fixed text-md w-full z-50 bg-white border-b-1 border-solid border-grey-light drop-shadow p-3 px-5 ">

@@ -17,9 +17,9 @@ const NavBar = () => {
               <li>
                 <details>
                   <summary className="text-lg">کالا</summary>
-                  <ul className="bg-base-100 rounded-t-none ">
-                    <li><a>Link 1</a></li>
-                    <li><a>Link 2</a></li>
+                  <ul className="bg-base-100 rounded-t-none w-36">
+                    <li><Link href="/sellers/products">مدیریت کالا ها</Link></li>
+                    <li><Link href="/sellers/addProducts">افزودن کالا</Link></li>
                   </ul>
                 </details>
               </li>
@@ -29,9 +29,9 @@ const NavBar = () => {
               <li>
                 <details>
                   <summary className="text-lg">سفارش ها</summary>
-                  <ul className="bg-base-100 rounded-t-none ">
-                    <li><a>Link 1</a></li>
-                    <li><a>Link 2</a></li>
+                  <ul className="bg-base-100 rounded-t-none w-56 ">
+                    <li><Link href="/sellers/orders">مدیریت سفارش های جاری</Link></li>
+                    <li><Link href="/sellers/orderHistory">تاریخچه ی سفارش ها</Link></li>
                   </ul>
                 </details>
               </li>
@@ -42,8 +42,8 @@ const NavBar = () => {
                 <details>
                   <summary className="text-lg">مالی</summary>
                   <ul className="bg-base-100 rounded-t-none ">
-                    <li><a>Link 1</a></li>
-                    <li><a>Link 2</a></li>
+                    <li><Link href="/sellers/transactionHostory">تاریخچه تراکنش ها</Link></li>
+                    <li><Link href="/sellers/billingList">لیست هزینه ها و کمیسیون</Link></li>
                   </ul>
                 </details>
               </li>

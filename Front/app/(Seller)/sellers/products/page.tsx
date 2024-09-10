@@ -64,10 +64,7 @@ const filterables:Filterables={
   brands:["اپل","ایسوس","لنوو"]
 }
 
-const Products = () => {
-  const headers=['عنوان کالا','گروه کالایی','برند کالا','وضعیت','تعداد تنوع','']
-
-  
+const Products = () => {  
   return (
     <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
       <h1 className='text-xl font-bold text-grey-dark'>مدیریت کالا ها</h1>
@@ -158,9 +155,6 @@ const Products = () => {
             </Link>
           </div>
           }
-
-       
-
         </div>
       ))}
     </div>

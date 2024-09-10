@@ -15,6 +15,7 @@ export interface Category {
   title: string;
   children?: Category[];
   details: detail[]; //fix
+  commisionPercent:number
   parentID?: string;
   id: string;
   pictures: string[];
@@ -40,6 +41,7 @@ export const Categories: Category[] = [
             parentID: "2",
             id: "8",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
           {
             title: "لپتاپ ایسوس",
@@ -47,12 +49,14 @@ export const Categories: Category[] = [
             parentID: "2",
             id: "9",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
         parentID: "1",
         id: "2",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/dcb735863856217c8f64d891269b876c621772d7_1672570805.jpg'],
+        commisionPercent:2,
       },
       {
         title: "موبایل",
@@ -63,6 +67,7 @@ export const Categories: Category[] = [
             parentID: "3",
             id: "30",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
           {
             title: "موبایل سامسونگ",
@@ -70,10 +75,11 @@ export const Categories: Category[] = [
             parentID: "3",
             id: "31",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
-     
+        commisionPercent:2,
         id: "3",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/40026b18c2b053ac4a68c3288556dc899a77aecd_1673784561.jpg'],
       },
@@ -87,6 +93,7 @@ export const Categories: Category[] = [
             parentID: "40",
             id: "41",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
           {
             title: "ایکس باکس",
@@ -94,12 +101,14 @@ export const Categories: Category[] = [
             parentID: "40",
             id: "42",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
      
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+        commisionPercent:2,
       },
 
       {
@@ -111,6 +120,7 @@ export const Categories: Category[] = [
             parentID: "40",
             id: "43",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
           {
             title: "ایکس باکس",
@@ -118,10 +128,11 @@ export const Categories: Category[] = [
             parentID: "40",
             id: "44",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
-     
+        commisionPercent:2,
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
       },
@@ -135,6 +146,7 @@ export const Categories: Category[] = [
             parentID: "40",
             id: "45",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
           {
             title: "ایکس باکس",
@@ -142,10 +154,11 @@ export const Categories: Category[] = [
             parentID: "40",
             id: "42",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
-     
+        commisionPercent:2,
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
       },
@@ -154,6 +167,7 @@ export const Categories: Category[] = [
         title: "کنسول بازی",
         children: [
           {
+            commisionPercent:2,
             title: "پلی استیشن",
             details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
@@ -161,6 +175,7 @@ export const Categories: Category[] = [
             pictures: ["" , ''],
           },
           {
+            commisionPercent:2,
             title: "ایکس باکس",
             details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
@@ -169,7 +184,7 @@ export const Categories: Category[] = [
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
-     
+        commisionPercent:2,
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
       },
@@ -178,6 +193,7 @@ export const Categories: Category[] = [
         title: "کنسول بازی",
         children: [
           {
+            commisionPercent:2,
             title: "پلی استیشن",
             details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
@@ -185,6 +201,7 @@ export const Categories: Category[] = [
             pictures: ["" , ''],
           },
           {
+            commisionPercent:2,
             title: "ایکس باکس",
             details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "40",
@@ -193,7 +210,7 @@ export const Categories: Category[] = [
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
-     
+        commisionPercent:2,
         id: "40",
         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
       },
@@ -202,6 +219,7 @@ export const Categories: Category[] = [
     details: [{ title: "specs", keys: ["brand", "sth"] }],
     parentID: "",
     id: "1",
+    commisionPercent:2,
     theme:'#492885',
     desc:'تکنولوژی انقلابی / بهترین قیمت ها / همین حالا سفارش بده',
     pictures: ["https://i.postimg.cc/L6Wbd2K9/Digital-Productss.png" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/aba1e5dca8958ac1176e25cd194ff8ac622cd383_1692600155.png'],
@@ -219,6 +237,7 @@ export const Categories: Category[] = [
             parentID: "2",
             id: "8",
             pictures: ['' , ''],
+            commisionPercent:2,
           },
           {
             title: "یخچال کمپی",
@@ -226,12 +245,14 @@ export const Categories: Category[] = [
             parentID: "2",
             id: "9",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
         parentID: "1",
         id: "60",
         pictures: [""  , ''],
+        commisionPercent:2,
       },
       {
         title: "پخت و پز",
@@ -242,23 +263,27 @@ export const Categories: Category[] = [
             parentID: "3",
             id: "30",
             pictures: ["" , ''],
+            commisionPercent:2,
           },
           {
             title: "توستر",
             details: [{ title: "specs", keys: ["brand", "sth"] }],
             parentID: "3",
             id: "31",
+            commisionPercent:2,
             pictures: ["" , ''],
           },
           
         ],
         details: [{ title: "specs", keys: ["brand", "sth"] }],
+        commisionPercent:2,
      
         id: "3",
         pictures: ["" , ''],
       },
   
     ],
+    commisionPercent:2,
     details: [{ title: "specs", keys: ["brand", "sth"] }],
     parentID: "",
     id: "1",
@@ -270,22 +295,26 @@ export const Categories: Category[] = [
     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/3582bbed0a53318c2332d2c79b051b226f02a3bb_1692600677.png'],
+    commisionPercent:2,
   },
   { 
     title: 'مد و پوشاک',
     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/5795b31a635f1e23df96a908c009f31744ede38f_1692600481.png'],
+    commisionPercent:2,
   },
   { 
     title: 'کارت هدیه',
     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/20c179dff5c513104599d33858b6b11e77ced9b4_1692601532.png'],
+    commisionPercent:2,
   },
   { 
     title: 'اسباب بازی',
     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
+    commisionPercent:2,
     id: '40',
     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/0c46d2532d61dd3a5b6a3afc17552c23c1b4d39e_1692600773.png'],
   },

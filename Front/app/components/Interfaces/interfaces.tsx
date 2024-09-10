@@ -20,7 +20,15 @@ export interface SellerInfosOnProduct{
     garante:{title:string,desc:string},
     shipmentMethod:shipmentMethod,
     discountId?:string,
-    price:number
+    price:number,
+}
+
+export interface SellerRequestOnProduct{
+    sellerID:string,
+    quantity: {color:string, quantity:number}[],
+    garante:{title:string,desc:string},
+    shipmentMethod:shipmentMethod,
+    price:number,
 }
 
 
@@ -233,7 +241,6 @@ export interface Seller{
     recentSaleChart:{income:number , date:string}[]
 }
 
-//#endregion
 export enum StateProduct{
     accepted='پذیرفته شده',
     rejected='لغو شده',
@@ -250,4 +257,34 @@ export interface ProductCardSeller{
     state:StateProduct,
     varientCount:number,
     picture:string,
+}
+
+export interface SellerOrderCard{
+    title:string,
+    productID:string,
+    orderID:string,
+    orderDate:string,
+    orderState:State,
+    productPicture:string,
+    productCategorytitle:string,
+    productCategoryID:string,
+    productFinalPrice:number,
+}
+
+export interface SellerAddProdctCard{
+    picture:string,
+    title:string,
+    productID:string
+    commission:number,
+    urbanPrice:number,//price that the first seller put
+    sellerCount:number,
+    id:string
+}
+
+//#endregion
+
+export interface Color{
+    title:string,
+    hex:string,
+    id:string,
 }
