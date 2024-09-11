@@ -441,7 +441,7 @@ router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]
     next();
 });
 
-router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller","employee","admin"]), async (req,res) =>{
+router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller","employee","admin"]), async (req,res , next) =>{
     try {
         if(req.user){
             delete req.user.password;
