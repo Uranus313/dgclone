@@ -217,7 +217,12 @@ export function validateSellerChangeinfo (data){
         }), 
         additionalDocuments: Joi.array().items(Joi.string()),
         storeInfo : Joi.object({
-            commercialName : Joi.string().min(2).max(100).required(),
+            commercialName : Joi.string().min(2).max(100).external(async (commercialName) => {
+                const seller = await SellerModel.find({"storeInfo.commercialName" : commercialName}).findOne();
+                if(seller){
+                    throw new Error("an store with this commercialName already exists");
+                }
+            }).required(),
             officePhoneNumber : Joi.string().min(11).max(12).required(),
             workDays : Joi.array().items(Joi.string()).required(),
             logo : Joi.string(),
