@@ -218,7 +218,10 @@ export function validateSellerChangeinfo (data){
         additionalDocuments: Joi.array().items(Joi.string()),
         storeInfo : Joi.object({
             commercialName : Joi.string().min(2).max(100).external(async (commercialName) => {
-                const seller = await SellerModel.find({"storeInfo.commercialName" : commercialName}).findOne();
+                const seller = await SellerModel.find({"storeInfo.commercialName" : {
+                    $regex: commercialName,
+                    $options: 'i'
+                }}).findOne();
                 if(seller){
                     throw new Error("an store with this commercialName already exists");
                 }
