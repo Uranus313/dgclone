@@ -19,14 +19,18 @@ const router = express.Router();
 //checked
 router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
-        const result = await getUsers(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getUsers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
             next();
             return;
         }
-
         res.body = result.response;
         res.send(result.response);
     } catch (err) {
@@ -66,7 +70,12 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "emp
 
 router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
-        const result = await getSellers(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getSellers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -113,7 +122,12 @@ router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "e
 
 router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
-        const result = await getAdmins(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getAdmins(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -250,7 +264,12 @@ router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin
 
 router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
-        const result = await getEmployees(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getEmployees(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

@@ -9,7 +9,7 @@ export async function saveUser(userCreate){
     return result;
 }
 
-export async function getUsers(id , search){
+export async function getUsers(id , search,limit , floor ,nameSearch){
     const result = {};
     if(id){
         result.response = await UserModel.find({_id : id}).findOne();
@@ -19,7 +19,14 @@ export async function getUsers(id , search){
         }
         return result;
     }else{
-        result.response = await UserModel.find(search);
+        if(nameSearch){
+            result.response = await EmployeeModel.find({...searchParams,lastName:{
+                $regex: nameSearch,
+                $options: 'i'
+            } }).skip(floor).limit(limit);
+        }else{
+            result.response = await EmployeeModel.find(searchParams).skip(floor).limit(limit);
+        }
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
             delete result.response[index].password;

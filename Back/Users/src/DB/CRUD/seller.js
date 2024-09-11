@@ -9,7 +9,7 @@ export async function saveSeller(sellerCreate){
     return result;
 }
 
-export async function getSellers(id , search , idArray){
+export async function getSellers(id , search , idArray ,limit , floor ,nameSearch){
     const result = {};
     if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
@@ -28,7 +28,14 @@ export async function getSellers(id , search , idArray){
         }
         return result;
     }else{
-        result.response = await SellerModel.find(search);
+        if(nameSearch){
+            result.response = await EmployeeModel.find({...searchParams,"storeInfo.commercialName":{
+                $regex: nameSearch,
+                $options: 'i'
+            } }).skip(floor).limit(limit);
+        }else{
+            result.response = await EmployeeModel.find(searchParams).skip(floor).limit(limit);
+        }
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
             delete result.response[index].password;
