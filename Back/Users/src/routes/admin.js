@@ -6,7 +6,7 @@ import { updateSeller } from "../DB/CRUD/seller.js";
 import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
 import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
-import { validateAdminPost } from "../DB/models/admin.js";
+import { validateAdminChangeinfo, validateAdminPost } from "../DB/models/admin.js";
 import { validateEmployeeBan, validateEmployeeChangeRole } from "../DB/models/employee.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js";
@@ -179,7 +179,7 @@ router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["admin"])
     }
     try {
 
-        const result = await changeAdminPassword(req.user._id,req.body.newPassword,req.body.oldPassword);
+        const result = await changeAdminPassword(req.admin._id,req.body.newPassword,req.body.oldPassword);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -318,5 +318,7 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["admin"]) ,
     }
     next();
 });
+
+
 
 export default router;

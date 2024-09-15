@@ -71,7 +71,7 @@ const NavBar = () => {
 
         <div className="flex">
           {isLoading? <span className="loading loading-dots loading-lg"></span>:
-          (user && user?.status == "admin")? <Link href="/admins/menu">
+          (user && user?.status == "admin")? <Link href="/admins/menu/changeInfo">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
