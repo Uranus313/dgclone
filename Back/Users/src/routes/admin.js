@@ -6,7 +6,7 @@ import { updateSeller } from "../DB/CRUD/seller.js";
 import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
 import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
-import { validateAdminBan, validateAdminChangeinfo, validateAdminPost } from "../DB/models/admin.js";
+import { validateAdminBan, validateAdminChangeinfo, validateAdminPost, validateAdminUnban } from "../DB/models/admin.js";
 import { validateEmployeeBan, validateEmployeeChangeRole } from "../DB/models/employee.js";
 import { validateSellerUnban } from "../DB/models/seller.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
@@ -99,7 +99,7 @@ router.post("/logIn",  async (req, res, next) =>{
     next();
 });
 //checked
-router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateUserBan(req.body); 
     } catch (error) {
@@ -197,7 +197,7 @@ router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["admin"])
     }
     next();
 });
-router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateSellerBan(req.body); 
     } catch (error) {
@@ -236,7 +236,7 @@ router.post("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async 
     next();
 });
 
-router.post("/banAdmin",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/banAdmin",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateAdminBan(req.body); 
     } catch (error) {
@@ -275,7 +275,7 @@ router.post("/banAdmin",(req,res,next) => auth(req,res,next,["admin"]),  async (
     next();
 });
 
-router.post("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateEmployeeBan(req.body); 
     } catch (error) {
@@ -306,7 +306,7 @@ router.post("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  asyn
     }
     next();
 });
-router.post("/unbanUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/unbanUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateUserUnban(req.body); 
     } catch (error) {
@@ -337,7 +337,7 @@ router.post("/unbanUser",(req,res,next) => auth(req,res,next,["admin"]),  async 
     }
     next();
 });
-router.post("/unbanSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/unbanSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateSellerUnban(req.body); 
     } catch (error) {
@@ -368,7 +368,7 @@ router.post("/unbanSeller",(req,res,next) => auth(req,res,next,["admin"]),  asyn
     }
     next();
 });
-router.post("/unbanEmployee",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/unbanEmployee",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateEmployeeUnban(req.body); 
     } catch (error) {
@@ -399,7 +399,7 @@ router.post("/unbanEmployee",(req,res,next) => auth(req,res,next,["admin"]),  as
     }
     next();
 });
-router.post("/unbanAdmin",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/unbanAdmin",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateAdminUnban(req.body); 
     } catch (error) {

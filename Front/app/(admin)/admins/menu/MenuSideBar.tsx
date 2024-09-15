@@ -47,7 +47,7 @@ function MenuSideBar(){
             {
                 user && 
                 <ul className="flex flex-col">
-                    <li><Link href={"/"}>سفارشات</Link></li>
+                    <li><Link href={"/admins/menu/allAdmins"}>ادمین ها</Link></li>
                     <li><Link href={"/"}>لیست های من</Link></li>
                     <li><Link href={"/"}>نظرات و سوالات</Link></li>
                     <li><Link href={"/users/menu/changeAddress"}>آدرس ها</Link></li>
