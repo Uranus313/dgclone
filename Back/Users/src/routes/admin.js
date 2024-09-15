@@ -8,8 +8,9 @@ import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
 import { validateAdminBan, validateAdminChangeinfo, validateAdminPost } from "../DB/models/admin.js";
 import { validateEmployeeBan, validateEmployeeChangeRole } from "../DB/models/employee.js";
+import { validateSellerUnban } from "../DB/models/seller.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
-import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js";
+import { validateChangePassword, validateUserLogIn, validateUserUnban } from "../DB/models/user.js";
 import { validateUserBan } from "../DB/models/userBanList.js";
 import express from "express";
 import jwt from "jsonwebtoken";
@@ -136,6 +137,7 @@ router.post("/banUser",(req,res,next) => auth(req,res,next,["admin"]),  async (r
     }
     next();
 });
+
 router.post("/changeEmployeeRole",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateEmployeeChangeRole(req.body); 
@@ -297,6 +299,130 @@ router.post("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  asyn
         }
         res.send(result.response);
         res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.post("/unbanUser",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+    try {
+        await validateUserUnban(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result2 = await updateUser(req.body.userID , {isBanned : false})
+        if (result2.error){
+            res.status(400).send({error : result2.error});
+            res.body = {error : result2.error};
+            next();
+            return;
+        }
+        res.send(result2.response);
+        res.body = result2.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.post("/unbanSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+    try {
+        await validateSellerUnban(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result2 = await updateSeller(req.body.sellerID , {isBanned : false})
+        if (result2.error){
+            res.status(400).send({error : result2.error});
+            res.body = {error : result2.error};
+            next();
+            return;
+        }
+        res.send(result2.response);
+        res.body = result2.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.post("/unbanEmployee",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+    try {
+        await validateEmployeeUnban(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result2 = await updateEmployee(req.body.employeeID , {isBanned : false})
+        if (result2.error){
+            res.status(400).send({error : result2.error});
+            res.body = {error : result2.error};
+            next();
+            return;
+        }
+        res.send(result2.response);
+        res.body = result2.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.post("/unbanAdmin",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+    try {
+        await validateAdminUnban(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result2 = await updateAdmin(req.body.adminID , {isBanned : false})
+        if (result2.error){
+            res.status(400).send({error : result2.error});
+            res.body = {error : result2.error};
+            next();
+            return;
+        }
+        res.send(result2.response);
+        res.body = result2.response;
     } catch (err) {
         console.log("Error",err);
         res.body = {error:"internal server error"};

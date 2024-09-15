@@ -122,3 +122,16 @@ export function validateEmployeeBan (data){
     return schema.validateAsync(data);
 }
 
+export function validateEmployeeUnban (data){
+    const schema = Joi.object({
+        employeeID : Joi.objectId().external( async (employeeID) => {
+            const employee = await EmployeeModel.find({_id : employeeID}).findOne();
+            if(!employee){
+                throw new Error("employee not found")
+            }else if (!employee.isBanned){
+                throw new Error("employee is not banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}

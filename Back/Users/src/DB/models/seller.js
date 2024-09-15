@@ -269,3 +269,16 @@ export function validateSellerChangeinfo (data){
     }).min(1);
     return schema.validateAsync(data);
 }
+export function validateSellerUnban (data){
+    const schema = Joi.object({
+        sellerID : Joi.objectId().external( async (sellerID) => {
+            const seller = await SellerModel.find({_id : sellerID}).findOne();
+            if(!seller){
+                throw new Error("seller not found")
+            }else if (!seller.isBanned){
+                throw new Error("seller is not banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}

@@ -265,3 +265,16 @@ export function validateAddress(data ){
     })
     return schema.validate(data);
 }
+export function validateUserUnban (data){
+    const schema = Joi.object({
+        userID : Joi.objectId().external( async (userID) => {
+            const user = await UserModel.find({_id : userID}).findOne();
+            if(!user){
+                throw new Error("user not found")
+            }else if (!user.isBanned){
+                throw new Error("user is not banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
