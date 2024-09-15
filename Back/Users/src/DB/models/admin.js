@@ -10,6 +10,7 @@ const adminSchema  = new mongoose.Schema(
         birthDate: {type: Date, required: true},
         email: {type: String , required : true},
         isCompelete: Boolean,
+        isBanned : Boolean,
         phoneNumber: {type: String , required : true},
         nationalID: {type: String , required : true}
     }
@@ -83,3 +84,16 @@ export function validateAdminChangeinfo (data){
 
 
 
+export function validateAdminBan (data){
+    const schema = Joi.object({
+        adminID : Joi.objectId().external( async (adminID) => {
+            const admin = await AdminModel.find({_id : adminID}).findOne();
+            if(!admin){
+                throw new Error("admin not found")
+            }else if (admin.isBanned){
+                throw new Error("admin is already banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}

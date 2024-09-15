@@ -121,3 +121,4 @@ export function validateEmployeeBan (data){
     });
     return schema.validateAsync(data);
 }
+
