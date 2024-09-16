@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { User } from "../menu/allUsers/UserPopUp";
+import { Seller } from "../menu/allSellers/SellerPopUp";
 
-interface UserListResponse {
-    data : User[],
+interface SellerListResponse {
+    data : Seller[],
     hasMore : boolean
 }
 interface Query{
@@ -10,16 +10,16 @@ interface Query{
     limit : number,
     nameSearch : string | null
 }
-function useGetUsers(query : Query){
+function useGetSellers(query : Query){
     return useQuery({
-        queryKey : ['userList', query],
+        queryKey : ['sellerList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:3005/users/general/allUsers"+`?limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}`, {
+            const result = await fetch("http://localhost:3005/users/general/allSellers"+`?limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}`, {
                             credentials: 'include'});
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
-                return jsonResult as UserListResponse
+                return jsonResult as SellerListResponse
             }else{
                 throw new Error(jsonResult.error);
             }    
@@ -30,4 +30,4 @@ function useGetUsers(query : Query){
         // keepPreviousData: true
     })
 }
-export default useGetUsers;
+export default useGetSellers;

@@ -36,7 +36,7 @@ export async function getAdmins(id , searchParams ,limit , floor ,nameSearch ){
             console.log(hasMore)
         }else{
             data = await AdminModel.find(searchParams).skip(floor).limit(limit);
-            let count = await AdminModel.countDocuments();
+            let count = await AdminModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
             

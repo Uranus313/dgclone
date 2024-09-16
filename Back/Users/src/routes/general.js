@@ -13,6 +13,7 @@ import { getTransactions } from "../DB/CRUD/transaction.js";
 import { getEmployees } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
+import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
 
 
 const router = express.Router();
@@ -68,6 +69,55 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "emp
     next();
 });
 
+router.get("/verifyRequests", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
+    try {
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        // console.log(req.query.limit)
+        const result = await getVerifyRequests(undefined,searchParams,undefined,req.query.limit,req.query.floor);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/verifyRequests/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getVerifyRequests(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        delete result.response.password;
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
@@ -75,7 +125,7 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "empl
         delete searchParams.limit;
         delete searchParams.nameSearch;
         // console.log(req.query.limit)
-        const result = await getSellers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getSellers(undefined,searchParams,undefined,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

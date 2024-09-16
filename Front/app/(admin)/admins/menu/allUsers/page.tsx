@@ -4,7 +4,7 @@ import UserList from './UserList'
 const UsersWatchPage = () => {
   return (
     <div>
-      <h1>لیست ادمین ها</h1>
+      <h1>لیست خریداران</h1>
       <UserList />
     </div>
   )

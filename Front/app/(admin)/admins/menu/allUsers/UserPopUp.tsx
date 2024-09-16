@@ -217,11 +217,11 @@ const UserPopUp = ({ user }: Props) => {
               <div className=" flex justify-between">
                 <p>شیوه انتخابی :</p>
 
-                <p>{user._id}</p>
+                <p>{user.moneyReturn.method}</p>
               </div>
               <div className=" flex justify-between">
                 <p>شماره کارت بانکی :</p>
-                <p>{user._id}</p>
+                <p>{user.moneyReturn.bankAccount}</p>
               </div>
             </div>
             <div className=" flex-col">

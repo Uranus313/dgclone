@@ -34,7 +34,7 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
             console.log(hasMore)
         }else{
             data = await UserModel.find(searchParams).skip(floor).limit(limit);
-            let count = await UserModel.countDocuments();
+            let count = await UserModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
             
