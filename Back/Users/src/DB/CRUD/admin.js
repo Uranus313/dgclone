@@ -21,17 +21,34 @@ export async function getAdmins(id , searchParams ,limit , floor ,nameSearch ){
         }
         return result;
     }else{
+        let data = null;
+        let hasMore = false;
         if(nameSearch){
-            result.response = await AdminModel.find({...searchParams,lastName:{
+            data = await AdminModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
             } }).skip(floor).limit(limit);
+            let count = await AdminModel.countDocuments({...searchParams,lastName:{
+                $regex: nameSearch,
+                $options: 'i'
+            } });
+            hasMore = count > (limit + floor);
         }else{
-            result.response = await AdminModel.find(searchParams).skip(floor).limit(limit);
+            data = await AdminModel.find(searchParams).skip(floor).limit(limit);
+            let count = await AdminModel.countDocuments();
+            // console.log(count);
+            // console.log(limit+floor);
+            
+            hasMore = count > (Number(limit) + Number(floor));
+            console.log(hasMore)
         }
-        for (let index = 0; index < result.response.length; index++) {
-            result.response[index] = result.response[index].toJSON();
-            delete result.response[index].password;
+        for (let index = 0; index < data.length; index++) {
+            data[index] = data[index].toJSON();
+            delete data[index].password;
+        }
+        result.response = {
+            data: data,
+            hasMore: hasMore
         }
         return result;
     }

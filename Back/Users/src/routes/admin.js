@@ -40,14 +40,14 @@ router.post("/signUp",(req,res,next) => auth(req,res,next,["admin"]),  async (re
             next();
             return;
         }
-        const token = jwt.sign({_id : result.response._id , status: "admin"},process.env.JWTSECRET,{expiresIn : '6h'});
-        delete result.response.password;
-        res.cookie('x-auth-token',token,{
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            maxAge: 6 * 60 * 60 * 1000
-        });
+        // const token = jwt.sign({_id : result.response._id , status: "admin"},process.env.JWTSECRET,{expiresIn : '6h'});
+        // delete result.response.password;
+        // res.cookie('x-auth-token',token,{
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: 'none',
+        //     maxAge: 6 * 60 * 60 * 1000
+        // });
         res.send(result.response);
         res.body = result.response;
     } catch (err) {

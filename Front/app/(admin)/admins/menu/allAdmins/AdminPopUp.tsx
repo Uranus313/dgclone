@@ -1,7 +1,8 @@
 'use client'
 
+import userContext from '@/app/contexts/userContext';
 import { useMutation } from '@tanstack/react-query';
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 
 export interface Admin{
     firstName : string,
@@ -21,7 +22,7 @@ const AdminPopUp = ({admin} : Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error , setError] = useState<string | null>(null);
-    // const {user , setUser , isLoading} = useContext(userContext);
+    const { user} = useContext(userContext);
   
     const openModal = () => {
       if (dialogRef.current) {
@@ -143,8 +144,7 @@ const AdminPopUp = ({admin} : Props) => {
                     <p>{admin._id}</p>
                 </div>
             </div>
-            {admin.isBanned? <button className='btn btn-primary' type='button' onClick={() => unbanAdmin.mutate()}>لغو بن</button>:<button className='btn btn-error' type='button' onClick={() => banAdmin.mutate()}>بن</button>}
-            
+            {admin._id != user._id && (admin.isBanned? <button className='btn btn-primary' type='button' onClick={() => unbanAdmin.mutate()}>لغو بن</button>:<button className='btn btn-error' type='button' onClick={() => banAdmin.mutate()}>بن</button>)}
             <button className='btn btn-warning' type='button' onClick={closeModal}>خروج</button>
           </div>
           <form method="dialog" className="modal-backdrop" onClick={closeModal}>
