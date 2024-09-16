@@ -18,7 +18,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 //checked
-router.post("/signUp",adminSignUpAuth,  async (req, res, next) =>{
+router.post("/signUp",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateAdminPost(req.body); 
     } catch (error) {

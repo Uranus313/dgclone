@@ -34,7 +34,7 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
           console.log(savedUser);
           // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
           // queryClient.invalidateQueries(["user"]);
-          setUser(savedUser);
+          setUser(null);
           router.push('/');
           // router.push('/');
       },

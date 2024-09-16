@@ -21,7 +21,7 @@ const MenuLayout = ({
         // console.log(!isLoading)
 
         if(!user && !isLoading && user?.status != "admin"){
-            router.push("/users/signIn");
+            router.push("/admins/signIn");
         }
     },
       [user,isLoading]  

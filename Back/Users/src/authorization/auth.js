@@ -78,6 +78,12 @@ export async function auth(req, res, next, acceptedStatuses) {
 
           return;
         }
+        if (admin.isBanned) {
+          res.status(403).send({ error: "access denied. you are banned." });
+          res.body = { error: "access denied. you are banned." };
+
+          return;
+        }
         req.admin = admin;
         next();
         break;
@@ -86,6 +92,12 @@ export async function auth(req, res, next, acceptedStatuses) {
         if (!employee) {
           res.status(401).send({ error: "access denied. invalid employee." });
           res.body = { error: "access denied. invalid employee." };
+
+          return;
+        }
+        if (employee.isBanned) {
+          res.status(403).send({ error: "access denied. you are banned." });
+          res.body = { error: "access denied. you are banned." };
 
           return;
         }
