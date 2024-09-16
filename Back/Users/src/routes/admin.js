@@ -14,6 +14,8 @@ import { validateChangePassword, validateUserLogIn, validateUserUnban } from "..
 import { validateUserBan } from "../DB/models/userBanList.js";
 import express from "express";
 import jwt from "jsonwebtoken";
+import validateId from "../functions/validateId.js";
+import { getWallets } from "../DB/CRUD/wallet.js";
 
 
 const router = express.Router();
@@ -197,6 +199,7 @@ router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["admin"])
     }
     next();
 });
+
 router.patch("/banSeller",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateSellerBan(req.body); 
@@ -483,6 +486,29 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["admin"]) ,
     next();
 });
 
-
+router.get("/getWallet/:walletID", (req, res, next) => auth(req, res, next, ["admin"]), async (req, res, next) => {
+    try {
+        const {error} = validateId(req.params.walletID);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+        const result = await getWallets(req.params.walletID);
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+});
 
 export default router;

@@ -14,7 +14,7 @@ const userSchema  = new mongoose.Schema(
         economicCode: {type: String },
         isCompelete: Boolean,
         phoneNumber: {type: String , required : true},
-        walletID: {type : mongoose.Schema.Types.ObjectId , ref: "jobs" },
+        walletID: {type : mongoose.Schema.Types.ObjectId , ref: "wallets" },
         isBanned : Boolean,
         nationalID: {type: String},
         moneyReturn:{type : {

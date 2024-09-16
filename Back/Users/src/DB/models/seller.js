@@ -80,7 +80,7 @@ const sellerSchema  = new mongoose.Schema(
                 offDays : {type: [String]}
             }
         },
-        walletID: {type : mongoose.Schema.Types.ObjectId , ref: "jobs" },
+        walletID: {type : mongoose.Schema.Types.ObjectId , ref: "wallets" },
         moneyReturn:{type : {
             method : {type: String,enum: ["bankAccount" , "wallet"], required: true , default : "wallet" ,  validate: {
                 validator : function(value){
