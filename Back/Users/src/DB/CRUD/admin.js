@@ -23,7 +23,7 @@ export async function getAdmins(id , searchParams ,limit , floor ,nameSearch ){
     }else{
         let data = null;
         let hasMore = false;
-        if(nameSearch){
+        if(nameSearch && nameSearch != ''){
             data = await AdminModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
@@ -32,7 +32,8 @@ export async function getAdmins(id , searchParams ,limit , floor ,nameSearch ){
                 $regex: nameSearch,
                 $options: 'i'
             } });
-            hasMore = count > (limit + floor);
+            hasMore = count > (Number(limit) + Number(floor));
+            console.log(hasMore)
         }else{
             data = await AdminModel.find(searchParams).skip(floor).limit(limit);
             let count = await AdminModel.countDocuments();

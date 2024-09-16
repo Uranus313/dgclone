@@ -7,13 +7,14 @@ interface AdminListResponse {
 }
 interface Query{
     floor : number,
-    limit : number
+    limit : number,
+    nameSearch : string | null
 }
 function useGetAdmins(query : Query){
     return useQuery({
         queryKey : ['adminList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:3005/users/general/allAdmins"+`?limit=${query.limit}&floor=${query.floor}`, {
+            const result = await fetch("http://localhost:3005/users/general/allAdmins"+`?limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}`, {
                             credentials: 'include'});
             const jsonResult = await result.json();
             console.log(jsonResult)
