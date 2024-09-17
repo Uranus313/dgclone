@@ -6,7 +6,7 @@ import Step0 from './step0';
 import Step1 from './step1';
 
 
-const colorpallete:Color[]=[
+export const colorpallete:Color[]=[
     {
         hex:'#ffffff',
         id:'1',
@@ -51,8 +51,7 @@ const SellProductPopup = ({id,productCard}:Props) => {
                 <button className="btn btn-lg btn-circle btn-ghost" onClick={()=>{setNext(false)}}>✕</button>
             </form>
             {!next ? <Step0 productCard={productCard}/>
-                   : ""
-                    // <Step1/>
+                   : <Step1 productCard={productCard}/>
             }
             
             <hr className='text-grey-border  my-2'></hr>

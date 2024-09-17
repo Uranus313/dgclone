@@ -81,12 +81,12 @@ const productsCard:SellerAddProdctCard[]=[
           </label>
         </div>
         
-        <button className='p-3 rounded-md bg-primary-seller text-white my-4'>
+        <Link href='/sellers/addProducts/NewProduct?category=' className='p-3 rounded-md bg-primary-seller text-white my-4'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 inline me-2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
 
-            ثبت کالای جدید</button>
+            ثبت کالای جدید</Link>
   
         <div className='grid grid-cols-5 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
         <p className=''>عنوان کالا</p>

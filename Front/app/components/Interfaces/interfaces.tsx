@@ -16,19 +16,23 @@ export interface SellerInfosOnProduct{
     sellerid:string,
     sellerTitle:string,
     sellerRating:number
-    quantity: {color:string,  quantity:number}[],
-    garante:{title:string,desc:string},
+    quantity: {color:{title:string,hex:string},  quantity:number,price:number, garante:string}[],
     shipmentMethod:shipmentMethod,
     discountId?:string,
-    price:number,
+    
 }
 
-export interface SellerRequestOnProduct{
+export interface SellerSetVarientOnProduct{
     sellerID:string,
-    quantity: {color:string, quantity:number}[],
-    garante:{title:string,desc:string},
+    productID:string,
+    productTitle:string,
+    productPicture:string,
+    color:{title:string,hex:string},  
+    quantity:number,
+    price:number, 
+    garante:string,
     shipmentMethod:shipmentMethod,
-    price:number,
+   
 }
 
 
@@ -61,7 +65,7 @@ export interface Comment{
     id:string
     productID:string
     rate?:number //for buyers
-    order?:{color:string , sellerTitle:string} //for normal comments
+    order?:{color:{title:string,hex:string} , sellerTitle:string} //for normal comments
     user:{userid:string ,firstname:string ,lastname:string}
     content:string
     disAndlike?:{userid:string,disOlike:boolean}[] //for questions
@@ -286,5 +290,5 @@ export interface SellerAddProdctCard{
 export interface Color{
     title:string,
     hex:string,
-    id:string,
+    id?:string,
 }

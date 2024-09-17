@@ -39,73 +39,20 @@ const product:ProductInterface = {
     
     sellers:[
         {discountId:'3',
-         price:21999000,
          sellerTitle:'پیشرو تجارت خاورمیانه',
          sellerRating:9.1,
-         garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-         quantity:[{color:'#000000' , quantity:4},{color:'#ffffff' , quantity:10}],
+         
+         quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:4 , price:21999000,garante:'گارانتی   حامی'},{color:{hex:'#ffffff', title:'سفید'} , quantity:10, price:22999000,garante:'گارانتی ۲۴  حامی'}],
          sellerid:'1',
          shipmentMethod:shipmentMethod.option1
         },
-        {garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-        price:19999000,
+        {
         sellerTitle:'طرح اندیشان سمت نو',
         sellerRating:7,
-        quantity:[{color:'#000000' , quantity:1},{color:'#ff9900' , quantity:10}],
+        quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:1,price:19999000,garante:'گارانتی ۲۴ '},{color:{hex:'#ff9900', title:'ندانم'} , quantity:10,price:10999000,garante:'گارانتی  ماهه حامی'}],
         sellerid:'2',
         shipmentMethod:shipmentMethod.option2
         },
-        {discountId:'3',
-            price:21999000,
-            sellerTitle:'پیشرو تجارت خاورمیانه',
-            sellerRating:9.1,
-            garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-            quantity:[{color:'#000000' , quantity:4},{color:'#ffffff' , quantity:10}],
-            sellerid:'1',
-            shipmentMethod:shipmentMethod.option1
-           },
-           {garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-           price:19999000,
-           sellerTitle:'طرح اندیشان سمت نو',
-           sellerRating:7,
-           quantity:[{color:'#000000' , quantity:1},{color:'#ff9900' , quantity:10}],
-           sellerid:'2',
-           shipmentMethod:shipmentMethod.option2
-           },
-           {discountId:'3',
-            price:21999000,
-            sellerTitle:'پیشرو تجارت خاورمیانه',
-            sellerRating:9.1,
-            garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-            quantity:[{color:'#000000' , quantity:4},{color:'#ffffff' , quantity:10}],
-            sellerid:'1',
-            shipmentMethod:shipmentMethod.option1
-           },
-           {garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-           price:19999000,
-           sellerTitle:'طرح اندیشان سمت نو',
-           sellerRating:7,
-           quantity:[{color:'#000000' , quantity:1},{color:'#ff9900' , quantity:10}],
-           sellerid:'2',
-           shipmentMethod:shipmentMethod.option2
-           },
-           {discountId:'3',
-            price:21999000,
-            sellerTitle:'پیشرو تجارت خاورمیانه',
-            sellerRating:9.1,
-            garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-            quantity:[{color:'#000000' , quantity:4},{color:'#ffffff' , quantity:10}],
-            sellerid:'1',
-            shipmentMethod:shipmentMethod.option1
-           },
-           {garante:{title:'گارانتی ۲۴ ماهه حامی' , desc:'گارانتی خوب'},
-           price:19999000,
-           sellerTitle:'طرح اندیشان سمت نو',
-           sellerRating:7,
-           quantity:[{color:'#000000' , quantity:1},{color:'#ff9900' , quantity:10}],
-           sellerid:'2',
-           shipmentMethod:shipmentMethod.option2
-           },
     ],
     rating: {rate:4,rateNum:10},
     brand:'Asus',
@@ -145,7 +92,7 @@ const product:ProductInterface = {
         // answerto?:string  //for answer comments
         id:'1',
         productID:'1',
-        order:{color:'#ffffff',sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+        order:{color:{hex:'#ffffff', title:'سفید'},sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
         rate:3,
         user:{userid:'2' , firstname:'لوگان',lastname:'پال'},
         content:'برای دخترم گرفتم تازه به دستش رسیده ولی فوق العاده دوستش داره ',
@@ -170,7 +117,7 @@ const product:ProductInterface = {
             type:commentType.answer,
             id:'3',
             productID:'1',
-            order:{color:'#ffffff',sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+            order:{color:{hex:'#ffffff', title:'سفید'},sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
             // rate:3,
             user:{userid:'3' , firstname:'لوگان',lastname:'پال'},
             content:'برای بازی نه ولی درحالت عادی 8 ساعت دووم داره',
@@ -181,7 +128,7 @@ const product:ProductInterface = {
             type:commentType.answer,
             id:'6',
             productID:'1',
-            order:{color:'#ffffff',sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+            order:{color:{hex:'#ffffff', title:'سفید'} ,sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
             // rate:3,
             user:{userid:'4' , firstname:'لوگان',lastname:'پال'},
             content:'درحالت عادی 8 ساعت دووم داره',
@@ -241,8 +188,10 @@ const ProductPage = ({params:{productID}}:Props) => {
                                     <table className="w-full text-right table-auto min-w-max">
                                         <tbody>
                             {product.details.map(detail=>(
-                                <div>
-                                    <p>{detail.title}</p>
+                                <>
+                                    <tr>
+                                        <td>{detail.title}</td>
+                                    </tr>
                                     {detail.map.map(keyValue=>(
                                         <tr className="hover:bg-slate-50">
                                             <td className="p-4 w-1/5">
@@ -257,7 +206,7 @@ const ProductPage = ({params:{productID}}:Props) => {
                                             </td>
                                         </tr>     
                                     ))}
-                                </div>
+                                </>
                             ))}
                             </tbody>
                         </table>
@@ -296,7 +245,7 @@ const ProductPage = ({params:{productID}}:Props) => {
                                         </svg>
                                             
                                         <p className='text-xs'>{comment.order?.sellerTitle}</p>
-                                        <div className='h-4 w-4 mx-2 border-grey-dark border rounded-full' style={{backgroundColor:comment.order.color}}></div>
+                                        <div className='h-4 w-4 mx-2 border-grey-dark border rounded-full' style={{backgroundColor:comment.order.color.hex}}></div>
                                     </div>}
                                 
                                 </div>

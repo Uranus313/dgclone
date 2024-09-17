@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react'
 interface Props {
   id: string
   title:string
+  solid?:boolean
 }
 
-const ModalButton = ({ id,title }: Props) => {
+const ModalButton = ({ id,title, solid=true }: Props) => {
   const [dialogElement, setDialogElement] = useState<HTMLDialogElement | null>(null);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ const ModalButton = ({ id,title }: Props) => {
 
   return (
     <div>
-      <button onClick={() => { dialogElement?.showModal(); console.log(dialogElement) }} className='p-3 w-fit bg-propBubble-bg text-sm rounded-md my-6 '>{title}</button>
+      <button onClick={() => { dialogElement?.showModal(); console.log(dialogElement) }} className={`p-3 w-fit ${solid ?'bg-propBubble-bg' : 'text-primary-seller'}  text-sm rounded-md my-6 `}>{title}</button>
       
     </div>
   )
