@@ -1,4 +1,4 @@
-import { VerifyRequestModel } from "../models/verifyRequest";
+import { VerifyRequestModel } from "../models/verifyRequest.js";
 
 
 export async function saveVerifyRequest(verifyRequestCreate){

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Joi, { required } from "joi";
+import Joi  from "joi";
 import joiObjectid from "joi-objectid";
 import { SellerModel } from "./seller.js";
 import { UserModel } from "./user.js";
