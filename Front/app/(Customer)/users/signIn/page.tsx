@@ -90,7 +90,9 @@ const SignIn = () => {
           // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
           // queryClient.invalidateQueries(["user"]);
           setUser(savedUser);
-          router.push('/');
+          // router.push('/');
+          setShowPhoneNumberPage(false);
+          setShowCompleteInfoPage(true);
       },
       onError: (error) => {
         // Array.isArray(error.response?.data.detail)?  error.response?.data.detail.map((item,index) => {toast(item.msg.includes("Value error,")?item.msg.replace("Value error, ",''): capitalizeFirstLetter(item.loc[item.loc.length-1]) + " " + item.msg.substr(item.msg.indexOf(" ")+1),{type: "error"})}) : toast(error.response?.data.detail ,{type: "error"})// navigate("/");

@@ -10,6 +10,7 @@ const adminSchema  = new mongoose.Schema(
         birthDate: {type: Date, required: true},
         email: {type: String , required : true},
         isCompelete: Boolean,
+        isBanned : Boolean,
         phoneNumber: {type: String , required : true},
         nationalID: {type: String , required : true}
     }
@@ -31,20 +32,20 @@ export function validateAdminPost (data){
         password : Joi.string().min(8).max(50).required(),
         birthDate : Joi.date().required(),
         phoneNumber : Joi.string().min(11).max(12).external( async (phoneNumber) => {
-            const user = await AdminModel.find({phoneNumber : phoneNumber}).findOne();
-            if(user){
+            const admin = await AdminModel.find({phoneNumber : phoneNumber}).findOne();
+            if(admin){
                 throw new Error("an account with this phone number already exists");
             }
         }).required(),
         email: Joi.string().email().external( async (email) => {
-            const user = await AdminModel.find({email : email}).findOne();
-            if(user){
+            const admin = await AdminModel.find({email : email}).findOne();
+            if(admin){
                 throw new Error("an account with this email already exists");
             }
         }).required(),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external( async (nationalID) => {
-            const user = await AdminModel.find({nationalID : nationalID}).findOne();
-            if(user){
+            const admin = await AdminModel.find({nationalID : nationalID}).findOne();
+            if(admin){
                 throw new Error("an account with this national ID number already exists");
             }
         }).required(),
@@ -58,20 +59,20 @@ export function validateAdminChangeinfo (data){
         lastName: Joi.string().min(1).max(100),
         birthDate : Joi.date(),
         phoneNumber : Joi.string().min(11).max(12).external( async (phoneNumber) => {
-            const user = await AdminModel.find({phoneNumber : phoneNumber}).findOne();
-            if(user){
+            const admin = await AdminModel.find({phoneNumber : phoneNumber}).findOne();
+            if(admin){
                 throw new Error("an account with this phone number already exists");
             }
         }),
         email: Joi.string().email().external( async (email) => {
-            const user = await AdminModel.find({email : email}).findOne();
-            if(user){
+            const admin = await AdminModel.find({email : email}).findOne();
+            if(admin){
                 throw new Error("an account with this email already exists");
             }
         }),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external( async (nationalID) => {
-            const user = await AdminModel.find({nationalID : nationalID}).findOne();
-            if(user){
+            const admin = await AdminModel.find({nationalID : nationalID}).findOne();
+            if(admin){
                 throw new Error("an account with this national ID number already exists");
             }
         }),
@@ -83,3 +84,29 @@ export function validateAdminChangeinfo (data){
 
 
 
+export function validateAdminBan (data){
+    const schema = Joi.object({
+        adminID : Joi.objectId().external( async (adminID) => {
+            const admin = await AdminModel.find({_id : adminID}).findOne();
+            if(!admin){
+                throw new Error("admin not found")
+            }else if (admin.isBanned){
+                throw new Error("admin is already banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateAdminUnban (data){
+    const schema = Joi.object({
+        adminID : Joi.objectId().external( async (adminID) => {
+            const admin = await AdminModel.find({_id : adminID}).findOne();
+            if(!admin){
+                throw new Error("admin not found")
+            }else if (!admin.isBanned){
+                throw new Error("admin is not banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}

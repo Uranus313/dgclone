@@ -9,7 +9,7 @@ export async function saveEmployee(employeeCreate){
     return result;
 }
 
-export async function getEmployees(id , search){
+export async function getEmployees(id , search,limit , floor ,nameSearch){
     const result = {};
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne();
@@ -20,7 +20,14 @@ export async function getEmployees(id , search){
         }
         return result;
     }else{
-        result.response = await EmployeeModel.find(search);
+        if(nameSearch){
+            result.response = await EmployeeModel.find({...searchParams,lastName:{
+                $regex: nameSearch,
+                $options: 'i'
+            } }).skip(floor).limit(limit);
+        }else{
+            result.response = await EmployeeModel.find(searchParams).skip(floor).limit(limit);
+        }
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
             delete result.response[index].password;

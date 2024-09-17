@@ -5,17 +5,10 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { Wallet } from "./layout";
 
 
 
-
-interface Props{
-    wallet : Wallet,
-    isWalletLoading : boolean
-}
-
-function MenuSideBar( {wallet , isWalletLoading} : Props){
+function MenuSideBar(){
     const router = useRouter();
     const [error,setError] = useState<string|null>(null);
     const logOut = useMutation({
@@ -34,8 +27,8 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
           console.log(savedUser);
           // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
           // queryClient.invalidateQueries(["user"]);
-          setUser(null);
-          router.push('/');
+          setUser(savedUser);
+          router.push('/admins');
           // router.push('/');
       },
       onError: (error) => {
@@ -47,10 +40,6 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
         // setError(error)
       }
     });
-    useEffect(() =>{
-        console.log(isWalletLoading);
-        console.log(wallet);
-    },[wallet,isWalletLoading])
     const {user , setUser , isLoading} = useContext(userContext);
     return(
         <div className="flex flex-col bg-white">
@@ -58,12 +47,7 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
             {
                 user && 
                 <ul className="flex flex-col">
-                    <li className="flex justify-between">
-                        <Link href={"/"}>کیف پول</Link>
-                        {isWalletLoading && <span className="loading loading-dots loading-lg"></span>}
-                        {wallet?.money && <p>{wallet?.money}</p>}
-                    </li>
-                    <li><Link href={"/"}>سفارشات</Link></li>
+                    <li><Link href={"/admins/menu/allAdmins"}>ادمین ها</Link></li>
                     <li><Link href={"/"}>لیست های من</Link></li>
                     <li><Link href={"/"}>نظرات و سوالات</Link></li>
                     <li><Link href={"/users/menu/changeAddress"}>آدرس ها</Link></li>

@@ -13,20 +13,25 @@ import { getTransactions } from "../DB/CRUD/transaction.js";
 import { getEmployees } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
-
+import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
+import { levels } from "../authorization/accessLevels.js";
 
 const router = express.Router();
 //checked
-router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
+router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[levels.userManage]) ,async (req, res,next) =>{
     try {
-        const result = await getUsers(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getUsers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
             next();
             return;
         }
-
         res.body = result.response;
         res.send(result.response);
     } catch (err) {
@@ -37,7 +42,7 @@ router.get("/allUsers", (req, res,next) => auth(req, res,next, ["admin", "employ
     next();
 });
 
-router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
+router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[levels.userManage]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -64,9 +69,13 @@ router.get("/allUsers/:id",(req, res,next) => auth(req, res,next, ["admin", "emp
     next();
 });
 
-router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "employee"]) ,async (req, res,next) =>{
+router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[levels.sellerManage]) ,async (req, res,next) =>{
     try {
-        const result = await getSellers(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        // console.log(req.query.limit)
+        const result = await getVerifyRequests(undefined,searchParams,undefined,req.query.limit,req.query.floor);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -83,7 +92,57 @@ router.get("/allSellers", (req, res,next) => auth(req, res,next, ["admin", "empl
     next();
 });
 
-router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "employee"]) , async (req, res, next) =>{
+router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]), async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getVerifyRequests(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        delete result.response.password;
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[levels.sellerManage]) ,async (req, res,next) =>{
+    try {
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getSellers(undefined,searchParams,undefined,req.query.limit,req.query.floor, req.query.nameSearch);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -113,7 +172,12 @@ router.get("/allSellers/:id",(req, res,next) => auth(req, res,next, ["admin", "e
 
 router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
-        const result = await getAdmins(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getAdmins(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -157,7 +221,7 @@ router.get("/allAdmins/:id",(req, res,next) => auth(req, res,next, ["admin"]) , 
     next();
 });
 
-router.get("/allGiftCards", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[levels.productManage]) ,async (req, res,next) =>{
     try {
         const result = await getGiftCards(undefined,req.query);
         if (result.error){
@@ -176,7 +240,7 @@ router.get("/allGiftCards", (req, res,next) => auth(req, res,next, ["admin"]) ,a
     next();
 });
 
-router.get("/allGiftCards/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[levels.productManage]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -203,7 +267,7 @@ router.get("/allGiftCards/:id",(req, res,next) => auth(req, res,next, ["admin"])
 });
 
 
-router.get("/allTransactions", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[levels.transactionManage]),async (req, res,next) =>{
     try {
         const result = await getTransactions(undefined,req.query);
         if (result.error){
@@ -222,7 +286,7 @@ router.get("/allTransactions", (req, res,next) => auth(req, res,next, ["admin"])
     next();
 });
 
-router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.get("/allTransactions/:id",(req,res,next) => roleAuth(req,res,next,[levels.transactionManage]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -250,7 +314,12 @@ router.get("/allTransactions/:id",(req, res,next) => auth(req, res,next, ["admin
 
 router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
-        const result = await getEmployees(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        // console.log(req.query.limit)
+        const result = await getEmployees(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -296,7 +365,7 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
 
 // checked 
 
-router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.post("/notification",(req,res,next) => roleAuth(req,res,next,[levels.notificationManage]) , async (req, res, next) =>{
     try {
         await validateNotificationPost(req.body); 
     } catch (error) {
@@ -345,7 +414,7 @@ router.post("/notification",(req, res,next) => auth(req, res,next, ["admin"]) , 
     next();
 });
 
-router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+router.post("/changeWalletMoney",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage, levels.userManage]) , async (req, res, next) =>{
     try {
         await validateChangeMoney(req.body); 
     } catch (error) {
@@ -389,40 +458,40 @@ router.post("/changeWalletMoney",(req, res,next) => auth(req, res,next, ["admin"
     next();
 });
 
-router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
-    const {error} = validateId(req.params.id);
-    if (error){
-        res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
-        next();
-        return;
-    } 
-    try {
-        const user = await getUsers(req.body.userID);
-        if(!user.response){
-            res.status(400).send("no user found with this ID");
-            res.body = "no user found with this ID";
-            next();
-            return;
-        }
-        const result = await getWallets(user.response.walletID);
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
-            next();
-            return;
-        }
-        res.body = result.response;
-        res.send(result.response);
-    } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
-    }
-    next();
-});
+// router.get("/getUserWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+//     const {error} = validateId(req.params.id);
+//     if (error){
+//         res.status(400).send({error : error.details[0].message});
+//             res.body = {error : error.details[0].message};
+//         next();
+//         return;
+//     } 
+//     try {
+//         const user = await getUsers(req.body.userID);
+//         if(!user.response){
+//             res.status(400).send("no user found with this ID");
+//             res.body = "no user found with this ID";
+//             next();
+//             return;
+//         }
+//         const result = await getWallets(user.response.walletID);
+//         if (result.error){
+//             res.status(400).send({error : result.error});
+//             res.body = {error : result.error};
+//             next();
+//             return;
+//         }
+//         res.body = result.response;
+//         res.send(result.response);
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+//     next();
+// });
 
-router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller","employee","admin"]), async (req,res) =>{
+router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller","employee","admin"]), async (req,res , next) =>{
     try {
         if(req.user){
             delete req.user.password;
@@ -463,38 +532,38 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller"
     }
 })
 
-router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
-    const {error} = validateId(req.params.id);
-    if (error){
-        res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
-        next();
-        return;
-    } 
-    try {
-        const seller = await getSellers(req.body.sellerID);
-        if(!seller.response){
-            res.status(400).send("no seller found with this ID");
-            res.body = "no seller found with this ID";
-            next();
-            return;
-        }
-        const result = await getWallets(seller.response.walletID);
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
-            next();
-            return;
-        }
-        res.body = result.response;
-        res.send(result.response);
-    } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
-    }
-    next();
-});
+// router.get("/getSellerWallet/:id",(req, res,next) => auth(req, res,next, ["admin"]) , async (req, res, next) =>{
+//     const {error} = validateId(req.params.id);
+//     if (error){
+//         res.status(400).send({error : error.details[0].message});
+//             res.body = {error : error.details[0].message};
+//         next();
+//         return;
+//     } 
+//     try {
+//         const seller = await getSellers(req.body.sellerID);
+//         if(!seller.response){
+//             res.status(400).send("no seller found with this ID");
+//             res.body = "no seller found with this ID";
+//             next();
+//             return;
+//         }
+//         const result = await getWallets(seller.response.walletID);
+//         if (result.error){
+//             res.status(400).send({error : result.error});
+//             res.body = {error : result.error};
+//             next();
+//             return;
+//         }
+//         res.body = result.response;
+//         res.send(result.response);
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+//     next();
+// });
 
 
 router.get('/logOut',async (req,res,next) =>{

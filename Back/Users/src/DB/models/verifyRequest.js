@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Joi, { required } from "joi";
+import Joi  from "joi";
 import joiObjectid from "joi-objectid";
 import { SellerModel } from "./seller.js";
 import { UserModel } from "./user.js";
@@ -9,6 +9,7 @@ const verifyRequestSchema  = new mongoose.Schema(
     {
         sellerID : {type : mongoose.Schema.Types.ObjectId , ref: "sellers" , required : true },
         adminID: {type : mongoose.Schema.Types.ObjectId , ref: "admins" },
+        employeeID: {type : mongoose.Schema.Types.ObjectId , ref: "employees" },
         requestDate : {type: Date, required: true, default : Date.now()},
         state : {type: String,enum: ["pending", "accepted", "rejected"], required: true , default : "pending"}
     }
@@ -34,4 +35,5 @@ export function validateVerifyRequestAnswer (notification){
     })
     return schema.validateAsync(notification);
 }
+
 

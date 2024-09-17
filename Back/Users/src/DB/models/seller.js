@@ -73,14 +73,14 @@ const sellerSchema  = new mongoose.Schema(
                 commercialName : {type: String , required : true},
                 officePhoneNumber : {type: String , required : true},
                 workDays : {type: [String] , required : true},
-                logo : {type: String , required : true},
+                logo : {type: String },
                 sellerCode : {type: String , required : true},
                 aboutSeller : {type: String},
                 sellerWebsite : {type: String},
                 offDays : {type: [String]}
             }
         },
-        walletID: {type : mongoose.Schema.Types.ObjectId , ref: "jobs" },
+        walletID: {type : mongoose.Schema.Types.ObjectId , ref: "wallets" },
         moneyReturn:{type : {
             method : {type: String,enum: ["bankAccount" , "wallet"], required: true , default : "wallet" ,  validate: {
                 validator : function(value){
@@ -103,6 +103,8 @@ const sellerSchema  = new mongoose.Schema(
             city: {type: String, required : true},
             postalCode : {type: String, required : true},
             additionalInfo : {type: String},
+            number : {type : String},
+            unit : {type : String},
             coordinates : {type:{
                 x : {type: String, required : true},
                 y : {type: String, required : true}
@@ -113,6 +115,8 @@ const sellerSchema  = new mongoose.Schema(
             province: {type: String, required : true},
             city: {type: String, required : true},
             postalCode : {type: String, required : true},
+            number : {type : String},
+            unit : {type : String},
             additionalInfo : {type: String},
             coordinates : {type:{
                 x : {type: String, required : true},
@@ -217,7 +221,15 @@ export function validateSellerChangeinfo (data){
         }), 
         additionalDocuments: Joi.array().items(Joi.string()),
         storeInfo : Joi.object({
-            commercialName : Joi.string().min(2).max(100).required(),
+            commercialName : Joi.string().min(2).max(100).external(async (commercialName) => {
+                const seller = await SellerModel.find({"storeInfo.commercialName" : {
+                    $regex: commercialName,
+                    $options: 'i'
+                }}).findOne();
+                if(seller){
+                    throw new Error("an store with this commercialName already exists");
+                }
+            }).required(),
             officePhoneNumber : Joi.string().min(11).max(12).required(),
             workDays : Joi.array().items(Joi.string()).required(),
             logo : Joi.string(),
@@ -239,6 +251,8 @@ export function validateSellerChangeinfo (data){
             province: Joi.string().required(),
             city: Joi.string().required(),
             postalCode : Joi.string().required(),
+            number : Joi.string() ,
+            unit : Joi.string(),
             additionalInfo : Joi.string(),
             coordinates : Joi.object({
                     x : Joi.string().required(),
@@ -251,6 +265,8 @@ export function validateSellerChangeinfo (data){
             province: Joi.string().required(),
             city: Joi.string().required(),
             postalCode : Joi.string().required(),
+            number : Joi.string() ,
+            unit : Joi.string(),
             additionalInfo : Joi.string(),
             coordinates : Joi.object({
                     x : Joi.string().required(),
@@ -260,4 +276,27 @@ export function validateSellerChangeinfo (data){
         })
     }).min(1);
     return schema.validateAsync(data);
+}
+export function validateSellerUnban (data){
+    const schema = Joi.object({
+        sellerID : Joi.objectId().external( async (sellerID) => {
+            const seller = await SellerModel.find({_id : sellerID}).findOne();
+            if(!seller){
+                throw new Error("seller not found")
+            }else if (!seller.isBanned){
+                throw new Error("seller is not banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateVerificationChange(SellerID){
+    const schema = Joi.objectId().external( async (data) => {
+        const Seller = await SellerModel.find({_id : data}).findOne();
+        if(!Seller){
+            throw new Error("Seller not found")
+        }
+    }).required()
+    return schema.validateAsync(SellerID);
+
 }

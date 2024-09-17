@@ -9,7 +9,7 @@ export async function saveUser(userCreate){
     return result;
 }
 
-export async function getUsers(id , search){
+export async function getUsers(id , searchParams,limit , floor ,nameSearch){
     const result = {};
     if(id){
         result.response = await UserModel.find({_id : id}).findOne();
@@ -19,10 +19,35 @@ export async function getUsers(id , search){
         }
         return result;
     }else{
-        result.response = await UserModel.find(search);
-        for (let index = 0; index < result.response.length; index++) {
-            result.response[index] = result.response[index].toJSON();
-            delete result.response[index].password;
+        let data = null;
+        let hasMore = false;
+        if(nameSearch && nameSearch != ''){
+            data = await UserModel.find({...searchParams,lastName:{
+                $regex: nameSearch,
+                $options: 'i'
+            } }).skip(floor).limit(limit);
+            let count = await UserModel.countDocuments({...searchParams,lastName:{
+                $regex: nameSearch,
+                $options: 'i'
+            } });
+            hasMore = count > (Number(limit) + Number(floor));
+            console.log(hasMore)
+        }else{
+            data = await UserModel.find(searchParams).skip(floor).limit(limit);
+            let count = await UserModel.countDocuments(searchParams);
+            // console.log(count);
+            // console.log(limit+floor);
+            
+            hasMore = count > (Number(limit) + Number(floor));
+            console.log(hasMore)
+        }
+        for (let index = 0; index < data.length; index++) {
+            data[index] = data[index].toJSON();
+            delete data[index].password;
+        }
+        result.response = {
+            data: data,
+            hasMore: hasMore
         }
         return result;
     }

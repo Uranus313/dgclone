@@ -1,4 +1,4 @@
-export const levels = {commentManage:'commentManage' , orderManage:"orderManage",productManage:"productManage",transactionManage:"transactionManage",userManage:"userManage",sellerManage:"sellerManage",shipmentManage:"shipmentManage",categoryManage:"categoryManage" }
+export const levels = {commentManage:'commentManage' , orderManage:"orderManage",productManage:"productManage",transactionManage:"transactionManage",userManage:"userManage",sellerManage:"sellerManage",shipmentManage:"shipmentManage",categoryManage:"categoryManage",notificationManage:"notificationManage" }
 
 export const accessLevels=[
     {name: levels.commentManage, title:"مدیریت کامنت"},
@@ -8,6 +8,7 @@ export const accessLevels=[
     {name: levels.userManage, title:"مدیریت یوزر"},
     {name: levels.sellerManage, title:"مدیریت فروشنده"},
     {name: levels.shipmentManage, title:"مدیریت ارسال"},
-    {name: levels.categoryManage, title:"مدیریت دسته بندی"}
-]
+    {name: levels.categoryManage, title:"مدیریت دسته بندی"},
+    {name: levels.notificationManage, title:"مدیریت اعلان ها"}
 
+]

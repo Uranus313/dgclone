@@ -6,7 +6,7 @@ import { getEmployees } from "../DB/CRUD/transporter.js";
 import { RoleModel } from "../DB/models/role.js";
 import { getRoles } from "../DB/CRUD/role.js";
 
-export async function auth(req, res, next, acceptedLevels) {
+export async function roleAuth(req, res, next, acceptedLevels) {
   const token = req.cookies["x-auth-token"];
   if (!token) {
     res.status(401).send({ error: "access denied. no token provided." });
