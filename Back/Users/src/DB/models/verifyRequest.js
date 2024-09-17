@@ -9,6 +9,7 @@ const verifyRequestSchema  = new mongoose.Schema(
     {
         sellerID : {type : mongoose.Schema.Types.ObjectId , ref: "sellers" , required : true },
         adminID: {type : mongoose.Schema.Types.ObjectId , ref: "admins" },
+        employeeID: {type : mongoose.Schema.Types.ObjectId , ref: "employees" },
         requestDate : {type: Date, required: true, default : Date.now()},
         state : {type: String,enum: ["pending", "accepted", "rejected"], required: true , default : "pending"}
     }

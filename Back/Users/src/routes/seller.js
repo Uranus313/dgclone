@@ -13,7 +13,7 @@ import { changeSellerPassword, logIn, saveSeller, updateSeller } from "../DB/CRU
 import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js";
 import { getVerifyRequests, saveVerifyRequest, updateVerifyRequest } from "../DB/CRUD/verifyRequest.js";
 import { validateVerifyRequestAnswer } from "../DB/models/verifyRequest.js";
-
+import { levels } from "../authorization/accessLevels.js";
 
 const router = express.Router();
 
@@ -225,7 +225,7 @@ router.post("/verifyRequest",(req, res,next) => auth(req, res,next, ["seller"]),
     next();
 });
 
-router.patch("/verifyRequest",(req, res,next) => auth(req, res,next, ["admin"]),  async (req, res, next) =>{
+router.patch("/verifyRequest",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
     try {
         await validateVerifyRequestAnswer(req.body); 
     } catch (error) {
@@ -257,8 +257,8 @@ router.patch("/verifyRequest",(req, res,next) => auth(req, res,next, ["admin"]),
                 return;
             }
         }
-        
-        const result = await updateVerifyRequest(req.body.requestID,{adminID : req.admin._id , state : req.body.state});
+        if(req.user.status== "admin"){
+            const result = await updateVerifyRequest(req.body.requestID,{adminID : req.user._id , state : req.body.state});
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -267,6 +267,18 @@ router.patch("/verifyRequest",(req, res,next) => auth(req, res,next, ["admin"]),
         }
         res.send(result.response);
         res.body = result.response;
+        }else{
+            const result = await updateVerifyRequest(req.body.requestID,{employeeID : req.user._id , state : req.body.state});
+            if (result.error){
+                res.status(400).send({error : result.error});
+                res.body = {error : result.error};
+                next();
+                return;
+            }
+            res.send(result.response);
+            res.body = result.response;
+        }
+        
     } catch (err) {
         console.log("Error",err);
         res.body = {error:"internal server error"};
@@ -276,7 +288,7 @@ router.patch("/verifyRequest",(req, res,next) => auth(req, res,next, ["admin"]),
 });
 
 
-router.patch("/verifySeller/:sellerID",(req, res,next) => auth(req, res,next, ["admin"]),  async (req, res, next) =>{
+router.patch("/verifySeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
     try {
         await validateVerificationChange(req.params.sellerID); 
     } catch (error) {
@@ -299,7 +311,13 @@ router.patch("/verifySeller/:sellerID",(req, res,next) => auth(req, res,next, ["
             next();
             return;
         }
-        await updateVerifyRequest(undefined ,req.params.sellerID, {state : "accepted"} )
+        if(req.user.status== "admin"){
+            await updateVerifyRequest(undefined ,req.params.sellerID, {adminID : req.user._id ,state : "accepted"} )
+
+        }else{
+            await updateVerifyRequest(undefined ,req.params.sellerID, {employeeID : req.user._id ,state : "accepted"} )
+
+        }
 
         res.send(result.response);
         res.body = result.response;
@@ -310,7 +328,7 @@ router.patch("/verifySeller/:sellerID",(req, res,next) => auth(req, res,next, ["
     }
     next();
 });
-router.patch("/refuteSeller/:sellerID",(req, res,next) => auth(req, res,next, ["admin"]),  async (req, res, next) =>{
+router.patch("/refuteSeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
     try {
         await validateVerificationChange(req.params.sellerID); 
     } catch (error) {
@@ -333,7 +351,13 @@ router.patch("/refuteSeller/:sellerID",(req, res,next) => auth(req, res,next, ["
             next();
             return;
         }
-        await updateVerifyRequest(undefined ,req.params.sellerID, {state : "rejected"} )
+        if(req.user.status== "admin"){
+            await updateVerifyRequest(undefined ,req.params.sellerID, {adminID : req.user._id ,state : "rejected"} )
+
+        }else{
+            await updateVerifyRequest(undefined ,req.params.sellerID, {employeeID : req.user._id ,state : "rejected"} )
+
+        }
 
         res.send(result.response);
         res.body = result.response;
