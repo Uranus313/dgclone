@@ -9,7 +9,7 @@ export async function saveSeller(sellerCreate){
     return result;
 }
 
-export async function getSellers(id , search , idArray ,limit , floor ,nameSearch){
+export async function getSellers(id , searchParams , idArray ,limit , floor ,nameSearch){
     const result = {};
     if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
@@ -21,7 +21,7 @@ export async function getSellers(id , search , idArray ,limit , floor ,nameSearc
         return result;
         
     }else if(idArray){
-        result.response = await SellerModel.find(search);
+        result.response = await SellerModel.find(searchParams);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
             delete result.response[index].password;
@@ -31,19 +31,19 @@ export async function getSellers(id , search , idArray ,limit , floor ,nameSearc
         let data = null;
         let hasMore = false;
         if(nameSearch && nameSearch != ''){
-            data = await UserModel.find({...searchParams,lastName:{
+            data = await SellerModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
             } }).skip(floor).limit(limit);
-            let count = await UserModel.countDocuments({...searchParams,lastName:{
+            let count = await SellerModel.countDocuments({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
             } });
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
         }else{
-            data = await UserModel.find(searchParams).skip(floor).limit(limit);
-            let count = await UserModel.countDocuments(searchParams);
+            data = await SellerModel.find(searchParams).skip(floor).limit(limit);
+            let count = await SellerModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
             

@@ -13,6 +13,7 @@ import { getNotifications, updateNotification } from "../DB/CRUD/notification.js
 import jwt from "jsonwebtoken";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { levels } from "../authorization/accessLevels.js";
+import { roleAuth } from "../authorization/roleAuth.js";
 
 const router = express.Router();
 

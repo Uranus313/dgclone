@@ -14,7 +14,7 @@ import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js"
 import { getVerifyRequests, saveVerifyRequest, updateVerifyRequest } from "../DB/CRUD/verifyRequest.js";
 import { validateVerifyRequestAnswer } from "../DB/models/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
-
+import { roleAuth } from "../authorization/roleAuth.js";
 const router = express.Router();
 
 router.post("/signUp",  async (req, res, next) =>{

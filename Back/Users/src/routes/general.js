@@ -15,6 +15,7 @@ import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
+import { roleAuth } from "../authorization/roleAuth.js";
 
 const router = express.Router();
 //checked

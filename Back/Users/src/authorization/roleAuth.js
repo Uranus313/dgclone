@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { getUsers } from "../DB/CRUD/user.js";
 import { getSellers } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
-import { getEmployees } from "../DB/CRUD/transporter.js";
+import { getEmployees } from "../DB/CRUD/employee.js";
 import { RoleModel } from "../DB/models/role.js";
 import { getRoles } from "../DB/CRUD/role.js";
 

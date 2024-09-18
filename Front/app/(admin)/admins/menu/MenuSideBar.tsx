@@ -48,11 +48,11 @@ function MenuSideBar(){
                 user && 
                 <ul className="flex flex-col">
                     <li><Link href={"/admins/menu/allAdmins"}>ادمین ها</Link></li>
-                    <li><Link href={"/"}>لیست های من</Link></li>
-                    <li><Link href={"/"}>نظرات و سوالات</Link></li>
-                    <li><Link href={"/users/menu/changeAddress"}>آدرس ها</Link></li>
-                    <li><Link href={"/users/menu/giftCard"}>کارت های هدیه</Link></li>
-                    <li><Link href={"/users/menu/notifications"}>اعلان ها</Link></li>
+                    <li><Link href={"/admins/menu/allSellers"}>فروشنده ها</Link></li>
+                    <li><Link href={"/admins/menu/allUsers"}>خریداران</Link></li>
+                    <li><Link href={"/admins/menu/changeInfo"}>تغییر مشخصات خود</Link></li>
+                    <li><Link href={"/"}>کارت های هدیه</Link></li>
+                    <li><Link href={"/"}>اعلان ها</Link></li>
                     <li><Link href={"/"}>اطلاعات کاربری</Link></li>
                     <li><Link href={"/"}>آخرین بازدید ها</Link></li>
                     <li>

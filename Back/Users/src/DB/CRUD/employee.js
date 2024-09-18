@@ -9,7 +9,7 @@ export async function saveEmployee(employeeCreate){
     return result;
 }
 
-export async function getEmployees(id , search,limit , floor ,nameSearch){
+export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
     const result = {};
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne();
@@ -20,17 +20,35 @@ export async function getEmployees(id , search,limit , floor ,nameSearch){
         }
         return result;
     }else{
-        if(nameSearch){
-            result.response = await EmployeeModel.find({...searchParams,lastName:{
+        let data = null;
+        let hasMore = false;
+        if(nameSearch && nameSearch != ''){
+            data = await EmployeeModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
             } }).skip(floor).limit(limit);
+            let count = await EmployeeModel.countDocuments({...searchParams,lastName:{
+                $regex: nameSearch,
+                $options: 'i'
+            } });
+            hasMore = count > (Number(limit) + Number(floor));
+            console.log(hasMore)
         }else{
-            result.response = await EmployeeModel.find(searchParams).skip(floor).limit(limit);
+            data = await EmployeeModel.find(searchParams).skip(floor).limit(limit);
+            let count = await EmployeeModel.countDocuments(searchParams);
+            // console.log(count);
+            // console.log(limit+floor);
+            
+            hasMore = count > (Number(limit) + Number(floor));
+            console.log(hasMore)
         }
-        for (let index = 0; index < result.response.length; index++) {
-            result.response[index] = result.response[index].toJSON();
-            delete result.response[index].password;
+        for (let index = 0; index < data.length; index++) {
+            data[index] = data[index].toJSON();
+            delete data[index].password;
+        }
+        result.response = {
+            data: data,
+            hasMore: hasMore
         }
         return result;
     }
