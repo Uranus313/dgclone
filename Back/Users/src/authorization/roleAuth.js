@@ -16,24 +16,27 @@ export async function roleAuth(req, res, next, acceptedLevels) {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWTSECRET);
-    if (decoded.status != "admin") {
-      
-      let checker = false;
-      for (let index = 0; index < acceptedLevels.length; index++) {
-        if (decoded.status == acceptedLevels[index]) {
-          checker = true;
-        }
-      }
-      if (!checker) {
-        res.status(401).send({
-          error: "access denied. invalid " + acceptedStatuses.join(", "),
-        });
-        res.body = {
-          error: "access denied. invalid " + acceptedStatuses.join(", "),
-        };
+    if (decoded.status != "admin" && decoded.status != "employee") {
+      res.status(401).send({ error: "access denied. invalid employee/admin." });
+          res.body = { error: "access denied. invalid employee/admin." };
 
-        return;
-      }
+          return;
+      // let checker = false;
+      // for (let index = 0; index < acceptedLevels.length; index++) {
+      //   if (decoded.status == acceptedLevels[index]) {
+      //     checker = true;
+      //   }
+      // }
+      // if (!checker) {
+      //   res.status(401).send({
+      //     error: "access denied. invalid " + acceptedStatuses.join(", "),
+      //   });
+      //   res.body = {
+      //     error: "access denied. invalid " + acceptedStatuses.join(", "),
+      //   };
+
+      //   return;
+      // }
     }
 
     switch (decoded.status) {

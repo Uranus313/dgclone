@@ -19,7 +19,7 @@ import { roleAuth } from "../authorization/roleAuth.js";
 
 const router = express.Router();
 //checked
-router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[levels.userManage]) ,async (req, res,next) =>{
+router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -43,7 +43,7 @@ router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[levels.userMana
     next();
 });
 
-router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[levels.userManage]) , async (req, res, next) =>{
+router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -70,7 +70,7 @@ router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[levels.userM
     next();
 });
 
-router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[levels.sellerManage]) ,async (req, res,next) =>{
+router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -93,7 +93,7 @@ router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[levels.se
     next();
 });
 
-router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]), async (req, res, next) =>{
+router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage }]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -119,7 +119,7 @@ router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[levels
     }
     next();
 });
-router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[levels.sellerManage]) ,async (req, res,next) =>{
+router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -143,7 +143,7 @@ router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[levels.seller
     next();
 });
 
-router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]), async (req, res, next) =>{
+router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -222,7 +222,7 @@ router.get("/allAdmins/:id",(req, res,next) => auth(req, res,next, ["admin"]) , 
     next();
 });
 
-router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[levels.productManage]) ,async (req, res,next) =>{
+router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[{level : levels.productManage }]) ,async (req, res,next) =>{
     try {
         const result = await getGiftCards(undefined,req.query);
         if (result.error){
@@ -241,7 +241,7 @@ router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[levels.prod
     next();
 });
 
-router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[levels.productManage]), async (req, res, next) =>{
+router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.productManage }]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -268,7 +268,7 @@ router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[levels.p
 });
 
 
-router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[levels.transactionManage]),async (req, res,next) =>{
+router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage }]),async (req, res,next) =>{
     try {
         const result = await getTransactions(undefined,req.query);
         if (result.error){
@@ -287,7 +287,7 @@ router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[levels.t
     next();
 });
 
-router.get("/allTransactions/:id",(req,res,next) => roleAuth(req,res,next,[levels.transactionManage]) , async (req, res, next) =>{
+router.get("/allTransactions/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -366,7 +366,7 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
 
 // checked 
 
-router.post("/notification",(req,res,next) => roleAuth(req,res,next,[levels.notificationManage]) , async (req, res, next) =>{
+router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : levels.notificationManage}]) , async (req, res, next) =>{
     try {
         await validateNotificationPost(req.body); 
     } catch (error) {
@@ -415,7 +415,7 @@ router.post("/notification",(req,res,next) => roleAuth(req,res,next,[levels.noti
     next();
 });
 
-router.post("/changeWalletMoney",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage, levels.userManage]) , async (req, res, next) =>{
+router.post("/changeWalletMoney",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}, {level : levels.userManage , writeAccess : true}]) , async (req, res, next) =>{
     try {
         await validateChangeMoney(req.body); 
     } catch (error) {

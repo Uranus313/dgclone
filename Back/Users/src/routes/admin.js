@@ -102,7 +102,7 @@ router.post("/logIn",  async (req, res, next) =>{
     next();
 });
 //checked
-router.patch("/banUser",(req,res,next) => roleAuth(req,res,next,[levels.userManage]),  async (req, res, next) =>{
+router.patch("/banUser",(req,res,next) => roleAuth(req,res,next,[{level : levels.userManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateUserBan(req.body); 
     } catch (error) {
@@ -201,7 +201,7 @@ router.patch("/changePassword",(req, res,next) => auth(req, res,next, ["admin"])
     next();
 });
 
-router.patch("/banSeller",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
+router.patch("/banSeller",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateSellerBan(req.body); 
     } catch (error) {
@@ -310,7 +310,7 @@ router.patch("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  asy
     }
     next();
 });
-router.patch("/unbanUser",(req,res,next) => roleAuth(req,res,next,[levels.userManage]),  async (req, res, next) =>{
+router.patch("/unbanUser",(req,res,next) => roleAuth(req,res,next,[{level : levels.userManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateUserUnban(req.body); 
     } catch (error) {
@@ -341,7 +341,7 @@ router.patch("/unbanUser",(req,res,next) => roleAuth(req,res,next,[levels.userMa
     }
     next();
 });
-router.patch("/unbanSeller",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
+router.patch("/unbanSeller",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateSellerUnban(req.body); 
     } catch (error) {
@@ -487,7 +487,7 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["admin"]) ,
     next();
 });
 
-router.get("/getWallet/:walletID", (req,res,next) => roleAuth(req,res,next,[levels.userManage,levels.sellerManage]), async (req, res, next) => {
+router.get("/getWallet/:walletID", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage},{level : levels.sellerManage}]), async (req, res, next) => {
     try {
         const {error} = validateId(req.params.walletID);
     if (error){

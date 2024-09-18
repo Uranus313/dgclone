@@ -104,7 +104,7 @@ export function validateEmployeeChangeRole (data){
             if(!employee){
                 throw new Error("no employee with this id exists");
             }
-        }).required()
+        })
     });
     return schema.validateAsync(data);
 }
