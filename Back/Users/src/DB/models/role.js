@@ -12,7 +12,7 @@ const roleSchema  = new mongoose.Schema(
             {
                 type:{
                     level: {type: String, enum: [levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage], required : true},
-                    writeAccess :{type: Boolean, required: true}
+                    writeAccess :{type: Boolean, required: true , default : false}
                 }
             }
         ]},
@@ -26,12 +26,12 @@ export function validateRolePost (data){
         name : Joi.string().min(1).max(50).external( async (name) => {
             const user = await RoleModel.find({name : name}).findOne();
             if(user){
-                throw new Error("a role with this name already exists");
+                throw new Error("یک نقش دیگر با این اسم وجود دارد");
             }
         }).required(),
         accessLevels : Joi.array().items(Joi.object({
             level : Joi.string().valid(levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage).required(),
-            writeAccess : Joi.boolean().required()
+            writeAccess : Joi.boolean()
         })).required(true)
     });
     return schema.validateAsync(data);

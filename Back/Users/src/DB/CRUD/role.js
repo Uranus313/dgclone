@@ -34,7 +34,7 @@ export async function getRoles(id , search, idArray){
 
 export async function deleteRole(id){
     const result = {};
-    result.response = await RoleModel.deleteOne({_id : id});
+    result.response = await RoleModel.findByIdAndDelete({_id : id});
     return result;
 }
 

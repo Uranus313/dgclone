@@ -4,6 +4,8 @@ import cors from "cors";
 import generalRouter from "./src/routes/general.js"
 import userRouter from "./src/routes/user.js"
 import adminRouter from "./src/routes/admin.js"
+import employeeRouter from "./src/routes/employee.js"
+
 import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
 // async function asynctest(){
@@ -34,6 +36,8 @@ app.use(cookieParser());
 app.use("/users/user", userRouter);
 app.use("/users/admin", adminRouter);
 app.use("/users/general", generalRouter);
+app.use("/users/employee", employeeRouter);
+
 
 app.get("/", (req, res, next) => {
     res.send("hello world");

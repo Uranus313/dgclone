@@ -141,7 +141,7 @@ router.patch("/banUser",(req,res,next) => roleAuth(req,res,next,[{level : levels
     next();
 });
 
-router.post("/changeEmployeeRole",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
+router.patch("/changeEmployeeRole",(req,res,next) => auth(req,res,next,["admin"]),  async (req, res, next) =>{
     try {
         await validateEmployeeChangeRole(req.body); 
     } catch (error) {
@@ -156,6 +156,9 @@ router.post("/changeEmployeeRole",(req,res,next) => auth(req,res,next,["admin"])
         return;
     }
     try {
+        if(!req.body.roleID){
+            req.body.roleID = null;
+        }
         const result = await updateEmployee(req.body.employeeID, {roleID: req.body.roleID});
         if (result.error){
             res.status(400).send({error : result1.error});
@@ -163,8 +166,8 @@ router.post("/changeEmployeeRole",(req,res,next) => auth(req,res,next,["admin"])
             next();
             return;
         }
-        res.send(result1.response);
-        res.body = result1.response;
+        res.send(result.response);
+        res.body = result.response;
     } catch (err) {
         console.log("Error",err);
         res.body = {error:"internal server error"};

@@ -10,7 +10,7 @@ import { getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
 import { getTransactions } from "../DB/CRUD/transaction.js";
-import { getEmployees } from "../DB/CRUD/employee.js";
+import { getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
@@ -320,7 +320,7 @@ router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,a
         delete searchParams.limit;
         delete searchParams.nameSearch;
         // console.log(req.query.limit)
-        const result = await getEmployees(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -346,7 +346,7 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
         return;
     } 
     try {
-        const result = await getEmployees(req.params.id);
+        const result = await getEmployeesWithRoles(req.params.id);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

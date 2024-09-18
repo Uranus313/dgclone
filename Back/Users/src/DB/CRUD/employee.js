@@ -11,6 +11,7 @@ export async function saveEmployee(employeeCreate){
 
 export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
     const result = {};
+    console.log(await EmployeeModel.find())
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne();
         if(result.response){
