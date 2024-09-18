@@ -1,11 +1,15 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 interface Props{
     images :string[]
 }
 const Gallery = ({images}:Props) => {
-  const dialogElement = document.getElementById("gallery") as HTMLDialogElement | null
+    const [dialogElement, setDialogElement] = useState<HTMLDialogElement | null>(null);
+
+    useEffect(() => {
+      setDialogElement(document.getElementById("gallery") as HTMLDialogElement | null);
+    }, []);
 
   return (
     <div className='grid grid-cols-5'>

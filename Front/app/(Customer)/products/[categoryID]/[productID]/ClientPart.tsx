@@ -2,7 +2,7 @@
 import { ProductInterface, SellerInfosOnProduct } from '@/app/components/Interfaces/interfaces'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import f from '../../../assets/images/tomann.png'
+import f from '../../../../assets/images/tomann.png'
 import Gallery from './Gallery'
 import SeeMore from '@/app/components/SeeMore/SeeMore'
 interface Props{
@@ -11,7 +11,7 @@ interface Props{
 
 const ClientPart = ({product}:Props) => {
     
-    let ColorsWithSellers:{color:string,sellers:SellerInfosOnProduct[]}[] = []
+    let ColorsWithSellers:{color:{hex:string,title:string},sellers:SellerInfosOnProduct[]}[] = []
     const [selectedColor , setSelectedColor] = useState(product.sellers[0].quantity[0].color)
     const [selectedSeller , setSelectedSeller] = useState<SellerInfosOnProduct>()
     
@@ -20,7 +20,7 @@ const ClientPart = ({product}:Props) => {
     product.sellers.forEach(seller => {
         seller.quantity.forEach(colorQuantity=>{
             if (colorQuantity.quantity != 0 ){
-                const foundColor:{color:string,sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color === colorQuantity.color)
+                const foundColor:{color:{hex:string,title:string},sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color === colorQuantity.color)
 
                 if(foundColor){
                     foundColor.sellers.push(seller)
@@ -67,7 +67,7 @@ const ClientPart = ({product}:Props) => {
                     <p className='text-xl mt-4 mb-3'>رنگ:</p>
                     <div className='flex'>    
                         {ColorsWithSellers.map((color)=>{
-                            return <button onClick={()=>setSelectedColor(color.color)} className={`${selectedColor == color.color ? 'border-primary-color border-4':'border-grey-dark'} h-10 w-10 ml-2 rounded-full  border`} style={{backgroundColor:color.color}}></button>
+                            return <button onClick={()=>setSelectedColor(color.color)} className={`${selectedColor == color.color ? 'border-primary-color border-4':'border-grey-dark'} h-10 w-10 ml-2 rounded-full  border`} style={{backgroundColor:color.color.hex}}></button>
                         })}
                     </div>
 
@@ -120,7 +120,7 @@ const ClientPart = ({product}:Props) => {
 
                         <div className='flex justify-between mt-4'>
                             <div className='flex'>
-                                <h2 className='text-3xl'>{selectedSeller?.price}</h2>
+                                <h2 className='text-3xl'>{selectedSeller?.quantity.find(quantity=>quantity.color==selectedColor)?.price}</h2>
                                 <Image className='mx-1 object-contain' objectFit='contain' src={f} width='30' height='100' alt='تومان'/>
                             </div>
                             <div className="tooltip" data-tip={`این کالا توسط فروشنده ی آن ${selectedSeller?.sellerTitle} قیمت گذاری شده `}>
@@ -141,7 +141,7 @@ const ClientPart = ({product}:Props) => {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-grey-dark">
                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                             </svg>
-                            <p className='text-grey-dark mx-2'>{selectedSeller?.garante.title}</p>
+                            <p className='text-grey-dark mx-2'>{selectedSeller?.quantity.find(quantity=>quantity.color==selectedColor)?.garante}</p>
                         </div>
                     </div>
 
@@ -173,10 +173,10 @@ const ClientPart = ({product}:Props) => {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-2 ">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
           </svg>
-          <p className=''>{seller.garante.title}</p>
+          <p className=''>{seller.quantity.find(quantity=>quantity.color==selectedColor)?.garante}</p>
         </div>
         <div className='flex items-center justify-center'>
-          <p className='text-3xl'>{seller.price}</p>
+          <p className='text-3xl'>{seller.quantity.find(quantity=>quantity.color==selectedColor)?.price}</p>
           <Image className='mx-1 object-contain' objectFit='contain' src={f} width='30' height='100' alt='تومان'/>
         </div>
         <div className='flex items-center justify-end'>
