@@ -62,6 +62,13 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
     }
 }
 
+export async function getSellerCount(){
+    const result = {};
+    let count = await SellerModel.countDocuments();
+    result.response = count;
+    return result;
+}  
+
 export async function logIn(email , phoneNumber , password){
     const result = {};
     let seller = null;

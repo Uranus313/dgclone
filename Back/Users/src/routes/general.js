@@ -1,16 +1,16 @@
 import express from "express"
 import { auth } from "../authorization/auth.js";
-import { addNotification, getUsers } from "../DB/CRUD/user.js";
+import { addNotification, getUserCount, getUsers } from "../DB/CRUD/user.js";
 import validateId from "../functions/validateId.js";
 import { validateNotificationPost } from "../DB/models/notification.js";
 import { saveNotification } from "../DB/CRUD/notification.js";
 import { validateChangeMoney } from "../DB/models/wallet.js";
 import { changeWalletMoney, getWallets } from "../DB/CRUD/wallet.js";
-import { getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
+import { getSellerCount, getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
-import { getTransactions } from "../DB/CRUD/transaction.js";
-import { getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
+import { getTransactionCount, getTransactions } from "../DB/CRUD/transaction.js";
+import { getEmployeeCount, getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
@@ -365,6 +365,92 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
 });
 
 // checked 
+router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getEmployeeCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getUserCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getSellerCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/transactionCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getTransactionCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 
 router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : levels.notificationManage}]) , async (req, res, next) =>{
     try {

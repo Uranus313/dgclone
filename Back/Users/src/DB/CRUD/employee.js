@@ -99,6 +99,13 @@ export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nam
     }
 }
 
+export async function getEmployeeCount(){
+    const result = {};
+    let count = await EmployeeModel.countDocuments();
+    result.response = count;
+    return result;
+}  
+
 export async function logIn(email , phoneNumber , password){
     const result = {};
     let employee = null;
