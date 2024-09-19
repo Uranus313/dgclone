@@ -34,6 +34,13 @@ export async function getTransactions(id , search){
     }
 }
 
+export async function getTransactionCount(){
+    const result = {};
+    let count = await TransactionModel.countDocuments();
+    result.response = count;
+    return result;
+}  
+
 export async function deleteTransaction(id){
     const result = {};
     result.response = await TransactionModel.deleteOne({_id : id});

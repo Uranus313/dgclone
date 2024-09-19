@@ -1,5 +1,4 @@
 'use client'
-
 import userContext from "@/app/contexts/userContext";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -28,7 +27,7 @@ function MenuSideBar(){
           // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
           // queryClient.invalidateQueries(["user"]);
           setUser(savedUser);
-          router.push('/admins');
+          router.push('/');
           // router.push('/');
       },
       onError: (error) => {
@@ -42,23 +41,19 @@ function MenuSideBar(){
     });
     const {user , setUser , isLoading} = useContext(userContext);
     return(
-        <div className="flex flex-col bg-white">
+        <div className="flex w-1/5 bg-white ">
             {isLoading && <span className="loading loading-dots loading-lg"></span>}
             {
                 user && 
-                <ul className="flex flex-col">
-                    <li><Link href={"/admins/menu/allAdmins"}>ادمین ها</Link></li>
-                    <li><Link href={"/admins/menu/allSellers"}>فروشنده ها</Link></li>
-                    <li><Link href={"/admins/menu/allUsers"}>خریداران</Link></li>
-                    <li><Link href={"/admins/menu/changeInfo"}>تغییر مشخصات خود</Link></li>
-                    <li><Link href={"/"}>کارت های هدیه</Link></li>
-                    <li><Link href={"/"}>اعلان ها</Link></li>
-                    <li><Link href={"/"}>اطلاعات کاربری</Link></li>
-                    <li><Link href={"/"}>آخرین بازدید ها</Link></li>
-                    <li>
-                        
+                <ul className="flex flex-col p-7 px-17">
+                    <li className="pb-1.5"><Link href={"/admins"}>داشبورد</Link></li>
+                    <li className="py-1"><Link href={"/admins"}>ارزیابی</Link></li>
+                    <li className="py-1.5"><Link href={"/admins"}>بلیط ها</Link></li>
+                    <li className="py-1"><Link href={"/admins/menu/allEmployees/allRoles"}>نقش ها</Link></li>
+                    <li className="py-1.5"><Link href={"/admins"}>لاگ ها</Link></li>
+                    <li className="py-1.5">
                         <button onClick={() => logOut.mutate()}>
-                            خروج از حساب کاربری
+                            خروج از حساب
                         </button>
                     </li> 
                 </ul>

@@ -1,24 +1,25 @@
 import express from "express"
 import { auth } from "../authorization/auth.js";
-import { addNotification, getUsers } from "../DB/CRUD/user.js";
+import { addNotification, getUserCount, getUsers } from "../DB/CRUD/user.js";
 import validateId from "../functions/validateId.js";
 import { validateNotificationPost } from "../DB/models/notification.js";
 import { saveNotification } from "../DB/CRUD/notification.js";
 import { validateChangeMoney } from "../DB/models/wallet.js";
 import { changeWalletMoney, getWallets } from "../DB/CRUD/wallet.js";
-import { getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
+import { getSellerCount, getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
-import { getTransactions } from "../DB/CRUD/transaction.js";
-import { getEmployees } from "../DB/CRUD/employee.js";
+import { getTransactionCount, getTransactions } from "../DB/CRUD/transaction.js";
+import { getEmployeeCount, getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
+import { roleAuth } from "../authorization/roleAuth.js";
 
 const router = express.Router();
 //checked
-router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[levels.userManage]) ,async (req, res,next) =>{
+router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -42,7 +43,7 @@ router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[levels.userMana
     next();
 });
 
-router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[levels.userManage]) , async (req, res, next) =>{
+router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -69,7 +70,7 @@ router.get("/allUsers/:id",(req,res,next) => roleAuth(req,res,next,[levels.userM
     next();
 });
 
-router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[levels.sellerManage]) ,async (req, res,next) =>{
+router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -92,7 +93,7 @@ router.get("/verifyRequests", (req,res,next) => roleAuth(req,res,next,[levels.se
     next();
 });
 
-router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]), async (req, res, next) =>{
+router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage }]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -118,7 +119,7 @@ router.get("/verifyRequests/:id",(req,res,next) => roleAuth(req,res,next,[levels
     }
     next();
 });
-router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[levels.sellerManage]) ,async (req, res,next) =>{
+router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -142,7 +143,7 @@ router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[levels.seller
     next();
 });
 
-router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]), async (req, res, next) =>{
+router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -221,7 +222,7 @@ router.get("/allAdmins/:id",(req, res,next) => auth(req, res,next, ["admin"]) , 
     next();
 });
 
-router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[levels.productManage]) ,async (req, res,next) =>{
+router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[{level : levels.productManage }]) ,async (req, res,next) =>{
     try {
         const result = await getGiftCards(undefined,req.query);
         if (result.error){
@@ -240,7 +241,7 @@ router.get("/allGiftCards", (req,res,next) => roleAuth(req,res,next,[levels.prod
     next();
 });
 
-router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[levels.productManage]), async (req, res, next) =>{
+router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.productManage }]), async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -267,7 +268,7 @@ router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[levels.p
 });
 
 
-router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[levels.transactionManage]),async (req, res,next) =>{
+router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage }]),async (req, res,next) =>{
     try {
         const result = await getTransactions(undefined,req.query);
         if (result.error){
@@ -286,7 +287,7 @@ router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[levels.t
     next();
 });
 
-router.get("/allTransactions/:id",(req,res,next) => roleAuth(req,res,next,[levels.transactionManage]) , async (req, res, next) =>{
+router.get("/allTransactions/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) , async (req, res, next) =>{
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -319,7 +320,7 @@ router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,a
         delete searchParams.limit;
         delete searchParams.nameSearch;
         // console.log(req.query.limit)
-        const result = await getEmployees(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -345,7 +346,7 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
         return;
     } 
     try {
-        const result = await getEmployees(req.params.id);
+        const result = await getEmployeesWithRoles(req.params.id);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -364,8 +365,94 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
 });
 
 // checked 
+router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+    try {
 
-router.post("/notification",(req,res,next) => roleAuth(req,res,next,[levels.notificationManage]) , async (req, res, next) =>{
+        // console.log(req.query.limit)
+        const result = await getEmployeeCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getUserCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getSellerCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/transactionCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getTransactionCount();
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        let answer = {count : result.response};
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : levels.notificationManage}]) , async (req, res, next) =>{
     try {
         await validateNotificationPost(req.body); 
     } catch (error) {
@@ -414,7 +501,7 @@ router.post("/notification",(req,res,next) => roleAuth(req,res,next,[levels.noti
     next();
 });
 
-router.post("/changeWalletMoney",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage, levels.userManage]) , async (req, res, next) =>{
+router.post("/changeWalletMoney",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}, {level : levels.userManage , writeAccess : true}]) , async (req, res, next) =>{
     try {
         await validateChangeMoney(req.body); 
     } catch (error) {

@@ -14,7 +14,7 @@ import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js"
 import { getVerifyRequests, saveVerifyRequest, updateVerifyRequest } from "../DB/CRUD/verifyRequest.js";
 import { validateVerifyRequestAnswer } from "../DB/models/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
-
+import { roleAuth } from "../authorization/roleAuth.js";
 const router = express.Router();
 
 router.post("/signUp",  async (req, res, next) =>{
@@ -225,7 +225,7 @@ router.post("/verifyRequest",(req, res,next) => auth(req, res,next, ["seller"]),
     next();
 });
 
-router.patch("/verifyRequest",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
+router.patch("/verifyRequest",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateVerifyRequestAnswer(req.body); 
     } catch (error) {
@@ -288,7 +288,7 @@ router.patch("/verifyRequest",(req,res,next) => roleAuth(req,res,next,[levels.se
 });
 
 
-router.patch("/verifySeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
+router.patch("/verifySeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateVerificationChange(req.params.sellerID); 
     } catch (error) {
@@ -328,7 +328,7 @@ router.patch("/verifySeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[
     }
     next();
 });
-router.patch("/refuteSeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[levels.sellerManage]),  async (req, res, next) =>{
+router.patch("/refuteSeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage , writeAccess : true}]),  async (req, res, next) =>{
     try {
         await validateVerificationChange(req.params.sellerID); 
     } catch (error) {

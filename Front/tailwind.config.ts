@@ -23,7 +23,14 @@ const config: Config = {
       'propBubble-bg': '#E5EBFA',
       'white': '#fff',
       'black': '#000',
-      'primary-seller': '#395F82'
+      'primary-seller': '#395F82',
+      'red-box':'#A02424',
+      'purple-box':'#6B1F78',
+      'blue-box':'#395F82',
+      'green-box':'#1F7378',
+      'greener-box':'#1F7762',
+      'border-color-list':'#CBCBCB'
+
 
     },
     extend: {

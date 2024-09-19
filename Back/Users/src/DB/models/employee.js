@@ -55,6 +55,15 @@ export function validateEmployeePost (data){
                 throw new Error("an account with this national ID number already exists");
             }
         }).required(),
+        roleID : Joi.objectId().external( async (roleID) => {
+            if(!roleID){
+                return;
+            }
+            const role = await RoleModel.find({_id : roleID}).findOne();
+            if(!role){
+                throw new Error("no role with this id exists");
+            }
+        })
     });
     return schema.validateAsync(data);
 }
@@ -94,17 +103,20 @@ export function validateEmployeeChangeinfo (data){
 export function validateEmployeeChangeRole (data){
     const schema = Joi.object({
         roleID : Joi.objectId().external( async (roleID) => {
-            const role = await RoleModel.find({roleID : roleID}).findOne();
+            if(!roleID){
+                return;
+            }
+            const role = await RoleModel.find({_id : roleID}).findOne();
             if(!role){
                 throw new Error("no role with this id exists");
             }
-        }).required(),
+        }),
         employeeID : Joi.objectId().external( async (employeeID) => {
             const employee = await EmployeeModel.find({_id : employeeID}).findOne();
             if(!employee){
                 throw new Error("no employee with this id exists");
             }
-        }).required()
+        })
     });
     return schema.validateAsync(data);
 }

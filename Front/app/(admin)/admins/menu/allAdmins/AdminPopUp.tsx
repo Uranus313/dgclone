@@ -108,44 +108,54 @@ const AdminPopUp = ({admin} : Props) => {
 
     return (
       <div>
-        <div onClick={openModal} className=' flex justify-between'>
-            <p>{admin.firstName + ' ' + admin.lastName}</p>
-            {admin.isBanned && <p className=' text-red-500'>بن شده</p>}
+        <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list">
+            <p className="w-1/4">{admin.firstName + ' ' + admin.lastName}</p>
+            <p className="w-1/4">{admin.phoneNumber}</p>
+        <p className="w-1/4">{((admin.email && admin.email) || "-")}</p>
+        {admin.isBanned ? (
+          <p className="w-1/4 text-red-500">بن شده</p>
+        ) : (
+          <p className="w-1/4 text-red-500"> -</p>
+        )}
         </div>
 
         <dialog ref={dialogRef} className="modal">
           <div className="modal-box">
             {error && <p>{error}</p>}
-            <h3 className="font-bold text-lg">{admin.firstName + ' ' + admin.lastName}</h3>
+            <h3 className="font-bold text-lg pb-2">{admin.firstName + ' ' + admin.lastName}</h3>
             <div className='block'>
-                <div className=' flex justify-between'>
+                <div className=' flex justify-between pb-2'>
                 <p>ایمیل :</p>
 
                     <p>{admin.email}</p>
                 </div>
-                <div className=' flex justify-between'>
+                <div className=' flex justify-between pb-2'>
                 <p>شماره تلفن :</p>
 
                     <p>{admin.phoneNumber}</p>
                 </div>
-                <div className=' flex justify-between'>
+                <div className=' flex justify-between pb-2'>
                 <p>کد ملی :</p>
 
                     <p>{admin.nationalID}</p>
                 </div>
-                <div className=' flex justify-between'>
+                <div className=' flex justify-between pb-2'>
                 <p>تاریخ تولد :</p>
 
                     <p>{admin.birthDate}</p>
                 </div>
-                <div className=' flex justify-between'>
+                <div className=' flex justify-between pb-2'>
                 <p>آیدی :</p>
 
                     <p>{admin._id}</p>
                 </div>
             </div>
+            
+          <div className="my-4 flex justify-center">
             {admin._id != user._id && (admin.isBanned? <button className='btn btn-primary' type='button' onClick={() => unbanAdmin.mutate()}>لغو بن</button>:<button className='btn btn-error' type='button' onClick={() => banAdmin.mutate()}>بن</button>)}
-            <button className='btn btn-warning' type='button' onClick={closeModal}>خروج</button>
+            <button className='btn btn-warning mx-3' type='button' onClick={closeModal}>خروج</button>
+
+          </div>
           </div>
           <form method="dialog" className="modal-backdrop" onClick={closeModal}>
             <button type="button">close</button>

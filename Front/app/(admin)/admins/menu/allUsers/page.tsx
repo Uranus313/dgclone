@@ -5,7 +5,7 @@ const UsersWatchPage = () => {
   return (
     <div>
       <h1>لیست خریداران</h1>
-      <UserList />
+      {/* <UserList /> */}
     </div>
   )
 }

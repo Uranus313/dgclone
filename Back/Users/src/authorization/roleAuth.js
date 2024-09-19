@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { getUsers } from "../DB/CRUD/user.js";
 import { getSellers } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
-import { getEmployees } from "../DB/CRUD/transporter.js";
+import { getEmployees } from "../DB/CRUD/employee.js";
 import { RoleModel } from "../DB/models/role.js";
 import { getRoles } from "../DB/CRUD/role.js";
 
@@ -16,24 +16,27 @@ export async function roleAuth(req, res, next, acceptedLevels) {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWTSECRET);
-    if (decoded.status != "admin") {
-      
-      let checker = false;
-      for (let index = 0; index < acceptedLevels.length; index++) {
-        if (decoded.status == acceptedLevels[index]) {
-          checker = true;
-        }
-      }
-      if (!checker) {
-        res.status(401).send({
-          error: "access denied. invalid " + acceptedStatuses.join(", "),
-        });
-        res.body = {
-          error: "access denied. invalid " + acceptedStatuses.join(", "),
-        };
+    if (decoded.status != "admin" && decoded.status != "employee") {
+      res.status(401).send({ error: "access denied. invalid employee/admin." });
+          res.body = { error: "access denied. invalid employee/admin." };
 
-        return;
-      }
+          return;
+      // let checker = false;
+      // for (let index = 0; index < acceptedLevels.length; index++) {
+      //   if (decoded.status == acceptedLevels[index]) {
+      //     checker = true;
+      //   }
+      // }
+      // if (!checker) {
+      //   res.status(401).send({
+      //     error: "access denied. invalid " + acceptedStatuses.join(", "),
+      //   });
+      //   res.body = {
+      //     error: "access denied. invalid " + acceptedStatuses.join(", "),
+      //   };
+
+      //   return;
+      // }
     }
 
     switch (decoded.status) {

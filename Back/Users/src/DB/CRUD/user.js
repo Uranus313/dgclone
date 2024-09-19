@@ -52,6 +52,12 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
         return result;
     }
 }
+export async function getUserCount(){
+    const result = {};
+    let count = await UserModel.countDocuments();
+    result.response = count;
+    return result;
+}  
 
 export async function logIn(email , phoneNumber , password){
     const result = {};
