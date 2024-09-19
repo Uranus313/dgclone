@@ -4,8 +4,7 @@ import RoleList from './RoleList'
 
 const RolesWatchPage = () => {
   return (
-    <div>
-      <h1>لیست نقش ها</h1>
+    <div className='w-full m-10 bg-white rounded-md'>
       <AddRolePopUp />
       <RoleList />
     </div>

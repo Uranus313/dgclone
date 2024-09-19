@@ -7,7 +7,7 @@ const sellersWatchPage = () => {
     <div>
       <h1>لیست فروشنده ها</h1>
       <Link href={"/admins/menu/allSellers/verifyRequests"}>درخواست های تایید</Link>
-      <SellerList />
+      {/* <SellerList /> */}
     </div>
   )
 }

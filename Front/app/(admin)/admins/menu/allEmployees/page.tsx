@@ -8,9 +8,8 @@ const EmployeesWatchPage = () => {
     <div>
       <h1>لیست کارمند ها</h1>
       <Link href={"/admins/menu/allEmployees/allRoles"}>نقش ها</Link>
-
       <AddEmployeePopUp />
-      <EmployeeList />
+      {/* <EmployeeList /> */}
     </div>
   )
 }
