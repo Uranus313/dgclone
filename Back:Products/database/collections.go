@@ -37,23 +37,13 @@ func DeployCollections() {
 
 }
 
-// -- making username unique in users collection --
+// -- making code unique in discount code collection --
 // indexModel := mongo.IndexModel{
-// 	Keys:    bson.M{"username": 1},
+// 	Keys:    bson.M{"code": 1},
 // 	Options: options.Index().SetUnique(true),
 // }
-// _, err := UserCollection.Indexes().CreateOne(context.Background(), indexModel)
+// _, err := DiscountCodeCollection.Indexes().CreateOne(context.Background(), indexModel)
 // if err != nil {
 // 	log.Fatal("error while adding index: ", err)
 // }
-
-// -- making username unique in admins collection --
-// indexModel := mongo.IndexModel{
-// 	Keys:    bson.M{"username": 1},
-// 	Options: options.Index().SetUnique(true),
-// }
-// _, err := AdminCollection.Indexes().CreateOne(context.Background(), indexModel)
-// if err != nil {
-// 	log.Fatal("error while adding index: ", err)
-// }
-// log.Println("unique index added to admin collection")
+// log.Println("unique index added to discount code collection")
