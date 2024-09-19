@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { SellerAddProdctCard } from '@/app/components/Interfaces/interfaces'
 import ModalButton from '../ModalButton'
 import SellProductPopup from './SellProductPopup'
+import useQueryNext from '@/app/hooks/useQueryNext'
+import AddProductButton from './AddProductButton'
+import AddNew from './AddNew'
 
 
 const productsCard:SellerAddProdctCard[]=[
@@ -50,6 +53,8 @@ const productsCard:SellerAddProdctCard[]=[
     categories:{title:string , categoryid:string}[]
     brands:string[]
   }
+
+
   
   const filterables:Filterables={
     categories:[
@@ -60,6 +65,9 @@ const productsCard:SellerAddProdctCard[]=[
   }
   
   const AddProductList = () => {  
+
+
+
     return (
       <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
         <h1 className='text-xl font-bold text-grey-dark'>فروش کالا</h1>
@@ -81,12 +89,9 @@ const productsCard:SellerAddProdctCard[]=[
           </label>
         </div>
         
-        <Link href='/sellers/addProducts/NewProduct?category=' className='p-3 rounded-md bg-primary-seller text-white my-4'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 inline me-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
+        <ModalButton title='ثبت کالای جدید' id='addNewProduct'/>
 
-            ثبت کالای جدید</Link>
+        <AddNew/>
   
         <div className='grid grid-cols-5 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
         <p className=''>عنوان کالا</p>

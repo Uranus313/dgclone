@@ -17,7 +17,7 @@ export interface SellerInfosOnProduct{
     sellerTitle:string,
     sellerRating:number
     quantity: {color:{title:string,hex:string},  quantity:number,price:number, garante:string}[],
-    shipmentMethod:shipmentMethod,
+    shipmentMethod?:shipmentMethod,
     discountId?:string,
     
 }
@@ -37,7 +37,7 @@ export interface SellerSetVarientOnProduct{
 
 
 export interface ProductInterface{
-    id:string,
+    id?:string,
     sellcount:number,
     visitCount:number,
     visits:string[],
@@ -291,4 +291,9 @@ export interface Color{
     title:string,
     hex:string,
     id?:string,
+}
+
+export interface Brand{
+    title:string,
+    id:string,
 }
