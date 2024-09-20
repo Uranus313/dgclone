@@ -101,7 +101,7 @@ export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nam
 
 export async function getEmployeeCount(){
     const result = {};
-    let count = await EmployeeModel.countDocuments();
+    let count = await EmployeeModel.estimatedDocumentCount();
     result.response = count;
     return result;
 }  
