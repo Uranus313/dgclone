@@ -177,6 +177,17 @@ func PostComment(c *fiber.Ctx) error {
 
 	comment.DateSent = time.Now()
 
+	insertResult, err := database.CommentCollection.InsertOne(context.Background(), comment)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "something went wrong while adding comment to collection",
+			"error":   err.Error(),
+		})
+	}
+
+	comment.ID = insertResult.InsertedID.(primitive.ObjectID)
+
 	return c.Status(http.StatusCreated).JSON(comment)
 }
 

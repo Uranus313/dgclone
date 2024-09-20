@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -97,4 +99,133 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(responses)
+}
+
+func AddSaleDiscount(c *fiber.Ctx) error {
+
+	prodIDString := c.Query("ProdID")
+
+	prodID, err := primitive.ObjectIDFromHex(prodIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching prod id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	sellerIDString := c.Query("SellerID")
+
+	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching seller id from params",
+			"err":     err.Error(),
+		})
+	}
+
+	endDateString := c.Query("EndDate")
+
+	dateLayout := "2006-01-02 15:04:05"
+
+	endDate, err := time.Parse(dateLayout, endDateString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message":        "problem with the date time entry",
+			"correct_layout": dateLayout,
+			"error":          err.Error(),
+		})
+	}
+
+	newPriceString := c.Query("NewPrice")
+
+	newPrice, err := strconv.Atoi(newPriceString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching New Price from query",
+			"error":   err.Error(),
+		})
+	}
+
+	var prod models.Product
+
+	filter := bson.M{"_id": prodID}
+
+	err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&prod)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "product not found"})
+		}
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	var sellerFound bool = false
+	var sellerIndex int
+
+	for index, seller := range prod.Sellers {
+		if seller.SellerID == sellerID {
+			sellerFound = true
+			sellerIndex = index
+			break
+		}
+	}
+
+	if !sellerFound {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the provided seller id is not found in the product sellers list"})
+	}
+
+	if newPrice >= prod.Sellers[sellerIndex].Price {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the new price can not be less than the original price "})
+	}
+
+	var salediscount = models.SaleDiscount{
+		NewPrice: newPrice,
+		EndDate:  endDate,
+		Prod: models.DiscountProd{
+			ProdID:        prodID,
+			SellerID:      sellerID,
+			OriginalPrice: prod.Sellers[sellerIndex].Price,
+		},
+	}
+
+	insertResult, err := database.SaleDiscountCollection.InsertOne(context.Background(), salediscount)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "something went wrong while adding sale discount to collection",
+			"error":   err.Error(),
+		})
+	}
+
+	salediscount.ID = insertResult.InsertedID.(primitive.ObjectID)
+
+	prod.Sellers[sellerIndex].DiscountID = salediscount.ID
+
+	update := bson.M{
+		"$set": bson.M{
+			"sellers": prod.Sellers,
+		},
+	}
+
+	_, err = database.ProductCollection.UpdateByID(context.Background(), prodID, update)
+
+	if err != nil {
+		_, err2 := database.SaleDiscountCollection.DeleteOne(context.Background(), bson.M{"_id": salediscount.ID})
+		if err2 != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while updating product seller and error while deleting inserted sale discount documnet (shit is bad)",
+				"error":   err2.Error(),
+			})
+		}
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while updating product seller",
+			"err":     err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusCreated).JSON(salediscount)
 }

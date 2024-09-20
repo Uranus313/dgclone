@@ -275,6 +275,10 @@ func UpdateProdQuantity(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching quantity from query": err.Error()})
 	}
 
+	if quantity < 0 {
+		return c.Status(http.StatusBadRequest).SendString("quantity can't be negative")
+	}
+
 	var product models.Product
 	filter := bson.M{"_id": productID}
 
@@ -300,7 +304,7 @@ func UpdateProdQuantity(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
 	}
 
-	update := bson.M{"sellers": product.Sellers}
+	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
 	_, err = database.ProductCollection.UpdateOne(context.Background(), filter, update)
 
 	if err != nil {
