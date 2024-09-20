@@ -6,13 +6,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type order_product struct {
-	ProdID    primitive.ObjectID
-	Price     int
-	Color     string
-	Guarantee Guarantee
-	SellerID  primitive.ObjectID
-	Picture   string
+type OrderProduct struct {
+	ProdID    primitive.ObjectID `json:"prod_id" bson:"prod_id"`
+	Price     int                `json:"price" bson:"price"`
+	Color     string             `json:"color" bson:"color"`
+	Guarantee Guarantee          `json:"guarantee" bson:"guarantee"`
+	SellerID  primitive.ObjectID `json:"seller_id" bson:"seller_id"`
+	Picture   string             `json:"picture" bson:"picture"`
 }
 
 type StateType int
@@ -37,7 +37,7 @@ func (d StateType) EnumIndex() int {
 
 type Order struct {
 	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Product     order_product      `json:"product" bson:"product"`
+	Product     OrderProduct       `json:"product" bson:"product"`
 	Quantity    int                `json:"quantity" bson:"quantity"`
 	UserID      primitive.ObjectID `json:"user_id" bson:"user_id"`
 	Rate        int                `json:"rate,omitempty" bson:"rate,omitempty"`

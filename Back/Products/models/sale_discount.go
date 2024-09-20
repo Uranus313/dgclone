@@ -7,8 +7,8 @@ import (
 )
 
 type discountProd struct {
-	ProdID        primitive.ObjectID
-	OriginalPrice int
+	ProdID        primitive.ObjectID `json:"prod_id" bson:"prod_id"`
+	OriginalPrice int                `json:"original_price" bson:"original_price"`
 }
 
 type SaleDiscount struct {

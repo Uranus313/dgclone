@@ -8,29 +8,29 @@ import (
 )
 
 type Guarantee struct {
-	Title string
-	Desc  string
+	Title string `json:"title" bson:"title"`
+	Desc  string `json:"desc" bson:"desc"`
 }
 
 type Rating struct {
-	Rate    float32
-	RateNum int
+	Rate    float32 `json:"rate" bson:"rate"`
+	RateNum int     `json:"rate_num" bson:"rate_num"`
 }
 
 type Dimentions struct {
-	Length int
-	Width  int
-	Height int
+	Length int `json:"length" bson:"length"`
+	Width  int `json:"width" bson:"width"`
+	Height int `json:"height" bson:"height"`
 }
 
 type Pros_cons struct {
-	Pros []string
-	Cons []string
+	Pros []string `json:"pros" bson:"pros"`
+	Cons []string `json:"cons" bson:"cons"`
 }
 
 type SellerQuantity struct {
-	Color    string
-	Quantity int
+	Color    string `json:"color" bson:"color"`
+	Quantity int    `json:"quantity" bson:"quantity"`
 }
 
 type ShipmentMethod int
@@ -49,19 +49,19 @@ func (d ShipmentMethod) EnumIndex() int {
 }
 
 type SellerCart struct {
-	SellerID       primitive.ObjectID
-	SellerTitle    string
-	SellerRating   float32
-	SellerQuantity SellerQuantity
-	Guarantees     []Guarantee
-	ShipmentMethod ShipmentMethod
-	DiscountID     primitive.ObjectID
-	Price          int
+	SellerID       primitive.ObjectID `json:"seller_id" bson:"seller_id"`
+	SellerTitle    string             `json:"seller_title" bson:"seller_title"`
+	SellerRating   float32            `json:"seller_rating" bson:"seller_rating"`
+	SellerQuantity SellerQuantity     `json:"seller_quantity" bson:"seller_quantity"`
+	Guarantees     []Guarantee        `json:"guarantees" bson:"guarantees"`
+	ShipmentMethod ShipmentMethod     `json:"shipment_method" bson:"shipment_method"`
+	DiscountID     primitive.ObjectID `json:"discount_id" bson:"discount_id"`
+	Price          int                `json:"price" bson:"price"`
 }
 
 type ProductDetail struct {
-	Title string
-	Map   map[string]string
+	Title string            `json:"title" bson:"title"`
+	Map   map[string]string `json:"map" bson:"map"`
 }
 
 type Product struct {
@@ -90,12 +90,12 @@ type Product struct {
 
 type UpdatableProd struct {
 	// Patch => edit product -> title, desc, images, details, dimentions, weight, pros&cons
-	ID          primitive.ObjectID
-	Title       string
-	Description string
-	Images      []string
-	Details     []ProductDetail
-	Dimentions  Dimentions
-	Weight_KG   int
-	ProsNCons   Pros_cons
+	ID          primitive.ObjectID `json:"id"`
+	Title       string             `json:"title"`
+	Description string             `json:"description"`
+	Images      []string           `json:"images"`
+	Details     []ProductDetail    `json:"details"`
+	Dimentions  Dimentions         `json:"dimentions"`
+	Weight_KG   int                `json:"weight_kg"`
+	ProsNCons   Pros_cons          `json:"pros&cons"`
 }
