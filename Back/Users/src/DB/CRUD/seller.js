@@ -64,7 +64,7 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
 
 export async function getSellerCount(){
     const result = {};
-    let count = await SellerModel.countDocuments();
+    let count = await SellerModel.estimatedDocumentCount();
     result.response = count;
     return result;
 }  

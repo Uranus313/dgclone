@@ -54,7 +54,7 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
 }
 export async function getUserCount(){
     const result = {};
-    let count = await UserModel.countDocuments();
+    let count = await UserModel.estimatedDocumentCount();
     result.response = count;
     return result;
 }  
