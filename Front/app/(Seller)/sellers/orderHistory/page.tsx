@@ -3,6 +3,7 @@ import FilterButton from '../products/FilterButton'
 import Link from 'next/link'
 import { SellerOrderCard, State } from '@/app/components/Interfaces/interfaces'
 import Checkbox from '../products/Checkbox'
+import ModalButton from '../addProducts/ModalButton'
 
 
 const orderHistories:SellerOrderCard[]=[
@@ -90,11 +91,13 @@ const OrderHistory = () => {
                 <Checkbox index={2} id={State.recivedInWareHouse} title={State.recivedInWareHouse} query='state' />
               </div>
             </div>
+
+           
             
     
           </div>
     
-          <div className='grid grid-cols-7 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
+          <div className='grid grid-cols-6 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
           <p className=''>عنوان کالا</p>
           <p>شناسه سفارش</p>
           <p>تاریخ سفارش</p>
@@ -103,7 +106,7 @@ const OrderHistory = () => {
           <p>قیمت نهایی</p>
           </div>
           {orderHistories.map(orderHistory=>(
-            <div className='grid grid-cols-7 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
+            <div className='grid grid-cols-6 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
               <div className='grid grid-cols-2 place-items-center'>
                 <img className='w-20 mx-2' src={orderHistory.productPicture}/>
                 <div>

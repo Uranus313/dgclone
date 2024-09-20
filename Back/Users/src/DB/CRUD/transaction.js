@@ -36,7 +36,7 @@ export async function getTransactions(id , search){
 
 export async function getTransactionCount(){
     const result = {};
-    let count = await TransactionModel.countDocuments();
+    let count = await TransactionModel.estimatedDocumentCount();
     result.response = count;
     return result;
 }  

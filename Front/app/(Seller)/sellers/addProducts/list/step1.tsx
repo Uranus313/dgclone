@@ -1,8 +1,9 @@
 'use client'
 import {  Color, SellerAddProdctCard, SellerSetVarientOnProduct, shipmentMethod } from '@/app/components/Interfaces/interfaces'
 import React, { useState } from 'react'
+import VarientCard from './VarientCard'
 
-import VarientCard from './VarientCard.tsx'
+
 
 
 export const guaranteeOptions=[

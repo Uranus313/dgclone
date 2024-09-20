@@ -9,6 +9,10 @@ import { deleteRole, getRoles, saveRole } from "../DB/CRUD/role.js";
 import { validateRolePost } from "../DB/models/role.js";
 import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
+import { levels } from "../authorization/accessLevels.js";
+import { roleAuth } from "../authorization/roleAuth.js";
+import { validateWareHousePost } from "../DB/models/wareHouse.js";
+import { deleteWareHouse, saveWareHouse } from "../DB/CRUD/wareHouse.js";
 const router = express.Router();
 
 
@@ -234,6 +238,76 @@ router.post("/roles",(req,res,next) => auth(req,res,next,["admin"]),  async (req
         // });
         res.send(result.response);
         res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.post("/wareHouses",(req,res,next) => roleAuth(req,res,next,[{level : levels.wareHouseManage , writeAccess : true}]),  async (req, res, next) =>{
+    try {
+        await validateWareHousePost(req.body); 
+    } catch (error) {
+        if (error.details){
+            res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        }else{
+            res.status(400).send({error : error.message});
+            res.body = {error : error.message};
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await saveWareHouse(req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        // const token = jwt.sign({_id : result.response._id , status: "admin"},process.env.JWTSECRET,{expiresIn : '6h'});
+        // delete result.response.password;
+        // res.cookie('x-auth-token',token,{
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: 'none',
+        //     maxAge: 6 * 60 * 60 * 1000
+        // });
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.delete("/wareHouses/:id", (req,res,next) => roleAuth(req,res,next,[{level : levels.wareHouseManage , writeAccess : true}]), async (req, res, next) => {
+    try {
+        // console.log(req.query.limit)
+        const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+        const result = await deleteWareHouse(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        if(!result.response){
+            res.body = {error:"warehouse not found"};
+        res.status(404).send({error:"warehouse not found"});
+        }
+        res.body = result.response;
+        res.send(result.response);
     } catch (err) {
         console.log("Error",err);
         res.body = {error:"internal server error"};

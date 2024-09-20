@@ -52,13 +52,14 @@ const config: Config = {
           neutral: '#717171',
           primary: "#BD1684",
           secondary: "#FF5700",
-          accent: "#888888",
+          accent: "#395F82",
           "base-100": "#ffffff",
           info: "#3ABFF8",
           success: "#36D399",
           warning: "#FBBD23",
           error: "#F87272",
           disabled: "#717171",
+
 
         },
       },
