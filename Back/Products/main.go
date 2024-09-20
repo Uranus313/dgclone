@@ -49,7 +49,7 @@ func main() {
 
 	app.Get("/products/comments", crud.GetCommentsByProductID) // query => limit, offset, ProdID
 
-	app.Post("/products/comments", crud.PostComment)
+	app.Post("/products/comments", crud.PostComment) // --unchecked
 
 	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
 
@@ -102,6 +102,8 @@ func main() {
 	// ------------sale discount-----------
 
 	app.Get("/products/salediscount/MostDiscounts", crud.GetMostDiscounts)
+
+	app.Post("/products/salediscount", crud.AddSaleDiscount) // query => ProdID, SellerID, EndDate, NewPrice | note. EndDate layout must be "yyyy-mm-dd 15:04:05" format
 
 	// -------------orders--------------
 
