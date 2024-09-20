@@ -277,7 +277,13 @@ router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[{level :
 
 router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage }]),async (req, res,next) =>{
     try {
-        const result = await getTransactions(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.sort;
+        delete searchParams.desc;
+        // console.log(req.query.limit)
+        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
