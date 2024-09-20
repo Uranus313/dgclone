@@ -364,7 +364,55 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
     next();
 });
 
-// checked 
+
+router.get("/allCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const employee = await getEmployeeCount();
+        if (employee.error){
+            res.status(400).send({error : employee.error});
+            res.body = {error : employee.error};
+            next();
+            return;
+        }
+        const user = await getUserCount();
+        if (user.error){
+            res.status(400).send({error : user.error});
+            res.body = {error : user.error};
+            next();
+            return;
+        }
+        const seller = await getSellerCount();
+        if (seller.error){
+            res.status(400).send({error : seller.error});
+            res.body = {error : seller.error};
+            next();
+            return;
+        }
+        const transaction = await getTransactionCount();
+        if (transaction.error){
+            res.status(400).send({error : transaction.error});
+            res.body = {error : transaction.error};
+            next();
+            return;
+        }
+        let answer = {
+            userCount : user.response,
+            employeeCount : employee.response,
+            sellerCount : seller.response,
+            transactionCount : transaction.response
+        };
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
 router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
     try {
 
