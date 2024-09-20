@@ -297,7 +297,7 @@ router.patch("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  asy
         return;
     }
     try {
-        const result = await updateEmployee(req.body.sellerID , {isBanned : true})
+        const result = await updateEmployee(req.body.employeeID , {isBanned : true})
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
