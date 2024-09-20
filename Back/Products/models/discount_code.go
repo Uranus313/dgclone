@@ -5,8 +5,8 @@ import (
 )
 
 type DiscountUser struct {
-	UserID  primitive.ObjectID
-	Is_used bool
+	UserID  primitive.ObjectID `json:"user_id" bson:"user_id"`
+	Is_used bool               `json:"is_used" bson:"is_used"`
 }
 
 type DiscountCode struct {

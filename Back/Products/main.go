@@ -106,6 +106,10 @@ func main() {
 
 	app.Get("/products/order/orderhistory/:OHID", crud.GetOrdersInOrdersHistory)
 
+	// -------------inner--------------
+
+	app.Get("/products/inner/ProductMapAssign", crud.InnerProductMapAssign)
+
 	// ------------tests-------------
 
 	app.Post("/products/addpost", func(c *fiber.Ctx) error {

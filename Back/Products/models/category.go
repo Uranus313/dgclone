@@ -6,8 +6,8 @@ import (
 )
 
 type Detail struct {
-	Title string
-	Keys  []string
+	Title string   `json:"title" bson:"title"`
+	Keys  []string `json:"keys" bson:"keys"`
 }
 
 type Category struct {
@@ -23,10 +23,10 @@ type Category struct {
 }
 
 type UpdatableCategory struct {
-	Title       string
-	Details     []Detail
-	Pictures    []string
-	Description string
-	Link        string
-	Theme       string
+	Title       string   `json:"title"`
+	Details     []Detail `json:"details"`
+	Pictures    []string `json:"pictures"`
+	Description string   `json:"description"`
+	Link        string   `json:"link"`
+	Theme       string   `json:"theme"`
 }

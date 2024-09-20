@@ -23,8 +23,8 @@ func (d CommentType) EnumIndex() int {
 }
 
 type LikeOrDisslike struct {
-	UserID primitive.ObjectID
-	Liked  bool
+	UserID primitive.ObjectID `json:"user_id" bson:"user_id"`
+	Liked  bool               `json:"liked" bson:"liked"`
 }
 
 type Comment struct {
