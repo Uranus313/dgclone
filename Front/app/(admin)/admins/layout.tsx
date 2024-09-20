@@ -20,16 +20,14 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  
+
   return (
-    <html lang="en" dir='rtl' data-theme = "light">
+    <html lang="en" dir='rtl' data-theme="light">
       <body className={pimaryFont.className}>
         <QueryClientProvider client={queryClient}>
-          <SecondLayout children={children}/>
+          <SecondLayout children={children} />
         </QueryClientProvider>
-         
       </body>
-      
     </html>
   )
 }
