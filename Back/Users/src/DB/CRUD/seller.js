@@ -9,8 +9,9 @@ export async function saveSeller(sellerCreate){
     return result;
 }
 
-export async function getSellers(id , searchParams , idArray ,limit , floor ,nameSearch){
+export async function getSellers(id , searchParams , idArray ,limit , floor ,nameSearch , sort , desc){
     const result = {};
+    let sortOrder = desc? -1 : 1;
     if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
         if(result.response){
@@ -34,7 +35,7 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
             data = await SellerModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
-            } }).skip(floor).limit(limit);
+            } }).skip(floor).limit(limit).sort({[sort] : sortOrder} );
             let count = await SellerModel.countDocuments({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
@@ -42,7 +43,7 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
         }else{
-            data = await SellerModel.find(searchParams).skip(floor).limit(limit);
+            data = await SellerModel.find(searchParams).skip(floor).limit(limit).sort({[sort] : sortOrder} );
             let count = await SellerModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);

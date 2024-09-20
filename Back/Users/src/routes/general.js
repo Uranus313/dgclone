@@ -26,8 +26,10 @@ router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[{level : levels
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getUsers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getUsers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -126,8 +128,10 @@ router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[{level : leve
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getSellers(undefined,searchParams,undefined,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getSellers(undefined,searchParams,undefined,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -178,8 +182,10 @@ router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,asyn
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getAdmins(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getAdmins(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -320,8 +326,10 @@ router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,a
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
