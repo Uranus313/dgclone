@@ -365,6 +365,7 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
     next();
 });
 
+
 router.get("/allWareHouses", (req,res,next) => roleAuth(req,res,next,[{level : levels.wareHouseManage}]) ,async (req, res,next) =>{
     try {
         let searchParams = {...req.query};
@@ -465,7 +466,7 @@ router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,
     try {
 
         // console.log(req.query.limit)
-        const result = await getEmployeeCount();
+        const result = await getEmployeeCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -487,7 +488,7 @@ router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : level
     try {
 
         // console.log(req.query.limit)
-        const result = await getUserCount();
+        const result = await getUserCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -508,7 +509,7 @@ router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : lev
     try {
 
         // console.log(req.query.limit)
-        const result = await getSellerCount();
+        const result = await getSellerCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -530,7 +531,7 @@ router.get("/transactionCount", (req,res,next) => roleAuth(req,res,next,[{level 
     try {
 
         // console.log(req.query.limit)
-        const result = await getTransactionCount();
+        const result = await getTransactionCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

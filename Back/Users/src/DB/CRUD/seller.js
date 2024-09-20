@@ -62,9 +62,9 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
     }
 }
 
-export async function getSellerCount(){
+export async function getSellerCount(searchParams){
     const result = {};
-    let count = await SellerModel.estimatedDocumentCount();
+    let count = await SellerModel.estimatedDocumentCount(searchParams);
     result.response = count;
     return result;
 }  

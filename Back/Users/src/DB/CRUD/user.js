@@ -52,9 +52,9 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
         return result;
     }
 }
-export async function getUserCount(){
+export async function getUserCount(searchParams){
     const result = {};
-    let count = await UserModel.estimatedDocumentCount();
+    let count = await UserModel.estimatedDocumentCount(searchParams);
     result.response = count;
     return result;
 }  
