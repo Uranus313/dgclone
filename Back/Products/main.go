@@ -34,6 +34,7 @@ func main() {
 	// fakerdata.InsertDummyProducts()
 	// fakerdata.InsertDummyComments()
 	// fakerdata.InsertDummyDiscountCode()
+	// fakerdata.InsertDummySaleDiscount()
 
 	app := fiber.New()
 
@@ -62,17 +63,15 @@ func main() {
 
 	app.Post("/products/product", crud.AddProduct)
 
-	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query => SellerID, ProdID
+	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query => SellerID, ProdID --unchecked
 
 	app.Patch("/products/product/UpdateRating", crud.UpdateProductRating) // query => ProductID, Rating
 
-	app.Patch("/products/product/UpdateQuantity", crud.UpdateProdQuantity) // query => ProductID, SellerID, Quantity
+	app.Patch("/products/product/UpdateQuantity", crud.UpdateProdQuantity) // query => ProductID, SellerID, Quantity --unchecked
 
 	app.Delete("/products/product/:ProdID", crud.DeleteProductByID)
 
 	app.Patch("/products/product", crud.EditProduct)
-
-	app.Get("/products/product/MostDiscounts", crud.GetMostDiscounts)
 
 	app.Get("/products/product", crud.InfiniteScrolProds) // query => limit, offset, CateID
 
@@ -99,6 +98,10 @@ func main() {
 	app.Post("/products/discountcode", crud.AddDiscountCode)
 
 	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query => DCode, UserID
+
+	// ------------sale discount-----------
+
+	app.Get("/products/salediscount/MostDiscounts", crud.GetMostDiscounts)
 
 	// -------------orders--------------
 
