@@ -10,7 +10,7 @@ import { validateRolePost } from "../DB/models/role.js";
 import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import { levels } from "../authorization/accessLevels.js";
-import { roleAuth } from "../authorization/roleAuth.js";
+// import { roleAuth } from "../authorization/roleAuth.js";
 import { validateWareHousePost } from "../DB/models/wareHouse.js";
 import { deleteWareHouse, saveWareHouse } from "../DB/CRUD/wareHouse.js";
 const router = express.Router();

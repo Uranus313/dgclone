@@ -12,7 +12,8 @@ const adminSchema  = new mongoose.Schema(
         isCompelete: Boolean,
         isBanned : Boolean,
         phoneNumber: {type: String , required : true},
-        nationalID: {type: String , required : true}
+        nationalID: {type: String , required : true},
+        signUpDate : {type: Date , required : true , default: Date.now()}
     }
 );
 
