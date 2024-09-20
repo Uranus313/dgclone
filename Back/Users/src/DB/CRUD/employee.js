@@ -3,6 +3,8 @@ import { comparePassword, hashPassword } from "../../functions/hashing.js";
 
 export async function saveEmployee(employeeCreate){
     const result = {};
+    employeeCreate.password = await hashPassword(employeeCreate.password);
+
     const employee = new EmployeeModel(employeeCreate);
     const response = await employee.save();
     result.response = response.toJSON();
