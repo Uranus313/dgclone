@@ -7,7 +7,7 @@ import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
 import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
 import { validateAdminBan, validateAdminChangeinfo, validateAdminPost, validateAdminUnban } from "../DB/models/admin.js";
-import { validateEmployeeBan, validateEmployeeChangeRole } from "../DB/models/employee.js";
+import { validateEmployeeBan, validateEmployeeChangeRole, validateEmployeeUnban } from "../DB/models/employee.js";
 import { validateSellerUnban } from "../DB/models/seller.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateChangePassword, validateUserLogIn, validateUserUnban } from "../DB/models/user.js";
