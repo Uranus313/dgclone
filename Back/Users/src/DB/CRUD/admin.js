@@ -24,6 +24,9 @@ export async function getAdmins(id , searchParams ,limit , floor ,nameSearch,sor
     }else{
         let data = null;
         let hasMore = false;
+        if(!limit){
+            limit = 20;
+        }
         if(nameSearch && nameSearch != ''){
             data = await AdminModel.find({...searchParams,lastName:{
                 $regex: nameSearch,

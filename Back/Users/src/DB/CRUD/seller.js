@@ -29,6 +29,9 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
         }
         return result;
     }else{
+        if(!limit){
+            limit = 20;
+        }
         let data = null;
         let hasMore = false;
         if(nameSearch && nameSearch != ''){

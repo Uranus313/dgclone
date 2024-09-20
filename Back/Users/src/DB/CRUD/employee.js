@@ -68,6 +68,9 @@ export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nam
     }else{
         let data = null;
         let hasMore = false;
+        if(!limit){
+            limit = 20;
+        }
         if(nameSearch && nameSearch != ''){
             data = await EmployeeModel.find({...searchParams,lastName:{
                 $regex: nameSearch,

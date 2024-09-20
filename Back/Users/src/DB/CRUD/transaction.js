@@ -29,6 +29,9 @@ export async function getTransactions(id , searchParams ,limit , floor ,sort , d
         }
         return result;
     }else{
+        if(!limit){
+            limit = 20;
+        }
         let data = null;
         let hasMore = false;
 
