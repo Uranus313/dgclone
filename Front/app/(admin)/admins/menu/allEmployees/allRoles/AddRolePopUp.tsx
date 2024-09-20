@@ -56,7 +56,7 @@ const AddRolePopUp = () => {
     onSuccess: (savedUser) => {
       console.log(savedUser);
       // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      queryClient.invalidateQueries({queryKey :  ["roleList"]});
+      queryClient.invalidateQueries({ queryKey: ["roleList"] });
 
       // setUser(savedUser);
 
@@ -72,83 +72,88 @@ const AddRolePopUp = () => {
   });
   async function submit(formData: any) {
     console.log(formData);
-    let levels : any = [];
-    if(accessLevelList){
-        accessLevelList.forEach((accessLevel) => {
-            let newLevel = {} as {
-                level : string;
-                writeAccess? : boolean;
-            }
-            if(formData[accessLevel.name] == true){
-                newLevel.level = accessLevel.name
-            }
-            if(formData[accessLevel.name + " writeAccess"] == true){
-                newLevel.writeAccess = true;
-            }
-            if(newLevel.level){
-                levels.push(newLevel);
-            }
-        });
+    let levels: any = [];
+    if (accessLevelList) {
+      accessLevelList.forEach((accessLevel) => {
+        let newLevel = {} as {
+          level: string;
+          writeAccess?: boolean;
+        }
+        if (formData[accessLevel.name] == true) {
+          newLevel.level = accessLevel.name
+        }
+        if (formData[accessLevel.name + " writeAccess"] == true) {
+          newLevel.writeAccess = true;
+        }
+        if (newLevel.level) {
+          levels.push(newLevel);
+        }
+      });
     }
     let finalObject = {
-        name : formData.name,
-        accessLevels : levels
+      name: formData.name,
+      accessLevels: levels
     }
     console.log(finalObject);
     addRole.mutate(finalObject);
   }
   return (
     <div>
-      <button onClick={openModal} className="btn btn-primary">
-        اضافه کردن نقش جدید
-      </button>
+      <div className="pt-8 border-b-2 pb-7 shadow-md border-white">
+        <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md mx-20' type="text" placeholder='جست و جو' />
+        <button onClick={openModal} className="btn bg-white border-primary text-primary">
+          اضافه کردن نقش جدید
+        </button>
+      </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
           {error && <p>{error}</p>}
-          <h3 className="font-bold text-lg">اضافه کردن نقش</h3>
+          <h3 className="font-bold text-lg border-b-2 border-border-color-list py-3">اضافه کردن نقش</h3>
           <form onSubmit={handleSubmit(submit)}>
-          <label className="p-2 block">
-              نام
-              <input type="text" {...register("name")} />
-            </label>
-            {accessLevelIsLoading && <span className="loading loading-dots loading-lg"></span> }
+
+            <input className=" bg-white placeholder-neutral-400 my-7 mb-4 px-4 py-2 rounded-md border-2 border-neutral-200" type="text" {...register("name")} placeholder="نام شغل" />
+
+            {accessLevelIsLoading && <span className="loading loading-dots loading-lg"></span>}
             {accessLevelList &&
               accessLevelList.map((accessLevel, index) => (
-                <div key={index}>
-                    <div className="form-control">
-                  <label className="label cursor-pointer" >
-                    <span className="label-text">{accessLevel.title}</span>
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-primary"
-                      {...register(accessLevel.name)}
-                    />
-                  </label>
+                <div key={index} className="flex">
+                  <div className="form-control  w-1/2 ">
+                    <label className="label cursor-pointer" >
+                      <span className="label-text">{accessLevel.title}</span>
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-primary rounded-md ml-9"
+                        {...register(accessLevel.name)}
+                      />
+                    </label>
+                  </div>
+                  <div className="form-control w-1/2">
+                    <label className="label cursor-pointer ">
+                      <span className="label-text text-secondary">قابلیت ایجاد تغییرات</span>
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-secondary rounded-md ml-14"
+                        {...register(accessLevel.name + " writeAccess")}
+                      />
+                    </label>
+                  </div>
                 </div>
-                <div className="form-control">
-                  <label className="label cursor-pointer">
-                    <span className="label-text">قابلیت ایجاد تغییرات</span>
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-secondary"
-                      {...register(accessLevel.name + " writeAccess")}
-                    />
-                  </label>
-                </div>
-                </div>
-                
-              ))}
 
-            <button className="btn btn-success" type="submit">
-              تایید
-            </button>
-            <button
-              className="btn btn-warning"
-              type="button"
-              onClick={closeModal}
-            >
-              خروج
-            </button>
+              ))}
+            <div className="mt-5 flex justify-center ">
+
+              <button className="btn btn-success mx-3" type="submit">
+                تایید
+              </button>
+              <button
+                className="btn btn-warning"
+                type="button"
+                onClick={closeModal}
+              >
+                خروج
+              </button>
+            </div>
+
           </form>
         </div>
         <form method="dialog" className="modal-backdrop" onClick={closeModal}>

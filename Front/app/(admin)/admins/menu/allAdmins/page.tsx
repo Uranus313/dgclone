@@ -7,7 +7,7 @@ const AdminsWatchPage = () => {
     <div>
       <h1>لیست ادمین ها</h1>
       <AddAdminPopUp />
-      <AdminList />
+      {/* <AdminList /> */}
     </div>
   )
 }

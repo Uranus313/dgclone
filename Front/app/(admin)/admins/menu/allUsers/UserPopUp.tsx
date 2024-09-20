@@ -65,23 +65,23 @@ const UserPopUp = ({ user }: Props) => {
       setIsOpen(false);
     }
   };
-  async function getWallet(id: string){
-    if(!id){
-        return
+  async function getWallet(id: string) {
+    if (!id) {
+      return
     }
     const result = await fetch("http://localhost:3005/users/admin/getWallet/" + id, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const jsonResult = await result.json();
-      if (result.ok) {
-        setWallet(jsonResult);
-      } else {
-        setError(jsonResult.error);
-      }
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const jsonResult = await result.json();
+    if (result.ok) {
+      setWallet(jsonResult);
+    } else {
+      setError(jsonResult.error);
+    }
   }
   const banUser = useMutation({
     mutationFn: async () => {
@@ -156,88 +156,98 @@ const UserPopUp = ({ user }: Props) => {
   });
 
   return (
-    <div>
-      <div onClick={() => {openModal();
+    <div >
+     
+      <div onClick={() => {
+        openModal();
         getWallet(user.walletID);
-      }} className=" flex justify-between">
-        <p>{((user.firstName && user.firstName) || "") + ((user.lastName && " " + user.lastName) || "")}</p>
-        <p>{user.phoneNumber}</p>
-        {user.isBanned && <p className=" text-red-500">بن شده</p>}
+      }} className=" flex py-5 border-b-2 border-b-border-color-list">
+
+        <p className="w-1/4">{((user.firstName && user.firstName) || "-") + ((user.lastName && " " + user.lastName) || " -")}</p>
+        <p className="w-1/4">{user.phoneNumber}</p>
+        <p className="w-1/4">{((user.email && user.email) || "-")}</p>
+        {user.isBanned ? (
+          <p className="w-1/4 text-red-500">بن شده</p>
+        ) : (
+          <p className="w-1/4 text-red-500"> -</p>
+        )}
+        
       </div>
 
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
           {error && <p>{error}</p>}
-          <h3 className="font-bold text-lg">
-          {((user.firstName && user.firstName) || "") + ((user.lastName && " " + user.lastName) || "")}
+          <h3 className="font-bold text-lg pb-2">
+            {((user.firstName && user.firstName) || "") + ((user.lastName && " " + user.lastName) || "")}
           </h3>
           <div className="block">
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>ایمیل :</p>
 
               <p>{user.email}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>شماره تلفن :</p>
 
               <p>{user.phoneNumber}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>کد ملی :</p>
 
               <p>{user.nationalID}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>تاریخ تولد :</p>
 
               <p>{user.birthDate}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>آیدی :</p>
 
               <p>{user._id}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>کار :</p>
 
               <p>{user.job}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>کد اقتصادی :</p>
 
               <p>{user.economicCode}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>موجودی کیف پول :</p>
-               {(!wallet && !error) && <span className="loading loading-dots loading-lg"></span>} 
-               {wallet?.money && <p>{wallet?.money}</p>}
+              {(!wallet && !error) && <span className="loading loading-dots loading-lg"></span>}
+              {wallet?.money && <p>{wallet?.money}</p>}
             </div>
             <div className=" flex-col">
               <h3>روش بازگشت پول</h3>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شیوه انتخابی :</p>
 
                 <p>{user.moneyReturn.method}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شماره کارت بانکی :</p>
                 <p>{user.moneyReturn.bankAccount}</p>
               </div>
             </div>
-            <div className=" flex-col">
-                <h3>آدرس ها</h3>
-                {user.addresses.map((address , index) =>{
-                    return (
-                    <div className=' m-3' key={index}>
-                        {address.additionalInfo && <p>{address.additionalInfo}</p>}
-                        <p>{address.city}</p>
-                        <p>{address.postalCode}</p>
-                        <p>{address.receiver.firstName+ " " + address.receiver.lastName}</p>
-                        <p>{address.receiver.phoneNumber}</p>
-                      </div>)
-                })}
+            <div className=" flex-col pb-2">
+              <h3>آدرس ها</h3>
+              {user.addresses.map((address, index) => {
+                return (
+                  <div className=' m-3' key={index}>
+                    {address.additionalInfo && <p>{address.additionalInfo}</p>}
+                    <p>{address.city}</p>
+                    <p>{address.postalCode}</p>
+                    <p>{address.receiver.firstName + " " + address.receiver.lastName}</p>
+                    <p>{address.receiver.phoneNumber}</p>
+                  </div>)
+              })}
             </div>
           </div>
+          <div className="my-4 flex justify-center">
           {
             user.isBanned ? (
               <button
@@ -257,12 +267,14 @@ const UserPopUp = ({ user }: Props) => {
               </button>
             )}
           <button
-            className="btn btn-warning"
+            className="btn btn-warning mx-3"
             type="button"
             onClick={closeModal}
           >
             خروج
           </button>
+
+          </div>
         </div>
         <form method="dialog" className="modal-backdrop" onClick={closeModal}>
           <button type="button">close</button>

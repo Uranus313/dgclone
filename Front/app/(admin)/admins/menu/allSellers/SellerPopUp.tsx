@@ -291,68 +291,74 @@ const SellerPopUp = ({ seller }: Props) => {
           openModal();
           getWallet(seller.walletID);
         }}
-        className=" flex justify-between"
+        className=" flex py-5 border-b-2 border-b-border-color-list"
       >
-        <p>{seller.storeInfo?.commercialName}</p>
-        <p>{seller.phoneNumber}</p>
+        <p className="w-1/4">{seller.storeInfo?.commercialName}</p>
+        <p className="w-1/4">{seller.phoneNumber}</p>
         {seller.isVerified ? (
-          <p className=" text-red-500">تایید شده</p>
+          <p className="w-1/4 text-red-500">تایید شده</p>
         ) : (
-          <p className=" text-red-500">تایید نشده</p>
+          <p className="w-1/4 text-red-500">تایید نشده</p>
         )}
-        {seller.isBanned && <p className=" text-red-500">بن شده</p>}
+
+        {seller.isBanned ? (
+          <p className="w-1/4 text-red-500">بن شده</p>
+        ) : (
+          <p className="w-1/4 text-red-500"> -</p>
+        )}
+        
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
           {error && <p>{error}</p>}
-          <h3 className="font-bold text-lg">
+          <h3 className="font-bold text-lg pb-2">
             {seller.storeInfo?.commercialName} + {" " + seller._id}
           </h3>
           <div className="block">
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>شماره تلفن :</p>
 
               <p>{seller.phoneNumber}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>امتیاز :</p>
 
               <p>{seller.rating}</p>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>آیدی :</p>
 
               <p>{seller._id}</p>
             </div>
-            <div className=" flex-col">
+            <div className=" flex-col ">
               <h3>مشخصات صاحب فروشگاه</h3>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>نام :</p>
 
                 <p>{seller.storeOwner.firstName}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>نام خانوادگی :</p>
 
                 <p>{seller.storeOwner.lastName}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>ایمیل :</p>
 
                 <p>{seller.storeOwner.email}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>کد ملی :</p>
 
                 <p>{seller.storeOwner.nationalID}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>تاریخ تولد :</p>
 
                 <p>{seller.storeOwner.birthDate}</p>
               </div>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>موجودی کیف پول :</p>
               {!wallet && !error && (
                 <span className="loading loading-dots loading-lg"></span>
@@ -361,39 +367,39 @@ const SellerPopUp = ({ seller }: Props) => {
             </div>
             <div className=" flex-col">
               <h3>روش بازگشت پول</h3>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شیوه انتخابی :</p>
 
                 <p>{seller.moneyReturn.method}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شماره کارت بانکی :</p>
                 <p>{seller.moneyReturn.bankAccount}</p>
               </div>
             </div>
-            <div className=" flex justify-between">
+            <div className=" flex justify-between pb-2">
               <p>نوع موجودیت :</p>
               <p>{seller.entityType}</p>
             </div>
             <div className=" flex-col">
               <h3>اطلاعات حقوقی</h3>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>نام شرکت</p>
                 <p>{seller.legalInfo?.companyName}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>نوع شرکت :</p>
                 <p>{seller.legalInfo?.companyType}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>کد ملی شرکت :</p>
                 <p>{seller.legalInfo?.companyIDNumber}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شماره اقتصادی شرکت :</p>
                 <p>{seller.legalInfo?.companyEconomicNumber}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>اسم فروشگاه :</p>
                 <p>{seller.legalInfo?.storeName}</p>
               </div>
@@ -406,46 +412,46 @@ const SellerPopUp = ({ seller }: Props) => {
             </div>
             <div className=" flex-col">
               <h3>مدارک حقیقی</h3>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>کد ملی :</p>
                 <p>{seller.individualInfo?.nationalID}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>نوع شماره بانکی :</p>
                 <p>{seller.individualInfo?.bankNumberType}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شماره شبا :</p>
                 <p>{seller.individualInfo?.shabaNumber}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شماره بانکی:</p>
                 <p>{seller.individualInfo?.bankNumber}</p>
               </div>
             </div>
             <div className=" flex-col">
               <h3>اطلاعات فروشگاه</h3>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>نام تجاری :</p>
                 <p>{seller.individualInfo?.shabaNumber}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>شماره تلفن دفتر :</p>
                 <p>{seller.storeInfo?.officePhoneNumber}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>لوگو :</p>
                 <p>{seller.storeInfo?.logo}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>کد فروشنده :</p>
                 <p>{seller.storeInfo?.sellerCode}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>درباره فروشگاه :</p>
                 <p>{seller.storeInfo?.aboutSeller}</p>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between pb-2">
                 <p>وبسایت فروشگاه :</p>
                 <p>{seller.storeInfo?.sellerWebsite}</p>
               </div>
@@ -510,7 +516,7 @@ const SellerPopUp = ({ seller }: Props) => {
           )}
           {seller.isVerified ? (
             <button
-              className="btn btn-primary"
+              className="btn btn-primary mx-3"
               type="button"
               onClick={() => refuteSeller.mutate()}
             >
@@ -518,7 +524,7 @@ const SellerPopUp = ({ seller }: Props) => {
             </button>
           ) : (
             <button
-              className="btn btn-error"
+              className="btn btn-error mx-3"
               type="button"
               onClick={() => verifySeller.mutate()}
             >

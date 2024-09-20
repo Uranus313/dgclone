@@ -23,7 +23,14 @@ const config: Config = {
       'propBubble-bg': '#E5EBFA',
       'white': '#fff',
       'black': '#000',
-      'primary-seller': '#395F82'
+      'primary-seller': '#395F82',
+      'red-box':'#A02424',
+      'purple-box':'#6B1F78',
+      'blue-box':'#395F82',
+      'green-box':'#1F7378',
+      'greener-box':'#1F7762',
+      'border-color-list':'#CBCBCB'
+
 
     },
     extend: {
@@ -45,13 +52,14 @@ const config: Config = {
           neutral: '#717171',
           primary: "#BD1684",
           secondary: "#FF5700",
-          accent: "#888888",
+          accent: "#395F82",
           "base-100": "#ffffff",
           info: "#3ABFF8",
           success: "#36D399",
           warning: "#FBBD23",
           error: "#F87272",
           disabled: "#717171",
+
 
         },
       },
