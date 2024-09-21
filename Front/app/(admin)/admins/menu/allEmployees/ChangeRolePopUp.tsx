@@ -111,7 +111,7 @@ const ChangeRolePopUp = ({ employee }: Props) => {
             }
             changeRole.mutate()
           }}>تایید</button>}
-          <button className='btn btn-warning' type='button' onClick={closeModal}>خروج</button>
+          <button className='btn btn-warning mx-1' type='button' onClick={closeModal}>خروج</button>
         </div>
         <form method="dialog" className="modal-backdrop" onClick={closeModal}>
           <button type="button">close</button>

@@ -69,80 +69,77 @@ const AddEmployeePopUp = () => {
   });
   async function submit(formData: any) {
 
-    if(selectedRole){
-      addEmployee.mutate({...formData, roleID : selectedRole});
+    if (selectedRole) {
+      addEmployee.mutate({ ...formData, roleID: selectedRole });
       return;
     }
     addEmployee.mutate(formData);
   }
   return (
     <div>
-      <button onClick={openModal} className="btn btn-primary">
-        اضافه کردن کارمند جدید
+      <button onClick={openModal} className="btn btn-error">
+        استخدام
       </button>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
           {error && <p>{error}</p>}
-          <h3 className="font-bold text-lg">اضافه کردن کارمند</h3>
+          <h3 className="font-bold text-lg mr-3">استخدام کارمند</h3>
           <form onSubmit={handleSubmit(submit)}>
-            <label className="p-2 block">
-              نام
-              <input type="text" {...register("firstName")} />
+            <label className="p-2 block ">
+              <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام'  {...register("firstName")} />
             </label>
             <label className="p-2 block">
-              نام خانوادگی
-              <input type="text" {...register("lastName")} />
+              <input type="text" className="bg-primary-bg rounded-md" placeholder='  نام خانوادگی' {...register("lastName")} />
             </label>
             <label className="p-2 block">
-              شماره تلفن
-              <input type="number" {...register("phoneNumber")} />
+              <input type="number" className="bg-primary-bg rounded-md" placeholder=' شماره تلفن' {...register("phoneNumber")} />
             </label>
             <label className="p-2 block">
-              ایمیل
-              <input type="email" {...register("email")} />
+              <input type="email" className="bg-primary-bg rounded-md" placeholder=' ایمیل' {...register("email")} />
             </label>
             <label className="p-2 block">
-              کد ملی
-              <input type="number" {...register("nationalID")} />
+              <input type="number" className="bg-primary-bg rounded-md" placeholder=' کد ملی' {...register("nationalID")} />
             </label>
             <label className="p-2 block">
-              تاریخ تولد
-              <input type="date" {...register("birthDate")} />
+              <p> تاریخ تولد:</p>
+              <input type="date" className="bg-primary-bg rounded-md" {...register("birthDate")} />
             </label>
             <label className="p-2 block">
-              رمز عبور
-              <input type="password" {...register("password")} />
+              <input type="password" className="bg-primary-bg rounded-md" placeholder='  رمز عبور' {...register("password")} />
             </label>
-            
+
             {roleIsLoading && (
               <span className="loading loading-dots loading-lg"></span>
             )}
             {!roleIsLoading && (
-              <select className="select select-primary w-full max-w-xs" onChange={(e)=>{
-                if(e.target.value == "null######"){
-                    setSelectedRole(undefined);
-                }else{
-                    setSelectedRole(e.target.value);
+              <select className="select select-accent pl-36 max-w-xs" onChange={(e) => {
+                if (e.target.value == "null######") {
+                  setSelectedRole(undefined);
+                } else {
+                  setSelectedRole(e.target.value);
                 }
               }}>
                 <option disabled selected>
                   نقش
                 </option>
                 <option value={"null######"}>بدون نقش</option>
-                {roleList?.map((role,index) => <option key={index} value={role._id}>{role.name}</option>)}
+                {roleList?.map((role, index) => <option key={index} value={role._id}>{role.name}</option>)}
               </select>
             )}
+            <div className=" my-4">
+              <button className="btn btn-success mx-3" type="submit">
+                تایید
+              </button>
+              <button
+                className="btn btn-warning"
+                type="button"
+                onClick={closeModal}
+              >
+                خروج
+              </button>
 
-            <button className="btn btn-success" type="submit">
-              تایید
-            </button>
-            <button
-              className="btn btn-warning"
-              type="button"
-              onClick={closeModal}
-            >
-              خروج
-            </button>
+            </div>
+
           </form>
         </div>
         <form method="dialog" className="modal-backdrop" onClick={closeModal}>

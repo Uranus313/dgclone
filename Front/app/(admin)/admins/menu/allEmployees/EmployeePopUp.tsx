@@ -68,6 +68,7 @@ const EmployeePopUp = ({ employee }: Props) => {
 
         body: JSON.stringify({ employeeID: employee._id }),
       });
+
       const jsonResult = await result.json();
       if (result.ok) {
         return jsonResult
