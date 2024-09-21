@@ -17,6 +17,7 @@ import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
 import { getWareHouses } from "../DB/CRUD/wareHouse.js";
+import { getTickets } from "../DB/CRUD/ticket.js";
 
 const router = express.Router();
 //checked
@@ -378,7 +379,58 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
     }
     next();
 });
+router.get("/allTickets", (req,res,next) => roleAuth(req,res,next,[{level : levels.ticketManage}]) ,async (req, res,next) =>{
+    try {
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
+        // console.log(req.query.limit)
+        const result = await getTickets(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 
+router.get("/allTickets/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.ticketManage}]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getTickets(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        delete result.response.password;
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 
 router.get("/allWareHouses", (req,res,next) => roleAuth(req,res,next,[{level : levels.wareHouseManage}]) ,async (req, res,next) =>{
     try {
