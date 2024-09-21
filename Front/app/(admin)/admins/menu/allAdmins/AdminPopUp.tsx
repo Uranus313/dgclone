@@ -108,8 +108,8 @@ const AdminPopUp = ({admin} : Props) => {
 
     return (
       <div>
-        <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list">
-            <p className="w-1/4">{admin.firstName + ' ' + admin.lastName}</p>
+        <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
+            <p className="w-1/4">{admin.firstName + ' ' + admin.lastName}</p> 
             <p className="w-1/4">{admin.phoneNumber}</p>
         <p className="w-1/4">{((admin.email && admin.email) || "-")}</p>
         {admin.isBanned ? (

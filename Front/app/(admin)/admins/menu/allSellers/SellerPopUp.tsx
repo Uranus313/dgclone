@@ -291,7 +291,7 @@ const SellerPopUp = ({ seller }: Props) => {
           openModal();
           getWallet(seller.walletID);
         }}
-        className=" flex py-5 border-b-2 border-b-border-color-list"
+        className=" flex py-5 border-b-2 border-b-border-color-list text-center"
       >
         <p className="w-1/4">{seller.storeInfo?.commercialName}</p>
         <p className="w-1/4">{seller.phoneNumber}</p>

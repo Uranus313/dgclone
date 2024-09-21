@@ -99,8 +99,8 @@ const AddRolePopUp = () => {
   }
   return (
     <div>
-      <div className="pt-8 border-b-2 pb-7 shadow-md border-white">
-        <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md mx-20' type="text" placeholder='جست و جو' />
+      <div className="pt-8 border-b-2 pb-7 shadow-md border-white flex justify-center">
+        {/* <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md mx-20' type="text" placeholder='جست و جو' /> */}
         <button onClick={openModal} className="btn bg-white border-primary text-primary">
           اضافه کردن نقش جدید
         </button>

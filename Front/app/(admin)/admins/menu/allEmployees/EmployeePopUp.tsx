@@ -130,7 +130,7 @@ const EmployeePopUp = ({ employee }: Props) => {
   return (
     <div>
       <div onClick={openModal}
-        className=" flex py-5 border-b-2 border-b-border-color-list">
+        className=" flex py-5 border-b-2 border-b-border-color-list text-center">
         <p className="w-1/4">{employee.firstName + ' ' + employee.lastName}</p>
         <p className="w-1/4">{employee.phoneNumber}</p>
         <p className="w-1/4">{employee.roleID?.name}</p>

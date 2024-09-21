@@ -161,7 +161,7 @@ const UserPopUp = ({ user }: Props) => {
       <div onClick={() => {
         openModal();
         getWallet(user.walletID);
-      }} className=" flex py-5 border-b-2 border-b-border-color-list">
+      }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
 
         <p className="w-1/4">{((user.firstName && user.firstName) || "-") + ((user.lastName && " " + user.lastName) || " -")}</p>
         <p className="w-1/4">{user.phoneNumber}</p>

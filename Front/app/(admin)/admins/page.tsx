@@ -10,7 +10,7 @@ import EmployeeList from './menu/allEmployees/EmployeeList'
 
 
 const AdminHomePage = () => {
-  const [list, setList] = useState<string>('employees');
+  const [list, setList] = useState<string>('users');
 
   return (
     <div className='w-full flex'>

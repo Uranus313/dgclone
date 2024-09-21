@@ -1,21 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { Employee } from "../menu/allEmployees/EmployeePopUp";
+import { strict } from "assert";
 
 interface EmployeeListResponse {
     data : Employee[],
     hasMore : boolean
 }
 interface Query{
+    roleID : string,
     floor : number,
     limit : number,
-    nameSearch : string | null,
-    sort: string
+    nameSearch : string | null
 }
-function useGetEmployees(query : Query){
+function useGetRoleEmployees(query : Query){
     return useQuery({
         queryKey : ['employeeList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:3005/users/general/allEmployees" +`?sort=${query.sort}&limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}`, {
+            const result = await fetch("http://localhost:3005/users/general/allEmployees"+`?roleID=${query.roleID}&limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}`, {
                             credentials: 'include'});
             const jsonResult = await result.json();
             console.log(jsonResult)
@@ -31,4 +32,4 @@ function useGetEmployees(query : Query){
         // keepPreviousData: true
     })
 }
-export default useGetEmployees;
+export default useGetRoleEmployees;
