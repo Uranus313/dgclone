@@ -428,7 +428,7 @@ router.get("/allWareHouses/:id", (req,res,next) => roleAuth(req,res,next,[{level
     next();
 });
 
-router.get("/allCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/allCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
