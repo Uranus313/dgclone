@@ -14,6 +14,7 @@ export async function saveEmployee(employeeCreate){
 export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
     const result = {};
     console.log(await EmployeeModel.find())
+    
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne();
         if(result.response){
@@ -23,6 +24,7 @@ export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
         }
         return result;
     }else{
+        
         let data = null;
         let hasMore = false;
         if(nameSearch && nameSearch != ''){
@@ -58,7 +60,8 @@ export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
 }
 export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nameSearch,sort , desc){
     const result = {};
-    let sortOrder = desc? -1 : 1;
+    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne().populate("roleID");
         if(result.response){

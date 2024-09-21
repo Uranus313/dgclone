@@ -12,7 +12,7 @@ export async function saveAdmin(adminCreate){
 
 export async function getAdmins(id , searchParams ,limit , floor ,nameSearch,sort , desc ){
     const result = {};
-    let sortOrder = desc? -1 : 1;
+    let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
         result.response = await AdminModel.find({_id : id}).findOne();
         if(result.response){

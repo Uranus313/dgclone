@@ -11,7 +11,8 @@ export async function saveSeller(sellerCreate){
 
 export async function getSellers(id , searchParams , idArray ,limit , floor ,nameSearch , sort , desc){
     const result = {};
-    let sortOrder = desc? -1 : 1;
+    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+
     if(id){
         result.response = await SellerModel.find({_id : id}).findOne();
         if(result.response){

@@ -19,7 +19,8 @@ export async function getAllUserTransactions(userID ,userType ){
 
 export async function getTransactions(id , searchParams ,limit , floor ,sort , desc ){
     const result = {};
-    let sortOrder = desc? -1 : 1;
+    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+
     if(id){
         result.response = await TransactionModel.find({_id : id}).findOne();
         if(result.response){
