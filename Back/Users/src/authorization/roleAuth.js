@@ -80,10 +80,12 @@ export async function roleAuth(req, res, next, acceptedLevels) {
       
               return;
         }
-        let accessLevels = role.accessLevels;
+
+        let accessLevels = role.response.accessLevels;
+        // console.log(role.response);
       for (let index = 0; index < accessLevels.length; index++) {
         for (let index2 = 0; index2 < acceptedLevels.length; index2++) {
-            if (accessLevels[index].level == acceptedLevels[index2].name) {
+            if (accessLevels[index].level == acceptedLevels[index2].level) {
                 if( !(acceptedLevels[index2].writeAccess && !accessLevels[index].writeAccess)){
                     checker = true;
                 }

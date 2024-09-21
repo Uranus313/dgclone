@@ -476,7 +476,7 @@ router.get("/allCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async
     next();
 });
 
-router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
@@ -498,7 +498,7 @@ router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,
     next();
 });
 
-router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{
+router.get("/userCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
@@ -519,7 +519,7 @@ router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : level
     }
     next();
 });
-router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]) ,async (req, res,next) =>{
+router.get("/sellerCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
@@ -541,7 +541,7 @@ router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : lev
     next();
 });
 
-router.get("/transactionCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) ,async (req, res,next) =>{
+router.get("/transactionCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
