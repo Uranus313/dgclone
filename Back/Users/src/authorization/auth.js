@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { getUsers } from "../DB/CRUD/user.js";
 import { getSellers } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
-import { getEmployees } from "../DB/CRUD/employee.js";
+import { getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
 
 export async function auth(req, res, next, acceptedStatuses) {
   const token = req.cookies["x-auth-token"];
@@ -88,7 +88,7 @@ export async function auth(req, res, next, acceptedStatuses) {
         next();
         break;
       case "employee":
-        const employee = (await getEmployees(decoded._id)).response;
+        const employee = (await getEmployeesWithRoles(decoded._id)).response;
         if (!employee) {
           res.status(401).send({ error: "access denied. invalid employee." });
           res.body = { error: "access denied. invalid employee." };
