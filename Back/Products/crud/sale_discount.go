@@ -14,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetMostDiscounts(c *fiber.Ctx) error {
@@ -45,9 +46,28 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 	// 	return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
 	// }
 
+	cateIDString := c.Params("CateID", "000000000000000000000000")
+
+	cateID, err := primitive.ObjectIDFromHex(cateIDString)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	var discounts []models.SaleDiscount
 
-	filter := bson.M{"end_date": bson.M{"$gt": time.Now()}}
+	var filter primitive.M
+
+	if cateID == primitive.NilObjectID {
+		filter = bson.M{
+			"end_date": bson.M{"$gt": time.Now()},
+		}
+	} else {
+		filter = bson.M{
+			"end_date":    bson.M{"$gt": time.Now()},
+			"category_id": cateID,
+		}
+	}
 
 	cursor, err := database.SaleDiscountCollection.Find(context.Background(), filter)
 
@@ -67,9 +87,9 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 		return discountI > discountJ
 	})
 
-	// Limit to top 10
-	if len(discounts) > 10 {
-		discounts = discounts[:10]
+	// Limit to top 30
+	if len(discounts) > 30 {
+		discounts = discounts[:30]
 	}
 
 	type Response struct {
@@ -98,7 +118,30 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 		responses = append(responses, response)
 	}
 
-	return c.Status(http.StatusOK).JSON(responses)
+	prodFindOpts := options.Find().SetSort(bson.D{{Key: "sell_count", Value: -1}}).SetLimit(30)
+
+	if cateID == primitive.NilObjectID {
+		filter = bson.M{}
+	} else {
+		filter = bson.M{"category_id": cateID}
+	}
+
+	cursor2, err := database.ProductCollection.Find(context.Background(), filter, prodFindOpts)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	var bestSaleProds []models.Product
+
+	if err := cursor2.All(context.Background(), &bestSaleProds); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"best_discounts": responses,
+		"best_sales":     bestSaleProds,
+	})
 }
 
 func AddSaleDiscount(c *fiber.Ctx) error {
@@ -189,6 +232,7 @@ func AddSaleDiscount(c *fiber.Ctx) error {
 			ProdID:        prodID,
 			SellerID:      sellerID,
 			OriginalPrice: prod.Sellers[sellerIndex].Price,
+			CategoryID:    prod.CategoryID,
 		},
 	}
 
