@@ -124,6 +124,8 @@ func AddProduct(c *fiber.Ctx) error {
 		}
 	}
 
+	product.DateAdded = time.Now()
+
 	insertResult, err := database.ProductCollection.InsertOne(context.Background(), product)
 
 	if err != nil {
@@ -406,16 +408,81 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching category id from query": err.Error()})
 	}
 
-	var product_list []models.Product
+	sortMethodString := c.Query("SortMethod", "1")
+
+	sortMethod, err := strconv.Atoi(sortMethodString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sort method from query": err.Error()})
+	}
+
+	/*
+		valid_sort_methods = {
+			1: "most visited",
+			2: "least expensive",
+			3: "most expensive",
+			4: "recently added",
+		}
+	*/
 
 	findOptions := options.Find()
 
 	findOptions.SetLimit(int64(limit))
 	findOptions.SetSkip(int64(offset))
 
-	filter := bson.M{"category_id": cateID}
+	var filter primitive.M
+	var pipeline mongo.Pipeline
 
-	cursor, err := database.ProductCollection.Find(context.Background(), filter, findOptions)
+	switch sortMethod {
+	case 1:
+		findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
+		filter = bson.M{"category_id": cateID}
+	case 2:
+		pipeline = mongo.Pipeline{
+			{{Key: "$match", Value: bson.D{
+				{Key: "category_id", Value: cateID},
+			}}},
+			{{Key: "$addFields", Value: bson.D{
+				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+			}}},
+			{{Key: "$sort", Value: bson.D{
+				{Key: "minPrice", Value: 1}, // Ascending order
+			}}},
+		}
+	case 3:
+		pipeline = mongo.Pipeline{
+			{{Key: "$match", Value: bson.D{
+				{Key: "category_id", Value: cateID},
+			}}},
+			{{Key: "$addFields", Value: bson.D{
+				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+			}}},
+			{{Key: "$sort", Value: bson.D{
+				{Key: "minPrice", Value: -1}, // Descending order
+			}}},
+		}
+	case 4:
+		findOptions.SetSort(bson.D{{Key: "date_added", Value: -1}})
+		filter = bson.M{"category_id": cateID}
+	default:
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid Sort Method",
+			"valid_sort_methods": fiber.Map{
+				"1": "most visited",
+				"2": "least expensive",
+				"3": "most expensive",
+				"4": "recently added",
+			},
+		})
+	}
+
+	var cursor *mongo.Cursor
+
+	if sortMethod == 1 || sortMethod == 4 {
+		cursor, err = database.ProductCollection.Find(context.Background(), filter, findOptions)
+	} else {
+		cursor, err = database.ProductCollection.Aggregate(context.Background(), pipeline)
+	}
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching from database": err.Error()})
@@ -423,8 +490,44 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 
 	defer cursor.Close(context.Background())
 
-	if err := cursor.All(context.Background(), &product_list); err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching cursor": err.Error()})
+	type ProductCard struct {
+		ID         primitive.ObjectID
+		Title      string
+		Price      int
+		Picture    string
+		DiscountID primitive.ObjectID
+	}
+
+	var product_list []ProductCard
+
+	// if err := cursor.All(context.Background(), &product_list); err != nil {
+	// 	return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching cursor": err.Error()})
+	// }
+
+	for cursor.Next(context.Background()) {
+		var product models.Product
+		if err := cursor.Decode(&product); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while decoding cursor",
+				"error":   err.Error(),
+			})
+		}
+		var minPriceSellerIndex int = 0
+		var minPrice int = product.Sellers[0].Price
+		for index, seller := range product.Sellers {
+			if seller.Price < minPrice {
+				minPriceSellerIndex = index
+			}
+		}
+		var productCard = ProductCard{
+			ID:         product.ID,
+			Title:      product.Title,
+			Price:      product.Sellers[minPriceSellerIndex].Price,
+			Picture:    product.Images[0],
+			DiscountID: product.Sellers[minPriceSellerIndex].DiscountID,
+		}
+
+		product_list = append(product_list, productCard)
 	}
 
 	return c.Status(http.StatusOK).JSON(product_list)

@@ -82,6 +82,7 @@ type Product struct {
 	Weight_KG   int                `json:"weight_KG" bson:"weight_KG"`
 	Description string             `json:"description" bson:"description"`
 	ProsNCons   Pros_cons          `json:"pros&cons,omitempty" bson:"pros&cons,omitempty"`
+	DateAdded   time.Time          `json:"date_added" bson:"date_added"`
 	// Guarantees  []Guarantee        `json:"guarantees" bson:"guarantees"`
 	// Price       int                `json:"price" bson:"price"`
 	// DiscountID  primitive.ObjectID `json:"discount_id,omitempty" bson:"discount_id,omitempty"`
