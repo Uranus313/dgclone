@@ -122,19 +122,19 @@ export interface Transaction{
     transactionID:string,
     userid:string,
     moneyAmount:number,
+    title:string,
+    additionalinfo?:string,
     sender:{
         type:TransactionSide,
-        senderID:string,
-        additionalinfo:string
+        senderID?:string,
     }
  
     reciver:{
         type:TransactionSide,
-        reciverID:string,
-        additionalinfo:string
-        }
-    date:string
-    OrdersHistoryID:string
+        reciverID?:string,
+     }
+
+    date:string,
 }
 
 //#region seller
@@ -213,17 +213,6 @@ export interface Seller{
         }
     },
 
-    warehouseAddress?:{
-        country:string,
-        province:string,
-        city:string,
-        postalCode:number,
-        additionalInfo:string ,
-        coordinates : {
-            x:number ,
-            y:number 
-        }
-    },
     // productList: ProductInterface[],
     // saleHistory: Order[],
     // socialInteractions : Comment[],
@@ -296,4 +285,15 @@ export interface Color{
 export interface Brand{
     title:string,
     id:string,
+}
+
+export interface productSaleAnalyseCard{
+    productID:string,
+    picture:string,
+    productTitle:string,
+    productCategoryID:string,
+    productCategoryTitle:string,
+    saleValue:number,
+    saleCount:number,
+    visits:number
 }
