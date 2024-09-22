@@ -4,10 +4,11 @@ import useGetEmployees from '../../hooks/useGetEmployees';
 import userContext from '@/app/contexts/userContext';
 import EmployeePopUp from './EmployeePopUp';
 import useGetRoles from '../../hooks/useGetRoles';
-interface Props{
-  changeList: ( list: string) => void
+import AddEmployeePopUp from './AddEmployeePopUp';
+interface Props {
+  changeList: (list: string) => void
 }
-const EmployeeList = ({changeList}:Props) => {
+const EmployeeList = ({ changeList }: Props) => {
 
   let [pageSize, setPageSize] = useState<number>(8);
   let [page, setPage] = useState<number>(0);
@@ -23,25 +24,28 @@ const EmployeeList = ({changeList}:Props) => {
   }
   return (
     <div className=' flex-col bg-white m-20 p-5 px-13 rounded-md'>
+      <div className='flex'>
+
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
-      }} >
+      }} className='w-7/12'>
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
           <option value="users">کاربران</option>
           <option value="employees" selected>کارمندان</option>
-          
-        <option value="admins" > ادمین ها</option>
+          <option value="admins" > ادمین ها</option>
           <option value="orders">سفارش ها</option>
           <option value="sellers">فروشندگان</option>
           <option value="products">محصولات</option>
           <option value="transactions"> تراکنش ها</option>
         </select>
-        <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+        <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
           ref={searchRef}
           onBlur={() => handleSearch()} />
-        <button className='bg-red-box px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
       </form>
+        <button className='bg-red-box px-8 py-2 rounded-md mr-12 ml-6'>مرتب سازی</button>
+        <AddEmployeePopUp />
+      </div>
       {isLoading ? <span className="loading loading-dots loading-lg"></span> :
         // error && <p>{error.message}</p>
         <div className=' flex-col'>

@@ -3,6 +3,8 @@ import { comparePassword, hashPassword } from "../../functions/hashing.js";
 
 export async function saveEmployee(employeeCreate){
     const result = {};
+    employeeCreate.password = await hashPassword(employeeCreate.password);
+
     const employee = new EmployeeModel(employeeCreate);
     const response = await employee.save();
     result.response = response.toJSON();
@@ -12,6 +14,7 @@ export async function saveEmployee(employeeCreate){
 export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
     const result = {};
     console.log(await EmployeeModel.find())
+    
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne();
         if(result.response){
@@ -21,6 +24,7 @@ export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
         }
         return result;
     }else{
+        
         let data = null;
         let hasMore = false;
         if(nameSearch && nameSearch != ''){
@@ -54,8 +58,10 @@ export async function getEmployees(id , searchParams,limit , floor ,nameSearch){
         return result;
     }
 }
-export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nameSearch){
+export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nameSearch,sort , desc){
     const result = {};
+    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+
     if(id){
         result.response = await EmployeeModel.find({_id : id}).findOne().populate("roleID");
         if(result.response){
@@ -67,11 +73,14 @@ export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nam
     }else{
         let data = null;
         let hasMore = false;
+        if(!limit){
+            limit = 20;
+        }
         if(nameSearch && nameSearch != ''){
             data = await EmployeeModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
-            } }).skip(floor).limit(limit).populate("roleID");
+            } }).skip(floor).limit(limit).sort({[sort] : sortOrder} ).populate("roleID");
             let count = await EmployeeModel.countDocuments({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
@@ -79,7 +88,7 @@ export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nam
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
         }else{
-            data = await EmployeeModel.find(searchParams).skip(floor).limit(limit).populate("roleID");
+            data = await EmployeeModel.find(searchParams).skip(floor).limit(limit).sort({[sort] : sortOrder} ).populate("roleID");
             let count = await EmployeeModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
@@ -99,9 +108,10 @@ export async function getEmployeesWithRoles(id , searchParams,limit , floor ,nam
     }
 }
 
-export async function getEmployeeCount(){
+export async function getEmployeeCount(searchParams){
     const result = {};
-    let count = await EmployeeModel.countDocuments();
+    // console.log(searchParams)
+    let count = await EmployeeModel.countDocuments(searchParams);
     result.response = count;
     return result;
 }  

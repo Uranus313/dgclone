@@ -123,6 +123,7 @@ const sellerSchema  = new mongoose.Schema(
                 y : {type: String, required : true}
             } , required: true}
         }},
+        signUpDate : {type: Date , required : true , default: Date.now()},
         productList : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "products" }]},
         saleHistory : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orders" }]},
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},

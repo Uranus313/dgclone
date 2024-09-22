@@ -9,8 +9,10 @@ export async function saveUser(userCreate){
     return result;
 }
 
-export async function getUsers(id , searchParams,limit , floor ,nameSearch){
+export async function getUsers(id , searchParams,limit , floor ,nameSearch , sort , desc){
     const result = {};
+    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+
     if(id){
         result.response = await UserModel.find({_id : id}).findOne();
         if(result.response){
@@ -21,11 +23,14 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
     }else{
         let data = null;
         let hasMore = false;
+        if(!limit){
+            limit = 20;
+        }
         if(nameSearch && nameSearch != ''){
             data = await UserModel.find({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
-            } }).skip(floor).limit(limit);
+            } }).skip(floor).limit(limit).sort({[sort] : sortOrder} );
             let count = await UserModel.countDocuments({...searchParams,lastName:{
                 $regex: nameSearch,
                 $options: 'i'
@@ -33,7 +38,7 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
         }else{
-            data = await UserModel.find(searchParams).skip(floor).limit(limit);
+            data = await UserModel.find(searchParams).skip(floor).limit(limit).sort({[sort] : sortOrder} );
             let count = await UserModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
@@ -52,9 +57,9 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch){
         return result;
     }
 }
-export async function getUserCount(){
+export async function getUserCount(searchParams){
     const result = {};
-    let count = await UserModel.countDocuments();
+    let count = await UserModel.estimatedDocumentCount(searchParams);
     result.response = count;
     return result;
 }  

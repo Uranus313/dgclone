@@ -7,7 +7,7 @@ import { saveBannedSeller } from "../DB/CRUD/sellerBanList.js";
 import { updateUser } from "../DB/CRUD/user.js";
 import { saveBannedUser } from "../DB/CRUD/userBanList.js";
 import { validateAdminBan, validateAdminChangeinfo, validateAdminPost, validateAdminUnban } from "../DB/models/admin.js";
-import { validateEmployeeBan, validateEmployeeChangeRole } from "../DB/models/employee.js";
+import { validateEmployeeBan, validateEmployeeChangeRole, validateEmployeeUnban } from "../DB/models/employee.js";
 import { validateSellerUnban } from "../DB/models/seller.js";
 import { validateSellerBan } from "../DB/models/sellerBanList.js";
 import { validateChangePassword, validateUserLogIn, validateUserUnban } from "../DB/models/user.js";
@@ -18,6 +18,7 @@ import validateId from "../functions/validateId.js";
 import { getWallets } from "../DB/CRUD/wallet.js";
 import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
+import { updateTicket } from "../DB/CRUD/ticket.js";
 
 const router = express.Router();
 //checked
@@ -297,7 +298,7 @@ router.patch("/banEmployee",(req,res,next) => auth(req,res,next,["admin"]),  asy
         return;
     }
     try {
-        const result = await updateEmployee(req.body.sellerID , {isBanned : true})
+        const result = await updateEmployee(req.body.employeeID , {isBanned : true})
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -514,5 +515,57 @@ router.get("/getWallet/:walletID", (req,res,next) => roleAuth(req,res,next,[{lev
         res.status(500).send({ error: "internal server error" });
     }
 });
-
+router.patch("/seeTicket/:ticketID",(req,res,next) => roleAuth(req,res,next,[{level : levels.ticketManage , writeAccess : true}]) ,  async (req, res, next) =>{
+    const {error} = validateId(req.params.ticketID);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        if(req.user.status == "admin"){
+            const result = await updateTicket(req.params.ticketID,{adminID : req.user._id , isSeen : true});
+            if (result.error){
+                res.status(400).send({error : result.error});
+                res.body = {error : result.error};
+                next();
+                return;
+            }
+            if(!result.response){
+                res.body = {error:"ticket not found"};
+                res.status(404).send({error:"ticket not found"});
+                next();
+                return;
+            }
+            res.send(result.response);
+            res.body = result.response;
+        }else if(req.user.status == "employee"){
+            const result = await updateTicket(req.params.ticketID,{employeeID : req.user._id , isSeen : true});
+            if (result.error){
+                res.status(400).send({error : result.error});
+                res.body = {error : result.error};
+                next();
+                return;
+            }
+            if(!result.response){
+                res.body = {error:"ticket not found"};
+                res.status(404).send({error:"ticket not found"});
+                next();
+                return;
+            }
+            res.send(result.response);
+            res.body = result.response;
+        }else{
+            res.body = {error:"internal server error"};
+            res.status(500).send({error:"internal server error"}); 
+        }
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 export default router;

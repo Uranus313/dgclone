@@ -15,7 +15,9 @@ const employeeSchema  = new mongoose.Schema(
         phoneNumber: {type: String , required : true},
         nationalID: {type: String , required : true},
         isBanned: {type: Boolean},
-        roleID: {type : mongoose.Schema.Types.ObjectId , ref: "roles" }
+        roleID: {type : mongoose.Schema.Types.ObjectId , ref: "roles" },
+        signUpDate : {type: Date , required : true , default: Date.now()}
+
         // pendingOrders : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orders" }]},
         // deliveredOrders : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orders" }]}
     }

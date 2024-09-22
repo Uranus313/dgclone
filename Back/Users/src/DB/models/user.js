@@ -51,6 +51,7 @@ const userSchema  = new mongoose.Schema(
                 phoneNumber : {type: String, required : true}
             } , required: true}
         }}],
+        signUpDate : {type: Date , required : true , default: Date.now()},
         boughtGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         receivedGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},

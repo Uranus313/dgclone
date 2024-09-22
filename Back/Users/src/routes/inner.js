@@ -159,3 +159,44 @@ router.get("/checkToken/:token",innerAuth,async (req, res, next) => {
         res.body = {error:"invalid token"};
     }
 })
+
+
+router.get("/checkUser/:id",innerAuth, async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+        res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getUsers(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        if(!result.response){
+            res.send({result : false});
+            res.body = {result : false};
+            next();
+            return;
+        }else if(result.response.isBanned){
+            res.send({result : false});
+            res.body = {result : false};
+            next();
+            return;
+        }else{
+            res.send({result : true});
+            res.body = {result : true};
+            next();
+            return;
+        }
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});

@@ -1,3 +1,4 @@
+import { EmployeeModel } from "../models/employee.js";
 import { RoleModel } from "../models/role.js";
 
 export async function saveRole(roleCreate){
@@ -34,6 +35,7 @@ export async function getRoles(id , search, idArray){
 
 export async function deleteRole(id){
     const result = {};
+    await EmployeeModel.updateMany({roleID: id},{$set: {roleID: null}});
     result.response = await RoleModel.findByIdAndDelete({_id : id});
     return result;
 }

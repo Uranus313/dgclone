@@ -9,25 +9,21 @@ import EmployeeList from './menu/allEmployees/EmployeeList'
 
 
 
-
 const AdminHomePage = () => {
-  const [list, setList] = useState<string>('users');
+  const [list, setList] = useState<string>('employees');
 
   return (
-
-
     <div className='w-full flex'>
       <MenuSideBar />
       <div className='w-full'>
-      <CardBox />
-      <span>
-        {list === 'users' ? <UserList changeList = {(list => setList(list))} />
-          : list === 'admins' ? <AdminList changeList = {(list => setList(list))} />
-            : list === 'sellers' ? <SellerList changeList = {(list => setList(list))} />
-              : list === 'employees' ? <EmployeeList changeList = {(list => setList(list))} />
-                : <UserList changeList = {(list => setList(list))} />}
-      </span>
-
+        <CardBox />
+        <span>
+          {list === 'users' ? <UserList changeList={(list => setList(list))} />
+            : list === 'admins' ? <AdminList changeList={(list => setList(list))} />
+              : list === 'sellers' ? <SellerList changeList={(list => setList(list))} />
+                : list === 'employees' ? <EmployeeList changeList={(list => setList(list))} />
+                  : <UserList changeList={(list => setList(list))} />}
+        </span>
       </div>
     </div>
   )

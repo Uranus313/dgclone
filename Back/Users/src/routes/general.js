@@ -16,6 +16,8 @@ import { innerAuth } from "../authorization/innerAuth.js";
 import { getVerifyRequests } from "../DB/CRUD/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
+import { getWareHouses } from "../DB/CRUD/wareHouse.js";
+import { getTickets } from "../DB/CRUD/ticket.js";
 
 const router = express.Router();
 //checked
@@ -25,8 +27,10 @@ router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[{level : levels
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getUsers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getUsers(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -125,8 +129,10 @@ router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[{level : leve
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getSellers(undefined,searchParams,undefined,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getSellers(undefined,searchParams,undefined,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -177,8 +183,10 @@ router.get("/allAdmins", (req, res,next) => auth(req, res,next, ["admin"]) ,asyn
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getAdmins(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getAdmins(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -270,7 +278,13 @@ router.get("/allGiftCards/:id",(req,res,next) => roleAuth(req,res,next,[{level :
 
 router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage }]),async (req, res,next) =>{
     try {
-        const result = await getTransactions(undefined,req.query);
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.sort;
+        delete searchParams.desc;
+        // console.log(req.query.limit)
+        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -319,8 +333,10 @@ router.get("/allEmployees", (req, res,next) => auth(req, res,next, ["admin"]) ,a
         delete searchParams.floor;
         delete searchParams.limit;
         delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch);
+        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -363,13 +379,160 @@ router.get("/allEmployees/:id",(req, res,next) => auth(req, res,next, ["admin"])
     }
     next();
 });
+router.get("/allTickets", (req,res,next) => roleAuth(req,res,next,[{level : levels.ticketManage}]) ,async (req, res,next) =>{
+    try {
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
+        // console.log(req.query.limit)
+        const result = await getTickets(undefined,searchParams,req.query.limit,req.query.floor, req.query.nameSearch,req.query.sort,req.query.desc);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
 
-// checked 
-router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,async (req, res,next) =>{
+router.get("/allTickets/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.ticketManage}]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getTickets(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        delete result.response.password;
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/allWareHouses", (req,res,next) => roleAuth(req,res,next,[{level : levels.wareHouseManage}]) ,async (req, res,next) =>{
+    try {
+        let searchParams = {...req.query};
+        // console.log(req.query.limit)
+        const result = await getWareHouses(undefined,searchParams);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/allWareHouses/:id", (req,res,next) => roleAuth(req,res,next,[{level : levels.wareHouseManage}]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getWareHouses(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        delete result.response.password;
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/allCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
-        const result = await getEmployeeCount();
+        const employee = await getEmployeeCount();
+        if (employee.error){
+            res.status(400).send({error : employee.error});
+            res.body = {error : employee.error};
+            next();
+            return;
+        }
+        const user = await getUserCount();
+        if (user.error){
+            res.status(400).send({error : user.error});
+            res.body = {error : user.error};
+            next();
+            return;
+        }
+        const seller = await getSellerCount();
+        if (seller.error){
+            res.status(400).send({error : seller.error});
+            res.body = {error : seller.error};
+            next();
+            return;
+        }
+        const transaction = await getTransactionCount();
+        if (transaction.error){
+            res.status(400).send({error : transaction.error});
+            res.body = {error : transaction.error};
+            next();
+            return;
+        }
+        let answer = {
+            userCount : user.response,
+            employeeCount : employee.response,
+            sellerCount : seller.response,
+            transactionCount : transaction.response
+        };
+        res.body = answer;
+        res.send(answer);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
+    try {
+
+        // console.log(req.query.limit)
+        const result = await getEmployeeCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -387,11 +550,11 @@ router.get("/employeeCount", (req, res,next) => auth(req, res,next, ["admin"]) ,
     next();
 });
 
-router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{
+router.get("/userCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
-        const result = await getUserCount();
+        const result = await getUserCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -408,11 +571,11 @@ router.get("/userCount", (req,res,next) => roleAuth(req,res,next,[{level : level
     }
     next();
 });
-router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]) ,async (req, res,next) =>{
+router.get("/sellerCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
-        const result = await getSellerCount();
+        const result = await getSellerCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -430,11 +593,11 @@ router.get("/sellerCount", (req,res,next) => roleAuth(req,res,next,[{level : lev
     next();
 });
 
-router.get("/transactionCount", (req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) ,async (req, res,next) =>{
+router.get("/transactionCount", (req, res,next) => auth(req, res,next, ["admin","employee"]) ,async (req, res,next) =>{
     try {
 
         // console.log(req.query.limit)
-        const result = await getTransactionCount();
+        const result = await getTransactionCount(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
