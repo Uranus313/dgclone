@@ -5,7 +5,7 @@ Joi.objectId = joiObjectid(Joi);
 
 const sellerSchema  = new mongoose.Schema(
     {
-        password: {type: String , required : true},
+        password: {type: String },
         isBanned : Boolean,
         storeOwner: { 
             type:{
@@ -19,7 +19,7 @@ const sellerSchema  = new mongoose.Schema(
         isVerified: Boolean,
         rating: {type: Number , required: true , default: 0},
         phoneNumber: {type: String , required : true},
-        entityType: {type: String,enum: ["individual" , "legal"], required: true,
+        entityType: {type: String,enum: ["individual" , "legal"],
             validate: {
                 validator : function(value){
                     if(value === "individual" && (!this.individualInfo)){

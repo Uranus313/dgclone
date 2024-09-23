@@ -149,7 +149,9 @@ router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[{level : leve
     next();
 });
 
-router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]), async (req, res, next) =>{
+// router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]), async (req, res, next) =>{
+router.get("/allSellers/:id", async (req, res, next) =>{
+
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
