@@ -8,6 +8,7 @@ Joi.objectId = joiObjectid(Joi);
 const transactionSchema  = new mongoose.Schema(
     {
         money: {type: Number , required : true},
+        title: {type: String , required : true},
         sender:{type : {
             method : {type: String,enum: ["bankAccount" , "wallet"], required: true, validate:{
                 validator : function(value){
@@ -71,6 +72,7 @@ export const TransactionModel = mongoose.model("transactions",transactionSchema)
 export function validateTeransactionPost (data){
     const schema = Joi.object({
         money: Joi.number().required(),
+        money: Joi.string().required(),
         sender: Joi.object({
             method : Joi.string().valid("bankAccount" , "wallet"),
             entityType : Joi.string().valid("digikala" , "user","company","giftCard"),

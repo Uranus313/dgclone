@@ -630,6 +630,7 @@ router.post("/useGiftCard", (req, res, next) => auth(req, res, next, ["user"]), 
         }
         const result3 = await saveTransaction({
             money: giftCard.amount,
+            title: "استفاده از گیفت کارت",
             sender: {
                 method: "wallet",
                 entityType: "giftCard"
