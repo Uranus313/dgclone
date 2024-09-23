@@ -1,4 +1,6 @@
+import { SellerModel } from "../models/seller.js";
 import { TransactionModel } from "../models/transaction.js";
+import { UserModel } from "../models/user.js";
 
 export async function saveTransaction(transactionCreate){
     const result = {};
@@ -55,7 +57,36 @@ export async function getTransactions(id , searchParams ,limit , floor ,sort , d
         return result;
     }
 }
+export async function getTransactionUsers(transactionID) {
+    const result = {};
 
+    let transaction = await TransactionModel.find({_id : transactionID}).findOne();
+    transaction = result.response.toJSON();
+
+    if(transaction.sender.entityType == "user"){
+        const sender = await UserModel.find({_id : transaction.sender.senderID}).findOne();
+        if(sender){
+            result.response.sender = sender.toJSON();
+        }
+    }else if(transaction.sender.entityType == "seller"){
+        const sender = await SellerModel.find({_id : transaction.sender.senderID}).findOne();
+        if(sender){
+            result.response.sender = sender.toJSON();
+        }
+    }
+    if(transaction.receiver.entityType == "user"){
+        const receiver = await UserModel.find({_id : transaction.receiver.receiverID}).findOne();
+        if(receiver){
+            result.response.receiver = receiver.toJSON();
+        }
+    }else if(transaction.receiver.entityType == "seller"){
+        const receiver = await SellerModel.find({_id : transaction.receiver.receiverID}).findOne();
+        if(receiver){
+            result.response.receiver = receiver.toJSON();
+        }
+    }
+    return result;
+}
 export async function getTransactionCount(searchParams){
     const result = {};
     let count = await TransactionModel.estimatedDocumentCount(searchParams);
