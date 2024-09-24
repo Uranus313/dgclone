@@ -111,9 +111,15 @@ func main() {
 
 	// -------------colors---------------
 
-	app.Post("/products/colors", crud.AddColor)
+	app.Post("/products/color", crud.AddColor)
 
-	app.Get("products/colors", crud.GetAllColors)
+	app.Get("products/color", crud.GetAllColors)
+
+	// -------------guarantees---------------
+
+	app.Post("/products/guarantee", crud.AddGuarantee)
+
+	app.Get("products/guarantee", crud.GetAllGuarantee)
 
 	// -------------orders--------------
 
