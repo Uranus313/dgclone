@@ -121,15 +121,15 @@ func AddProduct(c *fiber.Ctx) error {
 	}
 
 	// adding defualt guarantee for sellers
-	for _, seller := range product.Sellers {
+	// for _, seller := range product.Sellers {
 
-		if len(seller.Guarantees) == 0 {
+	// 	if len(seller.Guarantees) == 0 {
 
-			defualt_guarantee := models.Guarantee{Title: "گارانتی اصالت و سلامت فیزیکی کالا", Desc: ""}
+	// 		defualt_guarantee := models.Guarantee{Title: "گارانتی اصالت و سلامت فیزیکی کالا", Desc: ""}
 
-			seller.Guarantees = append(seller.Guarantees, defualt_guarantee)
-		}
-	}
+	// 		seller.Guarantees = append(seller.Guarantees, defualt_guarantee)
+	// 	}
+	// }
 
 	product.DateAdded = time.Now()
 	product.ValidationState = models.PendingValidation
@@ -285,6 +285,8 @@ func UpdateProdQuantity(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching quantity from query": err.Error()})
 	}
 
+	color := c.Query("Color")
+
 	if quantity < 0 {
 		return c.Status(http.StatusBadRequest).SendString("quantity can't be negative")
 	}
@@ -302,16 +304,29 @@ func UpdateProdQuantity(c *fiber.Ctx) error {
 	}
 
 	var sellerFound bool = false
+	var colorFound bool = false
 
 	for index, seller := range product.Sellers {
 		if seller.SellerID == sellerID {
 			sellerFound = true
-			product.Sellers[index].SellerQuantity.Quantity = quantity
+			for colorindex, value := range product.Sellers[index].SellerQuantity {
+				if value.Color.Title == color {
+					colorFound = true
+					product.Sellers[index].SellerQuantity[colorindex].Quantity = quantity
+					break
+				}
+			}
+			break
+			// product.Sellers[index].SellerQuantity.Quantity = quantity
 		}
 	}
 
 	if !sellerFound {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
+	}
+
+	if !colorFound {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "color not found"})
 	}
 
 	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
