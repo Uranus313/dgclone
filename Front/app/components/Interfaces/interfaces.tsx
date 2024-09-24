@@ -23,6 +23,27 @@ export interface SellerInfosOnProduct{
     
 }
 
+export interface Order {
+    _id:string ,
+    product:{
+        productID:string,
+        price:number,
+        color:Color,
+        garantee:string,
+        sellerid:string,
+        sellerTitle:string
+        picture:string,
+        productTitle:string
+    },
+    quantity:number,
+    userid:string,
+    rate?:number,
+    state:State,  
+    ReciveDate:string,
+}
+
+
+
 export interface SellerSetVarientOnProduct{
     sellerID:string,
     productID:string,
@@ -73,23 +94,6 @@ export interface Comment{
 }
 
 export enum State{returned='returned', canceled='canceled',pending='pending',delivered='delivered',recivedInWareHouse='recivedInWareHouse'}
-
-export interface Order{
-  orderID:string ,
-  product:{
-     productID:string,
-     price:number,
-     color:string,
-     garantee:string,
-     sellerid:string,
-     picture:string,
-  },
-  quantity:number,
-  userid:string,
-  rate?:number,
-  state:State,  
-  ReciveDate:string,
-}
 
 export enum notifTypeUser{info='info', order='order', recommend='recommend'}
 export enum notifTypeSeller{question='پرسش', order='سفارش', info='عمومی'}
