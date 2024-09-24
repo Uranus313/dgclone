@@ -109,6 +109,12 @@ func main() {
 
 	app.Post("/products/salediscount", crud.AddSaleDiscount) // query params => ProdID, SellerID, EndDate, NewPrice | note. EndDate layout must be "yyyy-mm-dd 15:04:05" format
 
+	// -------------colors---------------
+
+	app.Post("/products/colors", crud.AddColor)
+
+	app.Get("products/colors", crud.GetAllColors)
+
 	// -------------orders--------------
 
 	app.Post("/products/order", crud.AddOrder)
