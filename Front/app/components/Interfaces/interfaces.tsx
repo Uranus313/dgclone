@@ -16,7 +16,8 @@ export interface SellerInfosOnProduct{
     sellerid:string,
     sellerTitle:string,
     sellerRating:number
-    quantity: {color:{title:string,hex:string},  quantity:number,price:number, garante:string}[],
+    quantity: {color:{title:string,hex:string},  quantity:number,garante:string}[],
+    price:number,
     shipmentMethod?:shipmentMethod,
     discountId?:string,
     
@@ -29,7 +30,6 @@ export interface SellerSetVarientOnProduct{
     productPicture:string,
     color:{title:string,hex:string},  
     quantity:number,
-    price:number, 
     garante:string,
     shipmentMethod?:shipmentMethod,
    

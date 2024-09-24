@@ -17,7 +17,7 @@ interface Props {
 const VarientCard = ({ index, varient, update }: Props) => {
     const [valueColor, setValueColor] = useState('رنگ')
     const [color, setColor] = useState<Color>(varient.color)
-    const priceRef = useRef<HTMLInputElement>(null);
+
     const quantityRef = useRef<HTMLInputElement>(null);
     const [guarantee, setGuarantee] = useState<string>('گارانتی')
     const [updatedVarient, setUpdatedVarient] = useState<SellerSetVarientOnProduct>(varient)
@@ -26,7 +26,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
         console.log('in')
         setUpdatedVarient({
             color: color,
-            price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
+            // price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
             garante: guarantee,
             productID: varient.productID,
             productPicture: varient.productPicture,
@@ -37,7 +37,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
         })
         update(index , {
             color: color,
-            price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
+            // price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
             garante: guarantee,
             productID: varient.productID,
             productPicture: varient.productPicture,
@@ -46,10 +46,10 @@ const VarientCard = ({ index, varient, update }: Props) => {
             sellerID: varient.sellerID,
             shipmentMethod: varient.shipmentMethod
         })
-    }, [color, guarantee, priceRef, quantityRef])
+    }, [color, guarantee, quantityRef])
 
     return (
-        <div className='grid grid-cols-6 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
+        <div className='grid grid-cols-5 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
             <img className='w-20' src={varient.productPicture} />
             <p className='line-clamp-1 h-fit '>{varient.productTitle}</p>
 
@@ -70,7 +70,6 @@ const VarientCard = ({ index, varient, update }: Props) => {
             </dialog>
 
             <input type='number' defaultValue={varient.quantity} ref={quantityRef} className='w-32' placeholder={"تعداد"} />
-            <input type='number'  defaultValue={varient.price} ref={priceRef} className='w-32' placeholder={"قیمت"} />
 
             <ModalButton  title={guarantee} solid={false} id={'gauranteeModal'+index} />
             <dialog id={"gauranteeModal"+index} className="modal">

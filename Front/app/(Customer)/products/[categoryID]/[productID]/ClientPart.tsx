@@ -1,5 +1,5 @@
 'use client'
-import { ProductInterface, SellerInfosOnProduct } from '@/app/components/Interfaces/interfaces'
+import { Color, ProductInterface, SellerInfosOnProduct } from '@/app/components/Interfaces/interfaces'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import f from '../../../../assets/images/tomann.png'
@@ -11,7 +11,7 @@ interface Props{
 
 const ClientPart = ({product}:Props) => {
     
-    let ColorsWithSellers:{color:{hex:string,title:string},sellers:SellerInfosOnProduct[]}[] = []
+    let ColorsWithSellers:{color:Color,sellers:SellerInfosOnProduct[]}[] = []
     const [selectedColor , setSelectedColor] = useState(product.sellers[0].quantity[0].color)
     const [selectedSeller , setSelectedSeller] = useState<SellerInfosOnProduct>()
     
@@ -20,7 +20,7 @@ const ClientPart = ({product}:Props) => {
     product.sellers.forEach(seller => {
         seller.quantity.forEach(colorQuantity=>{
             if (colorQuantity.quantity != 0 ){
-                const foundColor:{color:{hex:string,title:string},sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color === colorQuantity.color)
+                const foundColor:{color:Color,sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color.title === colorQuantity.color.title)
 
                 if(foundColor){
                     foundColor.sellers.push(seller)
@@ -120,7 +120,7 @@ const ClientPart = ({product}:Props) => {
 
                         <div className='flex justify-between mt-4'>
                             <div className='flex'>
-                                <h2 className='text-3xl'>{selectedSeller?.quantity.find(quantity=>quantity.color==selectedColor)?.price}</h2>
+                                <h2 className='text-3xl'>{selectedSeller?.price}</h2>
                                 <Image className='mx-1 object-contain' objectFit='contain' src={f} width='30' height='100' alt='تومان'/>
                             </div>
                             <div className="tooltip" data-tip={`این کالا توسط فروشنده ی آن ${selectedSeller?.sellerTitle} قیمت گذاری شده `}>
@@ -176,7 +176,7 @@ const ClientPart = ({product}:Props) => {
           <p className=''>{seller.quantity.find(quantity=>quantity.color==selectedColor)?.garante}</p>
         </div>
         <div className='flex items-center justify-center'>
-          <p className='text-3xl'>{seller.quantity.find(quantity=>quantity.color==selectedColor)?.price}</p>
+          <p className='text-3xl'>{seller?.price}</p>
           <Image className='mx-1 object-contain' objectFit='contain' src={f} width='30' height='100' alt='تومان'/>
         </div>
         <div className='flex items-center justify-end'>
