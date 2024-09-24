@@ -37,6 +37,7 @@ type Comment struct {
 	Content           string             `json:"content" bson:"content"`
 	LikesAndDisslikes []LikeOrDisslike   `json:"likes&disslikes" bson:"likes&disslikes"`
 	DateSent          time.Time          `json:"date_sent" bson:"date_sent"`
+	ValidationState   ValidationState    `json:"validation_state" bson:"validation_state"`
 	// Pictures          []string           `json:"pictures,omitempty" bson:"pictures,omitempty"` // regular comments
 	// Videos            []string           `json:"videos,omitempty" bson:"videos,omitempty"`     // regular comments
 }

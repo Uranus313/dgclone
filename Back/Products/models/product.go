@@ -48,6 +48,22 @@ func (d ShipmentMethod) EnumIndex() int {
 	return int(d)
 }
 
+type ValidationState int
+
+const (
+	PendingValidation ValidationState = iota + 1
+	Validated
+	Banned
+)
+
+func (d ValidationState) String() string {
+	return [...]string{"PendingValidation", "Validated", "Banned"}[d-1]
+}
+
+func (d ValidationState) EnumIndex() int {
+	return int(d)
+}
+
 type SellerCart struct {
 	SellerID       primitive.ObjectID `json:"seller_id" bson:"seller_id"`
 	SellerTitle    string             `json:"seller_title" bson:"seller_title"`
@@ -79,10 +95,11 @@ type Product struct {
 	IsFromIran  bool               `json:"is_from_iran" bson:"is_from_iran"`
 	Images      []string           `json:"images" bson:"images"`
 	Dimentions  Dimentions         `json:"dimentions" bson:"dimentions"`
-	Weight_KG   int                `json:"weight_KG" bson:"weight_KG"`
+	Weight_KG   float32            `json:"weight_KG" bson:"weight_KG"`
 	Description string             `json:"description" bson:"description"`
-	ProsNCons   Pros_cons          `json:"pros&cons,omitempty" bson:"pros&cons,omitempty"`
-	DateAdded   time.Time          `json:"date_added" bson:"date_added"`
+	// ProsNCons       Pros_cons          `json:"pros&cons,omitempty" bson:"pros&cons,omitempty"`
+	DateAdded       time.Time       `json:"date_added" bson:"date_added"`
+	ValidationState ValidationState `json:"validation_state" bson:"validation_state"`
 	// Guarantees  []Guarantee        `json:"guarantees" bson:"guarantees"`
 	// Price       int                `json:"price" bson:"price"`
 	// DiscountID  primitive.ObjectID `json:"discount_id,omitempty" bson:"discount_id,omitempty"`
@@ -97,6 +114,14 @@ type UpdatableProd struct {
 	Images      []string           `json:"images"`
 	Details     []ProductDetail    `json:"details"`
 	Dimentions  Dimentions         `json:"dimentions"`
-	Weight_KG   int                `json:"weight_kg"`
-	ProsNCons   Pros_cons          `json:"pros&cons"`
+	Weight_KG   float32            `json:"weight_kg"`
+	// ProsNCons   Pros_cons          `json:"pros&cons"`
+}
+
+type ProductCard struct {
+	ID         primitive.ObjectID
+	Title      string
+	Price      int
+	Picture    string
+	DiscountID primitive.ObjectID
 }

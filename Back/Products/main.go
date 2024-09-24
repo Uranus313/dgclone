@@ -55,6 +55,10 @@ func main() {
 
 	app.Get("/products/questions", crud.GetProductQuestions) // query => limit, offset, ProdID
 
+	app.Get("/products/comments/pending", crud.GetPendingComments) // query => limit, offset
+
+	app.Patch("/products/validate-comments", crud.UpdateCommentValidationState) // query => CommentID, ValidationState
+
 	// ------------products-------------
 
 	// app.Get("/products/product", crud.GetAllProducts)

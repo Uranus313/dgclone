@@ -48,8 +48,9 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 	findOptions.SetSkip(int64(offset))
 
 	filter := bson.M{
-		"product_id":   prodID,
-		"comment_type": 1,
+		"product_id":       prodID,
+		"comment_type":     1,
+		"validation_state": 2,
 	}
 
 	cursor, errr := database.CommentCollection.Find(context.Background(), filter, findOptions)
@@ -176,6 +177,7 @@ func PostComment(c *fiber.Ctx) error {
 	}
 
 	comment.DateSent = time.Now()
+	comment.ValidationState = models.PendingValidation
 
 	insertResult, err := database.CommentCollection.InsertOne(context.Background(), comment)
 
@@ -264,8 +266,9 @@ func GetProductQuestions(c *fiber.Ctx) error {
 	findOptions.SetSkip(int64(offset))
 
 	filter := bson.M{
-		"product_id":   prodID,
-		"comment_type": 3,
+		"product_id":       prodID,
+		"comment_type":     3,
+		"validation_state": 2,
 	}
 
 	cursor, errr := database.CommentCollection.Find(context.Background(), filter, findOptions)
@@ -296,8 +299,9 @@ func GetProductQuestions(c *fiber.Ctx) error {
 		answerFindOpts := options.Find().SetSort(bson.D{{Key: "date_sent", Value: -1}})
 
 		filter = bson.M{
-			"comment_type": 2,
-			"answers_to":   question.ID,
+			"comment_type":     2,
+			"answers_to":       question.ID,
+			"validation_state": 2,
 		}
 
 		answer_cursor, err := database.CommentCollection.Find(context.Background(), filter, answerFindOpts)
@@ -321,4 +325,110 @@ func GetProductQuestions(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(Responses)
+}
+
+func GetPendingComments(c *fiber.Ctx) error {
+
+	// token = admin ???
+
+	limitString := c.Query("limit", "10")
+
+	limit, err := strconv.Atoi(limitString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching limit from query": err.Error()})
+	}
+
+	offsetString := c.Query("offset", "0")
+
+	offset, err := strconv.Atoi(offsetString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching offset from query": err.Error()})
+	}
+
+	var pendingComments []models.Comment
+
+	findOpts := options.Find()
+
+	findOpts.SetLimit(int64(limit))
+	findOpts.SetSkip(int64(offset))
+
+	filter := bson.M{"validation_state": 1}
+
+	cursor, err := database.CommentCollection.Find(context.Background(), filter, findOpts)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "something went wrong while fetching pending comments",
+			"error":   err.Error(),
+		})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &pendingComments); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while deconding cursor",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(pendingComments)
+}
+
+func UpdateCommentValidationState(c *fiber.Ctx) error {
+
+	commentIDString := c.Query("CommentID")
+
+	commentID, err := primitive.ObjectIDFromHex(commentIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching comment id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	validationStateString := c.Query("ValidationState")
+
+	validationState, err := strconv.Atoi(validationStateString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching validation state from query",
+			"error":   err.Error(),
+		})
+	}
+
+	if validationState != 2 && validationState != 3 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid validation state",
+			"valid requests": fiber.Map{
+				"2": "Validated",
+				"3": "Banned",
+			},
+		})
+	}
+
+	update := bson.M{"$set": bson.M{"validation_state": validationState}}
+
+	updateResult, err := database.CommentCollection.UpdateByID(context.Background(), commentID, update)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while updating comment",
+			"error":   err.Error(),
+		})
+	}
+
+	if updateResult.MatchedCount == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "comment not found"})
+	}
+
+	if updateResult.ModifiedCount == 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "comment was not modified"})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "comment validation state updated succesfully"})
 }

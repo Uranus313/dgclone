@@ -72,6 +72,13 @@ func GetProductByID(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if product.ValidationState.String() == "PendingValidation" || product.ValidationState.String() == "Banned" {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{
+			"error":            "product is not validated",
+			"validation state": product.ValidationState.String(),
+		})
+	}
+
 	// return last 20 comments
 	filter = bson.M{
 		"product_id":   prodID,
@@ -125,6 +132,7 @@ func AddProduct(c *fiber.Ctx) error {
 	}
 
 	product.DateAdded = time.Now()
+	product.ValidationState = models.PendingValidation
 
 	insertResult, err := database.ProductCollection.InsertOne(context.Background(), product)
 
@@ -360,7 +368,7 @@ func EditProduct(c *fiber.Ctx) error {
 			"details":     updatable_fields.Details,
 			"dimentions":  updatable_fields.Dimentions,
 			"weight_KG":   updatable_fields.Weight_KG,
-			"pros&cons":   updatable_fields.ProsNCons,
+			// "pros&cons":   updatable_fields.ProsNCons,
 		},
 	}
 	// update := bson.M{"$set":updatable_fields}
@@ -490,15 +498,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 
 	defer cursor.Close(context.Background())
 
-	type ProductCard struct {
-		ID         primitive.ObjectID
-		Title      string
-		Price      int
-		Picture    string
-		DiscountID primitive.ObjectID
-	}
-
-	var product_list []ProductCard
+	var product_list []models.ProductCard
 
 	// if err := cursor.All(context.Background(), &product_list); err != nil {
 	// 	return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching cursor": err.Error()})
@@ -512,25 +512,34 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 				"error":   err.Error(),
 			})
 		}
-		var minPriceSellerIndex int = 0
-		var minPrice int = product.Sellers[0].Price
-		for index, seller := range product.Sellers {
-			if seller.Price < minPrice {
-				minPriceSellerIndex = index
-			}
-		}
-		var productCard = ProductCard{
-			ID:         product.ID,
-			Title:      product.Title,
-			Price:      product.Sellers[minPriceSellerIndex].Price,
-			Picture:    product.Images[0],
-			DiscountID: product.Sellers[minPriceSellerIndex].DiscountID,
-		}
+
+		var productCard models.ProductCard = CreateProdCard(product)
 
 		product_list = append(product_list, productCard)
 	}
 
 	return c.Status(http.StatusOK).JSON(product_list)
+}
+
+func CreateProdCard(product models.Product) models.ProductCard {
+
+	var minPriceSellerIndex int = 0
+
+	var minPrice int = product.Sellers[0].Price
+
+	for index, seller := range product.Sellers {
+		if seller.Price < minPrice {
+			minPriceSellerIndex = index
+		}
+	}
+
+	return models.ProductCard{
+		ID:         product.ID,
+		Title:      product.Title,
+		Price:      product.Sellers[minPriceSellerIndex].Price,
+		Picture:    product.Images[0],
+		DiscountID: product.Sellers[minPriceSellerIndex].DiscountID,
+	}
 }
 
 // Get => incredible products
