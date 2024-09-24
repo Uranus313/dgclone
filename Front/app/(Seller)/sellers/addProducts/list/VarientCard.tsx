@@ -63,16 +63,16 @@ const VarientCard = ({ index, varient, update }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList items={colorpallete} showKey='title' setFunc={setColor} showFunc={setValueColor} />
+                        <SearchableList defaultValue={varient.color.title} items={colorpallete} showKey='title' setFunc={setColor} showFunc={setValueColor} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>
             </dialog>
 
-            <input type='number' ref={quantityRef} className='w-32' placeholder={"تعداد"} />
-            <input type='number' ref={priceRef} className='w-32' placeholder={"قیمت"} />
+            <input type='number' defaultValue={varient.quantity} ref={quantityRef} className='w-32' placeholder={"تعداد"} />
+            <input type='number'  defaultValue={varient.price} ref={priceRef} className='w-32' placeholder={"قیمت"} />
 
-            <ModalButton title={guarantee} solid={false} id={'gauranteeModal'+index} />
+            <ModalButton  title={guarantee} solid={false} id={'gauranteeModal'+index} />
             <dialog id={"gauranteeModal"+index} className="modal">
                 <div className="modal-box  w-4/12 max-w-5xl p-2 flex flex-col">
                     <form method="dialog" className='inline'>
@@ -82,7 +82,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList items={guaranteeOptions} setFunc={setGuarantee} showFunc={setGuarantee} />
+                        <SearchableList defaultValue={varient.garante} items={guaranteeOptions} setFunc={setGuarantee} showFunc={setGuarantee} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>

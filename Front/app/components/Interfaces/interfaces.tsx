@@ -31,7 +31,7 @@ export interface SellerSetVarientOnProduct{
     quantity:number,
     price:number, 
     garante:string,
-    shipmentMethod:shipmentMethod,
+    shipmentMethod?:shipmentMethod,
    
 }
 

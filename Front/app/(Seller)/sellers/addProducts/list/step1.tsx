@@ -1,6 +1,6 @@
 'use client'
 import {  Color, SellerAddProdctCard, SellerSetVarientOnProduct, shipmentMethod } from '@/app/components/Interfaces/interfaces'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import VarientCard from './VarientCard'
 
 
@@ -17,9 +17,16 @@ export const guaranteeOptions=[
 
 interface Props{
     productCard:SellerAddProdctCard
+    prevVarients?:SellerSetVarientOnProduct[]
 }
-const Step1 = ({productCard}:Props) => {
+const Step1 = ({productCard , prevVarients}:Props) => {
   const [varients , setVarients] = useState<SellerSetVarientOnProduct[]>([])
+  
+  useEffect(() => {
+    if(prevVarients){
+      setVarients(prevVarients)
+    } 
+  }, []);
 
 
   function AddNewVarient(){
