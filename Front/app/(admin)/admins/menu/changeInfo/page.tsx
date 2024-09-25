@@ -10,7 +10,7 @@ import PasswordPopUp from "./PasswordPopUp";
 
 const MyFormComponent = () => {
   const [error, setError] = useState<string | null>(null);
-  const { user, setUser, isLoading } = useContext(userContext);
+  const { user, setUser, isLoading } = useUser();
     
   return (
     <div>

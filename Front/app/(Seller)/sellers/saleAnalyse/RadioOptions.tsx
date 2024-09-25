@@ -9,15 +9,16 @@ interface Props{
     title:string,
     query:string
     name:string
+    defaultChecked?:boolean
 }
 
-const RadioOptions = ({id,title,query,name}:Props) => {
+const RadioOptions = ({id,title,query,name,defaultChecked=false}:Props) => {
     const {searchParams, handleRemoveQueryParam} = useQueryNext()
     return (
       <div id={id} className="form-control m-2 ">
           <label className="label cursor-pointer">
               <span className="label-text text-black">{title}</span>
-              <input type="radio" name={name} className="radio checked:bg-primary-seller border-2 border-primary-seller [--chkbg:theme(colors.primary-seller)] [--chkfg:white] checked:border-primary-seller" 
+              <input defaultChecked={defaultChecked} type="radio" name={name} className="radio checked:bg-primary-seller border-2 border-primary-seller [--chkbg:theme(colors.primary-seller)] [--chkfg:white] checked:border-primary-seller" 
                   onChange={(e) => {
                     if (e.target.checked) {
                       handleRemoveQueryParam(`${query}`);

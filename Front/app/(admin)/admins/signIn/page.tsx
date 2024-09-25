@@ -17,7 +17,7 @@ const SignIn = () => {
   const [error, setError] = useState<String | null>(null);
   const router = useRouter();
 
-  const {user , setUser , isLoading} = useContext(userContext);
+  const {user , setUser , isLoading} = useUser();
     const login = useMutation({
         mutationFn: async (formData : LoginInfo) => {
             const result = await fetch("http://localhost:3005/users/admin/logIn", {

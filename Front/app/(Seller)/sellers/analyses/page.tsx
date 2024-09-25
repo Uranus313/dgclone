@@ -2,6 +2,7 @@ import React from 'react'
 import LinearChart from './LinearChart'
 import Link from 'next/link'
 import Checkbox from '../products/Checkbox'
+import RadioOptions from '../saleAnalyse/RadioOptions'
 
 
 const views={
@@ -60,9 +61,9 @@ const Analyses = () => {
             <div className="dropdown mx-3">
             <div tabIndex={0} role="button" className="  bg-primary-seller text-white rounded-md px-4 py-2  text-lg">بازه ی زمانی</div>
             <div tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow">
-                <Checkbox index={1} id={'1week'} title={"یک هفته گذشته"} query='timePeriod' />
-                <Checkbox index={1} id={'2week'} title={"دو هفته گذشته"} query='timePeriod' />
-                <Checkbox index={0} id={"1month"} title={"ماه گذشته"} query='timePeriod' />
+                <RadioOptions defaultChecked={true} name='timePeriod' id={'1week'} title={"یک هفته گذشته"} query='timePeriod' />
+                <RadioOptions name='timePeriod' id={'2week'} title={"دو هفته گذشته"} query='timePeriod' />
+                <RadioOptions name='timePeriod' id={"1month"} title={"ماه گذشته"} query='timePeriod' />
             </div>
             </div>
 

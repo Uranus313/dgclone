@@ -114,7 +114,7 @@ const productsCard:SellerAddProdctCard[]=[
             <ModalButton id={`sellProduct`+productCard.id} title='فروش همین کالا'/>
 
             <SellProductPopup id={`sellProduct`+productCard.id} productCard={productCard}/>
-
+            
           </div>
         ))}
       </div>

@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import userContext from "@/app/contexts/userContext";
 import {provinces} from "@/data/cities";
 import _ from "lodash";
+import { useUser } from "@/app/hooks/useUser";
 interface SearchLocResult {
   title?: string;
   address?: string;
@@ -101,7 +102,7 @@ const AddAddress = ({ afterCancel, afterSuccess }: Props) => {
       }
     });
   }, []);
-  const {user , setUser , isLoading} = useContext(userContext);
+  const {user , setUser , isLoading} = useUser();
 
   const update = useMutation({
     mutationFn: async (formData : any) => {

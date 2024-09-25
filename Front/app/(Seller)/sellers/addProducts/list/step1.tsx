@@ -1,6 +1,6 @@
 'use client'
 import {  Color, SellerAddProdctCard, SellerSetVarientOnProduct, shipmentMethod } from '@/app/components/Interfaces/interfaces'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import VarientCard from './VarientCard'
 
 
@@ -14,12 +14,22 @@ export const guaranteeOptions=[
   'گارانتی خوبتع',
 ]
 
+const productPrice=190000 //if seller doesnt exist return the urban price otherwise returns that seller price
+
 
 interface Props{
     productCard:SellerAddProdctCard
+    prevVarients?:SellerSetVarientOnProduct[]
 }
-const Step1 = ({productCard}:Props) => {
+const Step1 = ({productCard , prevVarients}:Props) => {
   const [varients , setVarients] = useState<SellerSetVarientOnProduct[]>([])
+  const priceRef = useRef<HTMLInputElement>(null);
+  
+  useEffect(() => {
+    if(prevVarients){
+      setVarients(prevVarients)
+    } 
+  }, []);
 
 
   function AddNewVarient(){
@@ -37,12 +47,16 @@ const Step1 = ({productCard}:Props) => {
 
   return (
     <div className='m-5 overflow-y-hidden'>
-        <button className='p-3 text-sm rounded-md  bg-primary-seller text-white' onClick={AddNewVarient}>ثبت تنوع جدید</button>
-        <div className='grid grid-cols-6  gap-4 my-4 place-items-center bg-primary-bg p-5 rounded-md'>
+        <div className='flex gap-4 items-center'>
+          <button className='p-3 mx-3 text-sm rounded-md  bg-primary-seller text-white' onClick={AddNewVarient}>ثبت تنوع جدید</button>
+          <p className='mx-3'>قیمت</p>
+          <input type='number'  defaultValue={productPrice} ref={priceRef} className=' p-2 rounded-lg border border-grey-border' placeholder={"قیمت"} />
+        </div>
+        <div className='grid grid-cols-5  gap-4 my-4 place-items-center bg-primary-bg p-5 rounded-md'>
           <p className='col-span-2'>عنوان کالا</p>
           <p>رنگ</p>
           <p>تعداد</p>
-          <p>قیمت</p>
+          {/* <p>قیمت</p> */}
           <p>گارانتی</p>
         </div>
     

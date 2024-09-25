@@ -6,7 +6,7 @@ interface Props {
   title:string
   solid?:boolean
   additionalCss?:string
-  noMargin:boolean
+  noMargin?:boolean
 }
 
 const ModalButton = ({ noMargin,id,title,additionalCss='bg-propBubble-bg', solid=true }: Props) => {

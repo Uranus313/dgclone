@@ -64,8 +64,8 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 		}
 	} else {
 		filter = bson.M{
-			"end_date":    bson.M{"$gt": time.Now()},
-			"category_id": cateID,
+			"end_date":         bson.M{"$gt": time.Now()},
+			"prod.category_id": cateID,
 		}
 	}
 
@@ -95,7 +95,7 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 	type Response struct {
 		Discount   models.SaleDiscount `json:"discount"`
 		Percenrage float64             `json:"percenrage"`
-		Product    models.Product      `json:"product"`
+		Product    models.ProductCard  `json:"product"`
 	}
 
 	var responses []Response
@@ -114,7 +114,8 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 			}
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
-		response.Product = prod
+		var prodCard models.ProductCard = CreateProdCard(prod)
+		response.Product = prodCard
 		responses = append(responses, response)
 	}
 
@@ -132,10 +133,23 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	var bestSaleProds []models.Product
+	var bestSaleProds []models.ProductCard
 
-	if err := cursor2.All(context.Background(), &bestSaleProds); err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	// if err := cursor2.All(context.Background(), &bestSaleProds); err != nil {
+	// 	return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	// }
+	for cursor2.Next(context.Background()) {
+		var product models.Product
+		if err := cursor2.Decode(&product); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while decoding cursor",
+				"error":   err.Error(),
+			})
+		}
+
+		var productCard models.ProductCard = CreateProdCard(product)
+
+		bestSaleProds = append(bestSaleProds, productCard)
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{

@@ -42,16 +42,18 @@ const product:ProductInterface = {
          sellerTitle:'پیشرو تجارت خاورمیانه',
          sellerRating:9.1,
          
-         quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:4 , price:21999000,garante:'گارانتی   حامی'},{color:{hex:'#ffffff', title:'سفید'} , quantity:10, price:22999000,garante:'گارانتی ۲۴  حامی'}],
+         quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:4 ,garante:'گارانتی   حامی'},{color:{hex:'#ffffff', title:'سفید'} , quantity:10, garante:'گارانتی ۲۴  حامی'}],
          sellerid:'1',
-         shipmentMethod:shipmentMethod.option1
+         shipmentMethod:shipmentMethod.option1,
+         price:29999000
         },
         {
         sellerTitle:'طرح اندیشان سمت نو',
         sellerRating:7,
-        quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:1,price:19999000,garante:'گارانتی ۲۴ '},{color:{hex:'#ff9900', title:'ندانم'} , quantity:10,price:10999000,garante:'گارانتی  ماهه حامی'}],
+        quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:1,garante:'گارانتی ۲۴ '},{color:{hex:'#ff9900', title:'ندانم'} , quantity:10,garante:'گارانتی  ماهه حامی'}],
         sellerid:'2',
-        shipmentMethod:shipmentMethod.option2
+        shipmentMethod:shipmentMethod.option2,
+        price:19999000
         },
     ],
     rating: {rate:4,rateNum:10},

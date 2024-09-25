@@ -78,7 +78,7 @@ const SaleAnalyse = () => {
             <div className="dropdown mx-3">
             <div tabIndex={0} role="button" className="bg-primary-bg border border-primary-seller text-primary-seller rounded-xl px-4 py-2 m-1 text-sm">مرتب سازی بر اساس</div>
             <div tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow">
-                <RadioOptions name='saleAnalyseSortby' id={"saleCount"} title={"تعداد فروش"} query='saleAnalyseSortby' />
+                <RadioOptions name='saleAnalyseSortby' defaultChecked={true} id={"saleCount"} title={"تعداد فروش"} query='saleAnalyseSortby' />
                 <RadioOptions name='saleAnalyseSortby' id={'saleValue'} title={"مبلغ فروش"} query='saleAnalyseSortby' />
                 <RadioOptions name='saleAnalyseSortby' id={'visits'} title={"بازدید"} query='saleAnalyseSortby' />
             </div>
@@ -87,7 +87,7 @@ const SaleAnalyse = () => {
             <div className="dropdown mx-3">
             <div tabIndex={1} role="button" className="bg-primary-bg border border-primary-seller text-primary-seller rounded-xl px-4 py-2 m-1 text-sm">ترتیب نمایش</div>
             <div tabIndex={1} className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow">
-                <RadioOptions name='showOrder' id={"asc"} title={"صعودی"} query='showOrder' />
+                <RadioOptions name='showOrder' defaultChecked={true} id={"asc"} title={"صعودی"} query='showOrder' />
                 <RadioOptions name='showOrder' id={'desc'} title={"نزولی"} query='showOrder' />
 
             </div>

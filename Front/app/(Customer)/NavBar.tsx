@@ -10,7 +10,7 @@ import MegaMenu from "./MegaMenu";
 
 const NavBar = () => {
   const [isCategory , setIsCategory] = useState(false)
-  const {user , setUser , isLoading} = useContext(userContext);
+  const {user , setUser , isLoading} = useUser();
   const [navcollaps , setNavcollaps] = useState<boolean>(false)
   const lastScroll = useRef<number>(0);
   const [display , setDisplay] = useState('100')
@@ -94,7 +94,7 @@ const NavBar = () => {
 
           <p className="mx-4 text-grey-light">|</p>
 
-          <Link href="/">
+          <Link href="/orders">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

@@ -9,6 +9,9 @@ import Checkbox from './Checkbox'
 import FilterButton from './FilterButton'
 import ModalButton from '../addProducts/ModalButton'
 import Step1 from '../addProducts/list/step1'
+import AddVarient from './AddVarient'
+import EditProduct from './EditProduct'
+import AddNew from '../addProducts/list/AddNew'
 
 const productsCard:ProductCardSeller[]=[
   {
@@ -149,12 +152,17 @@ const Products = () => {
 
           {productCard.state==StateProduct.accepted &&
           <div className='flex gap-4 col-span-2'>
-            <ModalButton noMargin={true} additionalCss='bg-primary-seller text-white rounded-md px-4 py-2' title='افزودن تنوع' id='addNewProduct'/>
-            <Link href='' className='border border-grey-border rounded-md px-4 py-2'>
-              <p>ویرایش کالا</p>
-            </Link>
+            <ModalButton noMargin={true} additionalCss='bg-primary-seller text-white rounded-md px-4 py-2' title='مدیریت تنوع' id='addNewVarient'/>
 
-            {/* <Step1 productCard={productCard}/> */}
+            <ModalButton noMargin={true} additionalCss='border border-grey-border rounded-md px-4 py-2 bg-white  rounded-md px-4 py-2' title='ویرایش کالا' id='addNewProduct'/>
+            <Link href='' className=''>
+              <p></p>
+            </Link>
+            
+
+                
+              <AddVarient productID={productCard.productID}/>
+              <AddNew productID={productCard.productID}/>
           </div>
           }
         </div>

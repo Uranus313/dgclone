@@ -16,11 +16,79 @@ export interface SellerInfosOnProduct{
     sellerid:string,
     sellerTitle:string,
     sellerRating:number
-    quantity: {color:{title:string,hex:string},  quantity:number,price:number, garante:string}[],
+    quantity: {color:{title:string,hex:string},  quantity:number,garante:string}[],
+    price:number,
     shipmentMethod?:shipmentMethod,
     discountId?:string,
     
 }
+
+export interface Order {
+    _id:string ,
+    product:{
+        productID:string,
+        price:number,
+        color:Color,
+        garantee:string,
+        sellerid:string,
+        sellerTitle:string
+        picture:string,
+        productTitle:string
+    },
+    quantity:number,
+    userid:string,
+    rate?:number,
+    state:State,  
+    ReciveDate:string,
+}
+
+export enum UserStatus{
+    user='user',
+    employee='employee',
+    admin='admin',
+    seller='seller',
+}
+export interface User {
+    status:UserStatus
+    firstName: string | null | undefined;
+    lastName: string | null | undefined;
+    isBanned: boolean | undefined;
+    email: string | null | undefined;
+    birthDate: string | null | undefined;
+    nationalID: string | null | undefined;
+    phoneNumber: string;
+    _id: string;
+    job: string | null | undefined;
+    economicCode: string | null | undefined;
+    walletID: string;
+    moneyReturn: {
+      _id:string,
+      method: "bankAccount" | "wallet";
+      bankAccount: string | null | undefined;
+    };
+    addresses: Address[];
+  }
+
+export interface Address {
+    country: string;
+    province: string;
+    city: string;
+    postalCode: string;
+    additionalInfo: string | null | undefined;
+    number: string;
+    unit: string | null | undefined;
+    coordinates: {
+      x: string;
+      y: string;
+    };
+    receiver: {
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+    };
+  }
+
+
 
 export interface SellerSetVarientOnProduct{
     sellerID:string,
@@ -29,9 +97,8 @@ export interface SellerSetVarientOnProduct{
     productPicture:string,
     color:{title:string,hex:string},  
     quantity:number,
-    price:number, 
     garante:string,
-    shipmentMethod:shipmentMethod,
+    shipmentMethod?:shipmentMethod,
    
 }
 
@@ -73,23 +140,6 @@ export interface Comment{
 }
 
 export enum State{returned='returned', canceled='canceled',pending='pending',delivered='delivered',recivedInWareHouse='recivedInWareHouse'}
-
-export interface Order{
-  orderID:string ,
-  product:{
-     productID:string,
-     price:number,
-     color:string,
-     garantee:string,
-     sellerid:string,
-     picture:string,
-  },
-  quantity:number,
-  userid:string,
-  rate?:number,
-  state:State,  
-  ReciveDate:string,
-}
 
 export enum notifTypeUser{info='info', order='order', recommend='recommend'}
 export enum notifTypeSeller{question='پرسش', order='سفارش', info='عمومی'}

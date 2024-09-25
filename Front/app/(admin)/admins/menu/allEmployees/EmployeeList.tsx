@@ -1,7 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetEmployees from '../../hooks/useGetEmployees';
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import EmployeePopUp from './EmployeePopUp';
 import useGetRoles from '../../hooks/useGetRoles';
 import AddEmployeePopUp from './AddEmployeePopUp';

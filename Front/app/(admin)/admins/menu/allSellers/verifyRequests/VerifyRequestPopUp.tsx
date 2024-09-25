@@ -1,6 +1,6 @@
 'use client'
 
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
 import { VerifyRequest } from '../../../hooks/useGetVerifyRequests';
@@ -17,7 +17,7 @@ const AdminPopUp = ({verifyRequest} : Props) => {
     const [error , setError] = useState<string | null>(null);
     const [seller , setSeller] = useState<Seller | null>(null);
     const [admin , setAdmin] = useState<Admin | null>(null);
-    // const { user} = useContext(userContext);
+    // const { user} = useUser();
   
     const openModal = () => {
       if (dialogRef.current) {

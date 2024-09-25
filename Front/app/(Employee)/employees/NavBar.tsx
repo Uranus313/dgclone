@@ -5,12 +5,13 @@ import useUserCheckToken from "../../hooks/useCheckToken";
 import userContext from "../../contexts/userContext";
 // import { Categories , Category } from "./page";
 import { useRouter } from 'next/navigation'
+import { useUser } from "@/app/hooks/useUser";
 // import MegaMenu from "./MegaMenu";
 
 
 const NavBar = () => {
   const [isCategory, setIsCategory] = useState(false)
-  const { user, setUser, isLoading } = useContext(userContext);
+  const { user, setUser, isLoading } = useUser();
   const [navcollaps, setNavcollaps] = useState<boolean>(false)
   const lastScroll = useRef<number>(0);
   const [display, setDisplay] = useState('100')
