@@ -4,13 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import useGetRoles from "../../hooks/useGetRoles";
-import { Role } from "./EmployeePopUp";
 
 const AddEmployeePopUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const {user , setUser , isLoading} = useUser();
   const { register, handleSubmit, getValues } = useForm();
   const [selectedRole, setSelectedRole] = useState<string | undefined>(undefined);
   let {
@@ -53,18 +51,13 @@ const AddEmployeePopUp = () => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
       queryClient.invalidateQueries({ queryKey: ["employeeList"] });
-      // setUser(savedUser);
-
       closeModal();
-      // router.push('/');
-      // router.push('/');
+      
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
   async function submit(formData: any) {

@@ -1,5 +1,6 @@
 'use client'
 import userContext from "@/app/contexts/userContext";
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,8 +11,8 @@ import { useContext, useEffect, useState } from "react";
 function CommentBox() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useContext(userContext);
-
+    const { user, setUser, isLoading } = useUser();
+    
     return (
         <div className="justify-center text-center mx-10">
             <button className="border-grey-border rounded-lg border-2 p-7 px-9 bg-white mb-3">

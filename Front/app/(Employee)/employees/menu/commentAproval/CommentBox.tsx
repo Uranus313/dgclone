@@ -4,14 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { AccessLevel } from "../../page";
+import { useUser } from "@/app/hooks/useUser";
 
 
 
 function CommentBox() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useContext(userContext);
+    const { user, setUser, isLoading } = useUser();
 
     return (
         <div className="justify-center text-center">

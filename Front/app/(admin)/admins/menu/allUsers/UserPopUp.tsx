@@ -15,7 +15,6 @@ const UserPopUp = ({ user }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const { user} = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {
@@ -105,18 +104,12 @@ const UserPopUp = ({ user }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       user.isBanned = false;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
 
