@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: productapi
+  template:
+    metadata:
+      labels:
+        app: productapi
+    spec:
+      containers:
+      
+      - name: productapi
+        image: products
+        imagePullPolicy: IfNotPresent
+        # env:
+        # - name: MONGO_HOST
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: mongo-config
+        #       key: HOST
+        # - name: MONGO_PORT
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: mongo-config
+        #       key: PORT      
+        # - name: MONGO_USERNAME
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: mongo-secret
+        #       key: MONGO_USERNAME
+        # - name: MONGO_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: mongo-secret
+        #       key: MONGO_PASSWORD   
+        # - name: JWTSECRET
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: product-secret
+        #       key: JWTSECRET       
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productapi
+spec:
+  type: ClusterIP
+  selector:
+    app: productapi
+  ports:
+  - port: 8080
+    targetPort: 8080

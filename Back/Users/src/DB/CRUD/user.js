@@ -126,7 +126,7 @@ export async function addNotification(id,notification  ){
     delete notification.userID;
     delete notification.userType;
     if(user.recentNotifications.length<2){
-        user.recentNotifications.push(notification);
+        user.recentNotifications.unshift(notification);
     }else{
         user.recentNotifications[1] = user.recentNotifications[0];
         user.recentNotifications[0] = notification;
