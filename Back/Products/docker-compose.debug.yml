@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  products:
+    image: products
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080

@@ -31,7 +31,7 @@ const notificationSchema  = new mongoose.Schema(
         userID: {type : mongoose.Schema.Types.ObjectId , ref: "users" },
         isSeen : Boolean,
         date : {type: Date, required: true, default : Date.now()},
-        type : {type: String,enum: ["information" , "order","suggestion"], required: true}
+        type : {type: String,enum: ["information" , "order","suggestion","question"], required: true}
     }
 );
 
@@ -83,7 +83,7 @@ export function validateNotificationPost (notification){
             }
         }),
         date : Joi.date(),
-        type : Joi.string().valid("information" , "order","suggestion").required()
+        type : Joi.string().valid("information" , "order","suggestion","question").required()
     })
     return schema.validateAsync(notification);
 }

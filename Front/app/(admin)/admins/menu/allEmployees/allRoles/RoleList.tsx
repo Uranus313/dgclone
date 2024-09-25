@@ -1,7 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetRoles from '../../../hooks/useGetRoles';
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import RolePopUp from './RolePopUp';
 import AddRolePopUp from './AddRolePopUp';
 const RoleList = () => {

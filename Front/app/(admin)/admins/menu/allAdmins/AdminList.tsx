@@ -1,7 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetAdmins from '../../hooks/useGetAdmins';
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import AdminPopUp from './AdminPopUp';
 import AddAdminPopUp from './AddAdminPopUp';
 

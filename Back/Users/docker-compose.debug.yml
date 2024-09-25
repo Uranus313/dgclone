@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  users:
+    image: users
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3005:3005
+      - 9229:9229
+    command: ["node", "--inspect=0.0.0.0:9229", "index.js"]

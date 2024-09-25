@@ -12,7 +12,7 @@ import useGetTransactionCount from "./hooks/useGetTransactionCount";
 
 
 function CardBox() {
-    const { user, setUser, isLoading } = useContext(userContext);
+    const { user, setUser, isLoading } = useUser();
     const { data: userCount, error: uError, isLoading: isUserCountLoading } = useGetUserCount();
     const { data: employeeCount, error: eError, isLoading: isEmployeeCountLoading } = useGetEmployeeCount();
     const { data: sellerCount, error: sError, isLoading: isSellerCountLoading } = useGetSellerCount();

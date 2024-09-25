@@ -1,7 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetVerifyRequests from '../../../hooks/useGetVerifyRequests';
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import VerifyRequestPopUp from './VerifyRequestPopUp';
 const VerifyRequestList = () => {
   let [pageSize,setPageSize] = useState<number>(2);

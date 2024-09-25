@@ -42,6 +42,52 @@ export interface Order {
     ReciveDate:string,
 }
 
+export enum UserStatus{
+    user='user',
+    employee='employee',
+    admin='admin',
+    seller='seller',
+}
+export interface User {
+    status:UserStatus
+    firstName: string | null | undefined;
+    lastName: string | null | undefined;
+    isBanned: boolean | undefined;
+    email: string | null | undefined;
+    birthDate: string | null | undefined;
+    nationalID: string | null | undefined;
+    phoneNumber: string;
+    _id: string;
+    job: string | null | undefined;
+    economicCode: string | null | undefined;
+    walletID: string;
+    moneyReturn: {
+      _id:string,
+      method: "bankAccount" | "wallet";
+      bankAccount: string | null | undefined;
+    };
+    addresses: Address[];
+  }
+
+export interface Address {
+    country: string;
+    province: string;
+    city: string;
+    postalCode: string;
+    additionalInfo: string | null | undefined;
+    number: string;
+    unit: string | null | undefined;
+    coordinates: {
+      x: string;
+      y: string;
+    };
+    receiver: {
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+    };
+  }
+
 
 
 export interface SellerSetVarientOnProduct{

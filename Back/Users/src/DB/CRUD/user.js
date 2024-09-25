@@ -116,11 +116,23 @@ export async function addBoughtGiftCard(id,giftCardID ){
     delete result.response.password;
     return(result);
 }
-export async function addNotification(id,notificationID ){
+export async function addNotification(id,notification  ){
     const result = {};
-    const response = await UserModel.findByIdAndUpdate(id,{$push :{notifications : notificationID}},{new : true});
+    const response = await UserModel.findByIdAndUpdate(id,{$push :{notifications : notification._id}},{new : true});
     result.response = response.toJSON();
     delete result.response.password;
+    const user = await UserModel.find({_id : id}).findOne();
+    delete notification.sellerID;
+    delete notification.userID;
+    delete notification.userType;
+    if(user.recentNotifications.length<2){
+        user.recentNotifications.unshift(notification);
+    }else{
+        user.recentNotifications[1] = user.recentNotifications[0];
+        user.recentNotifications[0] = notification;
+    }
+    const response2 = await user.save();
+    result.response = response2.toJSON();
     return(result);
 }
 export async function addreceivedGiftCard(id,giftCardID ){

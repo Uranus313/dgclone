@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface Props{
-    address? : string,
+    address? : string|null,
     city : string,
     postalCode : string,
     receiver : {

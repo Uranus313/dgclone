@@ -8,7 +8,7 @@ const AddAdminPopUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const {user , setUser , isLoading} = useContext(userContext);
+  // const {user , setUser , isLoading} = useUser();
   const { register, handleSubmit, getValues } = useForm();
 
   const openModal = () => {

@@ -9,7 +9,7 @@ import { changeWalletMoney, getWallets } from "../DB/CRUD/wallet.js";
 import { getSellerCount, getSellers, sellerAddNotification } from "../DB/CRUD/seller.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getGiftCards } from "../DB/CRUD/giftCard.js";
-import { getTransactionCount, getTransactions } from "../DB/CRUD/transaction.js";
+import { getTransactionCount, getTransactions, getTransactionUsers } from "../DB/CRUD/transaction.js";
 import { getEmployeeCount, getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
 import { UserModel } from "../DB/models/user.js";
 import { innerAuth } from "../authorization/innerAuth.js";
@@ -149,7 +149,9 @@ router.get("/allSellers", (req,res,next) => roleAuth(req,res,next,[{level : leve
     next();
 });
 
-router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]), async (req, res, next) =>{
+// router.get("/allSellers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.sellerManage}]), async (req, res, next) =>{
+router.get("/allSellers/:id", async (req, res, next) =>{
+
     const {error} = validateId(req.params.id);
     if (error){
         res.status(400).send({error : error.details[0].message});
@@ -311,6 +313,32 @@ router.get("/allTransactions/:id",(req,res,next) => roleAuth(req,res,next,[{leve
     } 
     try {
         const result = await getTransactions(req.params.id);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.body = result.response;
+        res.send(result.response);
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.get("/transactionUsers/:id",(req,res,next) => roleAuth(req,res,next,[{level : levels.transactionManage}]) , async (req, res, next) =>{
+    const {error} = validateId(req.params.id);
+    if (error){
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
+        next();
+        return;
+    } 
+    try {
+        const result = await getTransactionUsers(req.params.id);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -638,7 +666,7 @@ router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : le
             return;
         }
         if(req.body.userID && result.response._id){
-            const user = await addNotification(req.body.userID,result.response._id)
+            const user = await addNotification(req.body.userID,result.response)
             if (user.error){
                 res.status(400).send({error : user.error});
                 res.body = {error : user.error};
@@ -646,7 +674,7 @@ router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : le
                 return;
             }
         }else if (result.response._id){
-            const seller = await sellerAddNotification(req.body.sellerID,result.response._id)
+            const seller = await sellerAddNotification(req.body.sellerID,result.response)
             if (seller.error){
                 res.status(400).send({error : seller.error});
                 res.body = {error : seller.error};

@@ -18,7 +18,7 @@ export async function getNotifications(id , search, idArray){
         return result;
         
     }else if(idArray){
-        result.response = await NotificationModel.find({_id :{ $in: idArray}});
+        result.response = await NotificationModel.find({_id :{ $in: idArray}}).sort({date : -1});
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
         }

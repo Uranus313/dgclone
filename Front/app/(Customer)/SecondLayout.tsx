@@ -2,17 +2,21 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import useUserCheckToken from '../hooks/useCheckToken';
 import userContext from '../contexts/userContext';
+import orderCartContext from '../contexts/orderCartContext';
 import NavBar from './NavBar';
 import _ from 'lodash'
 import Footer from './Footer';
+import { Order, User } from '../components/Interfaces/interfaces';
 
 const SecondLayout = ({
     children,
   }: {
     children: React.ReactNode
   }) => {
-    let [user, setUser] = useState<any>(null);
+    let [user, setUser] = useState<User|null>(null);
     let [loading, setLoading] = useState<any>(true);
+    const [orderCart , setOrderCart] = useState<Order[]>([]);
+
   const pathname = usePathname();
   let {data: serverUser,error,isLoading} = useUserCheckToken();
   const showNavbar = pathname !== "/users/signIn";
@@ -26,11 +30,13 @@ const SecondLayout = ({
 },[serverUser,isLoading]);
   return (
     <userContext.Provider value={{user : user , setUser : setUser , isLoading : loading}}>
+    <orderCartContext.Provider value={{orderCart : orderCart , setOrderCart : setOrderCart }}>
             {showNavbar && <NavBar />}
             <main style={{paddingTop:'120px'}} >
               {children}
             </main>
             <Footer/>
+    </orderCartContext.Provider>
     </userContext.Provider>
   )
 }

@@ -1,4 +1,4 @@
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from '@tanstack/react-query';
 import _, { method } from 'lodash';
 import React, { useContext, useRef, useState } from 'react'
@@ -10,7 +10,7 @@ const MoneyReturnPopUp = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error , setError] = useState<string | null>(null);
-    const {user , setUser } = useContext(userContext);
+    const {user , setUser } = useUser();
     const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
     const [showBankNumberPage , setShowBankNumberPage] = useState<boolean>(false);
     const openModal = () => {
@@ -137,7 +137,7 @@ const MoneyReturnPopUp = () => {
         <form onSubmit={handleSubmit(secondSubmit)} className={showBankNumberPage? "block" : "hidden"}>
         <label className="block">
             شماره کارت بانکی متصل به حساب
-            <input type="number" defaultValue={user?.moneyReturn?.bankAccount} className='block' {...register("bankAccountNumber")}/>
+            <input type="number" defaultValue={user?.moneyReturn?.bankAccount??'N/A'} className='block' {...register("bankAccountNumber")}/>
            
         </label>
             <button className='btn btn-primary' type='submit'>تایید</button>

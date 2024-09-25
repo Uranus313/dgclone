@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { Wallet } from "./layout";
+import { useUser } from "@/app/hooks/useUser";
 
 
 
@@ -51,7 +52,7 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
         console.log(isWalletLoading);
         console.log(wallet);
     },[wallet,isWalletLoading])
-    const {user , setUser , isLoading} = useContext(userContext);
+    const {user , setUser , isLoading} = useUser();
     return(
         <div className="flex flex-col bg-white">
             {isLoading && <span className="loading loading-dots loading-lg"></span>}

@@ -1,8 +1,12 @@
+'use client'
 import { colorpallete } from '@/app/(Seller)/sellers/addProducts/list/SellProductPopup'
 import { guaranteeOptions } from '@/app/(Seller)/sellers/addProducts/list/step1'
 import { Order, State } from '@/app/components/Interfaces/interfaces'
 import { forEach } from 'lodash'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import AddQuantityButton from './AddQuantityButton'
+import { useOrderCart } from '@/app/hooks/useOrderCart'
+import Link from 'next/link'
 
 
 const orders: Order[]=[
@@ -23,13 +27,44 @@ const orders: Order[]=[
     state:State.pending,  
     ReciveDate:'',
   },
+
+  {
+    _id:'2' ,
+    product:{
+        productID:'3',
+        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل TUF Gaming F15 FX506HE-HN393W-i7 11800H 32GB 1SSD RTX3050Ti - کاستوم شده',
+        price:19000000,
+        color:{title:'قرمز' , hex:'#ad2432'},
+        garantee:'گارانتی خوب',
+        sellerid:'2',
+        sellerTitle:'فروشگاه خوب',
+        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+    },
+    quantity:1,
+    userid:'1',
+    state:State.pending,  
+    ReciveDate:'',
+  },
 ]
 
 const OrderCart = () => {
-  let finalPrice=0
-  orders.forEach(order=>{
-    finalPrice+= order.product.price
-  })
+  let [finalPrice , setFinalPrice ]= useState(0)
+
+  const {orderCart , setOrderCart}=useOrderCart()
+
+
+
+  useEffect(()=>{
+    setOrderCart(orders)
+  },[])
+
+  useEffect(()=>{
+    let tempFinalPrice=0
+    orderCart.forEach(order=>{
+      tempFinalPrice += order.product.price * order.quantity
+    })
+    setFinalPrice(tempFinalPrice)
+  },[orderCart])
 
   
   return (
@@ -37,8 +72,8 @@ const OrderCart = () => {
       <h1 className='text-2xl my-5' >سبد خرید</h1>
       <div className=' grid grid-cols-4 gap-4'>
         <div className='col-span-3'>
-          {orders.map(order=>(
-            <div className='grid gap-4 grid-cols-6 bg-white rounded-xl border border-grey-border p-5'>
+          {orderCart.map((order,index)=>(
+            <div className='grid gap-4 grid-cols-6 mb-5 bg-white rounded-xl border border-grey-border p-5'>
               <div className='col-span-1'>
                 <img src={order.product.picture}/>
               </div>
@@ -66,18 +101,7 @@ const OrderCart = () => {
               </div>
 
               <div className='col-span-1 justify-self-center'>
-                <button className='border rounded-lg flex items-center gap-3 p-3 border-grey-border'>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-primary-color">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg>
-
-                  <p className='text-xl text-primary-color'>{order.quantity}</p>
-
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-primary-color">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
-
-                </button>
+                <AddQuantityButton index={index}/>
               </div>
 
               <div className='col-span-5  self-center'>
@@ -89,9 +113,26 @@ const OrderCart = () => {
 
         <div className='col-span-1'>
           <div className='bg-white p-5 rounded-lg border border-grey-border'>
-            <p>قیمت کل</p>
-            <p>{finalPrice}تومان</p>
+            <div className='flex justify-between'>
+              <p className='mb-3 text-xl'>قیمت کل</p>
+              <p className='text-2xl'>{finalPrice}<span className='text-primary-color text-sm mx-2'>تومان</span></p>
+            </div>
+            <hr className='text-grey-border mb-7'></hr>
+            <p className='mb-5 text-grey-dark'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 inline text-primary-color ml-2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+              </svg>
+              هزینه این سفارش هنوز پرداخت نشده‌ و در صورت اتمام موجودی، کالاها از سبد حذف می‌شوند
+            </p>
+
+            <Link href='/orders/shipping' className='mt-10'>
+              <button  className='bg-primary-color w-full text-white rounded-lg p-3'>
+                  <p>تایید و تکمیل سفارش</p>
+              </button>
+            </Link>
+
           </div>
+
         </div>
 
       </div>

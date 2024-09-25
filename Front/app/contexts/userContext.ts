@@ -1,5 +1,12 @@
 import { createContext } from "react";
+import { User } from "../components/Interfaces/interfaces";
 
-let userContext = createContext<any>(null);
+interface userContextType {
+    user: User | null;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    isLoading: boolean;
+}
+
+let userContext = createContext<userContextType | undefined>(undefined);
 
 export default userContext;

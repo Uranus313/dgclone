@@ -5,7 +5,7 @@ Joi.objectId = joiObjectid(Joi);
 
 const sellerSchema  = new mongoose.Schema(
     {
-        password: {type: String , required : true},
+        password: {type: String },
         isBanned : Boolean,
         storeOwner: { 
             type:{
@@ -19,7 +19,7 @@ const sellerSchema  = new mongoose.Schema(
         isVerified: Boolean,
         rating: {type: Number , required: true , default: 0},
         phoneNumber: {type: String , required : true},
-        entityType: {type: String,enum: ["individual" , "legal"], required: true,
+        entityType: {type: String,enum: ["individual" , "legal"],
             validate: {
                 validator : function(value){
                     if(value === "individual" && (!this.individualInfo)){
@@ -124,6 +124,19 @@ const sellerSchema  = new mongoose.Schema(
             } , required: true}
         }},
         signUpDate : {type: Date , required : true , default: Date.now()},
+        recentNotifications : { type :[{type : {
+            _id : {type : mongoose.Schema.Types.ObjectId , ref: "notifications", required: true },
+            content: {type: String , required : true},
+        title: {type: String , required : true},
+        teaser: {type: String , required : true},
+        userEmail: {type: String },
+        userPhone: {type: String , required : true},
+        imageUrl: {type: String},
+        orderID: {type : mongoose.Schema.Types.ObjectId },
+        isSeen : Boolean,
+        date : {type: Date, required: true, default : Date.now()},
+        type : {type: String,enum: ["information" , "order","suggestion","question"], required: true}
+        } }]},
         productList : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "products" }]},
         saleHistory : { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orders" }]},
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
