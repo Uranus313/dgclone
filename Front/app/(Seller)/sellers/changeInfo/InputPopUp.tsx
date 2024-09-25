@@ -1,4 +1,4 @@
-import { useUser } from "@/app/hooks/useUser";
+import { useSeller } from "@/app/hooks/useSeller";
 import { useMutation } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form';
@@ -24,7 +24,7 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error , setError] = useState<string | null>(null);
-    const {user , setUser , isLoading} = useUser();
+    const {seller , setSeller , isLoading} = useSeller();
   
     const openModal = () => {
       if (dialogRef.current) {
@@ -61,7 +61,7 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
             console.log(savedUser);
             // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
             // queryClient.invalidateQueries(["user"]);
-            setUser(savedUser);
+            setSeller(savedUser);
             closeModal();
             // router.push('/');
             // router.push('/');
@@ -80,7 +80,7 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
     const currentValues = getValues();
     const changedValues : any = {};
         Object.keys(currentValues).forEach(key => {
-            if (user && currentValues[key] !== user[key] ) {
+            if (seller && currentValues[key] !== seller[key] ) {
                 changedValues[key] = currentValues[key];
                 changedValues[key] = changedValues[key].trim();
              }
@@ -104,9 +104,9 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
                 }
             }
         })
-        if(user && oneObjectChange){
+        if(oneObjectChange && seller){
             const temp: any = {};
-            temp[oneObjectChange] = {...user[oneObjectChange] , ...changes}
+            temp[oneObjectChange] = {...seller[oneObjectChange] , ...changes}
             update.mutate(changes);
             return;
         }
@@ -130,15 +130,15 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
                 {inputDetails.map((detail , index) => <label key={index} className="block">
                     {detail.title}
                     <input 
-                    type={detail.type} 
-                    defaultValue={
-                      detail.type === "date" 
-                        ? (user?.[detail.name] ? new Date(user[detail.name]).toISOString().split('T')[0] : "") 
-                        : user?.[detail.name] ?? ""
-                    } 
+                      type={detail.type} 
+                      defaultValue={
+                        detail.type === "date" && seller 
+                          ? (seller[detail.name] ? new Date(seller[detail.name]).toISOString().split('T')[0] : "") 
+                          : seller?.[detail.name] ?? ""
+                      } 
                     {...register(detail.name)} 
-                    className="block" 
-                  />
+  className="block" 
+/>
 
                 </label>)}
             <button className='btn btn-primary' type='submit'>تایید</button>
