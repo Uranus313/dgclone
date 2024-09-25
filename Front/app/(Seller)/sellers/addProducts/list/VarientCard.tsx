@@ -17,7 +17,7 @@ interface Props {
 const VarientCard = ({ index, varient, update }: Props) => {
     const [valueColor, setValueColor] = useState('رنگ')
     const [color, setColor] = useState<Color>(varient.color)
-    const priceRef = useRef<HTMLInputElement>(null);
+
     const quantityRef = useRef<HTMLInputElement>(null);
     const [guarantee, setGuarantee] = useState<string>('گارانتی')
     const [updatedVarient, setUpdatedVarient] = useState<SellerSetVarientOnProduct>(varient)
@@ -26,7 +26,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
         console.log('in')
         setUpdatedVarient({
             color: color,
-            price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
+            // price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
             garante: guarantee,
             productID: varient.productID,
             productPicture: varient.productPicture,
@@ -37,7 +37,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
         })
         update(index , {
             color: color,
-            price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
+            // price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
             garante: guarantee,
             productID: varient.productID,
             productPicture: varient.productPicture,
@@ -46,10 +46,10 @@ const VarientCard = ({ index, varient, update }: Props) => {
             sellerID: varient.sellerID,
             shipmentMethod: varient.shipmentMethod
         })
-    }, [color, guarantee, priceRef, quantityRef])
+    }, [color, guarantee, quantityRef])
 
     return (
-        <div className='grid grid-cols-6 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
+        <div className='grid grid-cols-5 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
             <img className='w-20' src={varient.productPicture} />
             <p className='line-clamp-1 h-fit '>{varient.productTitle}</p>
 
@@ -63,16 +63,15 @@ const VarientCard = ({ index, varient, update }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList items={colorpallete} showKey='title' setFunc={setColor} showFunc={setValueColor} />
+                        <SearchableList defaultValue={varient.color.title} items={colorpallete} showKey='title' setFunc={setColor} showFunc={setValueColor} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>
             </dialog>
 
-            <input type='number' ref={quantityRef} className='w-32' placeholder={"تعداد"} />
-            <input type='number' ref={priceRef} className='w-32' placeholder={"قیمت"} />
+            <input type='number' defaultValue={varient.quantity} ref={quantityRef} className='w-32' placeholder={"تعداد"} />
 
-            <ModalButton title={guarantee} solid={false} id={'gauranteeModal'+index} />
+            <ModalButton  title={guarantee} solid={false} id={'gauranteeModal'+index} />
             <dialog id={"gauranteeModal"+index} className="modal">
                 <div className="modal-box  w-4/12 max-w-5xl p-2 flex flex-col">
                     <form method="dialog" className='inline'>
@@ -82,7 +81,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList items={guaranteeOptions} setFunc={setGuarantee} showFunc={setGuarantee} />
+                        <SearchableList defaultValue={varient.garante} items={guaranteeOptions} setFunc={setGuarantee} showFunc={setGuarantee} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>

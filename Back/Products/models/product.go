@@ -7,10 +7,10 @@ import (
 	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Guarantee struct {
-	Title string `json:"title" bson:"title"`
-	Desc  string `json:"desc" bson:"desc"`
-}
+// type Guarantee struct {
+// 	Title string `json:"title" bson:"title"`
+// 	Desc  string `json:"desc" bson:"desc"`
+// }
 
 type Rating struct {
 	Rate    float32 `json:"rate" bson:"rate"`
@@ -29,8 +29,9 @@ type Pros_cons struct {
 }
 
 type SellerQuantity struct {
-	Color    string `json:"color" bson:"color"`
-	Quantity int    `json:"quantity" bson:"quantity"`
+	Color     Color     `json:"color" bson:"color"`
+	Quantity  int       `json:"quantity" bson:"quantity"`
+	Guarantee Guarantee `json:"guarantee" bson:"guarantee"`
 }
 
 type ShipmentMethod int
@@ -48,12 +49,27 @@ func (d ShipmentMethod) EnumIndex() int {
 	return int(d)
 }
 
+type ValidationState int
+
+const (
+	PendingValidation ValidationState = iota + 1
+	Validated
+	Banned
+)
+
+func (d ValidationState) String() string {
+	return [...]string{"PendingValidation", "Validated", "Banned"}[d-1]
+}
+
+func (d ValidationState) EnumIndex() int {
+	return int(d)
+}
+
 type SellerCart struct {
 	SellerID       primitive.ObjectID `json:"seller_id" bson:"seller_id"`
 	SellerTitle    string             `json:"seller_title" bson:"seller_title"`
 	SellerRating   float32            `json:"seller_rating" bson:"seller_rating"`
-	SellerQuantity SellerQuantity     `json:"seller_quantity" bson:"seller_quantity"`
-	Guarantees     []Guarantee        `json:"guarantees" bson:"guarantees"`
+	SellerQuantity []SellerQuantity   `json:"seller_quantity" bson:"seller_quantity"`
 	ShipmentMethod ShipmentMethod     `json:"shipment_method" bson:"shipment_method"`
 	DiscountID     primitive.ObjectID `json:"discount_id" bson:"discount_id"`
 	Price          int                `json:"price" bson:"price"`
@@ -79,9 +95,11 @@ type Product struct {
 	IsFromIran  bool               `json:"is_from_iran" bson:"is_from_iran"`
 	Images      []string           `json:"images" bson:"images"`
 	Dimentions  Dimentions         `json:"dimentions" bson:"dimentions"`
-	Weight_KG   int                `json:"weight_KG" bson:"weight_KG"`
+	Weight_KG   float32            `json:"weight_KG" bson:"weight_KG"`
 	Description string             `json:"description" bson:"description"`
-	ProsNCons   Pros_cons          `json:"pros&cons,omitempty" bson:"pros&cons,omitempty"`
+	// ProsNCons       Pros_cons          `json:"pros&cons,omitempty" bson:"pros&cons,omitempty"`
+	DateAdded       time.Time       `json:"date_added" bson:"date_added"`
+	ValidationState ValidationState `json:"validation_state" bson:"validation_state"`
 	// Guarantees  []Guarantee        `json:"guarantees" bson:"guarantees"`
 	// Price       int                `json:"price" bson:"price"`
 	// DiscountID  primitive.ObjectID `json:"discount_id,omitempty" bson:"discount_id,omitempty"`
@@ -96,6 +114,14 @@ type UpdatableProd struct {
 	Images      []string           `json:"images"`
 	Details     []ProductDetail    `json:"details"`
 	Dimentions  Dimentions         `json:"dimentions"`
-	Weight_KG   int                `json:"weight_kg"`
-	ProsNCons   Pros_cons          `json:"pros&cons"`
+	Weight_KG   float32            `json:"weight_kg"`
+	// ProsNCons   Pros_cons          `json:"pros&cons"`
+}
+
+type ProductCard struct {
+	ID         primitive.ObjectID
+	Title      string
+	Price      int
+	Picture    string
+	DiscountID primitive.ObjectID
 }

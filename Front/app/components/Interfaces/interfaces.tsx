@@ -16,11 +16,33 @@ export interface SellerInfosOnProduct{
     sellerid:string,
     sellerTitle:string,
     sellerRating:number
-    quantity: {color:{title:string,hex:string},  quantity:number,price:number, garante:string}[],
+    quantity: {color:{title:string,hex:string},  quantity:number,garante:string}[],
+    price:number,
     shipmentMethod?:shipmentMethod,
     discountId?:string,
     
 }
+
+export interface Order {
+    _id:string ,
+    product:{
+        productID:string,
+        price:number,
+        color:Color,
+        garantee:string,
+        sellerid:string,
+        sellerTitle:string
+        picture:string,
+        productTitle:string
+    },
+    quantity:number,
+    userid:string,
+    rate?:number,
+    state:State,  
+    ReciveDate:string,
+}
+
+
 
 export interface SellerSetVarientOnProduct{
     sellerID:string,
@@ -29,9 +51,8 @@ export interface SellerSetVarientOnProduct{
     productPicture:string,
     color:{title:string,hex:string},  
     quantity:number,
-    price:number, 
     garante:string,
-    shipmentMethod:shipmentMethod,
+    shipmentMethod?:shipmentMethod,
    
 }
 
@@ -74,23 +95,6 @@ export interface Comment{
 
 export enum State{returned='returned', canceled='canceled',pending='pending',delivered='delivered',recivedInWareHouse='recivedInWareHouse'}
 
-export interface Order{
-  orderID:string ,
-  product:{
-     productID:string,
-     price:number,
-     color:string,
-     garantee:string,
-     sellerid:string,
-     picture:string,
-  },
-  quantity:number,
-  userid:string,
-  rate?:number,
-  state:State,  
-  ReciveDate:string,
-}
-
 export enum notifTypeUser{info='info', order='order', recommend='recommend'}
 export enum notifTypeSeller{question='پرسش', order='سفارش', info='عمومی'}
 
@@ -122,19 +126,19 @@ export interface Transaction{
     transactionID:string,
     userid:string,
     moneyAmount:number,
+    title:string,
+    additionalinfo?:string,
     sender:{
         type:TransactionSide,
-        senderID:string,
-        additionalinfo:string
+        senderID?:string,
     }
  
     reciver:{
         type:TransactionSide,
-        reciverID:string,
-        additionalinfo:string
-        }
-    date:string
-    OrdersHistoryID:string
+        reciverID?:string,
+     }
+
+    date:string,
 }
 
 //#region seller
@@ -213,17 +217,6 @@ export interface Seller{
         }
     },
 
-    warehouseAddress?:{
-        country:string,
-        province:string,
-        city:string,
-        postalCode:number,
-        additionalInfo:string ,
-        coordinates : {
-            x:number ,
-            y:number 
-        }
-    },
     // productList: ProductInterface[],
     // saleHistory: Order[],
     // socialInteractions : Comment[],
@@ -296,4 +289,15 @@ export interface Color{
 export interface Brand{
     title:string,
     id:string,
+}
+
+export interface productSaleAnalyseCard{
+    productID:string,
+    picture:string,
+    productTitle:string,
+    productCategoryID:string,
+    productCategoryTitle:string,
+    saleValue:number,
+    saleCount:number,
+    visits:number
 }

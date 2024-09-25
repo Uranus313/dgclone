@@ -72,6 +72,13 @@ func GetProductByID(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if product.ValidationState.String() == "PendingValidation" || product.ValidationState.String() == "Banned" {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{
+			"error":            "product is not validated",
+			"validation state": product.ValidationState.String(),
+		})
+	}
+
 	// return last 20 comments
 	filter = bson.M{
 		"product_id":   prodID,
@@ -114,15 +121,18 @@ func AddProduct(c *fiber.Ctx) error {
 	}
 
 	// adding defualt guarantee for sellers
-	for _, seller := range product.Sellers {
+	// for _, seller := range product.Sellers {
 
-		if len(seller.Guarantees) == 0 {
+	// 	if len(seller.Guarantees) == 0 {
 
-			defualt_guarantee := models.Guarantee{Title: "گارانتی اصالت و سلامت فیزیکی کالا", Desc: ""}
+	// 		defualt_guarantee := models.Guarantee{Title: "گارانتی اصالت و سلامت فیزیکی کالا", Desc: ""}
 
-			seller.Guarantees = append(seller.Guarantees, defualt_guarantee)
-		}
-	}
+	// 		seller.Guarantees = append(seller.Guarantees, defualt_guarantee)
+	// 	}
+	// }
+
+	product.DateAdded = time.Now()
+	product.ValidationState = models.PendingValidation
 
 	insertResult, err := database.ProductCollection.InsertOne(context.Background(), product)
 
@@ -275,6 +285,8 @@ func UpdateProdQuantity(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching quantity from query": err.Error()})
 	}
 
+	color := c.Query("Color")
+
 	if quantity < 0 {
 		return c.Status(http.StatusBadRequest).SendString("quantity can't be negative")
 	}
@@ -292,16 +304,29 @@ func UpdateProdQuantity(c *fiber.Ctx) error {
 	}
 
 	var sellerFound bool = false
+	var colorFound bool = false
 
 	for index, seller := range product.Sellers {
 		if seller.SellerID == sellerID {
 			sellerFound = true
-			product.Sellers[index].SellerQuantity.Quantity = quantity
+			for colorindex, value := range product.Sellers[index].SellerQuantity {
+				if value.Color.Title == color {
+					colorFound = true
+					product.Sellers[index].SellerQuantity[colorindex].Quantity = quantity
+					break
+				}
+			}
+			break
+			// product.Sellers[index].SellerQuantity.Quantity = quantity
 		}
 	}
 
 	if !sellerFound {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
+	}
+
+	if !colorFound {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "color not found"})
 	}
 
 	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
@@ -358,7 +383,7 @@ func EditProduct(c *fiber.Ctx) error {
 			"details":     updatable_fields.Details,
 			"dimentions":  updatable_fields.Dimentions,
 			"weight_KG":   updatable_fields.Weight_KG,
-			"pros&cons":   updatable_fields.ProsNCons,
+			// "pros&cons":   updatable_fields.ProsNCons,
 		},
 	}
 	// update := bson.M{"$set":updatable_fields}
@@ -406,16 +431,81 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching category id from query": err.Error()})
 	}
 
-	var product_list []models.Product
+	sortMethodString := c.Query("SortMethod", "1")
+
+	sortMethod, err := strconv.Atoi(sortMethodString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sort method from query": err.Error()})
+	}
+
+	/*
+		valid_sort_methods = {
+			1: "most visited",
+			2: "least expensive",
+			3: "most expensive",
+			4: "recently added",
+		}
+	*/
 
 	findOptions := options.Find()
 
 	findOptions.SetLimit(int64(limit))
 	findOptions.SetSkip(int64(offset))
 
-	filter := bson.M{"category_id": cateID}
+	var filter primitive.M
+	var pipeline mongo.Pipeline
 
-	cursor, err := database.ProductCollection.Find(context.Background(), filter, findOptions)
+	switch sortMethod {
+	case 1:
+		findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
+		filter = bson.M{"category_id": cateID}
+	case 2:
+		pipeline = mongo.Pipeline{
+			{{Key: "$match", Value: bson.D{
+				{Key: "category_id", Value: cateID},
+			}}},
+			{{Key: "$addFields", Value: bson.D{
+				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+			}}},
+			{{Key: "$sort", Value: bson.D{
+				{Key: "minPrice", Value: 1}, // Ascending order
+			}}},
+		}
+	case 3:
+		pipeline = mongo.Pipeline{
+			{{Key: "$match", Value: bson.D{
+				{Key: "category_id", Value: cateID},
+			}}},
+			{{Key: "$addFields", Value: bson.D{
+				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+			}}},
+			{{Key: "$sort", Value: bson.D{
+				{Key: "minPrice", Value: -1}, // Descending order
+			}}},
+		}
+	case 4:
+		findOptions.SetSort(bson.D{{Key: "date_added", Value: -1}})
+		filter = bson.M{"category_id": cateID}
+	default:
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid Sort Method",
+			"valid_sort_methods": fiber.Map{
+				"1": "most visited",
+				"2": "least expensive",
+				"3": "most expensive",
+				"4": "recently added",
+			},
+		})
+	}
+
+	var cursor *mongo.Cursor
+
+	if sortMethod == 1 || sortMethod == 4 {
+		cursor, err = database.ProductCollection.Find(context.Background(), filter, findOptions)
+	} else {
+		cursor, err = database.ProductCollection.Aggregate(context.Background(), pipeline)
+	}
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching from database": err.Error()})
@@ -423,11 +513,48 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 
 	defer cursor.Close(context.Background())
 
-	if err := cursor.All(context.Background(), &product_list); err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching cursor": err.Error()})
+	var product_list []models.ProductCard
+
+	// if err := cursor.All(context.Background(), &product_list); err != nil {
+	// 	return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching cursor": err.Error()})
+	// }
+
+	for cursor.Next(context.Background()) {
+		var product models.Product
+		if err := cursor.Decode(&product); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while decoding cursor",
+				"error":   err.Error(),
+			})
+		}
+
+		var productCard models.ProductCard = CreateProdCard(product)
+
+		product_list = append(product_list, productCard)
 	}
 
 	return c.Status(http.StatusOK).JSON(product_list)
+}
+
+func CreateProdCard(product models.Product) models.ProductCard {
+
+	var minPriceSellerIndex int = 0
+
+	var minPrice int = product.Sellers[0].Price
+
+	for index, seller := range product.Sellers {
+		if seller.Price < minPrice {
+			minPriceSellerIndex = index
+		}
+	}
+
+	return models.ProductCard{
+		ID:         product.ID,
+		Title:      product.Title,
+		Price:      product.Sellers[minPriceSellerIndex].Price,
+		Picture:    product.Images[0],
+		DiscountID: product.Sellers[minPriceSellerIndex].DiscountID,
+	}
 }
 
 // Get => incredible products

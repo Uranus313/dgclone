@@ -10,6 +10,7 @@ type DiscountProd struct {
 	ProdID        primitive.ObjectID `json:"prod_id" bson:"prod_id"`
 	SellerID      primitive.ObjectID `json:"seller_id" bson:"seller_id"`
 	OriginalPrice int                `json:"original_price" bson:"original_price"`
+	CategoryID    primitive.ObjectID `json:"category_id" bson:"category_id"`
 }
 
 type SaleDiscount struct {

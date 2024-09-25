@@ -83,28 +83,30 @@ func AddCategory(c *fiber.Ctx) error {
 }
 
 type modifiedCategory struct {
-	ID          primitive.ObjectID
-	Title       string
-	ParentID    primitive.ObjectID
-	Childs      []*modifiedCategory
-	Detail      []models.Detail
-	Pictures    []string
-	Description string
-	Link        string
-	Theme       string
+	ID                  primitive.ObjectID
+	Title               string
+	ParentID            primitive.ObjectID
+	Childs              []*modifiedCategory
+	Detail              []models.Detail
+	Pictures            []string
+	Description         string
+	Link                string
+	Theme               string
+	CommisionPercentage int
 }
 
 func modifyCategory(cat models.Category) *modifiedCategory {
 	return &modifiedCategory{
-		ID:          cat.ID,
-		Title:       cat.Title,
-		ParentID:    cat.ParentID,
-		Childs:      []*modifiedCategory{}, // Initialize as an empty slice
-		Detail:      cat.Detail,
-		Pictures:    cat.Pictures,
-		Description: cat.Description,
-		Link:        cat.Link,
-		Theme:       cat.Theme,
+		ID:                  cat.ID,
+		Title:               cat.Title,
+		ParentID:            cat.ParentID,
+		Childs:              []*modifiedCategory{}, // Initialize as an empty slice
+		Detail:              cat.Detail,
+		Pictures:            cat.Pictures,
+		Description:         cat.Description,
+		Link:                cat.Link,
+		Theme:               cat.Theme,
+		CommisionPercentage: cat.CommisionPercentage,
 	}
 }
 
@@ -235,12 +237,13 @@ func EditCategory(c *fiber.Ctx) error {
 
 	filter := bson.M{"_id": cateID}
 	update := bson.M{"$set": bson.M{
-		"title":       updatable.Title,
-		"pictures":    updatable.Pictures,
-		"description": updatable.Description,
-		"link":        updatable.Link,
-		"theme":       updatable.Theme,
-		"details":     updatable.Details,
+		"title":                updatable.Title,
+		"pictures":             updatable.Pictures,
+		"description":          updatable.Description,
+		"link":                 updatable.Link,
+		"theme":                updatable.Theme,
+		"details":              updatable.Details,
+		"commision_percentage": updatable.CommisionPercentage,
 	},
 	}
 

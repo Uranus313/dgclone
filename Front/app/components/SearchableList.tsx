@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Color } from './Interfaces/interfaces';
 
 
@@ -8,15 +8,30 @@ interface Props{
     showKey?:string,
     setKey?:string,
     setFunc: any,
+    defaultValue?:string,
     showFunc :React.Dispatch<React.SetStateAction<string>>,
 }
 
-const SearchableList = ({items , showKey , setKey , setFunc,showFunc}:Props) => {
+const SearchableList = ({items , showKey , setKey, defaultValue , setFunc,showFunc}:Props) => {
   const [searchTerm, setSearchTerm] = useState('');
-
   const filteredItems = items.filter(item =>
    showKey ? item[showKey].toLowerCase().includes(searchTerm.toLowerCase()) : item.toLowerCase().includes(searchTerm.toLowerCase()) 
   );
+
+  useEffect(() => {
+    if(defaultValue){
+      filteredItems.forEach((item, index) => {
+  
+        if(showKey && item[showKey]==defaultValue){ 
+          setFunc(item);showFunc(item[showKey])
+        }
+        else if(!showKey && item==defaultValue){
+          setFunc(item);showFunc(item);
+        }
+      })
+    }
+  }, []);
+
 
   return (
     <div className="p-4">

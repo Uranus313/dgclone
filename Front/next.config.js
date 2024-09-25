@@ -9,6 +9,9 @@ const nextConfig = {
                 pathname: '/api/v1/files/**',
             },
         ],
+
+        domains: ['dkstatics-public.digikala.com'],
+
     },
 }
 

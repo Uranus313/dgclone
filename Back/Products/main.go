@@ -47,13 +47,17 @@ func main() {
 
 	// ------------comemnts------------
 
-	app.Get("/products/comments", crud.GetCommentsByProductID) // query => limit, offset, ProdID
+	app.Get("/products/comments", crud.GetCommentsByProductID) // query params => limit, offset, ProdID
 
 	app.Post("/products/comments", crud.PostComment) // --unchecked
 
 	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
 
-	app.Get("/products/questions", crud.GetProductQuestions) // query => limit, offset, ProdID
+	app.Get("/products/questions", crud.GetProductQuestions) // query params => limit, offset, ProdID
+
+	app.Get("/products/comments/pending", crud.GetPendingComments) // query params => limit, offset
+
+	app.Patch("/products/validate-comments", crud.UpdateCommentValidationState) // query params => CommentID, ValidationState
 
 	// ------------products-------------
 
@@ -63,17 +67,17 @@ func main() {
 
 	app.Post("/products/product", crud.AddProduct)
 
-	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query => SellerID, ProdID --unchecked
+	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query params => SellerID, ProdID --unchecked
 
-	app.Patch("/products/product/UpdateRating", crud.UpdateProductRating) // query => ProductID, Rating
+	app.Patch("/products/product/UpdateRating", crud.UpdateProductRating) // query params => ProductID, Rating
 
-	app.Patch("/products/product/UpdateQuantity", crud.UpdateProdQuantity) // query => ProductID, SellerID, Quantity --unchecked
+	app.Patch("/products/product/UpdateQuantity", crud.UpdateProdQuantity) // query params => ProductID, SellerID, Quantity, Color --unchecked
 
 	app.Delete("/products/product/:ProdID", crud.DeleteProductByID)
 
 	app.Patch("/products/product", crud.EditProduct)
 
-	app.Get("/products/product", crud.InfiniteScrolProds) // query => limit, offset, CateID
+	app.Get("/products/product", crud.InfiniteScrolProds) // query params => limit, offset, CateID
 
 	// --------------category-----------------
 
@@ -97,13 +101,25 @@ func main() {
 
 	app.Post("/products/discountcode", crud.AddDiscountCode)
 
-	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query => DCode, UserID
+	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query params => DCode, UserID
 
 	// ------------sale discount-----------
 
-	app.Get("/products/salediscount/MostDiscounts", crud.GetMostDiscounts)
+	app.Get("/products/salediscount/MostDiscounts", crud.GetMostDiscounts) // query params => CateID
 
-	app.Post("/products/salediscount", crud.AddSaleDiscount) // query => ProdID, SellerID, EndDate, NewPrice | note. EndDate layout must be "yyyy-mm-dd 15:04:05" format
+	app.Post("/products/salediscount", crud.AddSaleDiscount) // query params => ProdID, SellerID, EndDate, NewPrice | note. EndDate layout must be "yyyy-mm-dd 15:04:05" format
+
+	// -------------colors---------------
+
+	app.Post("/products/color", crud.AddColor)
+
+	app.Get("products/color", crud.GetAllColors)
+
+	// -------------guarantees---------------
+
+	app.Post("/products/guarantee", crud.AddGuarantee)
+
+	app.Get("products/guarantee", crud.GetAllGuarantee)
 
 	// -------------orders--------------
 

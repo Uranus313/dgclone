@@ -19,6 +19,8 @@ var OrderHistoryCollection *mongo.Collection
 var BrandCollection *mongo.Collection
 var DiscountCodeCollection *mongo.Collection
 var SaleDiscountCollection *mongo.Collection
+var ColorCollection *mongo.Collection
+var GuaranteeCollection *mongo.Collection
 
 func DeployCollections() {
 
@@ -32,6 +34,8 @@ func DeployCollections() {
 	BrandCollection = Client.Database("dg-kala-sample").Collection("brands")
 	DiscountCodeCollection = Client.Database("dg-kala-sample").Collection("discount_codes")
 	SaleDiscountCollection = Client.Database("dg-kala-sample").Collection("sale_discounts")
+	ColorCollection = Client.Database("dg-kala-sample").Collection("colors")
+	GuaranteeCollection = Client.Database("dg-kala-sample").Collection("guarantees")
 
 	log.Println("Collections Deployed Succesfully")
 

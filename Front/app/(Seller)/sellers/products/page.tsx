@@ -7,6 +7,11 @@ import { useSearchParams } from 'next/navigation'
 import React from 'react'
 import Checkbox from './Checkbox'
 import FilterButton from './FilterButton'
+import ModalButton from '../addProducts/ModalButton'
+import Step1 from '../addProducts/list/step1'
+import AddVarient from './AddVarient'
+import EditProduct from './EditProduct'
+import AddNew from '../addProducts/list/AddNew'
 
 const productsCard:ProductCardSeller[]=[
   {
@@ -147,12 +152,17 @@ const Products = () => {
 
           {productCard.state==StateProduct.accepted &&
           <div className='flex gap-4 col-span-2'>
-            <Link href='' className='bg-primary-seller text-white rounded-md px-4 py-2'>
-              <p>افزودن تنوع</p>
+            <ModalButton noMargin={true} additionalCss='bg-primary-seller text-white rounded-md px-4 py-2' title='مدیریت تنوع' id='addNewVarient'/>
+
+            <ModalButton noMargin={true} additionalCss='border border-grey-border rounded-md px-4 py-2 bg-white  rounded-md px-4 py-2' title='ویرایش کالا' id='addNewProduct'/>
+            <Link href='' className=''>
+              <p></p>
             </Link>
-            <Link href='' className='border border-grey-border rounded-md px-4 py-2'>
-              <p>ویرایش کالا</p>
-            </Link>
+            
+
+                
+              <AddVarient productID={productCard.productID}/>
+              <AddNew productID={productCard.productID}/>
           </div>
           }
         </div>

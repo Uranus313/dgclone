@@ -1,16 +1,27 @@
 'use client'
 import Image, { StaticImageData } from 'next/image'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import DefaultImage from './images.png'
 
 interface Props{
     setImages: React.Dispatch<React.SetStateAction<string[]>>
+    prevProductImage?:string
+    defaultImage?:boolean
+    index?:number
 }
-const ImageUpload = ({setImages}:Props) => {
+const ImageUpload = ({index,setImages,prevProductImage,defaultImage=false}:Props) => {
     const [image, setImage] = useState<StaticImageData | string>(DefaultImage)
     const fileLoadRef = useRef<HTMLInputElement>(null)
     const [isloading , setIsLoading]=useState(false)
     const isAdded = useRef(false)
+    const set = useRef(false)
+
+    if (prevProductImage && !set.current && !defaultImage) {
+        setImage(prevProductImage);
+        isAdded.current=true
+        set.current=true
+    }
+
 
     function HandlImageUpload(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault()
@@ -35,11 +46,25 @@ const ImageUpload = ({setImages}:Props) => {
                 if(res.status==201){
                     setIsLoading(false)
                     const data = await res.json()
-                    setImage(data?.location)
+                    if (!defaultImage){
+                        setImage(data?.location)
+                    }
 
                     if(!isAdded.current){
-                        isAdded.current=true
-                        setImages(prevImages=>[...prevImages , data?.location])
+                        if(!defaultImage){
+                            isAdded.current=true
+                        }else{
+                            setImages(prevImages=>[...prevImages , data?.location])
+                        }
+                    
+                    }else if(isAdded.current){
+                        setImages(prevImages => 
+                            prevImages.map((image, i) => 
+                              i === index ? data?.location : image
+                            )
+                          );
+                          
+
                     }
                 }
                 //const cachedURL = URL.createObjectURL(uploadedFile)

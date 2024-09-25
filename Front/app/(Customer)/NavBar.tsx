@@ -94,7 +94,7 @@ const NavBar = () => {
 
           <p className="mx-4 text-grey-light">|</p>
 
-          <Link href="/">
+          <Link href="/orders">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
