@@ -1,5 +1,6 @@
 'use client'
 import userContext from "@/app/contexts/userContext";
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,7 @@ function MenuSideBar(){
         // setError(error)
       }
     });
-    const {user , setUser , isLoading} = useUser();
+    const { user, setUser, isLoading } = useUser();
     return(
         <div className="flex w-1/5 bg-white ">
             {isLoading && <span className="loading loading-dots loading-lg"></span>}

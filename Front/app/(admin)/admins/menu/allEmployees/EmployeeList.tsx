@@ -101,9 +101,6 @@ const EmployeeList = ({ changeList }: Props) => {
             </div>
             {employees?.data?.map((employee, index) => {
               return (
-                // employee._id == user._id? null : <li key={index}>
-                //   <EmployeePopUp employee={employee}/>
-                //   </li>
                 <li key={index}>
                   <EmployeePopUp employee={employee} />
                 </li>

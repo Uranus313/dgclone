@@ -6,6 +6,7 @@ import userContext from "../contexts/userContext";
 import { Categories , Category } from "./page";
 import {useRouter} from 'next/navigation'
 import MegaMenu from "./MegaMenu";
+import { useUser } from "../hooks/useUser";
 
 
 const NavBar = () => {
