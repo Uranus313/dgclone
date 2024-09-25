@@ -368,22 +368,43 @@ router.patch("/refuteSeller/:sellerID",(req,res,next) => roleAuth(req,res,next,[
     }
     next();
 });
-router.get("/myNotifications", (req, res,next) => auth(req, res,next, ["seller"]) ,async (req, res,next) =>{
+router.get("/myNotifications", (req, res, next) => auth(req, res, next, ["seller"]), async (req, res, next) => {
     try {
-        
-        const result = await getNotifications(undefined,undefined,req.seller.notifications)
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
+        let floor = 0;
+        let limit = 30;
+        if(req.query.floor && Number.isInteger(req.query.floor)){
+            floor == req.query.floor;
+        }
+        if(req.query.limit && Number.isInteger(req.query.limit) && req.query.limit <= 500){
+            limit = req.query.limit;
+        }
+        const notifArray = [];
+        for (let index = req.seller.notifications.length - floor - 1; index >= 0 ; index--) {
+            const element = req.seller.notifications[index];
+            notifArray.push(element);
+            
+        }
+        if(notifArray.length == 0){
+            res.send([]);
+            res.body = [];
+            next();
+            return;
+        }
+        const result = await getNotifications(undefined, undefined, notifArray);
+        // console.log(result)
+        // console.log(req.seller.notifications)
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
             next();
             return;
         }
         res.send(result.response);
         res.body = result.response;
     } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
     }
     next();
 });

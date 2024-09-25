@@ -721,10 +721,29 @@ router.patch("/seeNotification/:id", (req, res, next) => auth(req, res, next, ["
 
 router.get("/myNotifications", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
     try {
-
-        const result = await getNotifications(undefined, undefined, req.user.notifications)
-        console.log(result)
-        console.log(req.user.notifications)
+        let floor = 0;
+        let limit = 30;
+        if(req.query.floor && Number.isInteger(req.query.floor)){
+            floor == req.query.floor;
+        }
+        if(req.query.limit && Number.isInteger(req.query.limit) && req.query.limit <= 500){
+            limit = req.query.limit;
+        }
+        const notifArray = [];
+        for (let index = req.user.notifications.length - floor - 1; index >= 0 ; index--) {
+            const element = req.user.notifications[index];
+            notifArray.push(element);
+            
+        }
+        if(notifArray.length == 0){
+            res.send([]);
+            res.body = [];
+            next();
+            return;
+        }
+        const result = await getNotifications(undefined, undefined, notifArray);
+        // console.log(result)
+        // console.log(req.user.notifications)
         if (result.error) {
             res.status(400).send({ error: result.error });
             res.body = { error: result.error };
