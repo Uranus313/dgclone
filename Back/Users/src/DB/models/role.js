@@ -11,7 +11,7 @@ const roleSchema  = new mongoose.Schema(
         accessLevels: {type: [
             {
                 type:{
-                    level: {type: String, enum: [levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage], required : true},
+                    level: {type: String, enum: [levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage , levels.notificationManage , levels.wareHouseManage , levels.ticketManage], required : true},
                     writeAccess :{type: Boolean, required: true , default : false}
                 }
             }
@@ -30,7 +30,7 @@ export function validateRolePost (data){
             }
         }).required(),
         accessLevels : Joi.array().items(Joi.object({
-            level : Joi.string().valid(levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage).required(),
+            level : Joi.string().valid(levels.categoryManage,levels.commentManage,levels.orderManage,levels.productManage,levels.sellerManage,levels.shipmentManage,levels.transactionManage,levels.userManage,levels.notificationManage , levels.wareHouseManage , levels.ticketManage).required(),
             writeAccess : Joi.boolean()
         })).required(true)
     });

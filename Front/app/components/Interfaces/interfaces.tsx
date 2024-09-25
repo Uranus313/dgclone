@@ -23,6 +23,18 @@ export interface SellerInfosOnProduct {
 
 }
 
+export interface Ticket {
+    content: string;
+    title: string;
+    orderID: string;
+    sellerID: string;
+    userID: string;
+    employeeID: string;
+    adminID: string;
+    date: string;
+    importance: string
+}
+
 export interface Order {
     _id: string,
     product: {

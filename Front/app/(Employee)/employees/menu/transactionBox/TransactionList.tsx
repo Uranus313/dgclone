@@ -7,7 +7,7 @@ import useGetTransactions from '../../hooks/useGetTransactions';
 const UserList = () => {
 
     let [typeSort, setTypeSort] = useState<string>("none");
-    let [pageSize, setPageSize] = useState<number>(8);
+    let [pageSize, setPageSize] = useState<number>(5);
     let [page, setPage] = useState<number>(0);
     let [search, setSearch] = useState<string | null>('');
     let searchRef = useRef<any>('');
@@ -18,22 +18,24 @@ const UserList = () => {
         setSearch(searchRef.current.value.trim());
     }
     return (
-        <div className=' flex-col bg-white m-20  rounded-md'>
-            <form className='border-b-2 shadow-md border-white p-7 px-13' >
-               
-                <input className=' bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+        <div className=' bg-white rounded-md'>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSearch();
+                }}>
+
+                <input className='bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md w-5/6' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
                     ref={searchRef}
                     onBlur={() => handleSearch()} />
-                </form>
-            
+            </form>
+
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 <div className=' flex-col'>
                     <ul>
                         <div className="flex justify-between py-8 text-center">
-                            <p className="w-1/4"> هزینه</p>
-                            <p className="w-1/4">نوع فرستادن</p>
-                            <p className="w-1/4">نوع گرفتن </p>
-                            <p className="w-1/4">تاریخ</p>
+                            <p className="w-1/2"> هزینه</p>
+                            <p className="w-1/2">تاریخ</p>
                         </div>
                         {transactions?.data?.map((transaction, index) => {
                             return (

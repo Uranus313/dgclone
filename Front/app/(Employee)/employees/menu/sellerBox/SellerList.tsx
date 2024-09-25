@@ -5,7 +5,7 @@ import useGetSellers from '../../hooks/useGetSellers';
 
 const SellerList = () => {
   let [typeSort, setTypeSort] = useState<string>("none");
-  let [pageSize, setPageSize] = useState<number>(8);
+  let [pageSize, setPageSize] = useState<number>(5);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
@@ -17,7 +17,7 @@ const SellerList = () => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white my-20  rounded-md'>
+    <div className=' bg-white rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();

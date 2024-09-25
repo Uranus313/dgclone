@@ -1,8 +1,8 @@
+import { User } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
-import { Admin } from "../menu/allAdmins/AdminPopUp";
 
 interface AdminListResponse {
-    data : Admin[],
+    data : User[],
     hasMore : boolean
 }
 interface Query{

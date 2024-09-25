@@ -5,6 +5,8 @@ import generalRouter from "./src/routes/general.js"
 import userRouter from "./src/routes/user.js"
 import adminRouter from "./src/routes/admin.js"
 import employeeRouter from "./src/routes/employee.js"
+import sellerRouter from "./src/routes/seller.js"
+
 
 import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
@@ -37,6 +39,8 @@ app.use("/users/user", userRouter);
 app.use("/users/admin", adminRouter);
 app.use("/users/general", generalRouter);
 app.use("/users/employee", employeeRouter);
+app.use("/users/seller", sellerRouter);
+
 
 
 app.get("/", (req, res, next) => {
