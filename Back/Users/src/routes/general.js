@@ -284,7 +284,7 @@ router.get("/allTransactions", (req,res,next) => roleAuth(req,res,next,[{level :
         delete searchParams.sort;
         delete searchParams.desc;
         // console.log(req.query.limit)
-        const result = await getEmployeesWithRoles(undefined,searchParams,req.query.limit,req.query.floor, req.query.sort,req.query.desc);
+        const result = await getTransactions(undefined,searchParams,req.query.limit,req.query.floor, req.query.sort,req.query.desc);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

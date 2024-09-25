@@ -2,7 +2,6 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import useUserCheckToken from '../../hooks/useCheckToken';
 import userContext from '../../contexts/userContext';
-import NavBar from './NavBar';
 import _ from 'lodash'
 
 const SecondLayout = ({
@@ -25,8 +24,7 @@ const SecondLayout = ({
 },[serverUser,isLoading]);
   return (
     <userContext.Provider value={{user : user , setUser : setUser , isLoading : loading}}>
-            {showNavbar && <NavBar />}
-            <main style={{paddingTop:'70px'}}  >         
+            <main>         
               {children}
             </main>
             

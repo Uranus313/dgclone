@@ -15,7 +15,7 @@ const pimaryFont = localFont({
   // display: 'swap',
 })
 const queryClient = new QueryClient();
-export default function AdminLayout({
+export default function EmployeeLayout({
   children,
 }: {
   children: React.ReactNode

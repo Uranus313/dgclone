@@ -49,7 +49,7 @@ const UserList = ({ changeList }: Props) => {
         handleSearch();
       }} className='border-b-2 shadow-md border-white p-7 px-13' >
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
-          <option value="users">کاربران</option>
+          <option value="users" selected>کاربران</option>
           <option value="employees">کارمندان</option>
           <option value="admins" > ادمین ها</option>
           <option value="orders">سفارش ها</option>
@@ -97,9 +97,6 @@ const UserList = ({ changeList }: Props) => {
             </div>
             {users?.data?.map((user, index) => {
               return (
-                // admin._id == user._id? null : <li key={index}>
-                //   <AdminPopUp admin={admin}/>
-                //   </li>
                 <li key={index}>
                   <UserPopUp user={user} />
                 </li>

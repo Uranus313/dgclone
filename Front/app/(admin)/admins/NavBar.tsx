@@ -3,9 +3,7 @@ import Link from "next/link";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import useUserCheckToken from "../../hooks/useCheckToken";
 import userContext from "../../contexts/userContext";
-// import { Categories , Category } from "./page";
 import { useRouter } from 'next/navigation'
-// import MegaMenu from "./MegaMenu";
 
 
 const NavBar = () => {

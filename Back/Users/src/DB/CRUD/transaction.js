@@ -20,7 +20,9 @@ export async function getAllUserTransactions(userID ,userType ){
 export async function getTransactions(id , searchParams ,limit , floor ,sort , desc ){
     const result = {};
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
-
+    // console.log(floor);
+    // console.log(limit);
+    // console.log(sort);
     if(id){
         result.response = await TransactionModel.find({_id : id}).findOne();
         if(result.response){
@@ -40,9 +42,9 @@ export async function getTransactions(id , searchParams ,limit , floor ,sort , d
             let count = await TransactionModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
-            
+            // console.log(data);
             hasMore = count > (Number(limit) + Number(floor));
-            console.log(hasMore)
+            // console.log(hasMore)
         
         for (let index = 0; index < data.length; index++) {
             data[index] = data[index].toJSON();
