@@ -120,13 +120,13 @@ export async function logIn(email , phoneNumber , password){
     const result = {};
     let employee = null;
     if (email){
-        employee = await EmployeeModel.find({email : email}).findOne();
+        employee = await EmployeeModel.find({email : email}).findOne().populate("roleID");
         if(!employee){
             result.error = "no employee with this email exists";
             return result;
         }
     }else{
-        employee = await EmployeeModel.find({phoneNumber : phoneNumber}).findOne();
+        employee = await EmployeeModel.find({phoneNumber : phoneNumber}).findOne().populate("roleID");
         if(!employee){
             result.error = "no employee with this phoneNumber exists";
             return result;

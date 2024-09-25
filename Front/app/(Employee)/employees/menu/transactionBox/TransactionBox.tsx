@@ -1,9 +1,11 @@
 'use client'
 import userContext from "@/app/contexts/userContext";
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import TransactionList from "./TransactionList";
 
 
 
@@ -11,11 +13,28 @@ import { useContext, useEffect, useState } from "react";
 function TransactionBox() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useContext(userContext);
+    const { user, setUser, isLoading } = useUser();
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const [isOpen, setIsOpen] = useState(false);
+
+
+    const openModal = () => {
+        if (dialogRef.current) {
+            dialogRef.current.showModal();
+            setIsOpen(true);
+        }
+    };
+
+    const closeModal = () => {
+        if (dialogRef.current) {
+            dialogRef.current.close();
+            setIsOpen(false);
+        }
+    };
 
     return (
         <div className="justify-center text-center">
-            <button className="border-grey-border rounded-lg border-2 p-7 px-9 bg-white mb-3">
+            <button onClick={() => openModal()} className="border-grey-border rounded-lg border-2 p-7 px-9 bg-white mb-3">
                 <svg
                     fill="#000000"
                     height="85px"
@@ -34,6 +53,44 @@ function TransactionBox() {
 
             </button>
             <p>مدیریت تراکنش</p>
+            <dialog ref={dialogRef} className="modal">
+                        <div className="modal-box">
+                            {error && <p>{error}</p>}
+                            {user &&
+                                <div>
+                                    {user.roleID &&
+                                        <div>
+
+                                            {user.roleID.accessLevels &&
+                                                <div>
+                                                    {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "transactionManage") ? (
+                                                        <TransactionList />
+                                                    ) : (
+                                                        <div>
+                                                            <p>خارج از سطح دسترسی</p>
+                                                            <button
+                                                                className="mt-7 py-2 px-5 border-2 border-red-box text-center text-red-box rounded-lg"
+                                                                type="button"
+                                                                onClick={closeModal}>
+                                                                خروج
+                                                            </button>
+                                                        </div>
+                                                    )
+                                                    }
+                                                </div>
+
+                                            }
+                                        </div>
+                                    }
+                                </div>
+
+                            }
+                        </div>
+                        <form method="dialog" className="modal-backdrop" onClick={closeModal}>
+                            <button type="button">close</button>
+                        </form>
+                    </dialog>
+
         </div>
     )
 }

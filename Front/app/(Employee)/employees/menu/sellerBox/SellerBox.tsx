@@ -5,14 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import SellerList from "./SellerList";
-import { Employee } from "../../page";
+import { useUser } from "@/app/hooks/useUser";
 
 
 
 function SellerBox() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useContext(userContext) as { user: Employee; setUser: (user: Employee) => void; isLoading: boolean };
+    const { user, setUser, isLoading } = useUser();
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -54,22 +54,29 @@ function SellerBox() {
             <dialog ref={dialogRef} className="modal">
                 <div className="modal-box">
                     {error && <p>{error}</p>}
-                    {
-                        user.roleID.accessLevels &&
+                    {user &&
                         <div>
-                            {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "sellerManage") ? (
-                                <SellerList />
-                            ) : (
+                            {user.roleID &&
                                 <div>
-                                    <p>خارج از سطح دسترسی</p>
-                                    <button
-                                        className="mt-7 py-2 px-5 border-2 border-red-box text-center text-red-box rounded-lg"
-                                        type="button"
-                                        onClick={closeModal}>
-                                        خروج
-                                    </button>
+                                    {user.roleID.accessLevels &&
+                                        <div>
+                                            {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "sellerManage") ? (
+                                                <SellerList />
+                                            ) : (
+                                                <div>
+                                                    <p>خارج از سطح دسترسی</p>
+                                                    <button
+                                                        className="mt-7 py-2 px-5 border-2 border-red-box text-center text-red-box rounded-lg"
+                                                        type="button"
+                                                        onClick={closeModal}>
+                                                        خروج
+                                                    </button>
+                                                </div>
+                                            )
+                                            }
+                                        </div>
+                                    }
                                 </div>
-                            )
                             }
                         </div>
                     }

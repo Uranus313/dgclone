@@ -45,18 +45,12 @@ const AddAdminPopUp = () => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
       queryClient.invalidateQueries({ queryKey: ["adminList"] });
-      // setUser(savedUser);
-
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message)
-      // setError(error)
     }
   });
   async function submit(formData: any) {

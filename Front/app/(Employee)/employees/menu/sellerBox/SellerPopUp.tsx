@@ -2,9 +2,9 @@
 
 import { Wallet } from "@/app/(Customer)/users/menu/layout";
 import userContext from "@/app/contexts/userContext";
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useRef, useState } from "react";
-import { Employee } from "../../page";
 
 export interface Seller {
   storeOwner: {
@@ -101,8 +101,7 @@ const SellerPopUp = ({ seller }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  const { user, setUser, isLoading } = useContext(userContext) as { user: Employee; setUser: (user: Employee) => void; isLoading: boolean };
-
+  const { user, setUser, isLoading } = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {
@@ -474,44 +473,55 @@ const SellerPopUp = ({ seller }: Props) => {
               </div>
             </div>
           </div>
-          {user.roleID.accessLevels && user.roleID.accessLevels.some(accessLevel => accessLevel.level === "sellerManage" && accessLevel.writeAccess === true) &&
+          {user &&
             <div>
-              {seller.isBanned ? (
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => unbanSeller.mutate()}
-                >
-                  لغو بن
-                </button>
-              ) : (
-                <button
-                  className="btn btn-error"
-                  type="button"
-                  onClick={() => banSeller.mutate()}
-                >
-                  بن
-                </button>
-              )}
-              {seller.isVerified ? (
-                <button
-                  className="btn btn-primary mx-3"
-                  type="button"
-                  onClick={() => refuteSeller.mutate()}
-                >
-                  لغو تایید فروشنده
-                </button>
-              ) : (
-                <button
-                  className="btn btn-error mx-3"
-                  type="button"
-                  onClick={() => verifySeller.mutate()}
-                >
-                  ثبت تایید فروشنده
-                </button>
-              )}
+              {
+                user.roleID &&
+                <div>
+
+                  {user.roleID.accessLevels && user.roleID.accessLevels.some(accessLevel => accessLevel.level === "sellerManage" && accessLevel.writeAccess === true) &&
+                    <div>
+                      {seller.isBanned ? (
+                        <button
+                          className="btn btn-primary"
+                          type="button"
+                          onClick={() => unbanSeller.mutate()}
+                        >
+                          لغو بن
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-error"
+                          type="button"
+                          onClick={() => banSeller.mutate()}
+                        >
+                          بن
+                        </button>
+                      )}
+                      {seller.isVerified ? (
+                        <button
+                          className="btn btn-primary mx-3"
+                          type="button"
+                          onClick={() => refuteSeller.mutate()}
+                        >
+                          لغو تایید فروشنده
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-error mx-3"
+                          type="button"
+                          onClick={() => verifySeller.mutate()}
+                        >
+                          ثبت تایید فروشنده
+                        </button>
+                      )}
+                    </div>
+                  }
+                </div>
+              }
             </div>
           }
+
           <button
             className="btn btn-warning"
             type="button"
