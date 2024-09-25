@@ -23,13 +23,11 @@ const (
 	Pending
 	Canceled
 	Returned
-	PreparingOrder
-	Transit
-	NotOrdered
+	RecievedInWareHouse
 )
 
 func (d StateType) String() string {
-	return [...]string{"delivered", "pending", "canceled", "returned", "preparingOrder", "transit", "notOrdered"}[d-1]
+	return [...]string{"delivered", "pending", "canceled", "returned", "recievedInWareHouse"}[d-1]
 }
 
 func (d StateType) EnumIndex() int {
@@ -44,4 +42,5 @@ type Order struct {
 	Rate        int                `json:"rate,omitempty" bson:"rate,omitempty"`
 	State       StateType          `json:"state" bson:"state"`
 	ReceiveDate time.Time          `json:"receive_date,omitempty" bson:"receive_date,omitempty"`
+	OrderDate   time.Time          `json:"order_date" bson:"order_date"`
 }
