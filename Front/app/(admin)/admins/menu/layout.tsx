@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import MenuSideBar from './../MenuSideBar'
 import { useRouter } from 'next/navigation';
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from '@tanstack/react-query';
 
 
@@ -13,7 +13,7 @@ const MenuLayout = ({
   children: React.ReactNode
 }) => {
 
-  const { user, setUser, isLoading } = useContext(userContext);
+  const { user, setUser, isLoading } = useUser();
   const router = useRouter();
   useEffect(() => {
     // console.log(data)

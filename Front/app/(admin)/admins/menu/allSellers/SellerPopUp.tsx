@@ -100,7 +100,7 @@ const SellerPopUp = ({ seller }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const { user} = useContext(userContext);
+  // const { user} = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {

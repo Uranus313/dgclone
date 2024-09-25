@@ -1,19 +1,20 @@
 'use client'
 import React, { useContext } from 'react'
-import { UserAddress } from './page'
+// import { UserAddress } from './page'
 import AddressCard from './AddressCard'
-import userContext from '@/app/contexts/userContext'
+import { useUser } from "@/app/hooks/useUser";
+import { Address } from '@/app/components/Interfaces/interfaces';
 
 interface Props{
-    addresses : UserAddress[]
+    addresses : Address[]
 }
 
 const AddressList = () => {
-  const {user } = useContext(userContext);
+  const {user } = useUser();
     
   return (
     <div>
-      {user.addresses.map( (address : UserAddress, index : any) =>{
+      {user?.addresses.map((address : Address, index : any) =>{
         return <AddressCard key={index} address={address.additionalInfo} city={address.city} postalCode={address.postalCode} receiver={address.receiver}/>
       })}
     </div>

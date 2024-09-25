@@ -1,47 +1,12 @@
 "use client";
 
 import { Wallet } from "@/app/(Customer)/users/menu/layout";
+import { User } from "@/app/components/Interfaces/interfaces";
 import userContext from "@/app/contexts/userContext";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useRef, useState } from "react";
 
-export interface User {
-  firstName: string | null | undefined;
-  lastName: string | null | undefined;
-  isBanned: boolean | undefined;
-  email: string | null | undefined;
-  birthDate: string | null | undefined;
-  nationalID: string | null | undefined;
-  phoneNumber: string;
-  _id: string;
-  job: string | null | undefined;
-  economicCode: string | null | undefined;
-  walletID: string;
-  moneyReturn: {
-    method: "bankAccount" | "wallet";
-    bankAccount: string | null | undefined;
-  };
-  addresses: [
-    {
-      country: string;
-      province: string;
-      city: string;
-      postalCode: string;
-      additionalInfo: string | null | undefined;
-      number: string;
-      unit: string | null | undefined;
-      coordinates: {
-        x: string;
-        y: string;
-      };
-      receiver: {
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-      };
-    }
-  ];
-}
+
 export interface Props {
   user: User;
 }
@@ -50,7 +15,7 @@ const UserPopUp = ({ user }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const { user} = useContext(userContext);
+  // const { user} = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {

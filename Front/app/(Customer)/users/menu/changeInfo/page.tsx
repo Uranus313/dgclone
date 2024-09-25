@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import InputPopUp from "./InputPopUp";
 import PasswordPopUp from "./PasswordPopUp";
 import MoneyReturnPopUp from "./MoneyReturnPopUp";
+import { useUser } from "@/app/hooks/useUser";
 // type FormValues = {
 //   phoneNumber?: string;
 //   firstName?: string;
@@ -21,7 +22,7 @@ import MoneyReturnPopUp from "./MoneyReturnPopUp";
 
 const MyFormComponent = () => {
   const [error, setError] = useState<string | null>(null);
-  const { user, setUser, isLoading } = useContext(userContext);
+  const { user, setUser, isLoading } = useUser();
 
   //     const update = useMutation({
   //         mutationFn: async (formData : any) => {
@@ -126,7 +127,7 @@ const MyFormComponent = () => {
         inputDetails={[{ title: "ایمیل", type: "email", name: "email" }]}
         buttonMode="input"
         titleLabel="پست الکترونیکی"
-        inputDefaultValue={user?.email}
+        inputDefaultValue={user?.email??''}
         inputType="text"
         mainText="سلام"
       />
@@ -150,7 +151,7 @@ const MyFormComponent = () => {
         ]}
         buttonMode="input"
         titleLabel="شماره ملی"
-        inputDefaultValue={user?.nationalID}
+        inputDefaultValue={user?.nationalID??''}
         inputType="number"
         mainText="سلام"
       />
@@ -160,7 +161,7 @@ const MyFormComponent = () => {
         ]}
         buttonMode="input"
         titleLabel="شماره اقتصادی"
-        inputDefaultValue={user?.economicCode}
+        inputDefaultValue={user?.economicCode??''}
         inputType="number"
         mainText="سلام"
       />
@@ -168,7 +169,7 @@ const MyFormComponent = () => {
         inputDetails={[{ title: "شغل", type: "text", name: "job" }]}
         buttonMode="input"
         titleLabel="شغل"
-        inputDefaultValue={user?.job}
+        inputDefaultValue={user?.job??''}
         inputType="text"
         mainText="سلام"
       />

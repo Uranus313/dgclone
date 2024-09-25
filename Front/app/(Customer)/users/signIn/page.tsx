@@ -24,7 +24,7 @@ const SignIn = () => {
   //   console.log(status);
   //   console.log(data); 
   // },[status,data])
-  const {user , setUser , isLoading} = useContext(userContext);
+  const {user , setUser , isLoading} = useUser();
   const queryClient = useQueryClient();
     const login = useMutation({
         mutationFn: async (formData : LoginInfo) => {

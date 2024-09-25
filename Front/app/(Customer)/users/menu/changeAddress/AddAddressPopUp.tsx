@@ -1,5 +1,5 @@
 'use client'
-import userContext from '@/app/contexts/userContext';
+import { useUser } from "@/app/hooks/useUser";
 import React, { useContext, useRef, useState } from 'react'
 import AddAddress from './AddAddress';
 import { useForm } from 'react-hook-form';
@@ -8,7 +8,7 @@ const AddAddressPopUp = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error , setError] = useState<string | null>(null);
-    const {user , setUser , isLoading} = useContext(userContext);
+    const {user , setUser , isLoading} = useUser();
   
     const openModal = () => {
       if (dialogRef.current) {

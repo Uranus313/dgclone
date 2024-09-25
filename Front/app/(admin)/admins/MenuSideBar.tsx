@@ -39,7 +39,7 @@ function MenuSideBar(){
         // setError(error)
       }
     });
-    const {user , setUser , isLoading} = useContext(userContext);
+    const {user , setUser , isLoading} = useUser();
     return(
         <div className="flex w-1/5 bg-white ">
             {isLoading && <span className="loading loading-dots loading-lg"></span>}
