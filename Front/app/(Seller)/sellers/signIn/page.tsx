@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import userContext from "@/app/contexts/userContext";
-import { useUser } from "@/app/hooks/useUser";
+import { useSeller } from "@/app/hooks/useSeller";
 
 interface LoginInfo{
   phoneNumber : string,
@@ -25,11 +25,11 @@ const SignIn = () => {
   //   console.log(status);
   //   console.log(data); 
   // },[status,data])
-  const {user , setUser , isLoading} = useUser();
+  const { seller , setSeller , isLoading} = useSeller();
   const queryClient = useQueryClient();
     const login = useMutation({
         mutationFn: async (formData : LoginInfo) => {
-            const result = await fetch("http://localhost:3005/users/user/logIn", {
+            const result = await fetch("http://localhost:3005/users/seller/logIn", {
                   method: "POST",
                   credentials: 'include',
                   headers: {
@@ -52,7 +52,7 @@ const SignIn = () => {
             console.log(savedUser);
             // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
             // queryClient.invalidateQueries(["user"]);
-            setUser(savedUser);
+            setSeller(savedUser);
             router.push('/');
             // router.push('/');
         },
@@ -67,7 +67,7 @@ const SignIn = () => {
     });
     const signUp = useMutation({
       mutationFn: async (phoneNumber : string) => {
-          const result = await fetch("http://localhost:3005/users/user/signUp", {
+          const result = await fetch("http://localhost:3005/users/seller/signUp", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
@@ -90,7 +90,7 @@ const SignIn = () => {
           console.log(savedUser);
           // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
           // queryClient.invalidateQueries(["user"]);
-          setUser(savedUser);
+          setSeller(savedUser);
           // router.push('/');
           setShowPhoneNumberPage(false);
           setShowCompleteInfoPage(true);
@@ -172,8 +172,8 @@ const SignIn = () => {
         <button onClick={handleSignInSubmit} className="btn btn-primary">enter</button>
     </div>
     <div className={showCompleteInfoPage? "flex" : "hidden"}>
-        <Link className="btn btn-primary" href={"/"}>ورود به دیجیمارکت</Link>
-        <Link className="btn btn-primary" href={"/users/menu/changeInfo"}>کامل کردن اکانت</Link>
+        <Link className="btn btn-primary" href={"/sellers"}>ورود به دیجیمارکت</Link>
+        <Link className="btn btn-primary" href={"/sellers/changeInfo"}>کامل کردن اکانت</Link>
     </div>
     
   </>

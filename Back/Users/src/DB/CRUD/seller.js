@@ -1,7 +1,7 @@
 import { SellerModel } from "../models/seller.js";
 import { comparePassword, hashPassword } from "../../functions/hashing.js";
 
-export async function saveSeller(sellerCreate){
+export async function saveSeller(sellerCreate) {
     const result = {};
     const seller = new SellerModel(sellerCreate);
     const response = await seller.save();
@@ -9,49 +9,53 @@ export async function saveSeller(sellerCreate){
     return result;
 }
 
-export async function getSellers(id , searchParams , idArray ,limit , floor ,nameSearch , sort , desc){
+export async function getSellers(id, searchParams, idArray, limit, floor, nameSearch, sort, desc) {
     const result = {};
-    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+    let sortOrder = (desc == true || desc == "true") ? -1 : 1;
 
-    if(id){
-        result.response = await SellerModel.find({_id : id}).findOne();
-        if(result.response){
+    if (id) {
+        result.response = await SellerModel.find({ _id: id }).findOne();
+        if (result.response) {
             result.response = result.response.toJSON();
-        delete result.response.password;
+            delete result.response.password;
 
         }
         return result;
-        
-    }else if(idArray){
+
+    } else if (idArray) {
         result.response = await SellerModel.find(searchParams);
         for (let index = 0; index < result.response.length; index++) {
             result.response[index] = result.response[index].toJSON();
             delete result.response[index].password;
         }
         return result;
-    }else{
-        if(!limit){
+    } else {
+        if (!limit) {
             limit = 20;
         }
         let data = null;
         let hasMore = false;
-        if(nameSearch && nameSearch != ''){
-            data = await SellerModel.find({...searchParams,lastName:{
-                $regex: nameSearch,
-                $options: 'i'
-            } }).skip(floor).limit(limit).sort({[sort] : sortOrder} );
-            let count = await SellerModel.countDocuments({...searchParams,lastName:{
-                $regex: nameSearch,
-                $options: 'i'
-            } });
+        if (nameSearch && nameSearch != '') {
+            data = await SellerModel.find({
+                ...searchParams, lastName: {
+                    $regex: nameSearch,
+                    $options: 'i'
+                }
+            }).skip(floor).limit(limit).sort({ [sort]: sortOrder });
+            let count = await SellerModel.countDocuments({
+                ...searchParams, lastName: {
+                    $regex: nameSearch,
+                    $options: 'i'
+                }
+            });
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
-        }else{
-            data = await SellerModel.find(searchParams).skip(floor).limit(limit).sort({[sort] : sortOrder} );
+        } else {
+            data = await SellerModel.find(searchParams).skip(floor).limit(limit).sort({ [sort]: sortOrder });
             let count = await SellerModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
-            
+
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
         }
@@ -67,35 +71,37 @@ export async function getSellers(id , searchParams , idArray ,limit , floor ,nam
     }
 }
 
-export async function getSellerCount(searchParams){
+export async function getSellerCount(searchParams) {
     const result = {};
     let count = await SellerModel.estimatedDocumentCount(searchParams);
     result.response = count;
     return result;
-}  
+}
 
-export async function logIn(email , phoneNumber , password){
+export async function logIn(email, phoneNumber, password) {
     const result = {};
     let seller = null;
-    if (email){
-        seller = await SellerModel.find({"storeOwner.email" : email}).findOne();
-        if(!seller){
+    console.log(phoneNumber)
+    console.log(await SellerModel.find())
+    if (email) {
+        seller = await SellerModel.find({ "storeOwner.email": email }).findOne();
+        if (!seller) {
             result.error = "no seller with this email exists";
             return result;
         }
-    }else{
-        seller = await SellerModel.find({phoneNumber : phoneNumber}).findOne();
-        if(!seller){
+    } else {
+        seller = await SellerModel.find({ phoneNumber: phoneNumber }).findOne();
+        if (!seller) {
             result.error = "no seller with this phoneNumber exists";
             return result;
         }
     }
-    if(!seller.password){
+    if (!seller.password) {
         result.error = "this seller does not have a password";
         return result;
     }
-    const passwordCheck = await comparePassword(password , seller.password);
-    if(!passwordCheck){
+    const passwordCheck = await comparePassword(password, seller.password);
+    if (!passwordCheck) {
         result.error = "wrong password";
         return result;
     }
@@ -104,57 +110,57 @@ export async function logIn(email , phoneNumber , password){
 
     return result;
 }
-export async function deleteSeller(id){
+export async function deleteSeller(id) {
     const result = {};
-    result.response = await SellerModel.deleteOne({_id : id});
+    result.response = await SellerModel.deleteOne({ _id: id });
     return result;
 }
 
-export async function updateSeller(id,sellerUpdate ){
+export async function updateSeller(id, sellerUpdate) {
     const result = {};
-    if(sellerUpdate.password){
+    if (sellerUpdate.password) {
         sellerUpdate.password = await hashPassword(sellerUpdate.password);
     }
-    const response = await SellerModel.findByIdAndUpdate(id,{$set :sellerUpdate},{new : true});
+    const response = await SellerModel.findByIdAndUpdate(id, { $set: sellerUpdate }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    return(result);
+    return (result);
 }
-export async function sellerAddNotification(id,notification ){
+export async function sellerAddNotification(id, notification) {
     const result = {};
-    const response = await SellerModel.findByIdAndUpdate(id,{$push :{notifications : notification._id}},{new : true});
+    const response = await SellerModel.findByIdAndUpdate(id, { $push: { notifications: notification._id } }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    const seller = await SellerModel.find({_id : id}).findOne();
+    const seller = await SellerModel.find({ _id: id }).findOne();
     delete notification.sellerID;
     delete notification.userID;
     delete notification.userType;
-    if(seller.recentNotifications.length<2){
+    if (seller.recentNotifications.length < 2) {
         seller.recentNotifications.unshift(notification);
-    }else{
+    } else {
         seller.recentNotifications[1] = seller.recentNotifications[0];
         seller.recentNotifications[0] = notification;
     }
     const response2 = await seller.save();
     result.response = response2.toJSON();
-    return(result);
+    return (result);
 }
-export async function changeSellerPassword(id,newPassword , oldPassword ){
+export async function changeSellerPassword(id, newPassword, oldPassword) {
     const result = {};
-    const seller = await SellerModel.find({_id : id}).findOne();
-    if (seller.password){
-        const answer = await comparePassword(oldPassword,seller.password);
-        if(!answer){
+    const seller = await SellerModel.find({ _id: id }).findOne();
+    if (seller.password) {
+        const answer = await comparePassword(oldPassword, seller.password);
+        if (!answer) {
             result.error = "wrong password"
             return result;
         }
-    }else if (oldPassword){
+    } else if (oldPassword) {
         result.error = "wrong password"
         return result;
     }
     const hashedPassword = await hashPassword(newPassword);
-    const response = await SellerModel.findByIdAndUpdate(id,{$set :{password : hashedPassword}},{new : true});
+    const response = await SellerModel.findByIdAndUpdate(id, { $set: { password: hashedPassword } }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    return(result);
+    return (result);
 }

@@ -75,6 +75,7 @@ export enum UserStatus {
     seller = 'seller',
 }
 export interface User {
+    [key: string]: any;
     status: UserStatus
     firstName: string | null | undefined;
     roleID: Role | null | undefined;
@@ -240,6 +241,7 @@ export enum companyType {
 export enum bankNumberType { shaba = "shaba", bank = "bank" }
 export enum moneyReturn { bankAccount = "bankAccount", wallet = "wallet" }
 export interface Seller {
+    [key: string]: any;
     rating: number
     sellerID: string
     password: string
@@ -251,7 +253,7 @@ export interface Seller {
         nationalID: string,
     },
     isCompelete: boolean,
-    phoneNumber: number,
+    phoneNumber: string,
     entityType?: EntitiyType,
 
     legalInfo?: {
@@ -282,6 +284,7 @@ export interface Seller {
     walletID?: string,
 
     moneyReturn?: {
+        _id:string
         method: moneyReturn
         bankAccount: number
     },

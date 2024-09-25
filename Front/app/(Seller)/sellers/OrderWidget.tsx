@@ -1,12 +1,15 @@
+import { Seller } from '@/app/components/Interfaces/interfaces'
 import React from 'react'
-import { seller } from './page'
 
 
-const OrderWidget = () => {
-  const options = [{title:'تعهد ارسال گذشته و امروز',value:seller.ordersInfo.pastAndTodayShipmentCommitment},
-    {title:'تعهد ارسال فردا به بعد',value:seller.ordersInfo.tomorrowAndFutureShipmentCommitment},
-    {title:'سفارش‌های امروز',value:seller.ordersInfo.todaysOrders},
-    {title:'سفارش‌های لغوشده',value:seller.ordersInfo.canceledOrders}
+interface Props{
+  seller:Seller|null
+}
+const OrderWidget = ({seller}:Props) => {
+  const options = [{title:'تعهد ارسال گذشته و امروز',value:seller?.ordersInfo?.pastAndTodayShipmentCommitment},
+    {title:'تعهد ارسال فردا به بعد',value:seller?.ordersInfo?.tomorrowAndFutureShipmentCommitment},
+    {title:'سفارش‌های امروز',value:seller?.ordersInfo?.todaysOrders},
+    {title:'سفارش‌های لغوشده',value:seller?.ordersInfo?.canceledOrders}
   ]
   return (
     <div>
