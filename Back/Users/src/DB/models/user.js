@@ -52,6 +52,19 @@ const userSchema  = new mongoose.Schema(
             } , required: true}
         }}],
         signUpDate : {type: Date , required : true , default: Date.now()},
+        recentNotifications : { type :[{type : {
+            _id : {type : mongoose.Schema.Types.ObjectId , ref: "notifications", required: true },
+            content: {type: String , required : true},
+        title: {type: String , required : true},
+        teaser: {type: String , required : true},
+        userEmail: {type: String },
+        userPhone: {type: String , required : true},
+        imageUrl: {type: String},
+        orderID: {type : mongoose.Schema.Types.ObjectId },
+        isSeen : Boolean,
+        date : {type: Date, required: true, default : Date.now()},
+        type : {type: String,enum: ["information" , "order","suggestion","question"], required: true}
+        } }]},
         boughtGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         receivedGiftCards : {type : [{type : mongoose.Schema.Types.ObjectId , ref: "giftCards"}]},
         orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},

@@ -120,11 +120,23 @@ export async function updateSeller(id,sellerUpdate ){
     delete result.response.password;
     return(result);
 }
-export async function sellerAddNotification(id,notificationID ){
+export async function sellerAddNotification(id,notification ){
     const result = {};
-    const response = await SellerModel.findByIdAndUpdate(id,{$push :{notifications : notificationID}},{new : true});
+    const response = await SellerModel.findByIdAndUpdate(id,{$push :{notifications : notification._id}},{new : true});
     result.response = response.toJSON();
     delete result.response.password;
+    const seller = await SellerModel.find({_id : id}).findOne();
+    delete notification.sellerID;
+    delete notification.userID;
+    delete notification.userType;
+    if(seller.recentNotifications.length<2){
+        seller.recentNotifications.push(notification);
+    }else{
+        seller.recentNotifications[1] = seller.recentNotifications[0];
+        seller.recentNotifications[0] = notification;
+    }
+    const response2 = await seller.save();
+    result.response = response2.toJSON();
     return(result);
 }
 export async function changeSellerPassword(id,newPassword , oldPassword ){

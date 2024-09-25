@@ -666,7 +666,7 @@ router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : le
             return;
         }
         if(req.body.userID && result.response._id){
-            const user = await addNotification(req.body.userID,result.response._id)
+            const user = await addNotification(req.body.userID,result.response)
             if (user.error){
                 res.status(400).send({error : user.error});
                 res.body = {error : user.error};
@@ -674,7 +674,7 @@ router.post("/notification",(req,res,next) => roleAuth(req,res,next,[{level : le
                 return;
             }
         }else if (result.response._id){
-            const seller = await sellerAddNotification(req.body.sellerID,result.response._id)
+            const seller = await sellerAddNotification(req.body.sellerID,result.response)
             if (seller.error){
                 res.status(400).send({error : seller.error});
                 res.body = {error : seller.error};
