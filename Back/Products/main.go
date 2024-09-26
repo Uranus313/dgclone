@@ -61,8 +61,6 @@ func main() {
 
 	// ------------products-------------
 
-	// app.Get("/products/product", crud.GetAllProducts)
-
 	app.Get("/products/product/:ProdID", crud.GetProductByID)
 
 	app.Post("/products/product", crud.AddProduct)
@@ -78,6 +76,20 @@ func main() {
 	app.Patch("/products/product", crud.EditProduct)
 
 	app.Get("/products/product", crud.InfiniteScrolProds) // query params => limit, offset, CateID
+
+	app.Get("/products/prodAndOrdersCount", crud.GetProdsAndOrdersCount)
+
+	app.Get("/products/allProducts", crud.GetAllProducts)
+
+	app.Get("/products/allPendingProducts", crud.GetAllPendingProds)
+
+	app.Patch("/products/validate-prods", crud.UpdateProdValidationState)
+
+	app.Patch("/products/seller/addVariant", crud.AddVariantToSeller)
+
+	app.Get("/products/seller/pendingVariants", crud.GetAllPendingVariants)
+
+	app.Patch("/products/validate-variant", crud.UpdateVariantValidationState)
 
 	// --------------category-----------------
 
@@ -127,9 +139,21 @@ func main() {
 
 	app.Get("/products/order/orderhistory/:OHID", crud.GetOrdersInOrdersHistory)
 
+	app.Get("/products/order/sellerIncomeChart", crud.SellerIncomeChart) // query params => SellerID, sDateHistory
+
+	app.Get("/products/order", crud.GetAllOrders)
+
 	// -------------inner--------------
 
 	app.Get("/products/inner/ProductMapAssign", crud.InnerProductMapAssign)
+
+	app.Get("/products/inner/order/:orderID", crud.InnerGetOrderByID)
+
+	app.Get("/products/inner/orderHistory/:orderHistoryID", crud.InnerGetOrderHistoryByID)
+
+	app.Get("/products/inner/product/:ProdID", crud.InnerGetOrderByID)
+
+	app.Get("/products/inner/sellerSaleInfo/:SellerID", crud.InnerSellerBS)
 
 	// ------------tests-------------
 
