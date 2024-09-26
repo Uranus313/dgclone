@@ -28,43 +28,43 @@ export interface Seller {
   entityType: "individual" | "legal";
   additionalDocuments: string[];
   legalInfo:
-    | {
-        companyName: string;
-        companyType:
-          | "publicCompany"
-          | "privateCompany"
-          | "limitedLiability"
-          | "cooperative"
-          | "jointLiability"
-          | "institution"
-          | "other";
-        companyIDNumber: string;
-        companyEconomicNumber: string;
-        ShabaNumber: string;
-        signOwners: string[];
-        storeName: string;
-      }
-    | undefined;
+  | {
+    companyName: string;
+    companyType:
+    | "publicCompany"
+    | "privateCompany"
+    | "limitedLiability"
+    | "cooperative"
+    | "jointLiability"
+    | "institution"
+    | "other";
+    companyIDNumber: string;
+    companyEconomicNumber: string;
+    ShabaNumber: string;
+    signOwners: string[];
+    storeName: string;
+  }
+  | undefined;
   individualInfo:
-    | {
-        nationalID: string;
-        bankNumberType: "shaba" | "bank";
-        shabaNumber: string | undefined;
-        bankNumber: string | undefined;
-      }
-    | undefined;
+  | {
+    nationalID: string;
+    bankNumberType: "shaba" | "bank";
+    shabaNumber: string | undefined;
+    bankNumber: string | undefined;
+  }
+  | undefined;
   storeInfo:
-    | {
-        commercialName: string;
-        officePhoneNumber: string;
-        workDays: string[];
-        logo: string | undefined;
-        sellerCode: string;
-        aboutSeller: string | undefined;
-        sellerWebsite: string | undefined;
-        offDays: string[];
-      }
-    | undefined;
+  | {
+    commercialName: string;
+    officePhoneNumber: string;
+    workDays: string[];
+    logo: string | undefined;
+    sellerCode: string;
+    aboutSeller: string | undefined;
+    sellerWebsite: string | undefined;
+    offDays: string[];
+  }
+  | undefined;
   storeAddress: {
     country: string;
     province: string;
@@ -100,7 +100,6 @@ const SellerPopUp = ({ seller }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const { user} = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {
@@ -159,18 +158,12 @@ const SellerPopUp = ({ seller }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       seller.isBanned = true;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
   const unbanSeller = useMutation({
@@ -196,24 +189,18 @@ const SellerPopUp = ({ seller }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       seller.isBanned = false;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
   const verifySeller = useMutation({
     mutationFn: async (sellerID) => {
       const result = await fetch(
-        "http://localhost:3005/users/seller/verifySeller/" + sellerID,
+        "http://localhost:3005/users/seller/verifySeller/" + seller._id,
         {
           method: "PATCH",
           credentials: "include",
@@ -233,24 +220,18 @@ const SellerPopUp = ({ seller }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       seller.isVerified = true;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
   const refuteSeller = useMutation({
     mutationFn: async (sellerID) => {
       const result = await fetch(
-        "http://localhost:3005/users/admin/refuteSeller/" + sellerID,
+        "http://localhost:3005/users/seller/refuteSeller/" + seller._id,
         {
           method: "PATCH",
           credentials: "include",
@@ -270,18 +251,12 @@ const SellerPopUp = ({ seller }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       seller.isVerified = false;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
   return (
@@ -293,8 +268,8 @@ const SellerPopUp = ({ seller }: Props) => {
         }}
         className=" flex py-5 border-b-2 border-b-border-color-list text-center"
       >
-        <p className="w-1/4">{seller.storeInfo?.commercialName}</p>
-        <p className="w-1/4">{seller.phoneNumber}</p>
+        <p className="w-1/4">{(seller.storeInfo?.commercialName && seller.storeInfo?.commercialName) || "-"}</p>
+        <p className="w-1/4">{(seller.phoneNumber && seller.phoneNumber) || "-"}</p>
         {seller.isVerified ? (
           <p className="w-1/4 text-red-500">تایید شده</p>
         ) : (
@@ -306,60 +281,77 @@ const SellerPopUp = ({ seller }: Props) => {
         ) : (
           <p className="w-1/4 text-red-500"> -</p>
         )}
-        
+
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
           {error && <p>{error}</p>}
           <h3 className="font-bold text-lg pb-2">
-            {seller.storeInfo?.commercialName} + {" " + seller._id}
+            {((seller.storeInfo?.commercialName && seller.storeInfo?.commercialName || "") + " " + seller._id) || "-"}
           </h3>
           <div className="block">
-            <div className=" flex justify-between pb-2">
-              <p>شماره تلفن :</p>
-
-              <p>{seller.phoneNumber}</p>
+            <div className=" flex pb-2">
+              <p className="pl-2">شماره تلفن : </p>
+              <p>{(seller.phoneNumber && seller.phoneNumber) || "-"}</p>
             </div>
-            <div className=" flex justify-between pb-2">
-              <p>امتیاز :</p>
-
-              <p>{seller.rating}</p>
+            <div className=" flex pb-2">
+              <p className="pl-2">امتیاز : </p>
+              <p>{(seller.rating && seller.rating) || "-"}</p>
             </div>
-            <div className=" flex justify-between pb-2">
-              <p>آیدی :</p>
-
+            <div className=" flex pb-2">
+              <p className="pl-2">آیدی : </p>
               <p>{seller._id}</p>
             </div>
             <div className=" flex-col ">
               <h3>مشخصات صاحب فروشگاه</h3>
-              <div className=" flex justify-between pb-2">
-                <p>نام :</p>
-
-                <p>{seller.storeOwner.firstName}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">نام :</p>
+                {seller.storeOwner ? (
+                  <p>{(seller.storeOwner.firstName && seller.storeOwner.firstName) || "-"}</p>
+                ) : (
+                  <p>-</p>
+                )}
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>نام خانوادگی :</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">نام خانوادگی :</p>
+                {seller.storeOwner ? (
 
-                <p>{seller.storeOwner.lastName}</p>
+                  <p>{(seller.storeOwner.lastName && seller.storeOwner.lastName) || "-"}</p>
+                ) : (
+                  <p>-</p>
+                )}
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>ایمیل :</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">ایمیل :</p>
+                {seller.storeOwner ? (
 
-                <p>{seller.storeOwner.email}</p>
+                  <p>{(seller.storeOwner.email && seller.storeOwner.email) || "-"}</p>
+                ) : (
+                  <p>-</p>
+                )}
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>کد ملی :</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">کد ملی :</p>
+                {seller.storeOwner ? (
 
-                <p>{seller.storeOwner.nationalID}</p>
+                  <p>{(seller.storeOwner.nationalID && seller.storeOwner.nationalID) || "-"}</p>
+                ) : (
+                  <p>-</p>
+                )}
+
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>تاریخ تولد :</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">تاریخ تولد :</p>
+                {seller.storeOwner ? (
+                  <p>{(seller.storeOwner.birthDate && seller.storeOwner.birthDate) || "-"}</p>
+                ) : (
+                  <p>-</p>
+                )}
 
-                <p>{seller.storeOwner.birthDate}</p>
               </div>
             </div>
-            <div className=" flex justify-between pb-2">
-              <p>موجودی کیف پول :</p>
+            <div className=" flex pb-2">
+              <p className="pl-2">موجودی کیف پول :</p>
               {!wallet && !error && (
                 <span className="loading loading-dots loading-lg"></span>
               )}
@@ -367,177 +359,226 @@ const SellerPopUp = ({ seller }: Props) => {
             </div>
             <div className=" flex-col">
               <h3>روش بازگشت پول</h3>
-              <div className=" flex justify-between pb-2">
-                <p>شیوه انتخابی :</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">شیوه انتخابی :</p>
 
-                <p>{seller.moneyReturn.method}</p>
+                <p>{(seller.moneyReturn.method && seller.moneyReturn.method) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>شماره کارت بانکی :</p>
-                <p>{seller.moneyReturn.bankAccount}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">شماره کارت بانکی :</p>
+                <p>{(seller.moneyReturn.bankAccount && seller.moneyReturn.bankAccount) || "-"}</p>
               </div>
             </div>
-            <div className=" flex justify-between pb-2">
-              <p>نوع موجودیت :</p>
-              <p>{seller.entityType}</p>
+            <div className=" flex pb-2">
+              <p className="pl-2">نوع موجودیت :</p>
+              <p>{(seller.entityType && seller.entityType) || "-"}</p>
             </div>
             <div className=" flex-col">
               <h3>اطلاعات حقوقی</h3>
-              <div className=" flex justify-between pb-2">
-                <p>نام شرکت</p>
-                <p>{seller.legalInfo?.companyName}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">نام شرکت :</p>
+                <p>{(seller.legalInfo?.companyName && seller.legalInfo?.companyName) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>نوع شرکت :</p>
-                <p>{seller.legalInfo?.companyType}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">نوع شرکت :</p>
+                <p>{(seller.legalInfo?.companyType && seller.legalInfo?.companyType) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>کد ملی شرکت :</p>
-                <p>{seller.legalInfo?.companyIDNumber}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">کد ملی شرکت :</p>
+                <p>{(seller.legalInfo?.companyIDNumber && seller.legalInfo?.companyIDNumber) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>شماره اقتصادی شرکت :</p>
-                <p>{seller.legalInfo?.companyEconomicNumber}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">شماره اقتصادی شرکت :</p>
+                <p>{(seller.legalInfo?.companyEconomicNumber && seller.legalInfo?.companyEconomicNumber) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>اسم فروشگاه :</p>
-                <p>{seller.legalInfo?.storeName}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">اسم فروشگاه :</p>
+                <p>{(seller.legalInfo?.storeName && seller.legalInfo?.storeName) || "-"}</p>
               </div>
               <div className=" flex-col">
                 <h5>صاحبان امضا</h5>
-                {seller.legalInfo?.signOwners.map((signer, index) => (
-                  <p key={index}>{signer}</p>
-                ))}
+                {seller.legalInfo ? (
+                  <div>
+                    {seller.legalInfo?.signOwners.map((signer, index) => (
+                      <p key={index}>{signer}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p>صاحب امضایی وجود ندارد</p>
+                )}
               </div>
             </div>
-            <div className=" flex-col">
+            <div className=" flex-col pt-2">
               <h3>مدارک حقیقی</h3>
-              <div className=" flex justify-between pb-2">
-                <p>کد ملی :</p>
-                <p>{seller.individualInfo?.nationalID}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">کد ملی :</p>
+                <p>{(seller.individualInfo?.nationalID && seller.individualInfo?.nationalID) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>نوع شماره بانکی :</p>
-                <p>{seller.individualInfo?.bankNumberType}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">نوع شماره بانکی :</p>
+                <p>{(seller.individualInfo?.bankNumberType && seller.individualInfo?.bankNumberType) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>شماره شبا :</p>
-                <p>{seller.individualInfo?.shabaNumber}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">شماره شبا :</p>
+                <p>{(seller.individualInfo?.shabaNumber && seller.individualInfo?.shabaNumber) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>شماره بانکی:</p>
-                <p>{seller.individualInfo?.bankNumber}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">شماره بانکی :</p>
+                <p>{(seller.individualInfo?.bankNumber && seller.individualInfo?.bankNumber) || "-"}</p>
               </div>
             </div>
             <div className=" flex-col">
               <h3>اطلاعات فروشگاه</h3>
-              <div className=" flex justify-between pb-2">
-                <p>نام تجاری :</p>
-                <p>{seller.individualInfo?.shabaNumber}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">نام تجاری :</p>
+                <p>{(seller.individualInfo?.shabaNumber && seller.individualInfo?.shabaNumber) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>شماره تلفن دفتر :</p>
-                <p>{seller.storeInfo?.officePhoneNumber}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">شماره تلفن دفتر :</p>
+                <p>{(seller.storeInfo?.officePhoneNumber && seller.storeInfo?.officePhoneNumber) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>لوگو :</p>
-                <p>{seller.storeInfo?.logo}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">لوگو :</p>
+                <p>{(seller.storeInfo?.logo && seller.storeInfo?.logo) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>کد فروشنده :</p>
-                <p>{seller.storeInfo?.sellerCode}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">کد فروشنده :</p>
+                <p>{(seller.storeInfo?.sellerCode && seller.storeInfo?.sellerCode) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>درباره فروشگاه :</p>
-                <p>{seller.storeInfo?.aboutSeller}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">درباره فروشگاه :</p>
+                <p>{(seller.storeInfo?.aboutSeller && seller.storeInfo?.aboutSeller) || "-"}</p>
               </div>
-              <div className=" flex justify-between pb-2">
-                <p>وبسایت فروشگاه :</p>
-                <p>{seller.storeInfo?.sellerWebsite}</p>
+              <div className=" flex pb-2">
+                <p className="pl-2">وبسایت فروشگاه :</p>
+                <p>{(seller.storeInfo?.sellerWebsite && seller.storeInfo?.sellerWebsite) || "-"}</p>
               </div>
-              <div className=" flex-col">
-                <h5>روز های کاری فروشگاه</h5>
-                {seller.storeInfo?.workDays.map((day, index) => (
-                  <p key={index}>{day}</p>
-                ))}
+              <div className=" flex-col pb-2">
+                <h5>روز های کاری فروشگاه :</h5>
+                {seller.storeInfo ? (
+                  <div>
+
+                    {seller.storeInfo?.workDays.map((day, index) => (
+                      <p key={index}>{day}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p>هیچ روزی کار نمی کنیم</p>
+                )
+
+                }
               </div>
-              <div className=" flex-col">
-                <h5>روز های تعطیل فروشگاه</h5>
-                {seller.storeInfo?.offDays.map((day, index) => (
-                  <p key={index}>{day}</p>
-                ))}
+              <div className=" flex-col pb-2">
+                <h5>روز های تعطیل فروشگاه :</h5>
+                {seller.storeInfo ? (
+                  <div>
+                    {seller.storeInfo?.offDays.map((day, index) => (
+                      <p key={index}>{day}</p>
+                    ))}
+
+                  </div>
+                ) : (
+                  <p>هیچ روزی تعطیل نمی کنیم</p>
+                )
+
+                }
               </div>
             </div>
-            <div className=" flex-col">
-              <h3>مدارک دیگر</h3>
-              {seller.additionalDocuments.map((info, index) => (
-                <a href="info" key={index} target="_blank">
-                  {info}
-                </a>
-              ))}
+            <div className=" flex-col pb-2">
+              <h3>مدارک دیگر :</h3>
+              {seller.additionalDocuments ? (
+                <div>
+                  {seller.additionalDocuments.map((info, index) => (
+                    <a href="info" key={index} target="_blank">
+                      {info}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p>-</p>
+              )
+
+              }
             </div>
-            <div className=" flex-col">
+            <div className=" flex-col pb-2">
               <h3>آدرس فروشگاه</h3>
-                  <div className=" m-3" >
-                    {seller.storeAddress.additionalInfo && <p>{seller.storeAddress.additionalInfo}</p>}
-                    <p>{seller.storeAddress.city}</p>
-                    <p>{seller.storeAddress.postalCode}</p>
-                    <p>{seller.storeAddress.coordinates.x}</p>
-                    <p>{seller.storeAddress.coordinates.y}</p>
-                  </div>
+              {seller.storeAddress ? (
+
+                <div className=" m-3" >
+                  {seller.storeAddress.additionalInfo && <p>{seller.storeAddress.additionalInfo}</p>}
+                  <p>{seller.storeAddress.city}</p>
+                  <p>{seller.storeAddress.postalCode}</p>
+                  <p>{seller.storeAddress.coordinates.x}</p>
+                  <p>{seller.storeAddress.coordinates.y}</p>
+                </div>
+              ) : (
+                <p>-</p>
+              )
+
+              }
             </div>
-            <div className=" flex-col">
+            <div className=" flex-col pb-2">
               <h3>آدرس انبار</h3>
-                  <div className=" m-3" >
-                    {seller.warehouseAddress.additionalInfo && <p>{seller.warehouseAddress.additionalInfo}</p>}
-                    <p>{seller.warehouseAddress.city}</p>
-                    <p>{seller.warehouseAddress.postalCode}</p>
-                    <p>{seller.warehouseAddress.coordinates.x}</p>
-                    <p>{seller.warehouseAddress.coordinates.y}</p>
-                  </div>
+              {seller.warehouseAddress ? (
+
+                <div className=" m-3" >
+                  {seller.warehouseAddress.additionalInfo && <p>{seller.warehouseAddress.additionalInfo}</p>}
+                  <p>{seller.warehouseAddress.city}</p>
+                  <p>{seller.warehouseAddress.postalCode}</p>
+                  <p>{seller.warehouseAddress.coordinates.x}</p>
+                  <p>{seller.warehouseAddress.coordinates.y}</p>
+                </div>
+              ) : (
+                <p>-</p>
+              )
+
+              }
             </div>
           </div>
-          {seller.isBanned ? (
+          <div className="flex justify-center">
+
+            {seller.isBanned ? (
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={() => unbanSeller.mutate()}
+              >
+                لغو بن
+              </button>
+            ) : (
+              <button
+                className="btn btn-error"
+                type="button"
+                onClick={() => banSeller.mutate()}
+              >
+                بن
+              </button>
+            )}
+            {seller.isVerified ? (
+              <button
+                className="btn btn-primary mx-3"
+                type="button"
+                onClick={() => refuteSeller.mutate()}
+              >
+                لغو تایید فروشنده
+              </button>
+            ) : (
+              <button
+                className="btn btn-error mx-3"
+                type="button"
+                onClick={() => verifySeller.mutate()}
+              >
+                ثبت تایید فروشنده
+              </button>
+            )}
             <button
-              className="btn btn-primary"
+              className="btn btn-warning"
               type="button"
-              onClick={() => unbanSeller.mutate()}
+              onClick={closeModal}
             >
-              لغو بن
+              خروج
             </button>
-          ) : (
-            <button
-              className="btn btn-error"
-              type="button"
-              onClick={() => banSeller.mutate()}
-            >
-              بن
-            </button>
-          )}
-          {seller.isVerified ? (
-            <button
-              className="btn btn-primary mx-3"
-              type="button"
-              onClick={() => refuteSeller.mutate()}
-            >
-              لغو تایید فروشنده
-            </button>
-          ) : (
-            <button
-              className="btn btn-error mx-3"
-              type="button"
-              onClick={() => verifySeller.mutate()}
-            >
-              ثبت تایید فروشنده
-            </button>
-          )}
-          <button
-            className="btn btn-warning"
-            type="button"
-            onClick={closeModal}
-          >
-            خروج
-          </button>
+          </div>
         </div>
         <form method="dialog" className="modal-backdrop" onClick={closeModal}>
           <button type="button">close</button>

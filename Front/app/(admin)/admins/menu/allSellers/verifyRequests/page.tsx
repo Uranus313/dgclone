@@ -3,8 +3,7 @@ import VerifyRequestList from './VerifyRequestList'
 
 const VerifyRequestsWatchPage = () => {
   return (
-    <div>
-      <h1>لیست درخواست های تایید</h1>
+    <div className='w-full p-20 py-16'>
       <VerifyRequestList />
     </div>
   )

@@ -48,10 +48,10 @@ function MenuSideBar(){
                 user && 
                 <ul className="flex flex-col p-7 px-17">
                     <li className="pb-1.5"><Link href={"/admins"}>داشبورد</Link></li>
-                    <li className="py-1"><Link href={"/admins"}>ارزیابی</Link></li>
+                    <li className="py-1"><Link href={"/admins/menu/validation"}>ارزیابی</Link></li>
                     <li className="py-1.5"><Link href={"/admins/menu/allTickets"}>بلیط ها</Link></li>
                     <li className="py-1"><Link href={"/admins/menu/allEmployees/allRoles"}>نقش ها</Link></li>
-                    <li className="py-1.5"><Link href={"/admins"}>لاگ ها</Link></li>
+                    <li className="py-1.5"><Link href={"/admins/menu/allSellers/verifyRequests"}> درخواست تایید</Link></li>
                     <li className="py-1.5">
                         <button onClick={() => logOut.mutate()}>
                             خروج از حساب

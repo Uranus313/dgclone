@@ -84,16 +84,13 @@ const SellerList = ({changeList}:Props) => {
 
           <ul>
             <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام و نام خانوادگی</p>
+              <p className="w-1/4">نام تجاری</p>
               <p className="w-1/4">شماره تلفن</p>
               <p className="w-1/4">تاییدیه </p>
               <p className="w-1/4">وضعیت</p>
             </div>
             {sellers?.data?.map((seller, index) => {
               return (
-                // admin._id == seller._id? null : <li key={index}>
-                //   <AdminPopUp admin={admin}/>
-                //   </li>
                 <li key={index}>
                   <SellerPopUp seller={seller} />
                 </li>

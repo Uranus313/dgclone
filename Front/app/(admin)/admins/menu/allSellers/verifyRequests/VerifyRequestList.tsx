@@ -4,50 +4,56 @@ import useGetVerifyRequests from '../../../hooks/useGetVerifyRequests';
 import { useUser } from "@/app/hooks/useUser";
 import VerifyRequestPopUp from './VerifyRequestPopUp';
 const VerifyRequestList = () => {
-  let [pageSize,setPageSize] = useState<number>(2);
-  let [page,setPage] = useState<number>(0);
-  let [search,setSearch] = useState<string | null>('');
+  let [pageSize, setPageSize] = useState<number>(8);
+  let [page, setPage] = useState<number>(0);
+  let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-  let [state, setState] = useState<"pending" | "accepted" | "rejected" >("pending");
-  let {data: verifyRequests,error,isLoading} = useGetVerifyRequests({floor:page * pageSize,limit:pageSize , nameSearch : search , state : state });
-    useEffect(() =>{
-        console.log(error)
-    },[error])
-  function handleSearch(){
+  let [state, setState] = useState<"pending" | "accepted" | "rejected">("pending");
+  let { data: verifyRequests, error, isLoading } = useGetVerifyRequests({ floor: page * pageSize, limit: pageSize, nameSearch: search, state: state });
+  useEffect(() => {
+    console.log(error)
+  }, [error])
+  function handleSearch() {
     console.log(searchRef.current.value.trim());
     setSearch(searchRef.current.value.trim());
-  }  
+  }
   return (
-    <div className=' flex-col'>
-        <div className='flex'>
-            <button onClick={() => setState("pending")} className={state == "pending"? " btn btn-primary" : "btn btn-secondary"}>در انتظار</button>
-            <button onClick={() => setState("accepted")} className={state == "accepted"? " btn btn-primary" : "btn btn-secondary"}>قبول شده</button>
-            <button onClick={() => setState("rejected")} className={state == "rejected"? " btn btn-primary" : "btn btn-secondary"}>رد شده</button>
+    <div className=' w-full bg-white rounded-lg'>
 
-        </div>
-        {isLoading? <span className="loading loading-dots loading-lg"></span> : 
-        // error && <p>{error.message}</p>
-          <div className=' flex-col'>
-            
-            
-            <ul>
-            {verifyRequests?.data?.map((verifyRequest,index) => {
-                return(
-                    // verifyRequest._id == user._id? null : <li key={index}>
-                    //   <VerifyRequestPopUp verifyRequest={verifyRequest}/>
-                    //   </li>
-                      <li key={index}>
-                      <VerifyRequestPopUp verifyRequest={verifyRequest}/>
-                      </li>
-                )
+      {/* <button onClick={() => setState("pending")} className={state == "pending"? " btn btn-primary" : "btn btn-secondary"}>در انتظار</button>
+            <button onClick={() => setState("accepted")} className={state == "accepted"? " btn btn-primary" : "btn btn-secondary"}>قبول شده</button>
+            <button onClick={() => setState("rejected")} className={state == "rejected"? " btn btn-primary" : "btn btn-secondary"}>رد شده</button> */}
+
+      <div className='border-b-2 shadow-md border-white p-7 px-15 w-full' >
+        <p> درخواست های تایید</p>
+      </div>
+      {isLoading ? <span className="loading loading-dots loading-lg"></span> :
+        <div className=' flex-col'>
+
+
+          <ul>
+            <div className="flex justify-between py-8 text-center w-full">
+              <p className="w-1/3">آی دی فروشنده</p>
+              <p className="w-1/3">تاریخ درخواست</p>
+              <p className="w-1/3">وضعیت </p>
+            </div>
+            {verifyRequests?.data?.map((verifyRequest, index) => {
+              return (
+                <li key={index}>
+                  <VerifyRequestPopUp verifyRequest={verifyRequest} />
+                </li>
+              )
             })}
-            </ul>
-            <button disabled={page == 0} onClick={() => setPage(page-1)} className='btn btn-primary'>قبلی</button>
-            <button disabled={!verifyRequests?.hasMore} onClick={() => setPage(page+1)} className='btn btn-primary'>بعدی</button>
+          </ul>
+          <div className='flex justify-center'>
+
+          <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
+          <button disabled={!verifyRequests?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
           </div>
-        
-        }
-        
+        </div>
+
+      }
+
     </div>
   )
 }

@@ -23,7 +23,7 @@ function useGetVerifyRequests(query : Query){
     return useQuery({
         queryKey : ['verifyRequestList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:3005/users/general/allVerifyRequests"+`?limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}${query.state && `&state=${query.state}`}`, {
+            const result = await fetch("http://localhost:3005/users/general/verifyRequests"+`?limit=${query.limit}&floor=${query.floor}${query.nameSearch && `&nameSearch=${query.nameSearch}`}${query.state && `&state=${query.state}`}`, {
                             credentials: 'include'});
             const jsonResult = await result.json();
             console.log(jsonResult)

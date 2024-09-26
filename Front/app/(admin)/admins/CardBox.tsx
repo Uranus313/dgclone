@@ -22,7 +22,7 @@ function CardBox() {
     return (
 
         <div className='w-9/12 text-white text-center pr-20'>
-            <div className='flex mt-20'>
+            <div className='md:flex mt-20'>
                 <div className='bg-primary-color flex-1 mx-5 rounded-md '>
                     <div className='flex'>
 
@@ -40,9 +40,9 @@ function CardBox() {
                             <p>کاربران</p>
                         </div>
                     </div>
-                    <button className='py-1'>نشان دادن کاربران</button>
+                    <button className='py-1'>  </button>
                 </div>
-                <div className='bg-red-box flex-1 mx-5 rounded-md'>
+                <div className='bg-red-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
 
@@ -60,9 +60,9 @@ function CardBox() {
                         </div>
                     </div>
 
-                    <button className='py-1'>نشان دادن کارمندان</button>
+                    <button className='py-1'>  </button>
                 </div>
-                <div className='bg-purple-box flex-1 mx-5 rounded-md'>
+                <div className='bg-purple-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
 
@@ -79,11 +79,11 @@ function CardBox() {
                             <p>سفارش ها</p>
                         </div>
                     </div>
-                    <button className='py-1'>نشان دادن سفارش ها</button>
+                    <button className='py-1'>   </button>
                 </div>
             </div>
-            <div className='flex mt-16'>
-                <div className='bg-blue-box flex-1 mx-5 rounded-md'>
+            <div className='md:flex mt-16'>
+                <div className='bg-blue-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
 
@@ -100,9 +100,9 @@ function CardBox() {
                             <p> فروشندگان</p>
                         </div>
                     </div>
-                    <button className='py-1'>نشان دادن فروشندگان</button>
+                    <button className='py-1'> </button>
                 </div>
-                <div className='bg-green-box flex-1 mx-5 rounded-md'>
+                <div className='bg-green-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
 
@@ -119,9 +119,9 @@ function CardBox() {
                             <p> محصولات</p>
                         </div>
                     </div>
-                    <button className='py-1'>نشان دادن محصولات</button>
+                    <button className='py-1'> </button>
                 </div>
-                <div className='bg-greener-box flex-1 mx-5 rounded-md'>
+                <div className='bg-greener-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
 
@@ -139,7 +139,7 @@ function CardBox() {
                             <p> تراکنش ها</p>
                         </div>
                     </div>
-                    <button className='py-1'>نشان دادن تراکنش ها</button>
+                    <button className='py-1'>   </button>
                 </div>
             </div>
 

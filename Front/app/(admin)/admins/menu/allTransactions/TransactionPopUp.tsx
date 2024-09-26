@@ -35,13 +35,13 @@ const TransactionPopUp = ({ transaction }: Props) => {
 
             <div onClick={() => {
                 openModal();
-            }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
+            }} className="pr-5 md:pr-0 flex py-5 border-b-2 border-b-border-color-list text-center">
 
 
-                <p className="w-1/4">{(transaction.money && transaction.money) || "-"}</p>
-                <p className="w-1/4">{(transaction.sender.entityType && transaction.sender.entityType) || "-"}</p>
-                <p className="w-1/4">{(transaction.receiver.entityType && transaction.receiver.entityType) || "-"}</p>
-                <p className="w-1/4">{(transaction.date && transaction.date) || "-"}</p>
+                <p className="w-1/4 invisible md:visible ">{(transaction.money && transaction.money) || "-"}</p>
+                <p className="w-1/2 md:w-1/4">{(transaction.sender.entityType && transaction.sender.entityType) || "-"}</p>
+                <p className="w-1/2 md:w-1/4">{(transaction.receiver.entityType && transaction.receiver.entityType) || "-"}</p>
+                <p className="w-1/4 invisible md:visible ">{(transaction.date && transaction.date) || "-"}</p>
 
             </div>
 

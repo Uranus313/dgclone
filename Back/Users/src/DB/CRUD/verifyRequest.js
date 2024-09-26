@@ -30,7 +30,7 @@ export async function getVerifyRequests(id , searchParams, idArray,limit , floor
             // console.log(count);
             // console.log(limit+floor);
             
-        hasMore = count > (Number(limit) + Number(floor));
+        let hasMore = count > (Number(limit) + Number(floor));
         console.log(hasMore)
         
         for (let index = 0; index < data.length; index++) {

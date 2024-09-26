@@ -50,7 +50,6 @@ const UserPopUp = ({ user }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const { user} = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {

@@ -27,7 +27,7 @@ func AddOrder(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
-	order.State = models.NotOrdered
+	order.State = models.Pending
 
 	insertResult, err := database.OrderCollection.InsertOne(context.Background(), order)
 

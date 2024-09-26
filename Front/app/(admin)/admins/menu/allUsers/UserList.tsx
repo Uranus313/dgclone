@@ -43,7 +43,7 @@ const UserList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white m-20  rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
@@ -57,10 +57,10 @@ const UserList = ({ changeList }: Props) => {
           <option value="products">محصولات</option>
           <option value="transactions"> تراکنش ها</option>
         </select>
-        <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+        <input className='md:w-3/6 mt-5 md:mt-0 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
           ref={searchRef}
           onBlur={() => handleSearch()} />
-        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
+        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20 invisible lg:visible'>مرتب سازی</button>
       </form>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
@@ -89,11 +89,11 @@ const UserList = ({ changeList }: Props) => {
         // error && <p>{error.message}</p>
         <div className=' flex-col'>
           <ul>
-            <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام و نام خانوادگی</p>
-              <p className="w-1/4">شماره تلفن</p>
-              <p className="w-1/4">ایمیل </p>
-              <p className="w-1/4">وضعیت</p>
+            <div className="flex md:justify-between py-8 text-center">
+              <p className="w-1/2 md:w-1/4">نام و نام خانوادگی</p>
+              <p className="md:w-1/4 invisible md:visible">شماره تلفن</p>
+              <p className="md:w-1/4 invisible md:visible">ایمیل </p>
+              <p className="w-1/2 md:w-1/4 ">وضعیت</p>
             </div>
             {users?.data?.map((user, index) => {
               return (
