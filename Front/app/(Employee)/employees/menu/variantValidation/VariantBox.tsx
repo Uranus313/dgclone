@@ -32,7 +32,7 @@ function VariantBox() {
 
 
     return (
-        <div className=" justify-center text-center">
+        <div className=" justify-center text-center mx-5">
             <button onClick={() => openModal()} className="border-grey-border rounded-lg border-2 p-7 px-9 bg-white mb-3">
                 <svg
                     fill="#000000"

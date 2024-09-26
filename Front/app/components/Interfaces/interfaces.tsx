@@ -1,3 +1,5 @@
+import { BooleanExpression } from "ol/style/flat";
+
 export interface ProductCardInterface {
     id: string,
     title: string,
@@ -24,6 +26,8 @@ export interface SellerInfosOnProduct {
 }
 
 export interface Ticket {
+    _id: string;
+    isSeen: boolean;
     content: string;
     title: string;
     orderID: string;

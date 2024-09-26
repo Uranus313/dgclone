@@ -21,29 +21,24 @@ const EmployeeHomePage = () => {
   const { user, setUser, isLoading } = useUser();
 
   return (
-    <div className='flex'>
+    <div className='flex flex-wrap md:flex-nowrap '>
       <InformationCard />
-      <div>
-        {isLoading && <span className="loading loading-dots loading-lg m-24"></span>}
-        {
-          user &&
-          <span>
-            <div className='flex mt-24'>
-              <CommentBox />
-              <OrderBox />
-              <TransactionBox />
-              <UserBox />
-              <SellerBox />
-            </div>
-            <div className='flex mt-8'>
-              <ProductManagement />
-              <ProductValidation />
-              <VariantBox />
-              <TicketBox />
-            </div>
-          </span>
-        }
-      </div>
+
+      {isLoading && <span className="loading loading-dots loading-lg m-24"></span>}
+      {
+        user &&
+        <span className='flex flex-wrap md:mt-24 mr-12 md:mr-0 '>
+          <CommentBox />
+          <OrderBox />
+          <TransactionBox />
+          <UserBox />
+          <SellerBox />
+          <ProductManagement />
+          <ProductValidation />
+          <VariantBox />
+          <TicketBox />
+        </span>
+      }
 
     </div>
   )

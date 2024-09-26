@@ -11,7 +11,7 @@ import TransactionList from './menu/allTransactions/TransactionList'
 
 
 const AdminHomePage = () => {
-  const [list, setList] = useState<string>('employees');
+  const [list, setList] = useState<string>('users');
 
   return (
     <div className='w-full flex'>
