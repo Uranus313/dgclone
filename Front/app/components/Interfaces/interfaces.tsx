@@ -234,6 +234,8 @@ export interface Seller {
     sellerID: string
     password: string
     storeOwner?: {
+        _id?:string
+        id?:string
         firstName: string,
         lastName: string,
         birthDate: string,
@@ -245,6 +247,8 @@ export interface Seller {
     entityType?: EntitiyType,
 
     legalInfo?: {
+        _id?:string
+        id?:string
         companyIDNumber: string,
         companyEconomicNumber: string,
         shabaNumber: number,
@@ -255,12 +259,16 @@ export interface Seller {
     additionalDocuments?: string[],
 
     individualInfo?: {
+        _id?:string
+        id?:string
         nationalID: number,
         bankNumberType: bankNumberType,
         shabaNumber: number,
         bankNumber: number,
     },
     storeInfo?: {
+        _id?:string
+        id?:string
         commercialName: string
         officePhoneNumber: number,
         logo?: string,
@@ -276,17 +284,7 @@ export interface Seller {
         method: moneyReturn
         bankAccount: number
     },
-    storeAddress?: {
-        country: string,
-        province: string,
-        city: string,
-        postalCode: number,
-        additionalInfo: string,
-        coordinates: {
-            x: number,
-            y: number
-        }
-    },
+    storeAddress?: Address
 
     // productList: ProductInterface[],
     // saleHistory: Order[],

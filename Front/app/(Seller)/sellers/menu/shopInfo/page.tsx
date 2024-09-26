@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import InputPopUp from "./InputPopUp";
-import PasswordPopUp from "./PasswordPopUp";
-import MoneyReturnPopUp from "./MoneyReturnPopUp";
+
 import { useSeller } from "@/app/hooks/useSeller";
+import InputPopUp from "../changeInfo/InputPopUp";
+
 // type FormValues = {
 //   phoneNumber?: string;
 //   firstName?: string;
@@ -97,36 +97,38 @@ const MyFormComponent = () => {
     <div>
       <InputPopUp
         inputDetails={[
-          { title: "نام", type: "text", name: "firstName" },
-          { title: "نام خانوادگی", type: "text", name: "lastName" },
-        ]}
+          { title: "نام فروشگاه", type: "text", name: "commercialName" },
+          ]}
         buttonMode="input"
-        titleLabel="نام و نام خانوادگی"
+        titleLabel="نام فروشگاه"
         inputDefaultValue={
           "" +
-          (seller?.storeOwner?.firstName ??  "") +
-          (seller?.storeOwner?.lastName ?? "")
+          (seller?.storeInfo?.commercialName ??  "") 
+
         }
         inputType="text"
         mainText="سلام"
+        isStoreInfo={true}
       />
       <InputPopUp
         inputDetails={[
-          { title: "شماره تلفن همراه", type: "text", name: "phoneNumber" },
+          { title: "شماره تلفن فروشگاه", type: "text", name: "officePhoneNumber" },
         ]}
         buttonMode="input"
-        titleLabel="شماره تلفن همراه"
-        inputDefaultValue={seller?.phoneNumber??''}
+        titleLabel="شماره تلفن فروشگاه"
+        inputDefaultValue={seller?.storeInfo?.officePhoneNumber??''}
         inputType="number"
         mainText="سلام"
+        isStoreInfo={true}
       />
       <InputPopUp
-        inputDetails={[{ title: "ایمیل", type: "email", name: "email" }]}
+        inputDetails={[{ title: "درباره فروشنده", type: "text", name: "aboutSeller" }]}
         buttonMode="input"
-        titleLabel="پست الکترونیکی"
-        inputDefaultValue={seller?.storeOwner?.email??''}
+        titleLabel="درباره فروشنده"
+        inputDefaultValue={seller?.storeInfo?.aboutSeller??''}
         inputType="text"
         mainText="سلام"
+        isStoreInfo={true}
       />
 
       <InputPopUp
@@ -138,12 +140,12 @@ const MyFormComponent = () => {
         inputDefaultValue={seller?.storeOwner?.nationalID??''}
         inputType="number"
         mainText="سلام"
+        isStoreOwner={true}
       />
 
 
-      
-      <PasswordPopUp />
-      <MoneyReturnPopUp />
+
+    
     </div>
 
     //         <label className="block">

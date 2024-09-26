@@ -149,6 +149,10 @@ export async function changeSellerPassword(id, newPassword, oldPassword) {
     const result = {};
     const seller = await SellerModel.find({ _id: id }).findOne();
     if (seller.password) {
+        if (!oldPassword) {
+            result.error = "wrong password"
+            return result;
+        }
         const answer = await comparePassword(oldPassword, seller.password);
         if (!answer) {
             result.error = "wrong password"
