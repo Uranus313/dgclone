@@ -228,36 +228,23 @@ export function validateSellerChangeinfo(data, sellerID) {
             })
         }),
         entityType: Joi.string().valid("individual", "legal"),
-        legalInfo: Joi.when("entityType", {
-            is: "legal",
-            then: Joi.object({
-                companyName: Joi.string().min(2).max(100),
-                companyType: Joi.string().valid("publicCompany", "privateCompany", "limitedLiability", "cooperative", "jointLiability", "institution", "other").required(),
-                companyIDNumber: Joi.string().length(10).pattern(/^\d+$/),
-                companyEconomicNumber: Joi.string().length(10).pattern(/^\d+$/),
-                shabaNumber: Joi.string().length(10).pattern(/^\d+$/),
-                signOwners: Joi.array().items(Joi.string()).min(1),
-                storeName: Joi.string().min(2).max(200)
-            }),
-            otherwise: Joi.forbidden()
+        legalInfo: Joi.object({
+            companyName: Joi.string().min(2).max(100),
+            companyType: Joi.string().valid("publicCompany", "privateCompany", "limitedLiability", "cooperative", "jointLiability", "institution", "other"),
+            companyIDNumber: Joi.string().length(10).pattern(/^\d+$/),
+            companyEconomicNumber: Joi.string().length(10).pattern(/^\d+$/),
+            shabaNumber: Joi.string().length(10).pattern(/^\d+$/),
+            signOwners: Joi.array().items(Joi.string()),
+            storeName: Joi.string().min(2).max(200)
+
         }),
-        individualInfo: Joi.when("entityType", {
-            is: "individual",
-            then: Joi.object({
-                nationalID: Joi.string().length(10).pattern(/^\d+$/).required(),
-                bankNumberType: Joi.string().valid("shaba", "bank").required(),
-                shabaNumber: Joi.when("bankNumberType", {
-                    is: "shaba",
-                    then: Joi.string().length(10).pattern(/^\d+$/).required(),
-                    otherwise: Joi.forbidden()
-                }),
-                bankNumber: Joi.when("bankNumberType", {
-                    is: "bank",
-                    then: Joi.string().length(10).pattern(/^\d+$/).required(),
-                    otherwise: Joi.forbidden()
-                })
-            }),
-            otherwise: Joi.forbidden()
+        individualInfo: Joi.object({
+            nationalID: Joi.string().length(10).pattern(/^\d+$/),
+            bankNumberType: Joi.string().valid("shaba", "bank"),
+            shabaNumber: Joi.string().length(10).pattern(/^\d+$/),
+            bankNumber: Joi.string().length(10).pattern(/^\d+$/)
+
+
         }),
         additionalDocuments: Joi.array().items(Joi.string()),
         storeInfo: Joi.object({

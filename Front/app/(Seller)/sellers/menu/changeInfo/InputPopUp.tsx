@@ -19,9 +19,10 @@ interface Props{
     oneObjectChange? : string 
     isStoreOwner?:boolean
     isStoreInfo?:boolean
+    islegalInfo?:boolean
 }
 
-const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultValue,mainText , oneObjectChange,isStoreOwner=false,isStoreInfo=false} : Props) => {
+const InputPopUp = ({islegalInfo,inputDetails,buttonMode,titleLabel,inputType,inputDefaultValue,mainText , oneObjectChange,isStoreOwner=false,isStoreInfo=false} : Props) => {
     
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
@@ -45,6 +46,7 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
         mutationFn: async (formData : any) => {
           const { _id: storeOwnerId, id: storeOwnerOtherId, ...storeOwnerWithoutId } = seller?.storeOwner || {};
           const { _id: storeInfoId, id: storeInfoOtherId, ...storeInfoWithoutId } = seller?.storeInfo || {};
+          const { _id: legalInfoID, id: legalInfoOtherID, ...legalInfoWithoutID } = seller?.legalInfo || {};
           
           let body 
            
@@ -54,6 +56,9 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
           }
           else if(isStoreInfo){
             body = JSON.stringify({storeInfo:{ ...storeInfoWithoutId, ...formData }})
+          }
+          else if(islegalInfo){
+            body = JSON.stringify({legalInfo:{ ...legalInfoWithoutID, ...formData }})
           }
           else{
             body = JSON.stringify(formData);

@@ -68,7 +68,7 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
                     <li><Link href={"/sellers/menu/changeInfo"}>اطلاعات مالک کسب و کار</Link></li>
                     <li><Link href={"/sellers/menu/shopInfo"}>اطلاعات فروشگاه</Link></li>
                     <li><Link href={"/sellers/menu/changeAddress"}>آدرس ها</Link></li>
-                    <li><Link href={"/sellers/menu/finance"}>مالی</Link></li>
+                    <li><Link href={"/sellers/menu/finances"}>مالی</Link></li>
                     <li>
                         
                         <button onClick={() => logOut.mutate()}>

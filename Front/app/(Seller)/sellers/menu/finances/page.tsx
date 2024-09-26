@@ -17,7 +17,7 @@ import InputPopUp from "../changeInfo/InputPopUp";
 
 
 
-const MyFormComponent = () => {
+const Finances = () => {
   const [error, setError] = useState<string | null>(null);
   const { seller, setSeller, isLoading} = useSeller();
 
@@ -97,39 +97,52 @@ const MyFormComponent = () => {
     <div>
       <InputPopUp
         inputDetails={[
-          { title: "نام فروشگاه", type: "text", name: "commercialName" },
+          { title: "شماره کارت", type: "text", name: "shabaNumber" },
           ]}
         buttonMode="input"
-        titleLabel="نام فروشگاه"
+        titleLabel="شماره کارت"
         inputDefaultValue={
           "" +
-          (seller?.storeInfo?.commercialName ??  "") 
+          (seller?.legalInfo?.shabaNumber ??  "") 
 
         }
         inputType="text"
         mainText="سلام"
-        isStoreInfo={true}
+        islegalInfo={true}
       />
+
       <InputPopUp
         inputDetails={[
-          { title: "شماره تلفن فروشگاه", type: "text", name: "officePhoneNumber" },
-        ]}
+          { title: "شماره اقتصادی", type: "text", name: "companyEconomicNumber" },
+          ]}
         buttonMode="input"
-        titleLabel="شماره تلفن فروشگاه"
-        inputDefaultValue={seller?.storeInfo?.officePhoneNumber??''}
-        inputType="number"
-        mainText="سلام"
-        isStoreInfo={true}
-      />
-      <InputPopUp
-        inputDetails={[{ title: "درباره فروشنده", type: "text", name: "aboutSeller" }]}
-        buttonMode="input"
-        titleLabel="درباره فروشنده"
-        inputDefaultValue={seller?.storeInfo?.aboutSeller??''}
+        titleLabel="شماره اقتصادی"
+        inputDefaultValue={
+          "" +
+          (seller?.legalInfo?.companyEconomicNumber ??  "") 
+
+        }
         inputType="text"
         mainText="سلام"
-        isStoreInfo={true}
+        islegalInfo={true}
       />
+
+      <InputPopUp
+        inputDetails={[
+          { title: "شماره کارت", type: "text", name: "shabaNumber" },
+          ]}
+        buttonMode="input"
+        titleLabel="شماره کارت"
+        inputDefaultValue={
+          "" +
+          (seller?.legalInfo?.shabaNumber ??  "") 
+
+        }
+        inputType="text"
+        mainText="سلام"
+        islegalInfo={true}
+      />
+
 
       {/* <InputPopUp
         inputDetails={[
@@ -164,4 +177,4 @@ const MyFormComponent = () => {
   );
 };
 
-export default MyFormComponent;
+export default Finances;
