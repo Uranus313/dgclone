@@ -1,11 +1,9 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 
-interface Props {
-  changeList: (list: string) => void
-}
 
-const CommentList = ({ changeList }: Props) => {
+
+const ProductList = () => {
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   let [typeSort, setTypeSort] = useState<string>("none");
@@ -25,20 +23,17 @@ const CommentList = ({ changeList }: Props) => {
         e.preventDefault();
         handleSearch();
       }} className='border-b-2 shadow-md border-white p-7 px-13' >
-        <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
-          <option value="comments" selected>کامنت ها</option>
-          <option value="products">محصولات</option>
-          
-        </select>
+        
         </form>
       {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
        
         <div className=' flex-col'>
           {/* <ul>
-            {comments?.data?.map((comment, index) => {
+            
+            {products?.data?.map((product, index) => {
               return (
                 <li key={index}>
-                  <CommentPopUp comment={comment} />
+                  <ProductPopUp  />
                 </li>
               )
             })}
@@ -46,7 +41,7 @@ const CommentList = ({ changeList }: Props) => {
 
           {/* <div className='my-4 flex justify-center pb-5'>
             <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-            <button disabled={!comments?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
+            <button disabled={!products?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
           </div> */}
 
         </div>
@@ -55,4 +50,4 @@ const CommentList = ({ changeList }: Props) => {
   )
 }
 
-export default CommentList
+export default ProductList

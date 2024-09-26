@@ -1,11 +1,8 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 
-interface Props {
-  changeList: (list: string) => void
-}
 
-const CommentList = ({ changeList }: Props) => {
+const CommentList = () => {
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   let [typeSort, setTypeSort] = useState<string>("none");
@@ -25,11 +22,7 @@ const CommentList = ({ changeList }: Props) => {
         e.preventDefault();
         handleSearch();
       }} className='border-b-2 shadow-md border-white p-7 px-13' >
-        <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
-          <option value="comments" selected>کامنت ها</option>
-          <option value="products">محصولات</option>
-          
-        </select>
+       
         </form>
       {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
        

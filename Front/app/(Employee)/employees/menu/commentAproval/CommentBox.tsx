@@ -5,13 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useUser } from "@/app/hooks/useUser";
+import CommentList from "./CommentList";
 
 
 
 function CommentBox() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useUser(); const dialogRef = useRef<HTMLDialogElement>(null);
+    const { user, setUser, isLoading } = useUser(); 
+    const dialogRef = useRef<HTMLDialogElement>(null);
     const [isOpen, setIsOpen] = useState(false);
 
 
@@ -63,8 +65,8 @@ function CommentBox() {
                                     {user.roleID.accessLevels &&
                                         <div>
                                             {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "commentManage") ? (
-                                                // <UserList />
-                                                <p></p>
+                                                <CommentList />
+                                               
                                             ) : (
                                                 <div>
                                                     <p>خارج از سطح دسترسی</p>

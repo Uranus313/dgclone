@@ -35,16 +35,11 @@ const ProductList = ({ changeList }: Props) => {
        
         <div className=' flex-col'>
           {/* <ul>
-            <div className="flex md:justify-between py-8 text-center">
-              <p className="w-1/2 md:w-1/4">نام و نام خانوادگی</p>
-              <p className="md:w-1/4 invisible md:visible">شماره تلفن</p>
-              <p className="md:w-1/4 invisible md:visible">ایمیل </p>
-              <p className="w-1/2 md:w-1/4 ">وضعیت</p>
-            </div>
-            {users?.data?.map((user, index) => {
+            
+            {products?.data?.map((product, index) => {
               return (
                 <li key={index}>
-                  <UserPopUp user={user} />
+                  <\ProductPopUp product={product} />
                 </li>
               )
             })}
@@ -52,7 +47,7 @@ const ProductList = ({ changeList }: Props) => {
 
           {/* <div className='my-4 flex justify-center pb-5'>
             <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-            <button disabled={!users?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
+            <button disabled={!products?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
           </div> */}
 
         </div>
