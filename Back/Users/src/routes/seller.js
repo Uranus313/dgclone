@@ -15,6 +15,7 @@ import { getVerifyRequests, saveVerifyRequest, updateVerifyRequest } from "../DB
 import { validateVerifyRequestAnswer } from "../DB/models/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
+import { sellerSaleInfo } from "../functions/sellerSaleInfo.js";
 const router = express.Router();
 
 router.post("/signUp",  async (req, res, next) =>{
@@ -95,6 +96,11 @@ router.patch("/changeMyinfo",(req, res,next) => auth(req, res,next, ["seller"]) 
             next();
             return;
         }
+        const saleinfo = await sellerSaleInfo(req.seller._id);
+        if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            result.response = {...result.response ,saleinfoJson}
+        }
         const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.cookie('x-auth-token',token,{
             httpOnly: true,
@@ -167,6 +173,11 @@ router.post("/logIn",  async (req, res, next) =>{
             res.body = {error : result.error};
             next();
             return;
+        }
+        const saleinfo = await sellerSaleInfo(result.response._id);
+        if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            result.response = {...result.response ,saleinfoJson}
         }
         const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.cookie('x-auth-token',token,{
@@ -450,46 +461,46 @@ router.get("/myTransactions", (req, res,next) => auth(req, res,next, ["seller"])
     next();
 });
 
-router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["seller"]) ,async (req, res,next) =>{
-    try {
-        await validateLastVisitedPost(req.body); 
-    } catch (error) {
-        if (error.details){
-            res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
-        }else{
-            res.status(400).send({error : error.message});
-            res.body = {error : error.message};
-        }
-        next();
-        return;
-    }
-    try {
-        const foundIndex = req.seller.lastVisited.indexOf(req.body.productID);
-        if (foundIndex != -1){
-            for (let index = foundIndex; index > 0; index--) {
-                req.seller.lastVisited[index] = req.seller.lastVisited[index-1];
-            }
-            req.seller.lastVisited[0] = req.body.productID;
-        }else{
-            req.seller.lastVisited.pop();
-            req.seller.lastVisited.unshift(req.body.productID);
-        }
-        const result = await updateSeller(req.seller._id,{lastVisited: req.seller.lastVisited})
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
-            next();
-            return;
-        }
-        res.send(result.response);
-        res.body = result.response;
-    } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
-    }
-    next();
-});
+// router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["seller"]) ,async (req, res,next) =>{
+//     try {
+//         await validateLastVisitedPost(req.body); 
+//     } catch (error) {
+//         if (error.details){
+//             res.status(400).send({error : error.details[0].message});
+//             res.body = {error : error.details[0].message};
+//         }else{
+//             res.status(400).send({error : error.message});
+//             res.body = {error : error.message};
+//         }
+//         next();
+//         return;
+//     }
+//     try {
+//         const foundIndex = req.seller.lastVisited.indexOf(req.body.productID);
+//         if (foundIndex != -1){
+//             for (let index = foundIndex; index > 0; index--) {
+//                 req.seller.lastVisited[index] = req.seller.lastVisited[index-1];
+//             }
+//             req.seller.lastVisited[0] = req.body.productID;
+//         }else{
+//             req.seller.lastVisited.pop();
+//             req.seller.lastVisited.unshift(req.body.productID);
+//         }
+//         const result = await updateSeller(req.seller._id,{lastVisited: req.seller.lastVisited})
+//         if (result.error){
+//             res.status(400).send({error : result.error});
+//             res.body = {error : result.error};
+//             next();
+//             return;
+//         }
+//         res.send(result.response);
+//         res.body = result.response;
+//     } catch (err) {
+//         console.log("Error",err);
+//         res.body = {error:"internal server error"};
+//         res.status(500).send({error:"internal server error"});
+//     }
+//     next();
+// });
 
 export default router;

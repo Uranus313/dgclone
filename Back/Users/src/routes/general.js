@@ -780,8 +780,14 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller"
         }
         if(req.seller){
             delete req.seller.password;
-            res.send(req.seller);
-            res.body = req.seller;
+            const saleinfo = await sellerSaleInfo(req.seller._id);
+            let seller = req.seller;
+            if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            seller = {...seller,saleinfoJson}
+            }
+            res.send(seller);
+            res.body = seller;
             next();
             return;
         }
