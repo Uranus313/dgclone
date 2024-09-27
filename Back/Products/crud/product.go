@@ -18,29 +18,114 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// func GetAllProducts(c *fiber.Ctx) error {
+func GetAllProducts(c *fiber.Ctx) error {
 
-// 	var product_list []models.Product
+	// token = admin ????
 
-// 	cursor, err := database.ProductCollection.Find(context.Background(), bson.M{})
+	var product_list []models.Product
 
-// 	if err != nil {
-// 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching products from database: ": err.Error()})
-// 	}
+	filter := bson.M{"$or": []bson.M{
+		{"validation_state": 2},
+		{"validation_state": 3},
+	}}
 
-// 	defer cursor.Close(context.Background())
+	cursor, err := database.ProductCollection.Find(context.Background(), filter)
 
-// 	for cursor.Next(context.Background()) {
-// 		var product models.Product
-// 		if err := cursor.Decode(&product); err != nil {
-// 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
-// 		}
-// 		product_list = append(product_list, product)
-// 	}
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching products from database: ": err.Error()})
+	}
 
-// 	return c.Status(http.StatusOK).JSON(product_list)
+	defer cursor.Close(context.Background())
 
-// }
+	for cursor.Next(context.Background()) {
+		var product models.Product
+		if err := cursor.Decode(&product); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
+		}
+		product_list = append(product_list, product)
+	}
+
+	return c.Status(http.StatusOK).JSON(product_list)
+}
+
+func GetAllPendingProds(c *fiber.Ctx) error {
+
+	// token = admin ????
+
+	var product_list []models.Product
+
+	filter := bson.M{"validation_state": 1}
+
+	cursor, err := database.ProductCollection.Find(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching products from database: ": err.Error()})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &product_list); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
+	}
+
+	return c.Status(http.StatusOK).JSON(product_list)
+}
+
+func UpdateProdValidationState(c *fiber.Ctx) error {
+
+	prodIDString := c.Query("ProdID")
+
+	prodID, err := primitive.ObjectIDFromHex(prodIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching prod id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	validationStateString := c.Query("ValidationState")
+
+	validationState, err := strconv.Atoi(validationStateString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching validation state from query",
+			"error":   err.Error(),
+		})
+	}
+
+	if validationState != 2 && validationState != 3 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid validation state",
+			"valid requests": fiber.Map{
+				"2": "Validated",
+				"3": "Banned",
+			},
+		})
+	}
+
+	update := bson.M{"$set": bson.M{"validation_state": validationState}}
+
+	updateResult, err := database.ProductCollection.UpdateByID(context.Background(), prodID, update)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while updating product",
+			"error":   err.Error(),
+		})
+	}
+
+	if updateResult.MatchedCount == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "product not found"})
+	}
+
+	if updateResult.ModifiedCount == 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "product was not modified"})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "product validation state updated succesfully"})
+}
 
 func GetProductByID(c *fiber.Ctx) error {
 
@@ -131,6 +216,8 @@ func AddProduct(c *fiber.Ctx) error {
 	// 	}
 	// }
 
+	// Patch(add product to seller prods)
+
 	product.DateAdded = time.Now()
 	product.ValidationState = models.PendingValidation
 
@@ -161,28 +248,37 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
 	}
 
+	var sellerCart models.SellerCart
+
+	if err := c.BodyParser(&sellerCart); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
 	// INNER USERS API => input:sellerID, output: seller_cart
 	type API_Response struct {
-		seller_cart models.SellerCart
-		err         error
-		status      int
-		message     string
+		title  string
+		rating float32
+		err    string
 	}
 	sample_func := func(sellerID primitive.ObjectID) API_Response {
 		// function logic
-		var seller_cart = models.SellerCart{SellerID: sellerID}
+		// var seller_cart = models.SellerCart{SellerID: sellerID}
 		return API_Response{
-			seller_cart: seller_cart,
-			err:         nil,
-			status:      200,
-			message:     "everything is fine",
+			title:  sellerID.Hex(),
+			rating: 5,
+			// err:         nil,
+			// status:      200,
+			err: "",
 		}
 	}
 	var api_response API_Response = sample_func(sellerID)
 
-	if api_response.err != nil {
-		return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
-	}
+	// if api_response.err != nil {
+	// 	return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
+	// }
+
+	sellerCart.SellerTitle = api_response.title
+	sellerCart.SellerRating = api_response.rating
 
 	prodIDString := c.Query("ProdID")
 
@@ -192,7 +288,7 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
 	}
 
-	update := bson.M{"$push": bson.M{"sellers": api_response.seller_cart}}
+	update := bson.M{"$push": bson.M{"sellers": sellerCart}}
 
 	updateResult, err := database.ProductCollection.UpdateByID(context.Background(), prodID, update)
 
@@ -209,6 +305,220 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "seller cart added to product succesfully"})
+}
+
+func AddVariantToSeller(c *fiber.Ctx) error {
+
+	prodIDString := c.Query("prodID")
+
+	prodID, err := primitive.ObjectIDFromHex(prodIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
+	}
+
+	sellerIDString := c.Query("SellerID")
+
+	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
+	}
+
+	var variant models.SellerQuantity
+
+	if err := c.BodyParser(&variant); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid request body"})
+	}
+
+	variant.ValidationState = models.PendingValidation
+	// variant.VariantID = primitive.NewObjectID()
+
+	var product models.Product
+
+	filter := bson.M{"_id": prodID}
+
+	err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching product from database",
+			"error":   err.Error(),
+		})
+	}
+
+	var sellerFound bool = false
+
+	for index, seller := range product.Sellers {
+		if seller.SellerID == sellerID {
+			sellerFound = true
+			for _, quantity := range seller.SellerQuantity {
+				if variant.Color.ID == quantity.Color.ID {
+					return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "duplicate varient/color"})
+				}
+			}
+			product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
+			break
+		}
+	}
+
+	if !sellerFound {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
+	}
+
+	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
+
+	_, err = database.ProductCollection.UpdateByID(context.Background(), prodID, update)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while updating product",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "varient added to seller succesfully"})
+}
+
+func GetAllPendingVariants(c *fiber.Ctx) error {
+
+	// token = admin ????
+
+	var variants []models.Product
+
+	pipeline := mongo.Pipeline{
+		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sellers"}}}},
+		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sellers.seller_quantity"}}}},
+		{{Key: "$match", Value: bson.D{{Key: "sellers.seller_quantity.validation_state", Value: models.PendingValidation}}}},
+		{
+			{Key: "$project", Value: bson.D{
+				{Key: "seller_id", Value: "$sellers.seller_id"},
+				{Key: "seller_title", Value: "$sellers.seller_title"},
+				{Key: "seller_rating", Value: "$sellers.seller_rating"},
+				{Key: "seller_quantity", Value: "$sellers.seller_quantity"},
+				{Key: "shipment_method", Value: "$sellers.shipment_method"},
+				{Key: "price", Value: "$sellers.price"},
+				{Key: "discount_id", Value: "$sellers.discount_id"},
+			}},
+		},
+	}
+
+	cursor, err := database.ProductCollection.Aggregate(context.Background(), pipeline)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching data from database: ": err.Error()})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &variants); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
+	}
+
+	return c.Status(http.StatusOK).JSON(variants)
+}
+
+func UpdateVariantValidationState(c *fiber.Ctx) error {
+
+	prodIDString := c.Query("prodID")
+
+	prodID, err := primitive.ObjectIDFromHex(prodIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
+	}
+
+	sellerIDString := c.Query("SellerID")
+
+	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
+	}
+
+	colorIDString := c.Query("ColorID")
+
+	colorID, err := primitive.ObjectIDFromHex(colorIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching color id from query": err.Error()})
+	}
+
+	validationStateString := c.Query("ValidationState")
+
+	validationState, err := strconv.Atoi(validationStateString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching validation state from query",
+			"error":   err.Error(),
+		})
+	}
+
+	if validationState != 2 && validationState != 3 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid validation state",
+			"valid requests": fiber.Map{
+				"2": "Validated",
+				"3": "Banned",
+			},
+		})
+	}
+
+	var product models.Product
+
+	filter := bson.M{"_id": prodID}
+
+	err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching product from database",
+			"error":   err.Error(),
+		})
+	}
+
+	var sellerFound bool = false
+	var quantityFound bool = false
+
+	for index, seller := range product.Sellers {
+		if seller.SellerID == sellerID {
+			sellerFound = true
+			for cindex, quantity := range seller.SellerQuantity {
+				if colorID == quantity.Color.ID {
+					quantityFound = true
+					product.Sellers[index].SellerQuantity[cindex].ValidationState = models.ValidationState(validationState)
+					break
+				}
+			}
+			break
+		}
+	}
+
+	if !sellerFound {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
+	}
+
+	if !quantityFound {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "varient not found"})
+	}
+
+	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
+
+	updateResult, err := database.ProductCollection.UpdateByID(context.Background(), prodID, update)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while updating product",
+			"error":   err.Error(),
+		})
+	}
+
+	if updateResult.ModifiedCount == 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "no new update entry"})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "varient added to seller succesfully"})
 }
 
 func UpdateProductRating(c *fiber.Ctx) error {
@@ -555,6 +865,41 @@ func CreateProdCard(product models.Product) models.ProductCard {
 		Picture:    product.Images[0],
 		DiscountID: product.Sellers[minPriceSellerIndex].DiscountID,
 	}
+}
+
+func GetProdsAndOrdersCount(c *fiber.Ctx) error {
+
+	// token = admin ????
+
+	// var prodsCount int64
+	// var ordersCount int64
+
+	prodFilter := bson.M{"validation_state": 2}
+
+	prodsCount, err := database.ProductCollection.CountDocuments(context.Background(), prodFilter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while counting documents from products collection",
+			"error":   err.Error(),
+		})
+	}
+
+	orderFilter := bson.M{}
+
+	ordersCount, err := database.OrderCollection.CountDocuments(context.Background(), orderFilter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while counting documents from orders collection",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"prods_count":  prodsCount,
+		"orders_count": ordersCount,
+	})
 }
 
 // Get => incredible products

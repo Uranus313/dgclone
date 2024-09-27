@@ -6,7 +6,6 @@ import (
 	"dg-kala-sample/models"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -146,32 +145,32 @@ func InnerGetProductByID(c *fiber.Ctx) error {
 
 func InnerSellerBS(c *fiber.Ctx) error {
 
-	sellerIDString := c.Query("SellerID")
+	sellerIDString := c.Params("SellerID")
 
 	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
 
 	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from params": err.Error()})
 	}
 
-	sDateHistoryString := c.Query("sDateHistory", "0")
+	// sDateHistoryString := c.Query("sDateHistory", "0")
 
-	sDateHistory, err := strconv.Atoi(sDateHistoryString)
+	// sDateHistory, err := strconv.Atoi(sDateHistoryString)
 
-	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sDateHistory from query": err.Error()})
-	}
+	// if err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sDateHistory from query": err.Error()})
+	// }
 
-	if sDateHistory < 1 || sDateHistory > 3 {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid sDateHistory",
-			"valid sDateHistory": fiber.Map{
-				"1": "last week",
-				"2": "last month",
-				"3": "last 2 months",
-			},
-		})
-	}
+	// if sDateHistory < 1 || sDateHistory > 3 {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+	// 		"error": "invalid sDateHistory",
+	// 		"valid sDateHistory": fiber.Map{
+	// 			"1": "last week",
+	// 			"2": "last month",
+	// 			"3": "last 2 months",
+	// 		},
+	// 	})
+	// }
 
 	var sellerOrders []models.Order
 
@@ -301,27 +300,27 @@ func InnerSellerBS(c *fiber.Ctx) error {
 		return income
 	}
 
-	var startDateYear int
-	var startDateMonth time.Month
-	var startDateDay int
+	// var startDateYear int
+	// var startDateMonth time.Month
+	// var startDateDay int
 
-	switch sDateHistory {
-	case 1:
-		startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 7).Date()
-	case 2:
-		startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 30).Date()
-	case 3:
-		startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 60).Date()
-	default:
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid sDateHistory",
-			"valid sDateHistory": fiber.Map{
-				"1": "last week",
-				"2": "last month",
-				"3": "last 2 months",
-			},
-		})
-	}
+	// switch sDateHistory {
+	// case 1:
+	startDateYear, startDateMonth, startDateDay := time.Now().Add(time.Hour * -24 * 7).Date()
+	// case 2:
+	// 	startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 30).Date()
+	// case 3:
+	// 	startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 60).Date()
+	// default:
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+	// 		"error": "invalid sDateHistory",
+	// 		"valid sDateHistory": fiber.Map{
+	// 			"1": "last week",
+	// 			"2": "last month",
+	// 			"3": "last 2 months",
+	// 		},
+	// 	})
+	// }
 
 	startDate := time.Date(startDateYear, startDateMonth, startDateDay, 0, 0, 0, 0, time.UTC)
 
@@ -345,3 +344,22 @@ func InnerSellerBS(c *fiber.Ctx) error {
 	})
 
 }
+
+/*
+
+
+all prods count
+all orders count
+
+
+all prods list
+all orders list
+
+all pending prods
+validate prods
+
+add quantity to seller
+all pending seller quantities
+validate seller quantites
+
+*/

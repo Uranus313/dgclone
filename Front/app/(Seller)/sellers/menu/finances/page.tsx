@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import InputPopUp from "./InputPopUp";
-import PasswordPopUp from "./PasswordPopUp";
-import MoneyReturnPopUp from "./MoneyReturnPopUp";
+
 import { useSeller } from "@/app/hooks/useSeller";
+import InputPopUp from "../changeInfo/InputPopUp";
+
 // type FormValues = {
 //   phoneNumber?: string;
 //   firstName?: string;
@@ -17,7 +17,7 @@ import { useSeller } from "@/app/hooks/useSeller";
 
 
 
-const MyFormComponent = () => {
+const Finances = () => {
   const [error, setError] = useState<string | null>(null);
   const { seller, setSeller, isLoading} = useSeller();
 
@@ -97,53 +97,68 @@ const MyFormComponent = () => {
     <div>
       <InputPopUp
         inputDetails={[
-          { title: "نام", type: "text", name: "firstName" },
-          { title: "نام خانوادگی", type: "text", name: "lastName" },
-        ]}
+          { title: "شماره کارت", type: "text", name: "shabaNumber" },
+          ]}
         buttonMode="input"
-        titleLabel="نام و نام خانوادگی"
+        titleLabel="شماره کارت"
         inputDefaultValue={
           "" +
-          (seller?.storeOwner?.firstName ??  "") +
-          (seller?.storeOwner?.lastName ?? "")
+          (seller?.legalInfo?.shabaNumber ??  "") 
+
         }
         inputType="text"
         mainText="سلام"
-      />
-      <InputPopUp
-        inputDetails={[
-          { title: "شماره تلفن همراه", type: "text", name: "phoneNumber" },
-        ]}
-        buttonMode="input"
-        titleLabel="شماره تلفن همراه"
-        inputDefaultValue={seller?.phoneNumber??''}
-        inputType="number"
-        mainText="سلام"
-      />
-      <InputPopUp
-        inputDetails={[{ title: "ایمیل", type: "email", name: "email" }]}
-        buttonMode="input"
-        titleLabel="پست الکترونیکی"
-        inputDefaultValue={seller?.storeOwner?.email??''}
-        inputType="text"
-        mainText="سلام"
+        islegalInfo={true}
       />
 
       <InputPopUp
         inputDetails={[
-          { title: "شماره ملی", type: "text", name: "nationalID" },
+          { title: "شماره اقتصادی", type: "text", name: "companyEconomicNumber" },
+          ]}
+        buttonMode="input"
+        titleLabel="شماره اقتصادی"
+        inputDefaultValue={
+          "" +
+          (seller?.legalInfo?.companyEconomicNumber ??  "") 
+
+        }
+        inputType="text"
+        mainText="سلام"
+        islegalInfo={true}
+      />
+
+      <InputPopUp
+        inputDetails={[
+          { title: "شماره کارت", type: "text", name: "shabaNumber" },
+          ]}
+        buttonMode="input"
+        titleLabel="شماره کارت"
+        inputDefaultValue={
+          "" +
+          (seller?.legalInfo?.shabaNumber ??  "") 
+
+        }
+        inputType="text"
+        mainText="سلام"
+        islegalInfo={true}
+      />
+
+
+      {/* <InputPopUp
+        inputDetails={[
+          { title: " ", type: "text", name: "nationalID" },
         ]}
         buttonMode="input"
         titleLabel="شماره ملی"
         inputDefaultValue={seller?.storeOwner?.nationalID??''}
         inputType="number"
         mainText="سلام"
-      />
+        isStoreOwner={true}
+      /> */}
 
 
-      
-      <PasswordPopUp />
-      <MoneyReturnPopUp />
+
+    
     </div>
 
     //         <label className="block">
@@ -162,4 +177,4 @@ const MyFormComponent = () => {
   );
 };
 
-export default MyFormComponent;
+export default Finances;

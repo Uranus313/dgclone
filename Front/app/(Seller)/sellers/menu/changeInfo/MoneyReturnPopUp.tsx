@@ -1,15 +1,19 @@
+import { useSeller } from "@/app/hooks/useSeller";
 import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from '@tanstack/react-query';
+import _, { method } from 'lodash';
 import React, { useContext, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 
-const PasswordPopUp = () => {
+const MoneyReturnPopUp = () => {
     
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error , setError] = useState<string | null>(null);
-  
+    const {seller , setSeller } = useSeller();
+    const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
+    const [showBankNumberPage , setShowBankNumberPage] = useState<boolean>(false);
     const openModal = () => {
       if (dialogRef.current) {
         dialogRef.current.showModal();
@@ -23,9 +27,13 @@ const PasswordPopUp = () => {
         setIsOpen(false);
       }
     };
+    const handleOptionChange = (event : any) => {
+        setSelectedOption(event.target.value);
+      };
     const update = useMutation({
         mutationFn: async (formData : any) => {
-            const result = await fetch("http://localhost:3005/users/user/changePassword", {
+          console.log(formData)
+            const result = await fetch("http://localhost:3005/users/seller/changeMyinfo", {
                   method: "PATCH",
                   credentials: 'include',
                   headers: {
@@ -45,7 +53,7 @@ const PasswordPopUp = () => {
             console.log(savedUser);
             // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
             // queryClient.invalidateQueries(["user"]);
-            // setUser(savedUser);
+            setSeller(savedUser);
             closeModal();
             // router.push('/');
             // router.push('/');
@@ -62,59 +70,77 @@ const PasswordPopUp = () => {
     });
     const { register, handleSubmit, getValues} = useForm();
 
-    const submit = async (formData : any) => {
-        console.log("aaaaaaaaaa")
-        console.log(formData.oldPassword.trim())
-        console.log("aaaaaaaaaa")
-        if(formData.newPassword.trim().length<8 || (formData.oldPassword.trim() != "" && formData.oldPassword.trim().length < 8)){
-            setError("رمز عبور باید برابر یا بیشتر از 8 حرف باشد");
+    const firstSubmit = async () => {
+        if(selectedOption == "wallet"){
+            if (seller?.moneyReturn?.method != "wallet"){
+                const moneyReturn = {...seller?.moneyReturn , method: "wallet"};
+                delete moneyReturn._id;
+                update.mutate({
+                    moneyReturn : moneyReturn
+                });
+                return
+            }
+            closeModal();
+            return
+        }
+        setShowBankNumberPage(true);
+    };
+    const secondSubmit = async (formData : any) => {
+        console.log(formData)
+        if(formData.bankAccountNumber.trim().length != 16){
+            setError("شماره کارت باید برابر با 16 رقم باشد");
             return;
         }
-        if(formData.newPassword.trim().length>50 || (formData.oldPassword.trim() != "" && formData.oldPassword.trim().length >50 )){
-            setError("رمز عبور باید برابر یا بیشتر از 8 حرف باشد");
-            return;
-        }
-        if(formData.newPassword.trim() != formData.newPasswordRepeat.trim()){
-            setError("تکرار رمز عبور مطابقت ندارد");
-            return;
+        if(_.isEqual(seller?.moneyReturn,{method : "bankAccount" ,bankAccount: formData.bankAccountNumber.trim()})){
+            closeModal();
         }
         update.mutate({
-            newPassword : formData.newPassword.trim(),
-            oldPassword : formData.oldPassword.trim()
+            moneyReturn : {method : "bankAccount" ,bankAccount: formData.bankAccountNumber.trim()}
         });
+        return;
     };
     return (
       <div>
         
         
         <label className="block">
-        تغییر رمز عبور
-        <input className='block' readOnly onClick={openModal} placeholder="رمز عبور" type="text" />
+        روش بازگشت پول
+        <input className='block' readOnly onClick={openModal} value={seller?.moneyReturn?.method} type="text" />
         </label>
 
         <dialog ref={dialogRef} className="modal">
           <div className="modal-box">
             {error && <p>{error}</p>}
-            <h3 className="font-bold text-lg">تغییر رمز عبور</h3>
+            <h3 className="font-bold text-lg">روش بازگشت پول</h3>
             <p className="py-4">سلام</p>
-            <form onSubmit={handleSubmit(submit)}>
-            <label className="block">
-            رمز عبور قبلی
-            <input type="password" placeholder='رمز عبور قبلی' className='block' {...register("oldPassword")}/>
+            <div className={showBankNumberPage? "hidden" : "block"}>
+            <input
+        type="radio"
+        name="options"
+        value="wallet"
+        id="option1"
+        // checked={selectedOption === 'option1'}
+        onChange={handleOptionChange}
+      />
+      <label htmlFor="option1">کیف پول دیجیمارکت</label>
+
+      <input
+        type="radio"
+        name="options"
+        value="bankAccount"
+        id="option2"
+        // checked={selectedOption === 'option2'}
+        onChange={handleOptionChange}
+      />
+      <label htmlFor="option2">حساب بانکی</label>
+            <button className='btn btn-primary' type='button' onClick={firstSubmit}>تایید</button>
+        </div>
+        <form onSubmit={handleSubmit(secondSubmit)} className={showBankNumberPage? "block" : "hidden"}>
+        <label className="block">
+            شماره کارت بانکی متصل به حساب
+            <input type="number" defaultValue={seller?.moneyReturn?.bankAccount??'N/A'} className='block' {...register("bankAccountNumber")}/>
            
-            </label>
-            <label className="block">
-            رمز عبور جدید
-            <input type="password" placeholder='رمز عبور جدید' className='block' {...register("newPassword")}/>
-            </label>
-            <label className="block">
-            تکرار رمز عبور جدید
-            <input type="password" placeholder='تکرار رمز عبور جدید' className='block' {...register("newPasswordRepeat")}/>
-           
-            </label>
-               
-                
-                
+        </label>
             <button className='btn btn-primary' type='submit'>تایید</button>
 
             </form>
@@ -128,4 +154,4 @@ const PasswordPopUp = () => {
     );
 }
 
-export default PasswordPopUp
+export default MoneyReturnPopUp
