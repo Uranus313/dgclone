@@ -6,7 +6,10 @@ import { forEach } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import AddQuantityButton from './AddQuantityButton'
 import { useOrderCart } from '@/app/hooks/useOrderCart'
-import Link from 'next/link'
+import NoOrderImage from './noOrder.png'
+import { useUser } from '@/app/hooks/useUser'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 
 const orders: Order[]=[
@@ -25,7 +28,8 @@ const orders: Order[]=[
     quantity:1,
     userid:'1',
     state:State.pending,  
-    ReciveDate:'',
+    recievedate:'',
+    ordersdate:'',
   },
 
   {
@@ -43,7 +47,8 @@ const orders: Order[]=[
     quantity:1,
     userid:'1',
     state:State.pending,  
-    ReciveDate:'',
+    recievedate:'',
+    ordersdate:'',
   },
 ]
 
@@ -51,28 +56,32 @@ const OrderCart = () => {
   let [finalPrice , setFinalPrice ]= useState(0)
 
   const {orderCart , setOrderCart}=useOrderCart()
-
+  const {user} = useUser()
+  const manage = useRouter()
 
 
   useEffect(()=>{
-    setOrderCart(orders)
+    setOrderCart({...orderCart , orders : orders})
   },[])
 
   useEffect(()=>{
     let tempFinalPrice=0
-    orderCart.forEach(order=>{
+    orderCart.orders.forEach(order=>{
       tempFinalPrice += order.product.price * order.quantity
     })
     setFinalPrice(tempFinalPrice)
+    setOrderCart({...orderCart , price:tempFinalPrice , orders:orders})
   },[orderCart])
 
   
   return (
     <div className='p-5'>
+      {/* {orderCart.orders.length>=1 ?<> */}
       <h1 className='text-2xl my-5' >سبد خرید</h1>
+      
       <div className=' grid grid-cols-4 gap-4'>
         <div className='col-span-3'>
-          {orderCart.map((order,index)=>(
+          {orderCart.orders.map((order,index)=>(
             <div className='grid gap-4 grid-cols-6 mb-5 bg-white rounded-xl border border-grey-border p-5'>
               <div className='col-span-1'>
                 <img src={order.product.picture}/>
@@ -125,17 +134,22 @@ const OrderCart = () => {
               هزینه این سفارش هنوز پرداخت نشده‌ و در صورت اتمام موجودی، کالاها از سبد حذف می‌شوند
             </p>
 
-            <Link href='/orders/shipping' className='mt-10'>
-              <button  className='bg-primary-color w-full text-white rounded-lg p-3'>
+            <button onClick={()=>{user!=null?manage.push('/orders/shipping'):manage.push('/users/signIn')}} className='mt-10 bg-primary-color w-full text-white rounded-lg p-3'>
                   <p>تایید و تکمیل سفارش</p>
-              </button>
-            </Link>
+            </button>
 
           </div>
 
         </div>
 
       </div>
+      {/* </> :
+      <div className='flex flex-col items-center'>
+        <Image className='w-96 mx-auto' src={NoOrderImage} width={500} height={500} alt='no order'></Image>
+        <h2>شما سفارشی ندارید</h2>
+      </div>
+      
+      } */}
     </div>
   )
 }

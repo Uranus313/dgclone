@@ -127,7 +127,7 @@ const Finances = () => {
         islegalInfo={true}
       />
 
-      <InputPopUp
+      {/* <InputPopUp
         inputDetails={[
           { title: "شماره کارت", type: "text", name: "shabaNumber" },
           ]}
@@ -135,13 +135,13 @@ const Finances = () => {
         titleLabel="شماره کارت"
         inputDefaultValue={
           "" +
-          (seller?.legalInfo?.shabaNumber ??  "") 
+          (seller?.legalInfo?.signOwners ??  "") 
 
         }
         inputType="text"
         mainText="سلام"
         islegalInfo={true}
-      />
+      /> */}
 
 
       {/* <InputPopUp

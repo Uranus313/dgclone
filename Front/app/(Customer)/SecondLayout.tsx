@@ -6,7 +6,7 @@ import orderCartContext from '../contexts/orderCartContext';
 import NavBar from './NavBar';
 import _ from 'lodash'
 import Footer from './Footer';
-import { Order, User } from '../components/Interfaces/interfaces';
+import { Order, OrdersHistory, User } from '../components/Interfaces/interfaces';
 
 const SecondLayout = ({
     children,
@@ -15,7 +15,7 @@ const SecondLayout = ({
   }) => {
     let [user, setUser] = useState<User|null>(null);
     let [loading, setLoading] = useState<any>(true);
-    const [orderCart , setOrderCart] = useState<Order[]>([]);
+    const [orderCart , setOrderCart] = useState<OrdersHistory>({orders:[],price:0,ordersdate:'',recievedate:'',userid:''});
 
   const pathname = usePathname();
   let {data: serverUser,error,isLoading} = useUserCheckToken();
@@ -28,6 +28,13 @@ const SecondLayout = ({
         setUser(serverUser);
     }
 },[serverUser,isLoading]);
+
+useEffect(() => {
+  if(user){
+    setOrderCart({...orderCart , userid:user._id})
+  }
+},[user]);
+
   return (
     <userContext.Provider value={{user : user , setUser : setUser , isLoading : loading}}>
     <orderCartContext.Provider value={{orderCart : orderCart , setOrderCart : setOrderCart }}>

@@ -53,7 +53,7 @@ const SignIn = () => {
             // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
             // queryClient.invalidateQueries(["user"]);
             setSeller(savedUser);
-            router.push('/');
+            router.push('/sellers');
             // router.push('/');
         },
         onError: (error) => {
