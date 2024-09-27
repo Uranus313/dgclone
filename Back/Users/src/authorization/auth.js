@@ -5,7 +5,12 @@ import { getAdmins } from "../DB/CRUD/admin.js";
 import { getEmployees, getEmployeesWithRoles } from "../DB/CRUD/employee.js";
 
 export async function auth(req, res, next, acceptedStatuses) {
-  const token = req.cookies["x-auth-token"];
+  
+  let token = req.cookies["x-auth-token"];
+  const secret = req.header("inner-secret");
+  if(secret == process.env.innerSecret  && !secret){
+    token = req.header("x-auth-token");
+  }
   if (!token) {
     res.status(401).send({ error: "access denied. no token provided." });
     res.body = { error: "access denied. no token provided." };

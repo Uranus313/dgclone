@@ -15,6 +15,7 @@ import { getVerifyRequests, saveVerifyRequest, updateVerifyRequest } from "../DB
 import { validateVerifyRequestAnswer } from "../DB/models/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
+import { sellerSaleInfo } from "../functions/sellerSaleInfo.js";
 const router = express.Router();
 
 router.post("/signUp", async (req, res, next) => {
@@ -95,6 +96,11 @@ router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["seller"
             next();
             return;
         }
+        const saleinfo = await sellerSaleInfo(req.seller._id);
+        if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            result.response = {...result.response ,saleinfoJson}
+        }
         const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
@@ -168,7 +174,12 @@ router.post("/logIn", async (req, res, next) => {
             next();
             return;
         }
-        const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
+        const saleinfo = await sellerSaleInfo(result.response._id);
+        if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            result.response = {...result.response ,saleinfoJson}
+        }
+        const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.cookie('x-auth-token', token, {
             httpOnly: true,
             secure: true,

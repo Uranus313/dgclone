@@ -97,53 +97,76 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 		Responses = append(Responses, response)
 	}
 
-	return c.Status(http.StatusOK).JSON(Responses)
+	var hasMore bool = false
+
+	if len(Responses) == limit {
+
+		findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Comment
+		nextDocsCursor, err := database.CommentCollection.Find(context.Background(), filter, findOptions)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching comments from database: ": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"comments": Responses,
+		"hasMore":  hasMore,
+	})
 }
 
 func PostComment(c *fiber.Ctx) error {
 
-	var comment models.Comment
-
 	// token := "?????"
+
+	var comment models.Comment
 
 	if err := c.BodyParser(&comment); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
 	if comment.CommentType.String() != "Comment" {
-		// if len(comment.Pictures) > 0 {
-		// 	return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have pictures"})
-		// }
-		// if len(comment.Videos) > 0 {
-		// 	return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have videos"})
-		// }
 		if comment.OrderID != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments do not contain an order id field"})
-		} else {
-			var order models.Order
-			filter := bson.M{"_id": comment.OrderID}
-			err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
-			if err != nil {
-				if err == mongo.ErrNoDocuments {
-					return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Order ID, Order Not Found"})
-				}
-				return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-					"message": "something went wrong while fetching data from orders collection",
-					"error":   err.Error(),
-				})
-			}
-			if order.UserID != comment.UserID {
-				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided user id does not match the user id in the submited order"})
-			}
-			if order.Product.ProdID != comment.ProductID {
-				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided product id does not match the product id in the submited order"})
-			}
 		}
 	}
 
 	if comment.CommentType.String() != "Answer" {
 		if comment.AnswersTo != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non answer comments do not contain an answer to field"})
+		}
+	}
+
+	if !comment.OrderID.IsZero() {
+		var order models.Order
+		filter := bson.M{"_id": comment.OrderID}
+		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Order ID, Order Not Found"})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "something went wrong while fetching data from orders collection",
+				"error":   err.Error(),
+			})
+		}
+		if order.UserID != comment.UserID {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided user id does not match the user id in the submited order"})
+		}
+		if order.Product.ProdID != comment.ProductID {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided product id does not match the product id in the submited order"})
 		}
 	}
 
@@ -324,7 +347,34 @@ func GetProductQuestions(c *fiber.Ctx) error {
 		Responses = append(Responses, response)
 	}
 
-	return c.Status(http.StatusOK).JSON(Responses)
+	var hasMore bool = false
+
+	if len(Responses) == limit {
+
+		findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Comment
+		nextDocsCursor, err := database.CommentCollection.Find(context.Background(), filter, findOptions)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching questions from database: ": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"comments": Responses,
+		"hasMore":  hasMore,
+	})
 }
 
 func GetPendingComments(c *fiber.Ctx) error {
@@ -374,7 +424,33 @@ func GetPendingComments(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(http.StatusOK).JSON(pendingComments)
+	var hasMore bool = false
+
+	if len(pendingComments) == limit {
+
+		findOpts.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Comment
+		nextDocsCursor, err := database.CommentCollection.Find(context.Background(), filter, findOpts)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching comments from database: ": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"pendingComments": pendingComments,
+		"hasMore":         hasMore,
+	})
 }
 
 func UpdateCommentValidationState(c *fiber.Ctx) error {
