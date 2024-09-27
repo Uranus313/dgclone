@@ -96,18 +96,13 @@ router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["seller"
             next();
             return;
         }
-<<<<<<< HEAD
         const saleinfo = await sellerSaleInfo(req.seller._id);
         if(saleinfo.status == 200){
             const saleinfoJson = await saleinfo.json();
             result.response = {...result.response ,saleinfoJson}
         }
-        const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
-        res.cookie('x-auth-token',token,{
-=======
         const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
->>>>>>> 52e0582619a898403b02ae2441508b99edfab0c1
             httpOnly: true,
             secure: true,
             sameSite: 'none',
@@ -179,18 +174,13 @@ router.post("/logIn", async (req, res, next) => {
             next();
             return;
         }
-<<<<<<< HEAD
         const saleinfo = await sellerSaleInfo(result.response._id);
         if(saleinfo.status == 200){
             const saleinfoJson = await saleinfo.json();
             result.response = {...result.response ,saleinfoJson}
         }
         const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
-        res.cookie('x-auth-token',token,{
-=======
-        const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
->>>>>>> 52e0582619a898403b02ae2441508b99edfab0c1
             httpOnly: true,
             secure: true,
             sameSite: 'none',
@@ -471,49 +461,6 @@ router.get("/myTransactions", (req, res, next) => auth(req, res, next, ["seller"
     next();
 });
 
-<<<<<<< HEAD
-// router.post("/lastVisited", (req, res,next) => auth(req, res,next, ["seller"]) ,async (req, res,next) =>{
-//     try {
-//         await validateLastVisitedPost(req.body); 
-//     } catch (error) {
-//         if (error.details){
-//             res.status(400).send({error : error.details[0].message});
-//             res.body = {error : error.details[0].message};
-//         }else{
-//             res.status(400).send({error : error.message});
-//             res.body = {error : error.message};
-//         }
-//         next();
-//         return;
-//     }
-//     try {
-//         const foundIndex = req.seller.lastVisited.indexOf(req.body.productID);
-//         if (foundIndex != -1){
-//             for (let index = foundIndex; index > 0; index--) {
-//                 req.seller.lastVisited[index] = req.seller.lastVisited[index-1];
-//             }
-//             req.seller.lastVisited[0] = req.body.productID;
-//         }else{
-//             req.seller.lastVisited.pop();
-//             req.seller.lastVisited.unshift(req.body.productID);
-//         }
-//         const result = await updateSeller(req.seller._id,{lastVisited: req.seller.lastVisited})
-//         if (result.error){
-//             res.status(400).send({error : result.error});
-//             res.body = {error : result.error};
-//             next();
-//             return;
-//         }
-//         res.send(result.response);
-//         res.body = result.response;
-//     } catch (err) {
-//         console.log("Error",err);
-//         res.body = {error:"internal server error"};
-//         res.status(500).send({error:"internal server error"});
-//     }
-//     next();
-// });
-=======
 router.post("/lastVisited", (req, res, next) => auth(req, res, next, ["seller"]), async (req, res, next) => {
     try {
         await validateLastVisitedPost(req.body);
@@ -555,6 +502,5 @@ router.post("/lastVisited", (req, res, next) => auth(req, res, next, ["seller"])
     }
     next();
 });
->>>>>>> 52e0582619a898403b02ae2441508b99edfab0c1
 
 export default router;

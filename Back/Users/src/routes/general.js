@@ -793,8 +793,9 @@ router.get("/checkToken",(req, res,next) => auth(req, res,next, ["user","seller"
         }
         if(req.employee){
             delete req.employee.password;
-            res.send(req.employee);
-            res.body = req.employee;
+            const result = await getEmployeesWithRoles(req.employee._id);
+            res.send(result.response);
+            res.body = result.response;
             next();
             return;
         }
