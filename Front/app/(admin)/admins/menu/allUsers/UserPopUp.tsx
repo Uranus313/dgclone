@@ -15,7 +15,6 @@ const UserPopUp = ({ user }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // const { user} = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {
@@ -105,18 +104,12 @@ const UserPopUp = ({ user }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       user.isBanned = false;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
 
@@ -128,13 +121,13 @@ const UserPopUp = ({ user }: Props) => {
         getWallet(user.walletID);
       }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
 
-        <p className="w-1/4">{((user.firstName && user.firstName) || "-") + ((user.lastName && " " + user.lastName) || " -")}</p>
-        <p className="w-1/4">{user.phoneNumber}</p>
-        <p className="w-1/4">{((user.email && user.email) || "-")}</p>
+        <p className="w-1/2 md:w-1/4">{((user.firstName && user.firstName) || "-") + ((user.lastName && " " + user.lastName) || " -")}</p>
+        <p className="md:w-1/4 invisible md:visible">{user.phoneNumber}</p>
+        <p className="md:w-1/4 invisible md:visible">{((user.email && user.email) || "-")}</p>
         {user.isBanned ? (
-          <p className="w-1/4 text-red-500">بن شده</p>
+          <p className="w-1/2 md:w-1/4 text-red-500">بن شده</p>
         ) : (
-          <p className="w-1/4 text-red-500"> -</p>
+          <p className="w-1/2 md:w-1/4 text-red-500"> -</p>
         )}
         
       </div>

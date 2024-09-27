@@ -29,20 +29,21 @@ type Pros_cons struct {
 }
 
 type SellerQuantity struct {
-	Color     Color     `json:"color" bson:"color"`
-	Quantity  int       `json:"quantity" bson:"quantity"`
-	Guarantee Guarantee `json:"guarantee" bson:"guarantee"`
+	Color           Color           `json:"color" bson:"color"`
+	Quantity        int             `json:"quantity" bson:"quantity"`
+	Guarantee       Guarantee       `json:"guarantee" bson:"guarantee"`
+	ValidationState ValidationState `json:"validation_state" bson:"validation_state"`
 }
 
 type ShipmentMethod int
 
 const (
 	Digi_Kala ShipmentMethod = iota + 1
-	WhereHouse
+	WareHouse
 )
 
 func (d ShipmentMethod) String() string {
-	return [...]string{"Digi_Kala", "WhereHouse"}[d-1]
+	return [...]string{"Digi_Kala", "WareHouse"}[d-1]
 }
 
 func (d ShipmentMethod) EnumIndex() int {

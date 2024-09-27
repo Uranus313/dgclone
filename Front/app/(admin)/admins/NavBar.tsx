@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import useUserCheckToken from "../../hooks/useCheckToken";
 import userContext from "../../contexts/userContext";
 import { useRouter } from 'next/navigation'
+import { useUser } from "@/app/hooks/useUser";
 
 
 const NavBar = () => {
@@ -48,9 +49,10 @@ const NavBar = () => {
             </svg>
 
           </Link> : <Link href="/admins">
-            {"" +
-              (user?.firstName ? user?.firstName : "") +
-              (user?.lastName ? " " + user?.lastName : "")}
+            {"" 
+              // (user?.firstName ? user?.firstName : "") +
+              // (user?.lastName ? " " + user?.lastName : "")
+              }
           </Link>
         }
       </div>

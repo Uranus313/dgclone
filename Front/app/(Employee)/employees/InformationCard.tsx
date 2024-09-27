@@ -4,14 +4,15 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { AccessLevel } from "./page";
+import { useUser } from "@/app/hooks/useUser";
+import { AccessLevel } from "@/app/components/Interfaces/interfaces";
 
 
 
 function InformationCard() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useContext(userContext);
+    const { user, setUser, isLoading } = useUser();
 
     const logOut = useMutation({
         mutationFn: async () => {
@@ -37,7 +38,7 @@ function InformationCard() {
     });
 
     return (
-        <div className="flex bg-propBubble-bg my-24 mx-14 p-4 px-10 rounded-lg">
+        <div className="flex bg-propBubble-bg my-24 mx-14 p-4 px-10 rounded-lg ">
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 user &&
                 <div>
@@ -61,20 +62,28 @@ function InformationCard() {
                         <li className="py-1.5">  شماره تلفن : {user.phoneNumber}</li>
                         <li className="py-1.5">  آی دی کارمند : {user._id}</li>
                         <li className="py-1.5">   ایمیل : {user.email}</li>
-                        <li className="py-1.5">   شغل : {user.roleID.name}</li>
+                        {user.roleID &&
+                            <li className="py-1.5"> شغل : {user.roleID.name}    </li>
+                        }
 
                         <ul>
                             <li className="py-1.5">   دسترسی ها : </li>
-                            {!user.roleID.accessLevels ?
-                                <p>هیچ دسترسی وجود ندارد</p>
-                                : user.roleID.accessLevels?.map((accessLevel: AccessLevel, index: number) => {
-                                    return (
-                                        <li key={index} className="py-0.5">
-                                            {accessLevel.level}
-                                        </li>
-                                    )
-                                })
+                            {user.roleID &&
+                                <div>
+                                    {!user.roleID.accessLevels ?
+                                        <p>هیچ دسترسی وجود ندارد</p>
+                                        : user.roleID.accessLevels?.map((accessLevel: AccessLevel, index: number) => {
+                                            return (
+                                                <li key={index} className="py-0.5">
+                                                    {accessLevel.level}
+                                                </li>
+                                            )
+                                        })
+                                    }
+                                </div>
+
                             }
+
 
 
                         </ul>

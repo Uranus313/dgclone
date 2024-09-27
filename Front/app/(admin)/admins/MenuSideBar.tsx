@@ -1,5 +1,6 @@
 'use client'
 import userContext from "@/app/contexts/userContext";
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,7 @@ function MenuSideBar(){
         // setError(error)
       }
     });
-    const {user , setUser , isLoading} = useUser();
+    const { user, setUser, isLoading } = useUser();
     return(
         <div className="flex w-1/5 bg-white ">
             {isLoading && <span className="loading loading-dots loading-lg"></span>}
@@ -47,10 +48,10 @@ function MenuSideBar(){
                 user && 
                 <ul className="flex flex-col p-7 px-17">
                     <li className="pb-1.5"><Link href={"/admins"}>داشبورد</Link></li>
-                    <li className="py-1"><Link href={"/admins"}>ارزیابی</Link></li>
+                    <li className="py-1"><Link href={"/admins/menu/validation"}>ارزیابی</Link></li>
                     <li className="py-1.5"><Link href={"/admins/menu/allTickets"}>بلیط ها</Link></li>
                     <li className="py-1"><Link href={"/admins/menu/allEmployees/allRoles"}>نقش ها</Link></li>
-                    <li className="py-1.5"><Link href={"/admins"}>لاگ ها</Link></li>
+                    <li className="py-1.5"><Link href={"/admins/menu/allSellers/verifyRequests"}> درخواست تایید</Link></li>
                     <li className="py-1.5">
                         <button onClick={() => logOut.mutate()}>
                             خروج از حساب

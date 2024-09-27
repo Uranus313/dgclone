@@ -1,34 +1,11 @@
 "use client";
 
 import { Wallet } from "@/app/(Customer)/users/menu/layout";
+import { Transaction } from "@/app/components/Interfaces/interfaces";
 import userContext from "@/app/contexts/userContext";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useRef, useState } from "react";
 
-export enum TransactionSide { digikala = 'digiMarket', user = 'user', seller = 'seller', giftCard = 'giftCard' }
-export enum SenderType { bankAccount = "bankAccount", wallet = "wallet" }
-
-export interface Transaction {
-    userid: string,
-    money: number,
-    title: string,
-    additionalinfo?: string,
-    sender: {
-        entityType: SenderType,
-        bankAccount: string | null,
-        senderID?: string,
-        additionalInfo: string | null,
-    }
-
-    receiver: {
-        entityType: TransactionSide,
-        bankAccount: string | null,
-        receiverID?: string,
-        additionalInfo: string | null,
-    }
-    orderHistoryID: string,
-    date: string,
-}
 
 export interface Props {
     transaction: Transaction;
@@ -58,13 +35,13 @@ const TransactionPopUp = ({ transaction }: Props) => {
 
             <div onClick={() => {
                 openModal();
-            }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
+            }} className="pr-5 md:pr-0 flex py-5 border-b-2 border-b-border-color-list text-center">
 
 
-                <p className="w-1/4">{(transaction.money && transaction.money) || "-"}</p>
-                <p className="w-1/4">{(transaction.sender.entityType && transaction.sender.entityType) || "-"}</p>
-                <p className="w-1/4">{(transaction.receiver.entityType && transaction.receiver.entityType) || "-"}</p>
-                <p className="w-1/4">{(transaction.date && transaction.date) || "-"}</p>
+                <p className="w-1/4 invisible md:visible ">{(transaction.money && transaction.money) || "-"}</p>
+                <p className="w-1/2 md:w-1/4">{(transaction.sender.entityType && transaction.sender.entityType) || "-"}</p>
+                <p className="w-1/2 md:w-1/4">{(transaction.receiver.entityType && transaction.receiver.entityType) || "-"}</p>
+                <p className="w-1/4 invisible md:visible ">{(transaction.date && transaction.date) || "-"}</p>
 
             </div>
 

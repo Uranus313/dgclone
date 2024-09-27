@@ -2,9 +2,9 @@
 
 import { Wallet } from "@/app/(Customer)/users/menu/layout";
 import userContext from "@/app/contexts/userContext";
+import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useRef, useState } from "react";
-import { Employee } from "../../page";
 
 export interface User {
   firstName: string | null | undefined;
@@ -51,8 +51,7 @@ const UserPopUp = ({ oneUser }: Props) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  const { user, setUser, isLoading } = useContext(userContext) as { user: Employee; setUser: (user: Employee) => void; isLoading: boolean };
-
+  const { user, setUser, isLoading } = useUser();
 
   const openModal = () => {
     if (dialogRef.current) {
@@ -238,26 +237,37 @@ const UserPopUp = ({ oneUser }: Props) => {
             </div>
           </div>
           <div className="my-4 flex justify-center">
-            {user.roleID.accessLevels && user.roleID.accessLevels.some(accessLevel => accessLevel.level === "userManage" && accessLevel.writeAccess === true) &&
+            {user &&
               <div>
-                {
-                  oneUser.isBanned ? (
-                    <button
-                      className="btn btn-primary"
-                      type="button"
-                      onClick={() => unbanUser.mutate()}
-                    >
-                      لغو بن
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-error"
-                      type="button"
-                      onClick={() => banUser.mutate()}
-                    >
-                      بن
-                    </button>
-                  )
+                {user.roleID &&
+                  <div>
+                    {user.roleID.accessLevels && user.roleID.accessLevels.some(accessLevel => accessLevel.level === "userManage" && accessLevel.writeAccess === true) &&
+                      <div>
+                        {
+                          oneUser.isBanned ? (
+                            <button
+                              className="btn btn-primary"
+                              type="button"
+                              onClick={() => unbanUser.mutate()}
+                            >
+                              لغو بن
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn-error"
+                              type="button"
+                              onClick={() => banUser.mutate()}
+                            >
+                              بن
+                            </button>
+                          )
+                        }
+                      </div>
+
+                    }
+
+                  </div>
+
                 }
               </div>
 

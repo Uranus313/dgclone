@@ -118,13 +118,13 @@ router.patch("/banUser",(req,res,next) => roleAuth(req,res,next,[{level : levels
         return;
     }
     try {
-        const result1 = await saveBannedUser({...req.body , endDate: new Date(Date.now() + 6 * 60 * 60 * 1000 )});
-        if (result1.error){
-            res.status(400).send({error : result1.error});
-            res.body = {error : result1.error};
-            next();
-            return;
-        }
+        // const result1 = await saveBannedUser({...req.body , endDate: new Date(Date.now() + 6 * 60 * 60 * 1000 )});
+        // if (result1.error){
+        //     res.status(400).send({error : result1.error});
+        //     res.body = {error : result1.error};
+        //     next();
+        //     return;
+        // }
         const result2 = await updateUser(req.body.userID , {isBanned : true})
         if (result2.error){
             res.status(400).send({error : result2.error});
@@ -220,13 +220,13 @@ router.patch("/banSeller",(req,res,next) => roleAuth(req,res,next,[{level : leve
         return;
     }
     try {
-        const result1 = await saveBannedSeller(req.body);
-        if (result1.error){
-            res.status(400).send({error : result1.error});
-            res.body = {error : result1.error};
-            next();
-            return;
-        }
+        // const result1 = await saveBannedSeller(req.body);
+        // if (result1.error){
+        //     res.status(400).send({error : result1.error});
+        //     res.body = {error : result1.error};
+        //     next();
+        //     return;
+        // }
         const result2 = await updateSeller(req.body.sellerID , {isBanned : true})
         if (result2.error){
             res.status(400).send({error : result2.error});

@@ -80,7 +80,7 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
     const currentValues = getValues();
     const changedValues : any = {};
         Object.keys(currentValues).forEach(key => {
-            if (currentValues[key] !== user[key] ) {
+            if (user && currentValues[key] !== user[key] ) {
                 changedValues[key] = currentValues[key];
                 changedValues[key] = changedValues[key].trim();
              }
@@ -104,7 +104,7 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
                 }
             }
         })
-        if(oneObjectChange){
+        if(user && oneObjectChange){
             const temp: any = {};
             temp[oneObjectChange] = {...user[oneObjectChange] , ...changes}
             update.mutate(changes);
@@ -129,7 +129,17 @@ const InputPopUp = ({inputDetails,buttonMode,titleLabel,inputType,inputDefaultVa
             <form onSubmit={handleSubmit(submit)}>
                 {inputDetails.map((detail , index) => <label key={index} className="block">
                     {detail.title}
-                    <input type={detail.type} defaultValue={ detail.type == "date" ?(user[detail.name]? new Date(user[detail.name]).toISOString().split('T')[0] : "") : user[detail.name] || ""} {...register(detail.name)} className="block" />
+                    <input 
+                    type={detail.type} 
+                    defaultValue={
+                      detail.type === "date" 
+                        ? (user?.[detail.name] ? new Date(user[detail.name]).toISOString().split('T')[0] : "") 
+                        : user?.[detail.name] ?? ""
+                    } 
+                    {...register(detail.name)} 
+                    className="block" 
+                  />
+
                 </label>)}
             <button className='btn btn-primary' type='submit'>تایید</button>
 

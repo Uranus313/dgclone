@@ -50,10 +50,11 @@ const NavBar = () => {
               />
             </svg>
 
-          </Link> : <Link href="/admins">
-            {"" +
-              (user?.firstName ? user?.firstName : "") +
-              (user?.lastName ? " " + user?.lastName : "")}
+          </Link> : <Link href="/employees">
+            {"" 
+              // (user?.firstName ? user?.firstName : "") +
+              // (user?.lastName ? " " + user?.lastName : "")
+              }
           </Link>
         }
       </div>

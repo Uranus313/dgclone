@@ -12,66 +12,34 @@ import ProductManagement from './menu/productBox/ProductManagement';
 import TicketBox from './menu/ticketBox/TicketBox';
 import ProductValidation from './menu/validationBox/ProductValidation';
 import VariantBox from './menu/variantValidation/VariantBox';
+import { useUser } from '@/app/hooks/useUser';
 
-export interface AccessLevel {
-  level: string,
-  writeAccess: boolean
-}
-export interface Role {
-  name: string,
-  accessLevels: [
-      {
-          level: string,
-          writeAccess: boolean
-      }
-  ],
-  _id: string
-}
-
-export interface Employee {
-  firstName: string,
-  lastName: string,
-  email: string,
-  birthDate: string,
-  nationalID: string,
-  phoneNumber: string,
-  roleID: Role,
-  _id: string
-}
 
 const EmployeeHomePage = () => {
 
-  
-  const { user, setUser, isLoading } = useContext(userContext) as { user: Employee; setUser: (user: Employee) => void; isLoading: boolean };
   const [list, setList] = useState<string | null>('');
-  
-  return (
-    <div className='w-full flex'>
-       < InformationCard />
-      <div className='w-full'>
-        
-        {isLoading && <span className="loading loading-dots loading-lg m-24"></span>}
-        {
-          user &&
-          <span>
-            <div className='flex mt-24' >
-              <CommentBox />
-              <OrderBox />
-              <TransactionBox />
-              <UserBox />
-              <SellerBox />
-            </div>
-            <div className='flex mt-8' >
-              <ProductManagement />
-              <ProductValidation />
-              <VariantBox />
-              <TicketBox />
-            </div>
+  const { user, setUser, isLoading } = useUser();
 
-          </span>
-        }
-      </div>
-     
+  return (
+    <div className='flex flex-wrap md:flex-nowrap '>
+      <InformationCard />
+
+      {isLoading && <span className="loading loading-dots loading-lg m-24"></span>}
+      {
+        user &&
+        <span className='flex flex-wrap md:mt-24 mr-12 md:mr-0 '>
+          <CommentBox />
+          <OrderBox />
+          <TransactionBox />
+          <UserBox />
+          <SellerBox />
+          <ProductManagement />
+          <ProductValidation />
+          <VariantBox />
+          <TicketBox />
+        </span>
+      }
+
     </div>
   )
 }

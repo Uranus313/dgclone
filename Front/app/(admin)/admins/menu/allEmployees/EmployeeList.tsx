@@ -46,12 +46,12 @@ const EmployeeList = ({ changeList }: Props) => {
   }
   return (
     <div className=' flex-col bg-white m-20 rounded-md'>
-      <div className='flex'>
+      <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
 
         <form onSubmit={(e) => {
           e.preventDefault();
           handleSearch();
-        }} className='border-b-2 shadow-md border-white p-7 px-13 flex w-full'>
+        }} className='w-8/12'>
           <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
             <option value="users">کاربران</option>
             <option value="employees" selected>کارمندان</option>
@@ -61,13 +61,14 @@ const EmployeeList = ({ changeList }: Props) => {
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
-          <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
             ref={searchRef}
             onBlur={() => handleSearch()} />
 
+        </form>
+        
           <button onClick={() => { openModal() }} className='bg-red-box px-8 py-2 rounded-md mr-12 ml-6'>مرتب سازی</button>
           <AddEmployeePopUp />
-        </form>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
@@ -101,9 +102,6 @@ const EmployeeList = ({ changeList }: Props) => {
             </div>
             {employees?.data?.map((employee, index) => {
               return (
-                // employee._id == user._id? null : <li key={index}>
-                //   <EmployeePopUp employee={employee}/>
-                //   </li>
                 <li key={index}>
                   <EmployeePopUp employee={employee} />
                 </li>

@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AccessLevel, Employee } from "../../page";
 import UserList from "./UserList";
+import { useUser } from "@/app/hooks/useUser";
 
 
 
@@ -12,16 +12,10 @@ import UserList from "./UserList";
 function UserBox() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { user, setUser, isLoading } = useContext(userContext) as { user: Employee; setUser: (user: Employee) => void; isLoading: boolean };
+    const { user, setUser, isLoading } = useUser();
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [isOpen, setIsOpen] = useState(false);
-    useEffect(() => {
-        if (user) {
-            console.log(user)
-            console.log(user.roleID)
-            console.log(user.roleID.accessLevels)
-        }
-    }, [user])
+
 
     const openModal = () => {
         if (dialogRef.current) {
@@ -38,7 +32,7 @@ function UserBox() {
     };
 
     return (
-        <div className="justify-center text-center mx-10">
+        <div className="justify-center text-center mx-5">
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 user &&
                 <div>
@@ -65,21 +59,31 @@ function UserBox() {
                     <dialog ref={dialogRef} className="modal">
                         <div className="modal-box">
                             {error && <p>{error}</p>}
-                            {user.roleID.accessLevels &&
+                            {user &&
                                 <div>
-                                    {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "userManage") ? (
-                                        <UserList />
-                                    ) : (
+                                    {user.roleID &&
                                         <div>
-                                            <p>خارج از سطح دسترسی</p>
-                                            <button
-                                                className="mt-7 py-2 px-5 border-2 border-red-box text-center text-red-box rounded-lg"
-                                                type="button"
-                                                onClick={closeModal}>
-                                                خروج
-                                            </button>
+
+                                            {user.roleID.accessLevels &&
+                                                <div>
+                                                    {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "userManage") ? (
+                                                        <UserList />
+                                                    ) : (
+                                                        <div>
+                                                            <p>خارج از سطح دسترسی</p>
+                                                            <button
+                                                                className="mt-7 py-2 px-5 border-2 border-red-box text-center text-red-box rounded-lg"
+                                                                type="button"
+                                                                onClick={closeModal}>
+                                                                خروج
+                                                            </button>
+                                                        </div>
+                                                    )
+                                                    }
+                                                </div>
+
+                                            }
                                         </div>
-                                    )
                                     }
                                 </div>
 

@@ -1,0 +1,12 @@
+.marker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    background-image: url('https://openlayers.org/en/latest/examples/data/icon.png'); /* URL to your marker icon */
+    background-size: cover;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Ensure the marker doesn't interfere with map interactions */
+  }
+  
