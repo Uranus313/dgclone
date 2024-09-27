@@ -109,6 +109,8 @@ func main() {
 
 	app.Delete("/products/brand/:BrandID", crud.DeleteBrandByID)
 
+	app.Get("/products/brand/", crud.GetAllBrands)
+
 	// ------------discount code-----------
 
 	app.Post("/products/discountcode", crud.AddDiscountCode)

@@ -99,3 +99,22 @@ func DeleteBrandByID(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "brand deleted sussefully"})
 }
+
+func GetAllBrands(c *fiber.Ctx) error {
+
+	var allBrands []models.Brand
+
+	cursor, err := database.OrderCollection.Find(context.Background(), bson.M{})
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching brands from database: ": err.Error()})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &allBrands); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
+	}
+
+	return c.Status(http.StatusOK).JSON(allBrands)
+}

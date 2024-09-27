@@ -129,48 +129,44 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 
 func PostComment(c *fiber.Ctx) error {
 
-	var comment models.Comment
-
 	// token := "?????"
+
+	var comment models.Comment
 
 	if err := c.BodyParser(&comment); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
 	if comment.CommentType.String() != "Comment" {
-		// if len(comment.Pictures) > 0 {
-		// 	return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have pictures"})
-		// }
-		// if len(comment.Videos) > 0 {
-		// 	return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments can not have videos"})
-		// }
 		if comment.OrderID != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments do not contain an order id field"})
-		} else {
-			var order models.Order
-			filter := bson.M{"_id": comment.OrderID}
-			err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
-			if err != nil {
-				if err == mongo.ErrNoDocuments {
-					return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Order ID, Order Not Found"})
-				}
-				return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-					"message": "something went wrong while fetching data from orders collection",
-					"error":   err.Error(),
-				})
-			}
-			if order.UserID != comment.UserID {
-				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided user id does not match the user id in the submited order"})
-			}
-			if order.Product.ProdID != comment.ProductID {
-				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided product id does not match the product id in the submited order"})
-			}
 		}
 	}
 
 	if comment.CommentType.String() != "Answer" {
 		if comment.AnswersTo != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non answer comments do not contain an answer to field"})
+		}
+	}
+
+	if !comment.OrderID.IsZero() {
+		var order models.Order
+		filter := bson.M{"_id": comment.OrderID}
+		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Order ID, Order Not Found"})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "something went wrong while fetching data from orders collection",
+				"error":   err.Error(),
+			})
+		}
+		if order.UserID != comment.UserID {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided user id does not match the user id in the submited order"})
+		}
+		if order.Product.ProdID != comment.ProductID {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided product id does not match the product id in the submited order"})
 		}
 	}
 
