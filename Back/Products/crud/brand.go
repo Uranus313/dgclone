@@ -2,6 +2,7 @@ package crud
 
 import (
 	"context"
+	// "dg-kala-sample/auth"
 	"dg-kala-sample/database"
 	"dg-kala-sample/models"
 	"net/http"
@@ -15,6 +16,19 @@ import (
 func AddBrand(c *fiber.Ctx) error {
 
 	// token = admin ???
+
+	// token := c.Cookies("x-auth-token")
+
+	// ent,err,isErrInternal := auth.AuthenticateToken(token)
+
+	// if err != nil {
+	// 	if isErrInternal {
+	// 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error":err.Error()})
+	// 	}
+	// 	return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error":err.Error()})
+	// }
+
+	// if ent.status == "admin" {}
 
 	var brand models.Brand
 

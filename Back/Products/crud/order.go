@@ -16,6 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	// "go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -97,11 +98,71 @@ func GetAllOrders(c *fiber.Ctx) error {
 
 	// token = admin ????
 
+	limitString := c.Query("limit", "20")
+
+	limit, err := strconv.Atoi(limitString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching limit from query": err.Error()})
+	}
+
+	offsetString := c.Query("offset", "0")
+
+	offset, err := strconv.Atoi(offsetString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching offset from query": err.Error()})
+	}
+
+	sortMethodString := c.Query("SortMethod", "1")
+
+	sortMethod, err := strconv.Atoi(sortMethodString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sort method from query": err.Error()})
+	}
+
+	prodTitle := c.Query("ProdTitle", "")
+
+	/*
+		valid_sort_methods = {
+			1: "product title",
+			2: "rating",
+			3: "date ordered",
+		}
+	*/
+
 	var orders_list []models.Order
 
-	filter := bson.M{}
+	findOpts := options.Find().SetSkip(int64(offset)).SetLimit(int64(limit))
 
-	cursor, err := database.OrderCollection.Find(context.Background(), filter)
+	switch sortMethod {
+	case 1:
+		findOpts.SetSort(bson.D{{Key: "product.title", Value: 1}})
+	case 2:
+		findOpts.SetSort(bson.D{{Key: "rate", Value: -1}})
+	case 3:
+		findOpts.SetSort(bson.D{{Key: "order_date", Value: -1}})
+	default:
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid Sort Method",
+			"valid_sort_methods": fiber.Map{
+				"1": "product title",
+				"2": "rating",
+				"3": "date ordered",
+			},
+		})
+	}
+
+	var filter primitive.M
+
+	if prodTitle != "" {
+		filter = bson.M{"product.title": prodTitle}
+	} else {
+		filter = bson.M{}
+	}
+
+	cursor, err := database.OrderCollection.Find(context.Background(), filter, findOpts)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching orders from database: ": err.Error()})
@@ -113,7 +174,34 @@ func GetAllOrders(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
 	}
 
-	return c.Status(http.StatusOK).JSON(orders_list)
+	var hasMore bool = false
+
+	if len(orders_list) == limit {
+
+		findOpts.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Order
+		nextDocsCursor, err := database.OrderCollection.Find(context.Background(), filter, findOpts)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching orders from database:": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"orders":  orders_list,
+		"hasMore": hasMore,
+	})
 }
 
 func SellerIncomeChart(c *fiber.Ctx) error {
@@ -134,7 +222,33 @@ func SellerIncomeChart(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sDateHistory from query": err.Error()})
 	}
 
-	if sDateHistory < 1 || sDateHistory > 3 {
+	// if sDateHistory < 1 || sDateHistory > 3 {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+	// 		"error": "invalid sDateHistory",
+	// 		"valid sDateHistory": fiber.Map{
+	// 			"1": "last week",
+	// 			"2": "last month",
+	// 			"3": "last 2 months",
+	// 		},
+	// 	})
+	// }
+	var startDateYear int
+	var startDateMonth time.Month
+	var startDateDay int
+
+	var timeDuration time.Duration
+
+	switch sDateHistory {
+	case 1:
+		timeDuration = time.Hour * 24 * 7
+		// startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 7*2).Date()
+	case 2:
+		timeDuration = time.Hour * 24 * 30
+		// startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 30*2).Date()
+	case 3:
+		timeDuration = time.Hour * 24 * 60
+		// startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 60*2).Date()
+	default:
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": "invalid sDateHistory",
 			"valid sDateHistory": fiber.Map{
@@ -145,11 +259,22 @@ func SellerIncomeChart(c *fiber.Ctx) error {
 		})
 	}
 
+	startDateYear, startDateMonth, startDateDay = time.Now().Add(timeDuration * -2).Date()
+
+	startDate := time.Date(startDateYear, startDateMonth, startDateDay, 0, 0, 0, 0, time.UTC)
+
+	originDate := startDate.Add(timeDuration)
+
 	var sellerOrders []models.Order
 
-	filter := bson.M{"product.seller_id": sellerID}
+	filter := bson.M{
+		"product.seller_id": sellerID,
+		"order_date":        bson.M{"$gt": startDate},
+	}
 
-	cursor, err := database.OrderCollection.Find(context.Background(), filter)
+	findOpts := options.Find().SetSort(bson.D{{Key: "order_date", Value: 1}})
+
+	cursor, err := database.OrderCollection.Find(context.Background(), filter, findOpts)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
@@ -174,11 +299,12 @@ func SellerIncomeChart(c *fiber.Ctx) error {
 
 	var recentSaleChartList []recentSaleChart
 
+	isBetween := func(t, start, end time.Time) bool {
+		return t.After(start) && t.Before(end) || t.Equal(start) || t.Equal(end)
+	}
+
 	sellerIncomeInDuration := func(t1, t2 time.Time) int {
 		var income int = 0
-		isBetween := func(t, start, end time.Time) bool {
-			return t.After(start) && t.Before(end) || t.Equal(start) || t.Equal(end)
-		}
 		for _, order := range sellerOrders {
 			if isBetween(order.OrderDate, t1, t2) {
 				income += order.Product.Price
@@ -187,42 +313,34 @@ func SellerIncomeChart(c *fiber.Ctx) error {
 		return income
 	}
 
-	var startDateYear int
-	var startDateMonth time.Month
-	var startDateDay int
+	timePointer := startDate
+	lastDurationIncome := 0
+	durationIncome := 0
 
-	switch sDateHistory {
-	case 1:
-		startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 7).Date()
-	case 2:
-		startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 30).Date()
-	case 3:
-		startDateYear, startDateMonth, startDateDay = time.Now().Add(time.Hour * -24 * 60).Date()
-	default:
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid sDateHistory",
-			"valid sDateHistory": fiber.Map{
-				"1": "last week",
-				"2": "last month",
-				"3": "last 2 months",
-			},
-		})
+	// for startDate.Before(time.Now()) {
+	for isBetween(timePointer, startDate, originDate) {
+
+		lastDurationIncome += sellerIncomeInDuration(timePointer, timePointer.Add(time.Hour*24))
+
+		timePointer = timePointer.Add(time.Hour * 24)
 	}
 
-	startDate := time.Date(startDateYear, startDateMonth, startDateDay, 0, 0, 0, 0, time.UTC)
+	for isBetween(timePointer, originDate, time.Now()) {
 
-	for i := 0; i < 1000; i++ {
-		if startDate.After(time.Now()) {
-			break
-		}
-		income := sellerIncomeInDuration(startDate, startDate.Add(time.Hour*24))
+		income := sellerIncomeInDuration(timePointer, timePointer.Add(time.Hour*24))
+		durationIncome += income
 		var chart = recentSaleChart{
 			income: income,
-			date:   startDate,
+			date:   timePointer,
 		}
 		recentSaleChartList = append(recentSaleChartList, chart)
-		startDate = startDate.Add(time.Hour * 24)
+		timePointer = timePointer.Add(time.Hour * 24)
 	}
 
-	return c.Status(http.StatusOK).JSON(recentSaleChartList)
+	var profit float32 = float32(durationIncome-lastDurationIncome) / float32(lastDurationIncome) * 100
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"recentSaleChartList": recentSaleChartList,
+		"profit":              profit,
+	})
 }
