@@ -97,7 +97,34 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 		Responses = append(Responses, response)
 	}
 
-	return c.Status(http.StatusOK).JSON(Responses)
+	var hasMore bool = false
+
+	if len(Responses) == limit {
+
+		findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Comment
+		nextDocsCursor, err := database.CommentCollection.Find(context.Background(), filter, findOptions)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching comments from database: ": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"comments": Responses,
+		"hasMore":  hasMore,
+	})
 }
 
 func PostComment(c *fiber.Ctx) error {
@@ -324,7 +351,34 @@ func GetProductQuestions(c *fiber.Ctx) error {
 		Responses = append(Responses, response)
 	}
 
-	return c.Status(http.StatusOK).JSON(Responses)
+	var hasMore bool = false
+
+	if len(Responses) == limit {
+
+		findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Comment
+		nextDocsCursor, err := database.CommentCollection.Find(context.Background(), filter, findOptions)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching questions from database: ": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"comments": Responses,
+		"hasMore":  hasMore,
+	})
 }
 
 func GetPendingComments(c *fiber.Ctx) error {
@@ -374,7 +428,33 @@ func GetPendingComments(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(http.StatusOK).JSON(pendingComments)
+	var hasMore bool = false
+
+	if len(pendingComments) == limit {
+
+		findOpts.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Comment
+		nextDocsCursor, err := database.CommentCollection.Find(context.Background(), filter, findOpts)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching comments from database: ": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"pendingComments": pendingComments,
+		"hasMore":         hasMore,
+	})
 }
 
 func UpdateCommentValidationState(c *fiber.Ctx) error {

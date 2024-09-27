@@ -67,14 +67,14 @@ func GetAllProducts(c *fiber.Ctx) error {
 
 	if brandID.IsZero() {
 		filter = bson.M{"$or": []bson.M{
-			{"validation_state": 2},
-			{"validation_state": 3},
+			{"validation_state": models.Validated},
+			{"validation_state": models.Banned},
 		}}
 	} else {
 		filter = bson.M{
 			"$or": []bson.M{
-				{"validation_state": 2},
-				{"validation_state": 3},
+				{"validation_state": models.Validated},
+				{"validation_state": models.Banned},
 			},
 			"brand_id": brandID,
 		}
@@ -986,7 +986,34 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		product_list = append(product_list, productCard)
 	}
 
-	return c.Status(http.StatusOK).JSON(product_list)
+	var hasMore bool = false
+
+	if len(product_list) == limit {
+
+		findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		var nextDocs []models.Product
+		nextDocsCursor, err := database.ProductCollection.Find(context.Background(), filter, findOptions)
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching products from database:": err.Error()})
+		}
+
+		defer nextDocsCursor.Close(context.Background())
+
+		if err := nextDocsCursor.All(context.Background(), &nextDocs); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding next doc cursor": err.Error()})
+		}
+
+		if len(nextDocs) > 0 {
+			hasMore = true
+		}
+
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"products": product_list,
+		"hasMore":  hasMore,
+	})
 }
 
 func CreateProdCard(product models.Product) models.ProductCard {
