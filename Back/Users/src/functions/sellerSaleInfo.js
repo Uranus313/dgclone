@@ -1,4 +1,4 @@
-import { productURL } from "../consts/consts";
+import { productURL } from "../consts/consts.js";
 
 export async function sellerSaleInfo(sellerID){
     const result = await fetch(productURL + "/sellerSaleInfo/"+sellerID, {

@@ -133,6 +133,35 @@ export function validateChangePassword(data) {
     })
     return schema.validate(data);
 }
+export function validateChangeEmail(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+            if (!email) {
+                return
+            }
+            const user = await UserModel.find({ email: email }).findOne();
+            if (user) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+    })
+    return schema.validateAsync(data);
+}
+export function validateChangeEmailVerify(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+            if (!email) {
+                return
+            }
+            const user = await UserModel.find({ email: email }).findOne();
+            if (user) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
 export function validateUserChangeinfo(data) {
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100),
@@ -148,15 +177,6 @@ export function validateUserChangeinfo(data) {
             }
         }),
         birthDate: Joi.date(),
-        email: Joi.string().email().external(async (email) => {
-            if (!email) {
-                return
-            }
-            const user = await UserModel.find({ email: email }).findOne();
-            if (user) {
-                throw new Error("an account with this email already exists");
-            }
-        }),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external(async (nationalID) => {
             if (!nationalID) {
                 return

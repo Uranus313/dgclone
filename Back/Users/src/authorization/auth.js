@@ -8,7 +8,7 @@ export async function auth(req, res, next, acceptedStatuses) {
   
   let token = req.cookies["x-auth-token"];
   const secret = req.header("inner-secret");
-  if(secret == process.env.innerSecret  && !secret){
+  if(secret == process.env.innerSecret  && secret){
     token = req.header("x-auth-token");
   }
   if (!token) {

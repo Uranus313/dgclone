@@ -190,6 +190,35 @@ export function validateSellerPost(data) {
     return schema.validateAsync(data);
 }
 
+export function validateChangeEmail(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+            if (!email) {
+                return
+            }
+            const seller = await SellerModel.find({ email: email }).findOne();
+            if (seller) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+    })
+    return schema.validateAsync(data);
+}
+export function validateChangeEmailVerify(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+            if (!email) {
+                return
+            }
+            const seller = await SellerModel.find({ email: email }).findOne();
+            if (seller) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
 
 export function validateSellerChangeinfo(data, sellerID) {
     const schema = Joi.object({
@@ -212,8 +241,8 @@ export function validateSellerChangeinfo(data, sellerID) {
                     return;
                 }
                 const seller = await SellerModel.find({ email: email }).findOne();
-                if (seller && seller._id.toString() != sellerID.toString()) {
-                    throw new Error("an account with this email already exists");
+                if (!seller || seller._id.toString() != sellerID.toString()) {
+                    throw new Error("you cant change email with this endpoint");
                 }
             }),
             nationalID: Joi.string().length(10).pattern(/^\d+$/).external(async (nationalID) => {
