@@ -10,6 +10,7 @@ import sellerRouter from "./src/routes/seller.js"
 import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
 import { sendMail } from "./src/functions/sendMail.js";
+import { sendSMS } from "./src/functions/sendSMS.js";
 // async function asynctest(){
 //     try {
 //         const result = await validateAdminPost({phoneNumber : "11"})
@@ -47,5 +48,4 @@ app.get("/", (req, res, next) => {
 });
 app.listen(port, async () => {
     console.log("server is running on port " + port);
-    
 });
