@@ -49,8 +49,8 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 
 	filter := bson.M{
 		"product_id":       prodID,
-		"comment_type":     1,
-		"validation_state": 2,
+		"comment_type":     models.RegularComment,
+		"validation_state": models.Validated,
 	}
 
 	cursor, errr := database.CommentCollection.Find(context.Background(), filter, findOptions)
@@ -67,8 +67,9 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 	// var ProdComments []models.Comment
 
 	type Response struct {
-		Comment models.Comment
-		Score   int
+		Comment    models.Comment
+		Score      int
+		HasOrdered bool
 	}
 
 	var Responses []Response
@@ -89,9 +90,18 @@ func GetCommentsByProductID(c *fiber.Ctx) error {
 			}
 		}
 
+		var hasOrdered bool
+
+		if comment.OrderID.IsZero() {
+			hasOrdered = false
+		} else {
+			hasOrdered = true
+		}
+
 		var response = Response{
-			Comment: comment,
-			Score:   commentScore,
+			Comment:    comment,
+			Score:      commentScore,
+			HasOrdered: hasOrdered,
 		}
 
 		Responses = append(Responses, response)
