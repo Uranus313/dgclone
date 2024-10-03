@@ -14,6 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/joho/godotenv"
 )
 
@@ -40,10 +41,12 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173, http://localhost:3000",
+		// AllowOrigins: "http://localhost:5173, http://localhost:3000",
+		AllowOrigins: "*",
 		AllowHeaders: "Origin,Content-Type,Accept,Authorization",
 		AllowMethods: "*",
 	}))
+	app.Get("/metrics", monitor.New())
 	app.Use(logger.New())
 
 	// ------------comemnts------------
