@@ -8,7 +8,7 @@ export async function auth(req, res, next, acceptedStatuses) {
   
   let token = req.cookies["x-auth-token"];
   const secret = req.header("inner-secret");
-  if(secret == process.env.innerSecret  && !secret){
+  if(secret == process.env.innerSecret  && secret){
     token = req.header("x-auth-token");
   }
   if (!token) {
@@ -55,7 +55,9 @@ export async function auth(req, res, next, acceptedStatuses) {
           return;
         }
         req.user = user;
+        if(next){
         next();
+        }
         break;
 
       case "seller":
@@ -73,7 +75,9 @@ export async function auth(req, res, next, acceptedStatuses) {
           return;
         }
         req.seller = seller;
+        if(next){
         next();
+        }
         break;
       case "admin":
         const admin = (await getAdmins(decoded._id)).response;
@@ -90,7 +94,9 @@ export async function auth(req, res, next, acceptedStatuses) {
           return;
         }
         req.admin = admin;
+        if(next){
         next();
+        }
         break;
       case "employee":
         const employee = (await getEmployeesWithRoles(decoded._id)).response;
@@ -107,7 +113,9 @@ export async function auth(req, res, next, acceptedStatuses) {
           return;
         }
         req.employee = employee;
+        if(next){
         next();
+        }
         break;
       default:
         break;

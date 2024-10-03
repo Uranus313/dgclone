@@ -113,7 +113,17 @@ export function validateUserPost(data) {
     });
     return schema.validateAsync(data);
 }
-
+export function validateUserlogInWithPhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const user = await UserModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (!user) {
+                throw new Error("no account with this phone number exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
 export function validateLastVisitedPost(data) {
     const schema = Joi.object({
         productID: Joi.objectId().external(async (productID) => {
@@ -133,21 +143,45 @@ export function validateChangePassword(data) {
     })
     return schema.validate(data);
 }
-export function validateUserChangeinfo(data) {
+export function validateUserChangePhoneNumber(data) {
     const schema = Joi.object({
-        firstName: Joi.string().min(1).max(100),
-        lastName: Joi.string().min(1).max(100),
-        job: Joi.string().min(8).max(200),
         phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
-            if (!phoneNumber) {
-                return
-            }
             const user = await UserModel.find({ phoneNumber: phoneNumber }).findOne();
             if (user) {
                 throw new Error("an account with this phone number already exists");
             }
-        }),
-        birthDate: Joi.date(),
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateChangePhoneNumberVerify(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const user = await UserModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (user) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required(),
+        mode : Joi.string().valid("change","logIn","signUp").required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
+
+export function validateChangeEmail(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+
+            const user = await UserModel.find({ email: email }).findOne();
+            if (user) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+    })
+    return schema.validateAsync(data);
+}
+export function validateChangeEmailVerify(data) {
+    const schema = Joi.object({
         email: Joi.string().email().external(async (email) => {
             if (!email) {
                 return
@@ -156,7 +190,26 @@ export function validateUserChangeinfo(data) {
             if (user) {
                 throw new Error("an account with this email already exists");
             }
-        }),
+        }).required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
+export function validateUserChangeinfo(data) {
+    const schema = Joi.object({
+        firstName: Joi.string().min(1).max(100),
+        lastName: Joi.string().min(1).max(100),
+        job: Joi.string().min(8).max(200),
+        // phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+        //     if (!phoneNumber) {
+        //         return
+        //     }
+        //     const user = await UserModel.find({ phoneNumber: phoneNumber }).findOne();
+        //     if (user) {
+        //         throw new Error("an account with this phone number already exists");
+        //     }
+        // }),
+        birthDate: Joi.date(),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external(async (nationalID) => {
             if (!nationalID) {
                 return

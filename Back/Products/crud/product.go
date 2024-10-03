@@ -309,8 +309,9 @@ func GetProductByID(c *fiber.Ctx) error {
 
 	// return last 20 comments
 	filter = bson.M{
-		"product_id":   prodID,
-		"comment_type": 1,
+		"product_id":       prodID,
+		"comment_type":     models.RegularComment,
+		"validation_state": models.Validated,
 	}
 	comment_opts := options.Find().SetSort(bson.D{{Key: "date_sent", Value: -1}}).SetLimit(20)
 
@@ -322,18 +323,50 @@ func GetProductByID(c *fiber.Ctx) error {
 
 	defer cursor.Close(context.Background())
 
-	var prodComments []models.Comment
+	type CommentResponse struct {
+		Comment    models.Comment
+		Score      int
+		HasOrdered bool
+	}
+
+	var commentResponse []CommentResponse
+
+	// var prodComments []models.Comment
 	for cursor.Next(context.Background()) {
 		var comment models.Comment
 		if err := cursor.Decode(&comment); err != nil {
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
 		}
-		prodComments = append(prodComments, comment)
+		var commentScore int = 0
+
+		for _, likeOrDislike := range comment.LikesAndDisslikes {
+			if likeOrDislike.Liked {
+				commentScore++
+			} else {
+				commentScore--
+			}
+		}
+
+		var hasOrdered bool
+
+		if comment.OrderID.IsZero() {
+			hasOrdered = false
+		} else {
+			hasOrdered = true
+		}
+
+		var response = CommentResponse{
+			Comment:    comment,
+			Score:      commentScore,
+			HasOrdered: hasOrdered,
+		}
+
+		commentResponse = append(commentResponse, response)
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{
 		"product":  product,
-		"comments": prodComments,
+		"comments": commentResponse,
 	})
 
 }
