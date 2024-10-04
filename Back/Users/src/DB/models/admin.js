@@ -140,3 +140,38 @@ export function validateAdminUnban (data){
     });
     return schema.validateAsync(data);
 }
+export function validateAdminChangePhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const admin = await AdminModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (admin) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateChangePhoneNumberVerify(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const admin = await AdminModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (admin) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required(),
+        mode : Joi.string().valid("change","logIn","signUp").required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
+export function validateAdminlogInWithPhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const admin = await AdminModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (!admin) {
+                throw new Error("no account with this phone number exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
