@@ -1,8 +1,8 @@
-import { ProductInterface } from "@/app/components/Interfaces/interfaces";
+import { Comment } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
-interface ProductListResponse {
-    products : ProductInterface[],
+interface OrderListResponse {
+    pendingComments : Comment[],
     hasMore : boolean
 }
 interface Query{
@@ -11,16 +11,15 @@ interface Query{
     nameSearch : string | null,
     sort: string
 }
-
-function useGetPendingProducts(query : Query){
+function useGetPendingComments(query : Query){
     return useQuery({
-        queryKey : ['pemdingProductroductList', query],
+        queryKey : ['commentList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/allPendingProducts");
+            const result = await fetch("http://localhost:8080/products/comments/pending");
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
-                return jsonResult as ProductListResponse
+                return jsonResult as OrderListResponse
             }else{
                 throw new Error(jsonResult.error);
             }    
@@ -31,4 +30,4 @@ function useGetPendingProducts(query : Query){
         // keepPreviousData: true
     })
 }
-export default useGetPendingProducts;
+export default useGetPendingComments;

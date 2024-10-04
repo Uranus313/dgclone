@@ -23,7 +23,6 @@ const EmployeeHomePage = () => {
   return (
     <div className='flex flex-wrap md:flex-nowrap '>
       <InformationCard />
-
       {isLoading && <span className="loading loading-dots loading-lg m-24"></span>}
       {
         user &&

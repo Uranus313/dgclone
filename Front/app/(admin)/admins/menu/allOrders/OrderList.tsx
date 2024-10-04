@@ -8,14 +8,14 @@ interface Props {
 const OrderList = ({ changeList }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  let [typeSort, setTypeSort] = useState<string>("none");
+  let [typeSort, setTypeSort] = useState<number>(0);
   let [pageSize, setPageSize] = useState<number>(8);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
   let { data: orders, error, isLoading } = useGetOrders({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
 
-  function handleSort(type: string) {
+  function handleSort(type: number) {
     setTypeSort(type);
   }
   const openModal = () => {
@@ -63,15 +63,15 @@ const OrderList = ({ changeList }: Props) => {
           <div className="my-4 flex flex-col justify-center w-1/2">
             <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
-              handleSort("lastName");
+              handleSort(1);
             }}>اسم محصول</button>
             <button className="rounded-md bg-primary-color px-6 py-3 " type="button" onClick={() => {
               closeModal();
-              handleSort("phoneNumber");
-            }}> اسم فروشنده</button>
+              handleSort(2);
+            }}>  امتیاز</button>
             <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
-              handleSort("phoneNumber");
+              handleSort(3);
             }}> تاریخ سفارش</button>
             <button className="btn btn-warning  " type="button" onClick={closeModal}>خروج</button>
           </div>
@@ -86,13 +86,12 @@ const OrderList = ({ changeList }: Props) => {
           <ul>
             <div className="flex justify-between py-8 text-center">
               <p className="w-1/3"> اسم محصول </p>
-              <p className="w-1/3"> اسم فروشنده</p>
+              <p className="w-1/3"> امتیاز</p>
               <p className="w-1/3">تاریخ سفارش </p>
             </div>
             {orders?.data?.map((order, index) => {
               return (
                 <li key={index}>
-                  yes
                   {/* <orderPopUp product={product} /> */}
                 </li>
               )

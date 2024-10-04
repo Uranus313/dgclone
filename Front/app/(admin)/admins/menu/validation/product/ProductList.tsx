@@ -1,6 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetPendingProducts from '../../../hooks/useGetPendingProducts';
+import ProductPopUp from './ProductPopUp';
 
 interface Props {
   changeList: (list: string) => void
@@ -54,11 +55,10 @@ const ProductList = ({ changeList }: Props) => {
               <p className="w-1/4">وزن </p>
               <p className="w-1/4">امتیاز </p>
             </div>
-            {products?.data?.map((product, index) => {
+            {products?.products?.map((product, index) => {
               return (
                 <li key={index}>
-                  yes
-                  {/* <ProductPopUp product={product} /> */}
+                  <ProductPopUp product={product} />
                 </li>
               )
             })}

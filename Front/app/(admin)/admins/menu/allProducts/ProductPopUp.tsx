@@ -28,34 +28,61 @@ const ProductPopUp = ({ product }: Props) => {
             setIsOpen(false);
         }
     };
-    //   const banAdmin = useMutation({
-    //     mutationFn: async () => {
-    //       const result = await fetch("http://localhost:3005/users/admin/banAdmin", {
-    //         method: "PATCH",
-    //         credentials: 'include',
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
+    const unbanProd = useMutation({
+        mutationFn: async () => {
+            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
 
-    //         body: JSON.stringify({ adminID: admin._id }),
-    //       });
-    //       const jsonResult = await result.json();
-    //       if (result.ok) {
-    //         return jsonResult
-    //       } else {
-    //         throw new Error(jsonResult.error);
-    //       }
-    //     },
-    //     onSuccess: (savedUser) => {
-    //       console.log(savedUser);
-    //       admin.isBanned = true;
-    //       closeModal();
-    //     },
-    //     onError: (error) => {
-    //       console.log(error);
-    //       setError(error.message)
-    //     }
-    //   });
+            });
+            const jsonResult = await result.json();
+            console.log(jsonResult);
+            if (result.ok) {
+                return jsonResult
+            } else {
+                throw new Error(jsonResult.error);
+            }
+        },
+        onSuccess: (savedUser) => {
+            console.log(savedUser);
+            product.validation_state = 2;
+            closeModal();
+        },
+        onError: (error) => {
+            console.log(error);
+            setError(error.message)
+        }
+    });
+
+    const banProd = useMutation({
+        mutationFn: async () => {
+            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+
+            });
+            const jsonResult = await result.json();
+            console.log(jsonResult);
+            if (result.ok) {
+                return jsonResult
+            } else {
+                throw new Error(jsonResult.error);
+            }
+        },
+        onSuccess: (savedUser) => {
+            console.log(savedUser);
+            product.validation_state = 3;
+            closeModal();
+        },
+        onError: (error) => {
+            console.log(error);
+            setError(error.message)
+        }
+    });
 
     return (
         <div>
@@ -83,12 +110,12 @@ const ProductPopUp = ({ product }: Props) => {
                             <p className="pl-2"> تعداد فروش :</p>
                             <p>{product.sell_count}</p>
                         </div>
-                        
+
                         <div className='flex pb-2'>
                             <p className="pl-2"> تعداد ویزیت :</p>
                             <p>{product.visit_count}</p>
                         </div>
-                        
+
                         <div className=' flex justify-between pb-1'>
                             {product.is_from_iran ? (
                                 <p> کالا ملی است</p>
@@ -111,19 +138,19 @@ const ProductPopUp = ({ product }: Props) => {
                             <h3 >  ابعاد</h3>
                             <div className="flex">
 
-                            <div className=" flex pb-2">
-                                <p className="pl-2"> طول :</p>
+                                <div className=" flex pb-2">
+                                    <p className="pl-2"> طول :</p>
 
-                                <p>{(product.dimentions.length && product.dimentions.length) || "-"}</p>
-                            </div>
-                            <div className=" flex pb-2">
-                                <p className="pl-2 pr-4"> عرض  :</p>
-                                <p>{(product.dimentions.width && product.dimentions.width) || "-"}</p>
-                            </div>
-                            <div className=" flex pb-2">
-                                <p className="pl-2 pr-4"> ارتفاع  :</p>
-                                <p>{(product.dimentions.height && product.dimentions.height) || "-"}</p>
-                            </div>
+                                    <p>{(product.dimentions.length && product.dimentions.length) || "-"}</p>
+                                </div>
+                                <div className=" flex pb-2">
+                                    <p className="pl-2 pr-4"> عرض  :</p>
+                                    <p>{(product.dimentions.width && product.dimentions.width) || "-"}</p>
+                                </div>
+                                <div className=" flex pb-2">
+                                    <p className="pl-2 pr-4"> ارتفاع  :</p>
+                                    <p>{(product.dimentions.height && product.dimentions.height) || "-"}</p>
+                                </div>
                             </div>
                         </div>
                         <div className=' flex pb-2'>
@@ -140,15 +167,24 @@ const ProductPopUp = ({ product }: Props) => {
                             <p>{product.description}</p>
                         </div>
                     </div>
+                    {user &&
+                        <div className="my-4 flex justify-center">
+                            {product.validation_state != 3 ?(
 
-                    <div className="my-4 flex justify-center">
-                        {user &&
+                                <div>
+                                    <button className='btn btn-error' type='button' onClick={() => banProd.mutate()}>بن</button>
+                                </div>
+                            ):(
+                                <div>
+                                <button className='btn btn-error' type='button' onClick={() => unbanProd.mutate()}>لغو بن </button>
+                                </div>
+                            )
+                            }
                             <div>
                                 <button className='btn btn-warning mx-3' type='button' onClick={closeModal}>خروج</button>
                             </div>
-                        }
-
-                    </div>
+                        </div>
+                    }
                 </div>
                 <form method="dialog" className="modal-backdrop" onClick={closeModal}>
                     <button type="button">close</button>

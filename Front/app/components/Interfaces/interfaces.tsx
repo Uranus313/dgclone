@@ -152,6 +152,7 @@ export interface SellerSetVarientOnProduct {
 
 export interface ProductInterface {
     id?: string,
+    _id: string,
     sellcount: number,
     sell_count: number | undefined,
     date_added: string | undefined,
@@ -175,7 +176,8 @@ export interface ProductInterface {
     wieght_KG: number,
     description?: string,
     prosNcons?: { pros: string[], cons: string[] },
-    recentComments: Comment[]
+    recentComments: Comment[],
+    validation_state: number
 }
 
 
@@ -186,13 +188,19 @@ export interface Comment {
     type: commentType
     answers?: Comment[]  //for question comments
     id: string
+    _id: string
     productID: string
+    product_id: string
     rate?: number //for buyers
     order?: { color: { title: string, hex: string }, sellerTitle: string } //for normal comments
     user: { userid: string, firstname: string, lastname: string }
+    user_id:string
     content: string
     disAndlike?: { userid: string, disOlike: boolean }[] //for questions
     dateSent: string
+    date_sent:string
+    comment_type: number
+    validation_state: number
 }
 
 export enum State { returned = 'returned', canceled = 'canceled', pending = 'pending', delivered = 'delivered', recivedInWareHouse = 'recivedInWareHouse' }

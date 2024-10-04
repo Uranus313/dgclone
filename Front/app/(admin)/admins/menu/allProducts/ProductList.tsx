@@ -9,14 +9,14 @@ interface Props {
 const ProductList = ({ changeList }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  let [typeSort, setTypeSort] = useState<string>("none");
+  let [typeSort, setTypeSort] = useState<number>(1);
   let [pageSize, setPageSize] = useState<number>(8);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
   let { data: products, error, isLoading } = useGetProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
 
-  function handleSort(type: string) {
+  function handleSort(type: number) {
     setTypeSort(type);
   }
   const openModal = () => {
@@ -64,15 +64,11 @@ const ProductList = ({ changeList }: Props) => {
           <div className="my-4 flex flex-col justify-center w-1/2">
             <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
-              handleSort("lastName");
+              handleSort(1);
             }}>نام</button>
-            <button className="rounded-md bg-primary-color px-6 py-3 " type="button" onClick={() => {
-              closeModal();
-              handleSort("phoneNumber");
-            }}> برند</button>
             <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
-              handleSort("phoneNumber");
+              handleSort(3);
             }}> امتیاز</button>
             <button className="btn btn-warning  " type="button" onClick={closeModal}>خروج</button>
           </div>

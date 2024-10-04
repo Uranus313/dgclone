@@ -285,7 +285,7 @@ const SellerPopUp = ({ seller }: Props) => {
         )}
 
       </div>
-      <dialog ref={dialogRef} className="modal">
+      <dialog ref={dialogRef} className="modal break-all">
         <div className="modal-box">
           {error && <p>{error}</p>}
           <h3 className="font-bold text-lg pb-2">
@@ -447,32 +447,31 @@ const SellerPopUp = ({ seller }: Props) => {
                 <p className="pl-2">کد فروشنده :</p>
                 <p>{(seller.storeInfo?.sellerCode && seller.storeInfo?.sellerCode) || "-"}</p>
               </div>
-              <div className=" flex pb-2">
+              <div className=" pb-2">
                 <p className="pl-2">درباره فروشگاه :</p>
                 <p>{(seller.storeInfo?.aboutSeller && seller.storeInfo?.aboutSeller) || "-"}</p>
               </div>
-              <div className=" flex pb-2">
+              <div className=" pb-2">
                 <p className="pl-2">وبسایت فروشگاه :</p>
                 <p>{(seller.storeInfo?.sellerWebsite && seller.storeInfo?.sellerWebsite) || "-"}</p>
               </div>
               <div className=" flex-col pb-2">
                 <h5>روز های کاری فروشگاه :</h5>
-                {seller.storeInfo ? (
+                {seller.storeInfo?.workDays.length!=0 ? (
                   <div>
-
                     {seller.storeInfo?.workDays.map((day, index) => (
                       <p key={index}>{day}</p>
                     ))}
                   </div>
                 ) : (
-                  <p>هیچ روزی کار نمی کنیم</p>
+                  <p>-</p>
                 )
 
                 }
               </div>
               <div className=" flex-col pb-2">
                 <h5>روز های تعطیل فروشگاه :</h5>
-                {seller.storeInfo ? (
+                {seller.storeInfo?.offDays.length!=0 ? (
                   <div>
                     {seller.storeInfo?.offDays.map((day, index) => (
                       <p key={index}>{day}</p>
@@ -480,7 +479,7 @@ const SellerPopUp = ({ seller }: Props) => {
 
                   </div>
                 ) : (
-                  <p>هیچ روزی تعطیل نمی کنیم</p>
+                  <p>-</p>
                 )
 
                 }

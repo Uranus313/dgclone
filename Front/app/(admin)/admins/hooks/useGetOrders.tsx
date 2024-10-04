@@ -9,13 +9,13 @@ interface Query{
     floor : number,
     limit : number,
     nameSearch : string | null,
-    sort: string
+    sort: number
 }
 function useGetOrders(query : Query){
     return useQuery({
         queryKey : ['orderList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/order");
+            const result = await fetch("http://localhost:8080/products/order"+`?limit=${query.limit}&offset=${query.floor}&SortMethod=${query.sort}`);
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
