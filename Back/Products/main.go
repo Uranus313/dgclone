@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"dg-kala-sample/auth"
 	"dg-kala-sample/crud"
 	"dg-kala-sample/database"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/joho/godotenv"
 )
 
@@ -39,25 +41,27 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173, http://localhost:3000",
+		// AllowOrigins: "http://localhost:5173, http://localhost:3000",
+		AllowOrigins: "*",
 		AllowHeaders: "Origin,Content-Type,Accept,Authorization",
 		AllowMethods: "*",
 	}))
+	app.Get("/metrics", monitor.New())
 	app.Use(logger.New())
 
 	// ------------comemnts------------
 
-	app.Get("/products/comments", crud.GetCommentsByProductID) // query params => limit, offset, ProdID
+	app.Get("/products/comments", auth.AuthMiddleware("user"), crud.GetCommentsByProductID) // query params => limit, offset, ProdID
 
-	app.Post("/products/comments", crud.PostComment) // --unchecked
+	app.Post("/products/comments", auth.AuthMiddleware("user"), crud.PostComment) // --unchecked
 
-	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
+	app.Patch("/products/comments/:CommentID", auth.AuthMiddleware("user"), crud.UpdateCommentScore)
 
-	app.Get("/products/questions", crud.GetProductQuestions) // query params => limit, offset, ProdID
+	app.Get("/products/questions", auth.AuthMiddleware("user"), crud.GetProductQuestions) // query params => limit, offset, ProdID
 
-	app.Get("/products/comments/pending", crud.GetPendingComments) // query params => limit, offset
+	app.Get("/products/comments/pending", auth.AuthMiddleware("admin"), crud.GetPendingComments) // query params => limit, offset
 
-	app.Patch("/products/validate-comments", crud.UpdateCommentValidationState) // query params => CommentID, ValidationState
+	app.Patch("/products/validate-comments", auth.AuthMiddleware("admin"), crud.UpdateCommentValidationState) // query params => CommentID, ValidationState
 
 	// ------------products-------------
 
@@ -65,7 +69,7 @@ func main() {
 
 	app.Post("/products/product", crud.AddProduct)
 
-	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query params => SellerID, ProdID --unchecked
+	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query params => SellerID, ProdID --unchecked (note. modify to use seller id and seller body from token)
 
 	app.Patch("/products/product/UpdateRating", crud.UpdateProductRating) // query params => ProductID, Rating
 
