@@ -8,13 +8,18 @@ import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.
 import { getNotifications } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
 import { innerAuth } from "../authorization/innerAuth.js";
-import { validateSellerChangeinfo, validateSellerPost, validateVerificationChange } from "../DB/models/seller.js";
+import { validateChangeEmail, validateChangeEmailVerify, validateChangePhoneNumberVerify, validateSellerChangeinfo, validateSellerChangePhoneNumber, validateSellerlogInWithPhoneNumber, validateSellerPost, validateVerificationChange } from "../DB/models/seller.js";
 import { changeSellerPassword, logIn, saveSeller, updateSeller } from "../DB/CRUD/seller.js";
 import { validateChangePassword, validateUserLogIn } from "../DB/models/user.js";
 import { getVerifyRequests, saveVerifyRequest, updateVerifyRequest } from "../DB/CRUD/verifyRequest.js";
 import { validateVerifyRequestAnswer } from "../DB/models/verifyRequest.js";
 import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
+import { sellerSaleInfo } from "../functions/sellerSaleInfo.js";
+import { deleteEmailVerification, getEmailVerifications, saveEmailVerification } from "../DB/CRUD/emailVerification.js";
+import { sendMail } from "../functions/sendMail.js";
+import { deletePhoneNumberVerification, getPhoneNumberVerifications, savePhoneNumberVerification } from "../DB/CRUD/phoneNumberVerification.js";
+import { sendSMS } from "../functions/sendSMS.js";
 const router = express.Router();
 
 router.post("/signUp", async (req, res, next) => {
@@ -71,7 +76,117 @@ router.post("/signUp", async (req, res, next) => {
 });
 
 
+router.patch("/changeEmail", (req, res, next) => auth(req, res, next, ["seller"]), async (req, res, next) => {
+    try {
+        await validateChangeEmail(req.body);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const prevRequest = await getEmailVerifications(undefined,req.body.email);
+        if(prevRequest.response){
+            res.status(400).send({ error: "به این ایمیل کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." });
+            res.body = { error: "به این ایمیل کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." };
+            next();
+            return;
+        }
+        const randomCode = generateRandomString(6);
+        const result = await saveEmailVerification( {email :req.body.email , verificationCode : randomCode});
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
+            next();
+            return;
+        }
+        const sendResult = await sendMail({title:"کد تایید ایمیل",text:result.response.verificationCode,targetEmail :req.body.email});
+        if(sendResult.error){
+            res.status(400).send({ error: "در ارسال ایمیل اشکالی به وجود آمد" });
+            res.body = { error: "در ارسال ایمیل اشکالی به وجود آمد" };
+            next();
+            return;
+        }
+        res.send({message:"کد ایجاد شد"});
+        res.body = {message:"کد ایجاد شد"};
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
 
+});
+// checked
+router.patch("/verifyChangeEmail", (req, res, next) => auth(req, res, next, ["seller"]), async (req, res, next) => {
+    try {
+        await validateChangeEmailVerify(req.body);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const prevRequest = await getEmailVerifications(undefined,req.body.email);
+        if(!prevRequest.response){
+            res.status(404).send({ error: "not found" });
+            res.body = { error: "not found" };
+            next();
+            return;
+        }
+        if(prevRequest.response.verificationCode != req.body.verificationCode){
+            res.status(404).send({ error: "کد اشتباه است" });
+            res.body = { error: "کد اشتباه است" };
+            next();
+            return;
+        }
+        const deleteresult = await deleteEmailVerification( undefined , req.body.email);
+        if (deleteresult.error) {
+            // res.status(400).send({ error: deleteresult.error });
+            // res.body = { error: deleteresult.error };
+            console.log(deleteresult.error)
+            next();
+            return;
+        }
+        const result = await updateSeller(req.seller._id, {storeOwner:{...req.seller.storeOwner,email : req.body.email} });
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
+            next();
+            return;
+        }
+        const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
+        res.cookie('x-auth-token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result.response);
+        res.body = result.response;
+
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+
+});
 router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["seller"]), async (req, res, next) => {
     try {
         await validateSellerChangeinfo(req.body, req.seller._id);
@@ -94,6 +209,11 @@ router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["seller"
             res.body = { error: result.error };
             next();
             return;
+        }
+        const saleinfo = await sellerSaleInfo(req.seller._id);
+        if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            result.response = {...result.response ,saleinfoJson}
         }
         const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
@@ -168,7 +288,12 @@ router.post("/logIn", async (req, res, next) => {
             next();
             return;
         }
-        const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
+        const saleinfo = await sellerSaleInfo(result.response._id);
+        if(saleinfo.status == 200){
+            const saleinfoJson = await saleinfo.json();
+            result.response = {...result.response ,saleinfoJson}
+        }
+        const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.cookie('x-auth-token', token, {
             httpOnly: true,
             secure: true,
@@ -491,5 +616,206 @@ router.post("/lastVisited", (req, res, next) => auth(req, res, next, ["seller"])
     }
     next();
 });
+router.post("/logInWithPhoneNumber",async (req, res, next) => {
+    try {
+        await validateSellerlogInWithPhoneNumber(req.body);
+    } catch (error) {
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const prevRequest = await getPhoneNumberVerifications(undefined,req.body.phoneNumber);
+        if(prevRequest.response){
+            res.status(400).send({ error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." });
+            res.body = { error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." };
+            next();
+            return;
+        }
+        const randomCode = generateRandomString(6);
+        const result = await savePhoneNumberVerification( {phoneNumber :req.body.phoneNumber , verificationCode : randomCode});
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
+            next();
+            return;
+        }
+        const sendResult = await sendSMS({message:"کد تایید دیجیمارکت:" + "\n" + result.response.verificationCode,phoneNumber :req.body.phoneNumber});
+        console.log(sendResult)
+        if(sendResult.error){
+            res.status(400).send({ error: "در ارسال پیامک اشکالی به وجود آمد" });
+            res.body = { error: "در ارسال پیامک اشکالی به وجود آمد" };
+            next();
+            return;
+        }
+        res.send({message:"کد ایجاد شد"});
+        res.body = {message:"کد ایجاد شد"};
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+})
+router.post("/testPhoneNumber", async (req, res, next) => {
+    try {
+        await validateSellerChangePhoneNumber(req.body);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const prevRequest = await getPhoneNumberVerifications(undefined,req.body.phoneNumber);
+        if(prevRequest.response){
+            res.status(400).send({ error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." });
+            res.body = { error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." };
+            next();
+            return;
+        }
+        const randomCode = generateRandomString(6);
+        const result = await savePhoneNumberVerification( {phoneNumber :req.body.phoneNumber , verificationCode : randomCode});
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
+            next();
+            return;
+        }
+        const sendResult = await sendSMS({message:"کد تایید دیجیمارکت:" + "\n" + result.response.verificationCode,phoneNumber :req.body.phoneNumber});
+        console.log(sendResult)
+        if(sendResult?.error){
+            res.status(400).send({ error: "در ارسال پیامک اشکالی به وجود آمد" });
+            res.body = { error: "در ارسال پیامک اشکالی به وجود آمد" };
+            next();
+            return;
+        }
+        res.send({message:"کد ایجاد شد"});
+        res.body = {message:"کد ایجاد شد"};
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+});
 
+router.patch("/verifyPhoneNumber", async (req, res, next) => {
+    try {
+        await validateChangePhoneNumberVerify(req.body);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const prevRequest = await getPhoneNumberVerifications(undefined,req.body.phoneNumber);
+        if(!prevRequest.response){
+            res.status(404).send({ error: "not found" });
+            res.body = { error: "not found" };
+            next();
+            return;
+        }
+        if(prevRequest.response.verificationCode != req.body.verificationCode){
+            res.status(404).send({ error: "کد اشتباه است" });
+            res.body = { error: "کد اشتباه است" };
+            next();
+            return;
+        }
+        const deleteresult = await deletePhoneNumberVerification( undefined , req.body.phoneNumber);
+        if (deleteresult.error) {
+            // res.status(400).send({ error: deleteresult.error });
+            // res.body = { error: deleteresult.error };
+            console.log(deleteresult.error)
+            next();
+            return;
+        }
+        let result = {};
+        if(req.body.mode=="change"){
+            await auth(req,res,undefined,["seller"]);
+            if(!req.user){
+                return;
+            }
+            result = await updateSeller(req.seller._id, {phoneNumber : req.body.phoneNumber});
+            if (result.error) {
+                res.status(400).send({ error: result.error });
+                res.body = { error: result.error };
+                next();
+                return;
+            }
+        }else if (req.body.mode=="signUp"){
+            result = await saveSeller(req.body);
+            if (result.error) {
+                res.status(400).send({ error: result.error });
+                res.body = { error: result.error };
+                next();
+                return;
+            }
+            const result2 = await saveWallet({ userID: result.response._id, userType: "seller" });
+            if (result2.error) {
+                res.status(400).send({ error: result2.error });
+                res.body = { error: result2.error };
+                next();
+                return;
+            }
+        }else if (req.body.mode=="logIn"){
+            result = await getWallets(undefined,{phoneNumber: req.body.phoneNumber});
+            if (result.error) {
+                res.status(400).send({ error: result.error });
+                res.body = { error: result.error };
+                next();
+                return;
+            }
+            if (!result.response[0]){
+                res.status(404).send({ error: "user not found" });
+                res.body = { error: "user not found" };
+                next();
+                return;
+            }
+            if(result.response[0].isBanned){
+                res.status(404).send({ error: "user is banned" });
+                res.body = { error: "user is banned" };
+                next();
+                return;
+            }
+            result.response = result.response[0];
+        }
+        
+        const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
+        res.cookie('x-auth-token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 6 * 60 * 60 * 1000
+        });
+        res.send(result.response);
+        res.body = result.response;
+
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+
+});
 export default router;

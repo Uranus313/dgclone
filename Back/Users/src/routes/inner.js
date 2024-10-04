@@ -13,34 +13,34 @@ const router = express.Router();
 router.get("sellerCard/:id",innerAuth,async (req, res, next) => {
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
+        res.status(400).send({err : error.details[0].message});
+            res.body = {err : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getSellers(req.params.id);
         if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
+            res.status(400).send({err : result.error});
+            res.body = {err : result.error};
             next();
             return;
         }
         const seller = result.response;
         if(!seller){
-            res.status(404).send({error : "seller not found"});
-            res.body = {error : "seller not found"};
+            res.status(404).send({err : "seller not found"});
+            res.body = {err : "seller not found"};
             next();
             return;
         }
         if(seller.isBanned){
-            res.status(403).send({error : "seller is banned"});
-            res.body = {error : "seller is banned"};
+            res.status(403).send({err : "seller is banned"});
+            res.body = {err : "seller is banned"};
             next();
             return;
         }if(!seller.isVerified){
-            res.status(403).send({error : "seller is not verified"});
-            res.body = {error : "seller is not verified"};
+            res.status(403).send({err : "seller is not verified"});
+            res.body = {err : "seller is not verified"};
             next();
             return;
         }
@@ -53,8 +53,8 @@ router.get("sellerCard/:id",innerAuth,async (req, res, next) => {
         res.send(sellerCard)
     } catch (err) {
         console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
+        res.body = {err:"internal server error"};
+        res.status(500).send({err:"internal server error"});
     }
 })
 router.get("/checkToken/:token",innerAuth,async (req, res, next) => {

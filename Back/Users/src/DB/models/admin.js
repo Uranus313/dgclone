@@ -54,6 +54,35 @@ export function validateAdminPost (data){
     return schema.validateAsync(data);
 }
 
+export function validateChangeEmail(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+            if (!email) {
+                return
+            }
+            const admin = await AdminModel.find({ email: email }).findOne();
+            if (admin) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+    })
+    return schema.validateAsync(data);
+}
+export function validateChangeEmailVerify(data) {
+    const schema = Joi.object({
+        email: Joi.string().email().external(async (email) => {
+            if (!email) {
+                return
+            }
+            const admin = await AdminModel.find({ email: email }).findOne();
+            if (admin) {
+                throw new Error("an account with this email already exists");
+            }
+        }).required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
 export function validateAdminChangeinfo (data){
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100),
@@ -65,12 +94,12 @@ export function validateAdminChangeinfo (data){
                 throw new Error("an account with this phone number already exists");
             }
         }),
-        email: Joi.string().email().external( async (email) => {
-            const admin = await AdminModel.find({email : email}).findOne();
-            if(admin){
-                throw new Error("an account with this email already exists");
-            }
-        }),
+        // email: Joi.string().email().external( async (email) => {
+        //     const admin = await AdminModel.find({email : email}).findOne();
+        //     if(admin){
+        //         throw new Error("an account with this email already exists");
+        //     }
+        // }),
         nationalID: Joi.string().length(10).pattern(/^\d+$/).external( async (nationalID) => {
             const admin = await AdminModel.find({nationalID : nationalID}).findOne();
             if(admin){
@@ -106,6 +135,41 @@ export function validateAdminUnban (data){
                 throw new Error("admin not found")
             }else if (!admin.isBanned){
                 throw new Error("admin is not banned")    
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateAdminChangePhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const admin = await AdminModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (admin) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateChangePhoneNumberVerify(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const admin = await AdminModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (admin) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required(),
+        mode : Joi.string().valid("change","logIn","signUp").required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
+export function validateAdminlogInWithPhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const admin = await AdminModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (!admin) {
+                throw new Error("no account with this phone number exists");
             }
         }).required()
     });

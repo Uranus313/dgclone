@@ -20,8 +20,10 @@
     "joi": "^17.13.3",
     "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^9.0.2",
+    "kavenegar": "^1.1.4",
     "lodash": "^4.17.21",
     "mongoose": "^8.5.2",
+    "nodemailer": "^6.9.15",
     "users": "file:"
   },
   "devDependencies": {

@@ -7,13 +7,13 @@ import (
 )
 
 type OrderProduct struct {
-	ProdID      primitive.ObjectID `json:"prod_id" bson:"prod_id"`
-	Price       int                `json:"price" bson:"price"`
-	Color       string             `json:"color" bson:"color"`
-	Guarantee   Guarantee          `json:"guarantee" bson:"guarantee"`
-	SellerID    primitive.ObjectID `json:"seller_id" bson:"seller_id"`
-	Picture     string             `json:"picture" bson:"picture"`
-	DateOrdered time.Time          `json:"date_ordered" bson:"date_ordered"`
+	ProdID    primitive.ObjectID `json:"prod_id" bson:"prod_id"`
+	Title     string             `json:"title" bson:"title"`
+	Price     int                `json:"price" bson:"price"`
+	Color     string             `json:"color" bson:"color"`
+	Guarantee Guarantee          `json:"guarantee" bson:"guarantee"`
+	SellerID  primitive.ObjectID `json:"seller_id" bson:"seller_id"`
+	Picture   string             `json:"picture" bson:"picture"`
 }
 
 type StateType int

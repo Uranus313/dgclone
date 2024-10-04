@@ -16,7 +16,8 @@ spec:
         app: mongo
         selector: mongo
     spec:
-      volumes:
+      volumes:  
+
         - name: mongo-config
           configMap:
             name: mongo-config

@@ -1,10 +1,11 @@
-
+'use client'
 import Image from 'next/image'
 import Link from 'next/link'
 import banner from './assets/images/banner.png'
 import Incredibles from '../components/Incredibles/Incredibles'
 import { ProductCardInterface } from '../components/Interfaces/interfaces'
 import BestProducts from '../components/BestProducts/BestProducts'
+import useGetColors from '../hooks/useGetColors'
 
 
 export interface detail{
@@ -324,7 +325,8 @@ export const Categories: Category[] = [
 //#endregion
 
 export default function Home() {
-
+  const {data: colors} = useGetColors()
+  console.log('sth',colors)
 
   
 

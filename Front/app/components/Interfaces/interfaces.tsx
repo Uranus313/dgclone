@@ -55,8 +55,24 @@ export interface Order {
     userid: string,
     rate?: number,
     state: State,
-    ReciveDate: string,
+    ordersdate:string
+    recievedate:string
 }
+
+
+export interface OrdersHistory{
+    _id?:string
+    userid:string,
+    orders:Order[]
+    ordersdate:string
+    recievedate:string
+    state?:State,
+    price:number , 
+    discount?:number,
+    address?:Address
+}
+
+
 export interface AccessLevel {
     name: string;
     title: string;

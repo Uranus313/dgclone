@@ -9,7 +9,7 @@ interface Props {
   noMargin?:boolean
 }
 
-const ModalButton = ({ noMargin,id,title,additionalCss='bg-propBubble-bg', solid=true }: Props) => {
+const ModalButton = ({ noMargin,id,title,additionalCss='bg-propBubble-bg p-3 ', solid=true }: Props) => {
   const [dialogElement, setDialogElement] = useState<HTMLDialogElement | null>(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const ModalButton = ({ noMargin,id,title,additionalCss='bg-propBubble-bg', solid
 
   return (
     <div>
-      <button onClick={() => { dialogElement?.showModal(); console.log(dialogElement) }} className={`  p-3 w-fit ${solid ?additionalCss : 'text-primary-seller'}  rounded-md ${!noMargin && 'my-6 text-sm'} `}>{title}</button>
+      <button onClick={() => { dialogElement?.showModal(); console.log(dialogElement) }} className={`  w-fit ${solid ?additionalCss : 'text-primary-seller'}  rounded-md ${!noMargin && 'my-6 text-sm'} `}>{title}</button>
       
     </div>
   )
