@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import useGetAccessLevels from "../../../hooks/useGetAccessLevels";
-import { AccessLevel } from "../EmployeePopUp";
 
 const AddRolePopUp = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,19 +54,12 @@ const AddRolePopUp = () => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
       queryClient.invalidateQueries({ queryKey: ["roleList"] });
-
-      // setUser(savedUser);
-
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
       setError(error.message);
-      // setError(error)
     },
   });
   async function submit(formData: any) {

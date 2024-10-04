@@ -58,8 +58,8 @@ export interface Order {
     ReciveDate: string,
 }
 export interface AccessLevel {
-    level: string,
-    writeAccess: boolean
+    name: string;
+    title: string;
 }
 export interface Role {
     name: string,
@@ -119,7 +119,6 @@ export interface Address {
         phoneNumber: string;
     };
 }
-
 
 
 export interface SellerSetVarientOnProduct {
@@ -226,6 +225,13 @@ export interface Transaction {
 }
 
 //#region seller
+export interface VerifyRequest {
+    sellerID: string,
+    adminID: string | undefined,
+    requestDate: string | undefined,
+    state: "pending" | "accepted" | "rejected" | undefined,
+    _id: string
+}
 
 export enum EntitiyType {
     individual = "individual",
@@ -250,8 +256,8 @@ export interface Seller {
     sellerID: string
     password: string
     storeOwner?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         firstName: string,
         lastName: string,
         birthDate: string,
@@ -263,8 +269,8 @@ export interface Seller {
     entityType?: EntitiyType,
 
     legalInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         companyIDNumber: string,
         companyEconomicNumber: string,
         shabaNumber: number,
@@ -275,16 +281,16 @@ export interface Seller {
     additionalDocuments?: string[],
 
     individualInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         nationalID: number,
         bankNumberType: bankNumberType,
         shabaNumber: number,
         bankNumber: number,
     },
     storeInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         commercialName: string
         officePhoneNumber: number,
         logo?: string,
@@ -296,7 +302,7 @@ export interface Seller {
     walletID?: string,
 
     moneyReturn?: {
-        _id:string
+        _id: string
         method: moneyReturn
         bankAccount: number
     },

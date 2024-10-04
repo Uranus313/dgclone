@@ -5,37 +5,10 @@ import { useMutation } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
 import useGetRoles from '../../hooks/useGetRoles';
 import ChangeRolePopUp from './ChangeRolePopUp';
-
-export interface AccessLevel {
-  name: string;
-  title: string;
-}
-
-export interface Role {
-  name: string,
-  accessLevels: [
-    {
-      level: string,
-      writeAccess: boolean
-    }
-  ],
-  _id: string
-}
-
-export interface Employee {
-  firstName: string,
-  lastName: string,
-  isBanned: boolean | undefined,
-  email: string,
-  birthDate: string,
-  nationalID: string,
-  phoneNumber: string,
-  roleID: Role | undefined,
-  _id: string
-}
+import { User } from "@/app/components/Interfaces/interfaces";
 
 export interface Props {
-  employee: Employee
+  employee: User
 }
 const EmployeePopUp = ({ employee }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,18 +51,12 @@ const EmployeePopUp = ({ employee }: Props) => {
     },
     onSuccess: (savedUser) => {
       console.log(savedUser);
-      // localStorage.setItem("auth-token",savedUser.headers["auth-token"]);
-      // queryClient.invalidateQueries(["user"]);
-      // setUser(savedUser);
       employee.isBanned = true;
       closeModal();
-      // router.push('/');
-      // router.push('/');
     },
     onError: (error) => {
       console.log(error);
-      setError(error.message)
-      // setError(error)
+      setError(error.message);
     }
   });
   const unbanEmployee = useMutation({
@@ -173,8 +140,13 @@ const EmployeePopUp = ({ employee }: Props) => {
             </div>
           </div>
           <div className='my-4 flex justify-center'>
+            {user && 
+            <div>
+              {employee._id != user._id && (employee.isBanned ? <button className='btn btn-primary' type='button' onClick={() => unbanEmployee.mutate()}>لغو بن</button> : 
+              <button className='btn btn-error' type='button' onClick={() => banEmployee.mutate()}>بن</button>)}
+            </div>
+            }
 
-          {employee._id != user._id && (employee.isBanned ? <button className='btn btn-primary' type='button' onClick={() => unbanEmployee.mutate()}>لغو بن</button> : <button className='btn btn-error' type='button' onClick={() => banEmployee.mutate()}>بن</button>)}
           <ChangeRolePopUp employee={employee} />
           <button className='btn btn-warning' type='button' onClick={closeModal}>خروج</button>
           </div>

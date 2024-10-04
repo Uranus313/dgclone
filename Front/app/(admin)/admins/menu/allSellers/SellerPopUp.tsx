@@ -16,8 +16,6 @@ export interface Seller {
   isBanned: boolean | undefined;
   phoneNumber: string;
   _id: string;
-  //   job: string | null | undefined;
-  //   economicCode: string | null | undefined;
   rating: number;
   isVerified: boolean | undefined;
   walletID: string;

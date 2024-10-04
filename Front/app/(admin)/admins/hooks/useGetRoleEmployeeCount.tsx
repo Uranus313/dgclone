@@ -1,14 +1,12 @@
+import { Role } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
-interface Role{
-    roleID : string
-}
 
 function useGetRoleEmployeeCount(role: Role) {
     return useQuery({
         queryKey: ['roleEmployeeCount', role],
         queryFn: async () => {
-            const result = await fetch("http://localhost:3005/users/general/employeeCount"+`?roleID=${role.roleID}`, {
+            const result = await fetch("http://localhost:3005/users/general/employeeCount"+`?roleID=${role._id}`, {
                 credentials: 'include'
             });
             const jsonResult = await result.json();

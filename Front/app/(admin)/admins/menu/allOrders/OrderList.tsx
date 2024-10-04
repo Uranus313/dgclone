@@ -1,12 +1,11 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
-import useGetSellers from '../../hooks/useGetSellers';
-import SellerPopUp from './SellerPopUp';
+import useGetProducts from '../../hooks/useGetProducts';
 interface Props {
   changeList: (list: string) => void
 }
 
-const SellerList = ({ changeList }: Props) => {
+const OrderList = ({ changeList }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   let [typeSort, setTypeSort] = useState<string>("none");
@@ -14,10 +13,8 @@ const SellerList = ({ changeList }: Props) => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-  let { data: sellers, error, isLoading } = useGetSellers({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
-  // useEffect(() =>{
-  //     console.log(error)
-  // },[error])
+  let { data: orders, error, isLoading } = useGetProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+
   function handleSort(type: string) {
     setTypeSort(type);
   }
@@ -50,8 +47,8 @@ const SellerList = ({ changeList }: Props) => {
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
             <option value="admins" > ادمین ها</option>
-            <option value="orders">سفارش ها</option>
-            <option value="sellers" selected>فروشندگان</option>
+            <option value="orders" selected>سفارش ها</option>
+            <option value="sellers" >فروشندگان</option>
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
@@ -59,20 +56,23 @@ const SellerList = ({ changeList }: Props) => {
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
+          <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
-            <button className="rounded-md bg-primary-color px-6 py-3" type="button" onClick={() => {
+            <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
               handleSort("lastName");
-              handleSort("firstName");
-            }}>نام و نام خانوادگی</button>
+            }}>اسم محصول</button>
+            <button className="rounded-md bg-primary-color px-6 py-3 " type="button" onClick={() => {
+              closeModal();
+              handleSort("phoneNumber");
+            }}> اسم فروشنده</button>
             <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
               handleSort("phoneNumber");
-            }}>شماره تلفن</button>
+            }}> تاریخ سفارش</button>
             <button className="btn btn-warning  " type="button" onClick={closeModal}>خروج</button>
           </div>
         </div>
@@ -85,22 +85,22 @@ const SellerList = ({ changeList }: Props) => {
 
           <ul>
             <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام تجاری</p>
-              <p className="w-1/4">شماره تلفن</p>
-              <p className="w-1/4">تاییدیه </p>
-              <p className="w-1/4">وضعیت</p>
+              <p className="w-1/3"> اسم محصول </p>
+              <p className="w-1/3"> اسم فروشنده</p>
+              <p className="w-1/3">تاریخ سفارش </p>
             </div>
-            {sellers?.data?.map((seller, index) => {
+            {orders?.data?.map((order, index) => {
               return (
                 <li key={index}>
-                  <SellerPopUp seller={seller} />
+                  yes
+                  {/* <orderPopUp product={product} /> */}
                 </li>
               )
             })}
           </ul>
           <div className='my-4 flex justify-center pb-5'>
             <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-            <button disabled={!sellers?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
+            <button disabled={!orders?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
           </div>
         </div>
 
@@ -110,4 +110,4 @@ const SellerList = ({ changeList }: Props) => {
   )
 }
 
-export default SellerList
+export default OrderList
