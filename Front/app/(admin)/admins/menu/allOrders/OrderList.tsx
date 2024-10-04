@@ -1,6 +1,6 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
-import useGetProducts from '../../hooks/useGetProducts';
+import useGetOrders from '../../hooks/useGetOrders';
 interface Props {
   changeList: (list: string) => void
 }
@@ -13,7 +13,7 @@ const OrderList = ({ changeList }: Props) => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-  let { data: orders, error, isLoading } = useGetProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+  let { data: orders, error, isLoading } = useGetOrders({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
 
   function handleSort(type: string) {
     setTypeSort(type);

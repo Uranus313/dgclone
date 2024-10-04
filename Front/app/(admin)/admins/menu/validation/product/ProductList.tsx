@@ -1,5 +1,6 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
+import useGetPendingProducts from '../../../hooks/useGetPendingProducts';
 
 interface Props {
   changeList: (list: string) => void
@@ -7,23 +8,35 @@ interface Props {
 
 const ProductList = ({ changeList }: Props) => {
 
+  const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   let [typeSort, setTypeSort] = useState<string>("none");
   let [pageSize, setPageSize] = useState<number>(8);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-//   let { data: users, error, isLoading } = useGetUsers({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+  let { data: products, error, isLoading } = useGetPendingProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+
   
-  function handleSearch() {
-    console.log(searchRef.current.value.trim());
-    setSearch(searchRef.current.value.trim());
-  }
+  const openModal = () => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+      setIsOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    if (dialogRef.current) {
+      dialogRef.current.close();
+      setIsOpen(false);
+    }
+  };
+
+
   return (
     <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
-        handleSearch();
       }} className='border-b-2 shadow-md border-white p-7 px-13' >
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
           <option value="comments">کامنت ها</option>
@@ -31,27 +44,33 @@ const ProductList = ({ changeList }: Props) => {
           
         </select>
         </form>
-      {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
-       
+        {isLoading ? <span className="loading loading-dots loading-lg"></span> :
         <div className=' flex-col'>
-          {/* <ul>
-            
+
+          <ul>
+            <div className="flex justify-between py-8 text-center">
+              <p className="w-1/4">نام </p>
+              <p className="w-1/4"> برند</p>
+              <p className="w-1/4">وزن </p>
+              <p className="w-1/4">امتیاز </p>
+            </div>
             {products?.data?.map((product, index) => {
               return (
                 <li key={index}>
-                  <\ProductPopUp product={product} />
+                  yes
+                  {/* <ProductPopUp product={product} /> */}
                 </li>
               )
             })}
-          </ul> */}
-
-          {/* <div className='my-4 flex justify-center pb-5'>
+          </ul>
+          <div className='my-4 flex justify-center pb-5'>
             <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
             <button disabled={!products?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
-          </div> */}
-
+          </div>
         </div>
-      {/* } */}
+
+      }
+
     </div>
   )
 }

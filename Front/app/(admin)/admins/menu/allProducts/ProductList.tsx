@@ -1,6 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetProducts from '../../hooks/useGetProducts';
+import ProductPopUp from './ProductPopUp';
 interface Props {
   changeList: (list: string) => void
 }
@@ -56,7 +57,7 @@ const ProductList = ({ changeList }: Props) => {
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-          <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
+        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
@@ -86,15 +87,14 @@ const ProductList = ({ changeList }: Props) => {
           <ul>
             <div className="flex justify-between py-8 text-center">
               <p className="w-1/4">نام </p>
-              <p className="w-1/4"> برند</p>
+              <p className="w-1/4"> تعداد فروش</p>
               <p className="w-1/4">وزن </p>
               <p className="w-1/4">امتیاز </p>
             </div>
-            {products?.data?.map((product, index) => {
+            {products?.products?.map((product, index) => {
               return (
                 <li key={index}>
-                  yes
-                  {/* <ProductPopUp product={product} /> */}
+                  <ProductPopUp product={product} />
                 </li>
               )
             })}

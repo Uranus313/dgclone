@@ -153,7 +153,11 @@ export interface SellerSetVarientOnProduct {
 export interface ProductInterface {
     id?: string,
     sellcount: number,
+    sell_count: number | undefined,
+    date_added: string | undefined,
+    brand_id: string | undefined,
     visitCount: number,
+    visit_count: number,
     visits: string[],
     title: string
     sellers: SellerInfosOnProduct[],
@@ -162,10 +166,13 @@ export interface ProductInterface {
     original: boolean,
     categoryID: string,
     details: { title: string, map: { key: string, value: string }[] }[],
-    madeInIran: boolean
+    madeInIran: boolean,
+    is_from_iran: boolean,
+    is_original: boolean,
     images: string[],
     dimentions: { length: number, width: number, height: number },
     wieght: number,
+    wieght_KG: number,
     description?: string,
     prosNcons?: { pros: string[], cons: string[] },
     recentComments: Comment[]

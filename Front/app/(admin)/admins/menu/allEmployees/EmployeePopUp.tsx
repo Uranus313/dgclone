@@ -10,6 +10,7 @@ import { User } from "@/app/components/Interfaces/interfaces";
 export interface Props {
   employee: User
 }
+
 const EmployeePopUp = ({ employee }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);

@@ -1,8 +1,8 @@
-import { ProductInterface } from "@/app/components/Interfaces/interfaces";
+import { Order } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
-interface ProductListResponse {
-    products : ProductInterface[],
+interface OrderListResponse {
+    data : Order[],
     hasMore : boolean
 }
 interface Query{
@@ -11,15 +11,15 @@ interface Query{
     nameSearch : string | null,
     sort: string
 }
-function useGetProducts(query : Query){
+function useGetOrders(query : Query){
     return useQuery({
-        queryKey : ['productList', query],
+        queryKey : ['orderList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/allProducts");
+            const result = await fetch("http://localhost:8080/products/order");
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
-                return jsonResult as ProductListResponse
+                return jsonResult as OrderListResponse
             }else{
                 throw new Error(jsonResult.error);
             }    
@@ -30,4 +30,4 @@ function useGetProducts(query : Query){
         // keepPreviousData: true
     })
 }
-export default useGetProducts;
+export default useGetOrders;

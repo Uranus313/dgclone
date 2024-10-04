@@ -2,7 +2,7 @@ import { ProductInterface } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
 interface ProductListResponse {
-    products : ProductInterface[],
+    data : ProductInterface[],
     hasMore : boolean
 }
 interface Query{
@@ -11,11 +11,11 @@ interface Query{
     nameSearch : string | null,
     sort: string
 }
-function useGetProducts(query : Query){
+function useGetPendingProducts(query : Query){
     return useQuery({
-        queryKey : ['productList', query],
+        queryKey : ['pemdingProductroductList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/allProducts");
+            const result = await fetch("http://localhost:8080/products/allPendingProducts");
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
@@ -30,4 +30,4 @@ function useGetProducts(query : Query){
         // keepPreviousData: true
     })
 }
-export default useGetProducts;
+export default useGetPendingProducts;

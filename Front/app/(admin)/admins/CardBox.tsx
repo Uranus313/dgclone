@@ -9,6 +9,7 @@ import useGetEmployeeCount from "./hooks/useGetEmployeeCount";
 import useGetSellerCount from "./hooks/useGetSellerCount";
 import useGetTransactionCount from "./hooks/useGetTransactionCount";
 import { useUser } from "@/app/hooks/useUser";
+import useGetProdsAndOrdersCount from "./hooks/useGetProdsAndOrdersCount";
 
 
 
@@ -18,6 +19,7 @@ function CardBox() {
     const { data: employeeCount, error: eError, isLoading: isEmployeeCountLoading } = useGetEmployeeCount();
     const { data: sellerCount, error: sError, isLoading: isSellerCountLoading } = useGetSellerCount();
     const { data: transactionCount, error: tError, isLoading: isTransactionCountLoading } = useGetTransactionCount();
+    const { data: productAndOrderCount, error: poError, isLoading: isCountLoading } = useGetProdsAndOrdersCount();
 
     return (
 
@@ -75,8 +77,14 @@ function CardBox() {
                             </svg>
                         }
                         <div className='self-center px-3'>
-                            <p>1234567</p>
-                            <p>سفارش ها</p>
+                            {isCountLoading && <span className="loading loading-dots loading-lg"></span>}
+                            {productAndOrderCount &&
+                            <div>
+                                {productAndOrderCount?.orders_count && <p>{productAndOrderCount?.orders_count}</p>}
+                                <p>سفارش ها</p>
+                            </div>
+
+                            }
                         </div>
                     </div>
                     <button className='py-1'>   </button>
@@ -115,8 +123,13 @@ function CardBox() {
                             </svg>
                         }
                         <div className='self-center px-3'>
-                            <p>1234567</p>
-                            <p> محصولات</p>
+                        {productAndOrderCount &&
+                            <div>
+                                {productAndOrderCount?.prods_count && <p>{productAndOrderCount?.prods_count}</p>}
+                                <p>سفارش ها</p>
+                            </div>
+
+                            }
                         </div>
                     </div>
                     <button className='py-1'> </button>

@@ -22,7 +22,7 @@ func GetAllProducts(c *fiber.Ctx) error {
 
 	// token = admin ????
 
-	limitString := c.Query("limit", "20")
+	limitString := c.Query("limit", "8")
 
 	limit, err := strconv.Atoi(limitString)
 
