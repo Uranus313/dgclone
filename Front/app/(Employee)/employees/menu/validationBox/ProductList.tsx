@@ -1,5 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
+import useGetPendingProducts from '../../hooks/useGetPendingProducts';
+import ProductPopUp from './ProductPopUp';
 
 
 
@@ -11,41 +13,48 @@ const ProductList = () => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-//   let { data: users, error, isLoading } = useGetUsers({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
-  
+  let { data: products, error, isLoading } = useGetPendingProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+
   function handleSearch() {
     console.log(searchRef.current.value.trim());
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
+    <div className=' bg-white rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
-      }} className='border-b-2 shadow-md border-white p-7 px-13' >
-        
-        </form>
-      {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
-       
+      }} >
+        <input className='bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md w-5/6' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          ref={searchRef}
+          onBlur={() => handleSearch()} />
+      </form>
+      {isLoading ? <span className="loading loading-dots loading-lg"></span> :
+
         <div className=' flex-col'>
-          {/* <ul>
-            
-            {products?.data?.map((product, index) => {
+          <ul>
+            <div className="flex justify-between py-8 text-center">
+              <p className="w-1/4">نام </p>
+              <p className="w-1/4"> برند</p>
+              <p className="w-1/4">وزن </p>
+              <p className="w-1/4">امتیاز </p>
+            </div>
+            {products?.products?.map((product, index) => {
               return (
                 <li key={index}>
-                  <ProductPopUp  />
+                  <ProductPopUp product={product} />
                 </li>
               )
             })}
-          </ul> */}
+          </ul>
 
-          {/* <div className='my-4 flex justify-center pb-5'>
+          <div className='my-4 flex justify-center pb-5'>
             <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
             <button disabled={!products?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
-          </div> */}
+          </div>
 
         </div>
-      {/* } */}
+      }
     </div>
   )
 }

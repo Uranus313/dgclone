@@ -8,7 +8,7 @@ interface Props {
 const OrderList = ({ changeList }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  let [typeSort, setTypeSort] = useState<number>(0);
+  let [typeSort, setTypeSort] = useState<number>(1);
   let [pageSize, setPageSize] = useState<number>(8);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
@@ -89,10 +89,10 @@ const OrderList = ({ changeList }: Props) => {
               <p className="w-1/3"> امتیاز</p>
               <p className="w-1/3">تاریخ سفارش </p>
             </div>
-            {orders?.data?.map((order, index) => {
+            {orders?.orders?.map((order, index) => {
               return (
                 <li key={index}>
-                  {/* <orderPopUp product={product} /> */}
+                  {/* <orderPopUp order={order} /> */}
                 </li>
               )
             })}

@@ -19,7 +19,7 @@ const AdminHomePage = () => {
     <div className='w-full flex'>
       <MenuSideBar />
       <div className='w-full'>
-        <CardBox />
+        <CardBox changeList={(list => setList(list))}/>
         <span>
           {list === 'admins' ? <AdminList changeList={(list => setList(list))} />
             : list === 'sellers' ? <SellerList changeList={(list => setList(list))} />

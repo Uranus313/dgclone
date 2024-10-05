@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { useUser } from "@/app/hooks/useUser";
-import { AccessLevel } from "@/app/components/Interfaces/interfaces";
+import { AccessLevels } from "@/app/components/Interfaces/interfaces";
 
 
 
@@ -69,10 +69,10 @@ function InformationCard() {
                         <ul>
                             <li className="py-1.5">   دسترسی ها : </li>
                             {user.roleID &&
-                                <div>
+                                <div className="line-clamp-5 ">
                                     {!user.roleID.accessLevels ?
                                         <p>هیچ دسترسی وجود ندارد</p>
-                                        : user.roleID.accessLevels?.map((accessLevel: AccessLevel, index: number) => {
+                                        : user.roleID.accessLevels?.map((accessLevel: AccessLevels, index: number) => {
                                             return (
                                                 <li key={index} className="py-0.5">
                                                     {accessLevel.level}

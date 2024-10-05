@@ -20,9 +20,12 @@ const CommentPopUp = ({ comment }: Props) => {
         <p className='pr-20 pl-5 text-text-color'> تاریخ  : </p>
         <p>{comment.dateSent}</p>
         <p className='pr-20 pl-5 text-text-color'> نوع  : </p>
-        <p>{comment.type}</p>
+        {comment.comment_type == 1 && <p>عادی</p>}
+        {comment.comment_type == 2 && <p>سوال</p>}
+        {comment.comment_type == 3 && <p>جواب</p>}
       </div>
-      <p className='pb-5'>پیام : {comment.content}</p>
+      <p className='pb-5 line-clamp-3 m-5 break-all'>پیام : {comment.content}</p>
+      <button className='text-primary-color py-5 pb-8 w-full text-right'>بیشتر</button>
       {user &&
         <div>
           {user.roleID &&

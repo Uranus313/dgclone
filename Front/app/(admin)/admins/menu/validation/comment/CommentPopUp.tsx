@@ -106,7 +106,8 @@ const CommentList = ({comment}: Props) => {
       
       </div>
     </div>
-    <p className='pb-5'>پیام : {comment.content}</p>
+    <p className='pb-5 line-clamp-3 m-5 break-all'>پیام : {comment.content}</p>
+    <button className='text-primary-color py-5 pb-8 w-full text-right'>بیشتر</button>
     <button className='text-green-box border-green-box border-2 my-5 mb-8 mx-3 py-2 px-5 rounded-md' onClick={() => unbanComment.mutate()}>
       تایید
     </button>

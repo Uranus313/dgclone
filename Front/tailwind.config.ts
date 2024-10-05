@@ -29,6 +29,7 @@ const config: Config = {
       'blue-box':'#395F82',
       'green-box':'#1F7378',
       'greener-box':'#1F7762',
+      'button-box': '#00000026',
       'border-color-list':'#CBCBCB',
       'border':'#D5D5D5',
       'text-color':'#696969'

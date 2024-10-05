@@ -18,12 +18,14 @@ const ProductList = () => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
+    <div className=' bg-white rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
-      }} className='border-b-2 shadow-md border-white p-7 px-13' >
-        
+      }}  >
+        <input className='bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md w-5/6' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          ref={searchRef}
+          onBlur={() => handleSearch()} />
         </form>
       {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
        

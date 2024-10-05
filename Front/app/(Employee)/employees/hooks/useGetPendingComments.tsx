@@ -1,21 +1,21 @@
-import { Order } from "@/app/components/Interfaces/interfaces";
+import { Comment } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
 interface OrderListResponse {
-    orders : Order[],
+    pendingComments : Comment[],
     hasMore : boolean
 }
 interface Query{
     floor : number,
     limit : number,
     nameSearch : string | null,
-    sort: number
+    sort: string
 }
-function useGetOrders(query : Query){
+function useGetPendingComments(query : Query){
     return useQuery({
-        queryKey : ['orderList', query],
+        queryKey : ['commentList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/order"+`?limit=${query.limit}&offset=${query.floor}&SortMethod=${query.sort}`);
+            const result = await fetch("http://localhost:8080/products/comments/pending");
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
@@ -30,4 +30,4 @@ function useGetOrders(query : Query){
         // keepPreviousData: true
     })
 }
-export default useGetOrders;
+export default useGetPendingComments;

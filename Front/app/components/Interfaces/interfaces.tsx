@@ -77,6 +77,10 @@ export interface AccessLevel {
     name: string;
     title: string;
 }
+export interface AccessLevels {
+    level: string,
+    writeAccess: boolean
+}
 export interface Role {
     name: string,
     accessLevels: [
