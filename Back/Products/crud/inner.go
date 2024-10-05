@@ -2,10 +2,15 @@ package crud
 
 import (
 	"context"
+	"dg-kala-sample/auth"
 	"dg-kala-sample/database"
 	"dg-kala-sample/models"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
+
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -345,21 +350,48 @@ func InnerSellerBS(c *fiber.Ctx) error {
 
 }
 
-/*
+const (
+	GET    = "GET"
+	POST   = "POST"
+	PATCH  = "PATCH"
+	PUT    = "PUT"
+	DELETE = "DELETE"
+)
 
+// returnes response body, status code, error
+func InnerRequest(method string, url string) (map[string]interface{}, int, error) {
 
-all prods count
-all orders count
+	const BASE_URL string = "http://localhost:3005"
 
+	req, err := http.NewRequest(method, BASE_URL+url, nil)
 
-all prods list
-all orders list
+	if err != nil {
+		return nil, 500, err
+	}
 
-all pending prods
-validate prods
+	req.Header.Add("", auth.InnerPass)
 
-add quantity to seller
-all pending seller quantities
-validate seller quantites
+	res, err := http.DefaultClient.Do(req)
 
-*/
+	if err != nil {
+		return nil, 500, err
+	}
+
+	defer res.Body.Close()
+
+	body, readErr := io.ReadAll(res.Body)
+
+	if readErr != nil {
+		return nil, 500, err
+	}
+
+	var responseBody map[string]interface{}
+
+	json.Unmarshal(body, &responseBody)
+
+	if res.StatusCode != 200 {
+		return nil, res.StatusCode, errors.New(responseBody["err_message"].(string))
+	}
+
+	return responseBody, 200, nil
+}
