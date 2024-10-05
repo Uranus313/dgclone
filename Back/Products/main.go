@@ -39,11 +39,13 @@ func main() {
 	// fakerdata.InsertDummyComments()
 	// fakerdata.InsertDummyDiscountCode()
 	// fakerdata.InsertDummySaleDiscount()
+	// fakerdata.ModProds()
+	// fakerdata.ModComms()
 
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:5173, http://localhost:3000",
+		AllowOrigins:     "http://localhost:5173, http://localhost:3000, http://localhost:3005, http://myapp.local",
 		AllowHeaders:     "Origin,Content-Type,Accept,Authorization",
 		AllowMethods:     "*",
 		AllowCredentials: true,
@@ -93,7 +95,7 @@ func main() {
 
 	app.Patch("/products/seller/addVariant", crud.AddVariantToSeller) //query params => prodID, SellerID ... and body
 
-	app.Get("/products/seller/pendingVariants", crud.GetAllPendingVariants)
+	app.Get("/products/seller/pendingVariants", crud.GetAllPendingVariants) // query params => limit, offset
 
 	app.Patch("/products/validate-variant", crud.UpdateVariantValidationState) // query params => prodID, SellerID, ColorID, ValidationState -> {2: validated, 3: banned}
 
