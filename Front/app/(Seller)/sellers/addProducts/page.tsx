@@ -2,10 +2,12 @@ import React from 'react'
 import ModalButton from './ModalButton'
 import SelectCategory from './SelectCategory'
 
-const AddProduct = () => {
-  
+const AddProduct = async() => {
+  const res = await fetch("http://localhost:8080/products/category")
+  const categories  = await res.json()
   return (
     <div className='flex justify-center'>
+
       <div className='bg-white flex flex-col rounded-lg w-7/12 px-24 py-14 mt-16'>
         <h1 className='text-2xl mb-14'>ثبت کالا برای فروش</h1>
         <p className='mb-6'>:ابتدا کالای مد نظر را در دیجیمارکت جستجو کنید</p>
@@ -32,7 +34,7 @@ const AddProduct = () => {
 
         <ModalButton id={"categories"} title='کالای مورد نظر را پیدا نکردم'/>
 
-       <SelectCategory/>
+       <SelectCategory Categories={categories}/>
         
 
         <button className='border w-fit self-end px-3 py-1 rounded-md  border-primary-seller text-primary-seller'>بازگشت</button>

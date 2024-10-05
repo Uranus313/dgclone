@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "../(Customer)/page";
-function useGetColors(){
+function useGetCategories(){
     console.log('1')
-    return useQuery({
-        queryKey : ['colors'],
+    return useQuery<Category[]>({
+        queryKey : ['categories'],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch("http://localhost:8080/products/color", {
+            const result = await fetch("http://localhost:8080/products/category", {
                             credentials: 'include'});
                            
             const jsonResult = await result.json();
@@ -23,4 +23,4 @@ function useGetColors(){
         retry: 2
     })
 }
-export default useGetColors;
+export default useGetCategories;
