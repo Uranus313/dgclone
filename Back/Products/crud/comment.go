@@ -200,13 +200,17 @@ func PostComment(c *fiber.Ctx) error {
 	}
 
 	// Inner API => takes userID as input and returns a bool showcasing wether the user exists or not
-	smaple_func := func(userID primitive.ObjectID) bool {
-		return userID.IsZero()
-	}
-	var userExist bool = smaple_func(comment.UserID)
+	// smaple_func := func(userID primitive.ObjectID) bool {
+	// 	return userID.IsZero()
+	// }
+	// var userExist bool = smaple_func(comment.UserID)
+	_, statusCode, err := InnerRequest(GET, "/url/"+comment.UserID.String())
 
-	if !userExist {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid User ID, User Not Found"})
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Problem With User ID",
+			"error":   err.Error(),
+		})
 	}
 
 	comment.DateSent = time.Now()

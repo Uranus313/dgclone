@@ -363,3 +363,38 @@ export function validateVerificationChange(SellerID) {
     return schema.validateAsync(SellerID);
 
 }
+export function validateSellerChangePhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const seller = await SellerModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (seller) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}
+export function validateChangePhoneNumberVerify(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const seller = await SellerModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (seller) {
+                throw new Error("an account with this phone number already exists");
+            }
+        }).required(),
+        mode : Joi.string().valid("change","logIn","signUp").required(),
+        verificationCode : Joi.string().length(6).required()
+    })
+    return schema.validateAsync(data);
+}
+export function validateSellerlogInWithPhoneNumber(data) {
+    const schema = Joi.object({
+        phoneNumber: Joi.string().min(11).max(12).external(async (phoneNumber) => {
+            const seller = await SellerModel.find({ phoneNumber: phoneNumber }).findOne();
+            if (!seller) {
+                throw new Error("no account with this phone number exists");
+            }
+        }).required()
+    });
+    return schema.validateAsync(data);
+}

@@ -1,5 +1,5 @@
+import { User } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
-import { User } from "../menu/allUsers/UserPopUp";
 
 interface UserListResponse {
     data : User[],

@@ -45,7 +45,7 @@ const EmployeeList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white m-20 rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-20 rounded-md '>
       <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
 
         <form onSubmit={(e) => {
@@ -61,13 +61,11 @@ const EmployeeList = ({ changeList }: Props) => {
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
-          <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
-            ref={searchRef}
-            onBlur={() => handleSearch()} />
-
+          <input className='w-full mt-6 lg:mt-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          ref={searchRef}
+          onBlur={() => handleSearch()} />
         </form>
-        
-          <button onClick={() => { openModal() }} className='bg-red-box px-8 py-2 rounded-md mr-12 ml-6'>مرتب سازی</button>
+          <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-red-box lg:px-8 lg:py-2 rounded-md lg:mx-10 invisible lg:visible'>مرتب سازی</button>
           <AddEmployeePopUp />
       </div>
       <dialog ref={dialogRef} className="modal">
@@ -94,11 +92,11 @@ const EmployeeList = ({ changeList }: Props) => {
         // error && <p>{error.message}</p>
         <div className=' flex-col'>
           <ul>
-            <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام و نام خانوادگی</p>
-              <p className="w-1/4">شماره تلفن</p>
-              <p className="w-1/4">شغل </p>
-              <p className="w-1/4">وضعیت</p>
+            <div className="flex md:justify-between py-8 text-center">
+              <p className="w-1/2 md:w-1/4">نام و نام خانوادگی</p>
+              <p className="w-0 md:w-1/4 invisible md:visible ">شماره تلفن</p>
+              <p className="w-0 md:w-1/4 invisible md:visible ">شغل </p>
+              <p className="w-1/2 md:w-1/4 ">وضعیت</p>
             </div>
             {employees?.data?.map((employee, index) => {
               return (

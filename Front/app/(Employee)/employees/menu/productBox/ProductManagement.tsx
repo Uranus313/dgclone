@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import ProductList from "./ProductList";
 
 
 
@@ -66,8 +67,7 @@ function ProductManagement() {
                                     {user.roleID.accessLevels &&
                                         <div>
                                             {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "productManage") ? (
-                                                // <UserList />
-                                                <p></p>
+                                                <ProductList />
                                             ) : (
                                                 <div>
                                                     <p>خارج از سطح دسترسی</p>

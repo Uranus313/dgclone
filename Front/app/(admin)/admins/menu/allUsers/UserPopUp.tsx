@@ -122,8 +122,8 @@ const UserPopUp = ({ user }: Props) => {
       }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
 
         <p className="w-1/2 md:w-1/4">{((user.firstName && user.firstName) || "-") + ((user.lastName && " " + user.lastName) || " -")}</p>
-        <p className="md:w-1/4 invisible md:visible">{user.phoneNumber}</p>
-        <p className="md:w-1/4 invisible md:visible">{((user.email && user.email) || "-")}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{user.phoneNumber}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{((user.email && user.email) || "-")}</p>
         {user.isBanned ? (
           <p className="w-1/2 md:w-1/4 text-red-500">بن شده</p>
         ) : (

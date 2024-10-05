@@ -2,11 +2,11 @@
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetSellers from '../../hooks/useGetSellers';
 import SellerPopUp from './SellerPopUp';
-interface Props{
-  changeList: ( list: string) => void
+interface Props {
+  changeList: (list: string) => void
 }
 
-const SellerList = ({changeList}:Props) => {
+const SellerList = ({ changeList }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   let [typeSort, setTypeSort] = useState<string>("none");
@@ -14,11 +14,11 @@ const SellerList = ({changeList}:Props) => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-  let { data: sellers, error, isLoading } = useGetSellers({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+  let { data: sellers, error, isLoading } = useGetSellers({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
   // useEffect(() =>{
   //     console.log(error)
   // },[error])
-  function handleSort(type: string){
+  function handleSort(type: string) {
     setTypeSort(type);
   }
   const openModal = () => {
@@ -41,28 +41,30 @@ const SellerList = ({changeList}:Props) => {
   }
   return (
     <div className=' flex-col bg-white m-20  rounded-md'>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        handleSearch();
-      }} className='border-b-2 shadow-md border-white p-7 px-13'>
-        <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black text-center'>
-          <option value="users">کاربران</option>
-          <option value="employees">کارمندان</option>
-          <option value="admins" > ادمین ها</option>
-          <option value="orders">سفارش ها</option>
-          <option value="sellers" selected>فروشندگان</option>
-          <option value="products">محصولات</option>
-          <option value="transactions"> تراکنش ها</option>
-        </select>
-        <input className='w-3/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
-          ref={searchRef}
-          onBlur={() => handleSearch()} />
-         <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
-      </form>
+      <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          handleSearch();
+        }} className='w-8/12'>
+          <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black text-center'>
+            <option value="users">کاربران</option>
+            <option value="employees">کارمندان</option>
+            <option value="admins" > ادمین ها</option>
+            <option value="orders">سفارش ها</option>
+            <option value="sellers" selected>فروشندگان</option>
+            <option value="products">محصولات</option>
+            <option value="transactions"> تراکنش ها</option>
+          </select>
+          <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+            ref={searchRef}
+            onBlur={() => handleSearch()} />
+        </form>
+        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
+      </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
-            <button className="rounded-md bg-primary-color px-6 py-3"  type="button" onClick={() => {
+            <button className="rounded-md bg-primary-color px-6 py-3" type="button" onClick={() => {
               closeModal();
               handleSort("lastName");
               handleSort("firstName");
@@ -79,7 +81,6 @@ const SellerList = ({changeList}:Props) => {
         </form>
       </dialog>
       {isLoading ? <span className="loading loading-dots loading-lg"></span> :
-        // error && <p>{error.message}</p>
         <div className=' flex-col'>
 
           <ul>

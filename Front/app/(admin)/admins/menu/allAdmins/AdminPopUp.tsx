@@ -88,13 +88,13 @@ const AdminPopUp = ({ admin }: Props) => {
   return (
     <div>
       <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-        <p className="w-1/4">{admin.firstName + ' ' + admin.lastName}</p>
-        <p className="w-1/4">{admin.phoneNumber}</p>
-        <p className="w-1/4">{((admin.email && admin.email) || "-")}</p>
+        <p className="w-1/2 md:w-1/4">{admin.firstName + ' ' + admin.lastName}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{admin.phoneNumber}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{((admin.email && admin.email) || "-")}</p>
         {admin.isBanned ? (
-          <p className="w-1/4 text-red-500">بن شده</p>
+          <p className="w-1/2 md:w-1/4 text-red-500">بن شده</p>
         ) : (
-          <p className="w-1/4 text-red-500"> -</p>
+          <p className="w-1/2 md:w-1/4 text-red-500"> -</p>
         )}
       </div>
 

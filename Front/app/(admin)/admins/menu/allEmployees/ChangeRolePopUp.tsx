@@ -4,11 +4,11 @@ import { useUser } from "@/app/hooks/useUser";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
 import useGetRoles from '../../hooks/useGetRoles';
-import { Employee } from './EmployeePopUp';
+import { User } from "@/app/components/Interfaces/interfaces";
 
 
 export interface Props {
-  employee: Employee
+  employee: User
 }
 const ChangeRolePopUp = ({ employee }: Props) => {
   const [isOpen, setIsOpen] = useState(false);

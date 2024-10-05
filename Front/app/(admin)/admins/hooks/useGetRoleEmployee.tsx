@@ -1,9 +1,9 @@
+import { User } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
-import { Employee } from "../menu/allEmployees/EmployeePopUp";
 import { strict } from "assert";
 
 interface EmployeeListResponse {
-    data : Employee[],
+    data : User[],
     hasMore : boolean
 }
 interface Query{

@@ -9,15 +9,18 @@ import useGetEmployeeCount from "./hooks/useGetEmployeeCount";
 import useGetSellerCount from "./hooks/useGetSellerCount";
 import useGetTransactionCount from "./hooks/useGetTransactionCount";
 import { useUser } from "@/app/hooks/useUser";
+import useGetProdsAndOrdersCount from "./hooks/useGetProdsAndOrdersCount";
 
-
-
-function CardBox() {
+interface Props {
+    changeList: (list: string) => void
+}
+function CardBox({ changeList }: Props) {
     const { user, setUser, isLoading } = useUser();
     const { data: userCount, error: uError, isLoading: isUserCountLoading } = useGetUserCount();
     const { data: employeeCount, error: eError, isLoading: isEmployeeCountLoading } = useGetEmployeeCount();
     const { data: sellerCount, error: sError, isLoading: isSellerCountLoading } = useGetSellerCount();
     const { data: transactionCount, error: tError, isLoading: isTransactionCountLoading } = useGetTransactionCount();
+    const { data: productAndOrderCount, error: poError, isLoading: isCountLoading } = useGetProdsAndOrdersCount();
 
     return (
 
@@ -25,7 +28,6 @@ function CardBox() {
             <div className='md:flex mt-20'>
                 <div className='bg-primary-color flex-1 mx-5 rounded-md '>
                     <div className='flex'>
-
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +42,7 @@ function CardBox() {
                             <p>کاربران</p>
                         </div>
                     </div>
-                    <button className='py-1'>  </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("users") }}>نشان دادن کاربران </button>
                 </div>
                 <div className='bg-red-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -59,8 +61,7 @@ function CardBox() {
                             <p>کارمندان</p>
                         </div>
                     </div>
-
-                    <button className='py-1'>  </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("employees") }}>نشان دادن کارمندان </button>
                 </div>
                 <div className='bg-purple-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -74,12 +75,17 @@ function CardBox() {
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
                             </svg>
                         }
-                        <div className='self-center px-3'>
-                            <p>1234567</p>
-                            <p>سفارش ها</p>
+                        <div className='self-center px-3 '>
+                            {isCountLoading && <span className="loading loading-dots loading-lg"></span>}
+                            {productAndOrderCount &&
+                                <div>
+                                    {productAndOrderCount?.orders_count && <p>{productAndOrderCount?.orders_count}</p>}
+                                    <p>سفارش ها</p>
+                                </div>
+                            }
                         </div>
                     </div>
-                    <button className='py-1'>   </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("orders") }}>نشان دادن سفارش ها </button>
                 </div>
             </div>
             <div className='md:flex mt-16'>
@@ -100,7 +106,7 @@ function CardBox() {
                             <p> فروشندگان</p>
                         </div>
                     </div>
-                    <button className='py-1'> </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("sellers") }}>نشان دادن فروشندگان </button>
                 </div>
                 <div className='bg-green-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -115,11 +121,16 @@ function CardBox() {
                             </svg>
                         }
                         <div className='self-center px-3'>
-                            <p>1234567</p>
-                            <p> محصولات</p>
+                            {productAndOrderCount &&
+                                <div>
+                                    {productAndOrderCount?.prods_count && <p>{productAndOrderCount?.prods_count}</p>}
+                                    <p> محصولات</p>
+                                </div>
+
+                            }
                         </div>
                     </div>
-                    <button className='py-1'> </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("products") }}>نشان دادن محصولات </button>
                 </div>
                 <div className='bg-greener-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -139,7 +150,8 @@ function CardBox() {
                             <p> تراکنش ها</p>
                         </div>
                     </div>
-                    <button className='py-1'>   </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("transactions") }}>نشان دادن تراکنش ها </button>
+                
                 </div>
             </div>
 

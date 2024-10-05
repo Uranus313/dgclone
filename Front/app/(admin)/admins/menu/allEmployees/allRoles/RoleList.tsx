@@ -4,12 +4,14 @@ import useGetRoles from '../../../hooks/useGetRoles';
 import { useUser } from "@/app/hooks/useUser";
 import RolePopUp from './RolePopUp';
 import AddRolePopUp from './AddRolePopUp';
+
 const RoleList = () => {
   let [pageSize, setPageSize] = useState<number>(2);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
   let { data: roles, error, isLoading } = useGetRoles();
+  
   useEffect(() => {
     console.log(error)
   }, [error])
@@ -27,9 +29,6 @@ const RoleList = () => {
             </div>
             {roles?.map((role, index) => {
               return (
-                // role._id == user._id? null : <li key={index}>
-                //   <RolePopUp role={role}/>
-                //   </li>
                 <li key={index}>
                   <RolePopUp role={role} />
                 </li>

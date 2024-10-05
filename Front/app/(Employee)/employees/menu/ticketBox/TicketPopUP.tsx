@@ -16,7 +16,7 @@ const TicketPopUp = ({ ticket }: Props) => {
         <p className='pr-20 pl-5 text-text-color'> تاریخ  : </p>
         <p>{ticket.date}</p>
       </div>
-      <p className='pb-5'>پیام : {ticket.content}</p>
+      <p className='pb-5 line-clamp-3 m-5 break-all'>پیام : {ticket.content}</p>
       <button className='text-primary-color py-5 pb-8 w-full text-right'>
         بیشتر
       </button>

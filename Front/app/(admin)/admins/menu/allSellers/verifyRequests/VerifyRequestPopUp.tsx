@@ -3,9 +3,8 @@
 import { useUser } from "@/app/hooks/useUser";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
-import { VerifyRequest } from '../../../hooks/useGetVerifyRequests';
 import { Seller } from '../SellerPopUp';
-import { User } from "@/app/components/Interfaces/interfaces";
+import { User, VerifyRequest } from "@/app/components/Interfaces/interfaces";
 
 
 export interface Props {

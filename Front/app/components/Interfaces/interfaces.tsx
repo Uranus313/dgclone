@@ -74,6 +74,10 @@ export interface OrdersHistory{
 
 
 export interface AccessLevel {
+    name: string;
+    title: string;
+}
+export interface AccessLevels {
     level: string,
     writeAccess: boolean
 }
@@ -137,7 +141,6 @@ export interface Address {
 }
 
 
-
 export interface SellerSetVarientOnProduct {
     sellerID: string,
     productID: string,
@@ -153,8 +156,13 @@ export interface SellerSetVarientOnProduct {
 
 export interface ProductInterface {
     id?: string,
+    _id: string,
     sellcount: number,
+    sell_count: number | undefined,
+    date_added: string | undefined,
+    brand_id: string | undefined,
     visitCount: number,
+    visit_count: number,
     visits: string[],
     title: string
     sellers: SellerInfosOnProduct[],
@@ -163,13 +171,17 @@ export interface ProductInterface {
     original: boolean,
     categoryID: string,
     details: { title: string, map: { key: string, value: string }[] }[],
-    madeInIran: boolean
+    madeInIran: boolean,
+    is_from_iran: boolean,
+    is_original: boolean,
     images: string[],
     dimentions: { length: number, width: number, height: number },
     wieght: number,
+    wieght_KG: number,
     description?: string,
     prosNcons?: { pros: string[], cons: string[] },
-    recentComments: Comment[]
+    recentComments: Comment[],
+    validation_state: number
 }
 
 
@@ -180,13 +192,19 @@ export interface Comment {
     type: commentType
     answers?: Comment[]  //for question comments
     id: string
+    _id: string
     productID: string
+    product_id: string
     rate?: number //for buyers
     order?: { color: { title: string, hex: string }, sellerTitle: string } //for normal comments
     user: { userid: string, firstname: string, lastname: string }
+    user_id:string
     content: string
     disAndlike?: { userid: string, disOlike: boolean }[] //for questions
     dateSent: string
+    date_sent:string
+    comment_type: number
+    validation_state: number
 }
 
 export enum State { returned = 'returned', canceled = 'canceled', pending = 'pending', delivered = 'delivered', recivedInWareHouse = 'recivedInWareHouse' }
@@ -242,6 +260,13 @@ export interface Transaction {
 }
 
 //#region seller
+export interface VerifyRequest {
+    sellerID: string,
+    adminID: string | undefined,
+    requestDate: string | undefined,
+    state: "pending" | "accepted" | "rejected" | undefined,
+    _id: string
+}
 
 export enum EntitiyType {
     individual = "individual",
@@ -266,8 +291,8 @@ export interface Seller {
     sellerID: string
     password: string
     storeOwner?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         firstName: string,
         lastName: string,
         birthDate: string,
@@ -279,8 +304,8 @@ export interface Seller {
     entityType?: EntitiyType,
 
     legalInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         companyIDNumber: string,
         companyEconomicNumber: string,
         shabaNumber: number,
@@ -291,16 +316,16 @@ export interface Seller {
     additionalDocuments?: string[],
 
     individualInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         nationalID: number,
         bankNumberType: bankNumberType,
         shabaNumber: number,
         bankNumber: number,
     },
     storeInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         commercialName: string
         officePhoneNumber: number,
         logo?: string,
@@ -312,7 +337,7 @@ export interface Seller {
     walletID?: string,
 
     moneyReturn?: {
-        _id:string
+        _id: string
         method: moneyReturn
         bankAccount: number
     },
