@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	// "dg-kala-sample/auth"
+	"dg-kala-sample/auth"
 	"dg-kala-sample/crud"
 	"dg-kala-sample/database"
 
@@ -27,6 +28,7 @@ func main() {
 	}
 
 	database.DeployCollections()
+	auth.DeclareInnerPass()
 
 	defer database.Client.Disconnect(context.Background())
 
@@ -53,9 +55,9 @@ func main() {
 
 	app.Get("/products/comments", crud.GetCommentsByProductID) // query params => limit, offset, ProdID
 
-	app.Post("/products/comments", crud.PostComment) // --unchecked
+	app.Post("/products/comments", crud.PostComment) // --unchecked (request body)
 
-	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore)
+	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore) // (request body)
 
 	app.Get("/products/questions", crud.GetProductQuestions) // query params => limit, offset, ProdID
 
@@ -67,9 +69,9 @@ func main() {
 
 	app.Get("/products/product/:ProdID", crud.GetProductByID)
 
-	app.Post("/products/product", crud.AddProduct)
+	app.Post("/products/product", crud.AddProduct) // (request body)
 
-	app.Patch("/products/product/AddSeller", crud.AddSellerToProduct) // query params => SellerID, ProdID --unchecked (note. modify to use seller id and seller body from token)
+	app.Patch("/products/product/AddSeller/:ProdID", crud.AddSellerToProduct) // --unchecked (request body)
 
 	app.Patch("/products/product/UpdateRating", crud.UpdateProductRating) // query params => ProductID, Rating
 
@@ -77,7 +79,7 @@ func main() {
 
 	app.Delete("/products/product/:ProdID", crud.DeleteProductByID)
 
-	app.Patch("/products/product", crud.EditProduct)
+	app.Patch("/products/product", crud.EditProduct) // (request body)
 
 	app.Get("/products/product", crud.InfiniteScrolProds) // query params => limit, offset, CateID
 
@@ -97,17 +99,17 @@ func main() {
 
 	// --------------category-----------------
 
-	app.Post("/products/category", crud.AddCategory)
+	app.Post("/products/category", crud.AddCategory) // (request body)
 
 	app.Get("/products/category", crud.GetAllCategories)
 
 	app.Get("/products/category/:CateID", crud.GetCategoryByID)
 
-	app.Patch("/products/category/:CateID", crud.EditCategory)
+	app.Patch("/products/category/:CateID", crud.EditCategory) // (request body)
 
 	// -------------brand---------------
 
-	app.Post("/products/brand", crud.AddBrand)
+	app.Post("/products/brand", crud.AddBrand) // (request body)
 
 	app.Get("/products/brand/:BrandID", crud.GetBrandByID)
 
@@ -117,7 +119,7 @@ func main() {
 
 	// ------------discount code-----------
 
-	app.Post("/products/discountcode", crud.AddDiscountCode)
+	app.Post("/products/discountcode", crud.AddDiscountCode) // (request body)
 
 	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query params => DCode, UserID
 
@@ -129,19 +131,19 @@ func main() {
 
 	// -------------colors---------------
 
-	app.Post("/products/color", crud.AddColor)
+	app.Post("/products/color", crud.AddColor) // (request body)
 
 	app.Get("products/color", crud.GetAllColors)
 
 	// -------------guarantees---------------
 
-	app.Post("/products/guarantee", crud.AddGuarantee)
+	app.Post("/products/guarantee", crud.AddGuarantee) // (request body)
 
 	app.Get("products/guarantee", crud.GetAllGuarantee)
 
 	// -------------orders--------------
 
-	app.Post("/products/order", crud.AddOrder)
+	app.Post("/products/order", crud.AddOrder) // (request body)
 
 	app.Get("/products/order/orderhistory/:OHID", crud.GetOrdersInOrdersHistory)
 

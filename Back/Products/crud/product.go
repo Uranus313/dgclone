@@ -415,14 +415,17 @@ func AddProduct(c *fiber.Ctx) error {
 func AddSellerToProduct(c *fiber.Ctx) error {
 
 	// token = ????
+	// var seller map[string]interface{}
+	seller := c.Locals("ent").(map[string]interface{})
 
-	sellerIDString := c.Query("SellerID")
+	// sellerIDString := c.Query("SellerID")
 
-	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+	// sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
 
-	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
-	}
+	// if err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
+	// }
+	// sellerID := seller["_id"].(primitive.ObjectID)
 
 	var sellerCart models.SellerCart
 
@@ -431,32 +434,32 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	}
 
 	// INNER USERS API => input:sellerID, output: seller_cart
-	type API_Response struct {
-		title  string
-		rating float32
-		err    string
-	}
-	sample_func := func(sellerID primitive.ObjectID) API_Response {
-		// function logic
-		// var seller_cart = models.SellerCart{SellerID: sellerID}
-		return API_Response{
-			title:  sellerID.Hex(),
-			rating: 5,
-			// err:         nil,
-			// status:      200,
-			err: "",
-		}
-	}
-	var api_response API_Response = sample_func(sellerID)
+	// type API_Response struct {
+	// 	title  string
+	// 	rating float32
+	// 	err    string
+	// }
+	// sample_func := func(sellerID primitive.ObjectID) API_Response {
+	// 	// function logic
+	// 	// var seller_cart = models.SellerCart{SellerID: sellerID}
+	// 	return API_Response{
+	// 		title:  sellerID.Hex(),
+	// 		rating: 5,
+	// 		// err:         nil,
+	// 		// status:      200,
+	// 		err: "",
+	// 	}
+	// }
+	// var api_response API_Response = sample_func(sellerID)
 
 	// if api_response.err != nil {
 	// 	return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
 	// }
 
-	sellerCart.SellerTitle = api_response.title
-	sellerCart.SellerRating = api_response.rating
+	sellerCart.SellerTitle = seller["title"].(string)
+	sellerCart.SellerRating = seller["rating"].(float32)
 
-	prodIDString := c.Query("ProdID")
+	prodIDString := c.Params("ProdID")
 
 	prodID, err := primitive.ObjectIDFromHex(prodIDString)
 

@@ -10,11 +10,13 @@ import (
 	// "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// adding different methods for different entities ???
+var InnerPass string
+
+func DeclareInnerPass() {
+	InnerPass = os.Getenv("")
+}
 
 func AuthenticateToken(token string) (map[string]interface{}, int, error) {
-
-	innerPass := os.Getenv("")
 
 	// const API_URI string = "http://userapi/users/general/checkToken"
 	const API_URI string = "http://localhost:3005/users/general/checkToken"
@@ -26,7 +28,7 @@ func AuthenticateToken(token string) (map[string]interface{}, int, error) {
 	}
 
 	req.Header.Add("x-auth-token", token)
-	req.Header.Add("", innerPass)
+	req.Header.Add("", InnerPass)
 
 	res, err := http.DefaultClient.Do(req)
 
