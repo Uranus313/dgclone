@@ -70,7 +70,7 @@ const AddEmployeePopUp = () => {
   }
   return (
     <div>
-      <button onClick={openModal} className="btn btn-error">
+      <button onClick={openModal} className="btn btn-error mr-5 mt-12 lg:mr-0 lg:mt-0 ">
         استخدام
       </button>
       <dialog ref={dialogRef} className="modal">

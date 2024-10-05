@@ -99,13 +99,13 @@ const EmployeePopUp = ({ employee }: Props) => {
     <div>
       <div onClick={openModal}
         className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-        <p className="w-1/4">{employee.firstName + ' ' + employee.lastName}</p>
-        <p className="w-1/4">{employee.phoneNumber}</p>
-        <p className="w-1/4">{employee.roleID?.name}</p>
+        <p className="w-1/2 md:w-1/4">{employee.firstName + ' ' + employee.lastName}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{employee.phoneNumber}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{employee.roleID?.name}</p>
         {employee.isBanned ? (
-          <p className="w-1/4 text-red-500">بن شده</p>
+          <p className="w-1/2 md:w-1/4 text-red-500">بن شده</p>
         ) : (
-          <p className="w-1/4 text-red-500"> -</p>
+          <p className="w-1/2 md:w-1/4 text-red-500"> -</p>
         )}
       </div>
 
@@ -147,8 +147,9 @@ const EmployeePopUp = ({ employee }: Props) => {
               <button className='btn btn-error' type='button' onClick={() => banEmployee.mutate()}>بن</button>)}
             </div>
             }
-
-          <ChangeRolePopUp employee={employee} />
+          <div onClick={closeModal}>
+            <ChangeRolePopUp employee={employee} />
+          </div>
           <button className='btn btn-warning' type='button' onClick={closeModal}>خروج</button>
           </div>
         </div>

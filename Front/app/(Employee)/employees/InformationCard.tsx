@@ -38,7 +38,7 @@ function InformationCard() {
     });
 
     return (
-        <div className="flex bg-propBubble-bg my-24 mx-14 p-4 px-10 rounded-lg ">
+        <div className="flex bg-propBubble-bg my-24 mx-14 p-4 px-10 rounded-lg w-full lg:w-auto">
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 user &&
                 <div>
