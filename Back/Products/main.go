@@ -61,7 +61,7 @@ func main() {
 
 	app.Get("/products/comments/pending", crud.GetPendingComments) // query params => limit, offset
 
-	app.Patch("/products/validate-comments", crud.UpdateCommentValidationState) // query params => CommentID, ValidationState
+	app.Patch("/products/validate-comments", crud.UpdateCommentValidationState) // query params => CommentID, ValidationState -> {2: validated, 3: banned}
 
 	// ------------products-------------
 
@@ -83,17 +83,17 @@ func main() {
 
 	app.Get("/products/prodAndOrdersCount", crud.GetProdsAndOrdersCount)
 
-	app.Get("/products/allProducts", crud.GetAllProducts)
+	app.Get("/products/allProducts", crud.GetAllProducts) //query params => limit, offset, SortMethod, BrandID
 
-	app.Get("/products/allPendingProducts", crud.GetAllPendingProds)
+	app.Get("/products/allPendingProducts", crud.GetAllPendingProds) //query params => limit, offset
 
-	app.Patch("/products/validate-prods", crud.UpdateProdValidationState)
+	app.Patch("/products/validate-prods", crud.UpdateProdValidationState) //query params => ProdID, ValidationState -> {2: validated, 3: banned}
 
-	app.Patch("/products/seller/addVariant", crud.AddVariantToSeller)
+	app.Patch("/products/seller/addVariant", crud.AddVariantToSeller) //query params => prodID, SellerID ... and body
 
 	app.Get("/products/seller/pendingVariants", crud.GetAllPendingVariants)
 
-	app.Patch("/products/validate-variant", crud.UpdateVariantValidationState)
+	app.Patch("/products/validate-variant", crud.UpdateVariantValidationState) // query params => prodID, SellerID, ColorID, ValidationState -> {2: validated, 3: banned}
 
 	// --------------category-----------------
 
@@ -147,7 +147,7 @@ func main() {
 
 	app.Get("/products/order/sellerIncomeChart", crud.SellerIncomeChart) // query params => SellerID, sDateHistory
 
-	app.Get("/products/order", crud.GetAllOrders)
+	app.Get("/products/order", crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle
 
 	// -------------inner--------------
 
