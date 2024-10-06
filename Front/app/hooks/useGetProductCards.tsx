@@ -1,12 +1,20 @@
+'use client'
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "../(Customer)/page";
-function useGetColors(){
+import { SellerAddProdctCard } from "../components/Interfaces/interfaces";
+import { useSearchParams } from "next/navigation";
+
+interface Props{
+    category:string|null
+}
+function useGetProductCards(){
+    const searchParams = useSearchParams();
+    const category = searchParams.get('category');
     console.log('1')
-    return useQuery({
-        queryKey : ['colors'],
+    return useQuery<SellerAddProdctCard[]>({
+        queryKey : ['productCards'],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch("http://localhost:8080/products/color", {
+            const result = await fetch(`http://localhost:8080/products/product/?CateID=${category}$$limit=20&&offset=0`, {
                             credentials: 'include'});
                            
             const jsonResult = await result.json();
@@ -23,4 +31,4 @@ function useGetColors(){
         retry: 2
     })
 }
-export default useGetColors;
+export default useGetProductCards;

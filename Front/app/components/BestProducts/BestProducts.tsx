@@ -115,10 +115,14 @@ interface Props{
     categoryID?:string;
     color?:string;
 }
-const BestProducts = ({filter,categoryID='',color=''}:Props) => {
+const BestProducts = async({filter,categoryID='',color=''}:Props) => {
+  // const res = await fetch("http://localhost:8080/products/color")
+  // const categories  = await res.json()
+  // console.log(categories)
   return (
     <div>
         <div className='grid-flow-col grid-rows-3 grid overflow-auto rounded-md mx-auto border-grey-border border-2 w-10/12 bg-white'>
+        {/* <h1>{categories}</h1> */}
             {BestSellerProducts.map((BestSeller , index)=>{
               console.log(categoryID)
               return <Link className='w-72' href={'/product/'+BestSeller.id} key={BestSeller.id}>
