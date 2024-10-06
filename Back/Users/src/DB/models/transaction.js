@@ -127,7 +127,11 @@ export function validateTeransactionPost (data){
             if(!id){
                 return
             }
-            const result = await fetch("http://products/orderHistory/"+id);
+            const result = await fetch(productURL+"/orderHistory/"+id, {
+                method: "GET",
+                headers: {
+                    "inner-secret": process.env.innerSecret
+                }});
             const orderHistory = await result.json();
             if(!orderHistory._id){
                 throw new Error("this orderhistory does not exist");

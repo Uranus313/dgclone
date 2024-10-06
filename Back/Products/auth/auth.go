@@ -13,7 +13,7 @@ import (
 var InnerPass string
 
 func DeclareInnerPass() {
-	InnerPass = os.Getenv("")
+	InnerPass = os.Getenv("INNER_PASS")
 }
 
 func AuthenticateToken(token string) (map[string]interface{}, int, error) {
@@ -28,7 +28,7 @@ func AuthenticateToken(token string) (map[string]interface{}, int, error) {
 	}
 
 	req.Header.Add("x-auth-token", token)
-	req.Header.Add("", InnerPass)
+	req.Header.Add("inner-secret", InnerPass)
 
 	res, err := http.DefaultClient.Do(req)
 
@@ -49,7 +49,7 @@ func AuthenticateToken(token string) (map[string]interface{}, int, error) {
 	json.Unmarshal(body, &responseBody)
 
 	if res.StatusCode != 200 {
-		return nil, res.StatusCode, errors.New(responseBody["err_message"].(string))
+		return nil, res.StatusCode, errors.New(responseBody["error"].(string))
 	}
 
 	return responseBody, 200, nil

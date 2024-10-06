@@ -18,6 +18,7 @@ import { deleteEmailVerification, getEmailVerifications, saveEmailVerification }
 import { sendMail } from "../functions/sendMail.js";
 import { deletePhoneNumberVerification, getPhoneNumberVerifications, savePhoneNumberVerification } from "../DB/CRUD/phoneNumberVerification.js";
 import { sendSMS } from "../functions/sendSMS.js";
+import { productURL } from "../consts/consts.js";
 
 const router = express.Router();
 
@@ -61,7 +62,7 @@ router.post("/signUp", async (req, res, next) => {
         const token = jwt.sign({ _id: result3.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            // secure: true,
+            secure: process.env.NODE_ENV== "development"?false : true,
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -261,7 +262,7 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV== "development"?false : true,
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -316,7 +317,7 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
 //         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
 //         res.cookie('x-auth-token', token, {
 //             httpOnly: true,
-//             secure: true,
+//             secure: process.env.NODE_ENV== "development"?false : true,
 //             sameSite: 'none',
 //             maxAge: 6 * 60 * 60 * 1000
 //         });
@@ -426,7 +427,7 @@ router.patch("/verifyChangeEmail", (req, res, next) => auth(req, res, next, ["us
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV== "development"?false : true,
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -468,7 +469,7 @@ router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["user"])
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV== "development"?false : true,
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -548,7 +549,7 @@ router.post("/logIn", async (req, res, next) => {
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV== "development"?false : true,
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -586,7 +587,7 @@ router.get("/myLists", (req, res, next) => auth(req, res, next, ["user"]), async
             next();
             return;
         }
-        const result = await fetch("http://products/fillList", {
+        const result = await fetch(productURL+"/ProductMapAssign", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

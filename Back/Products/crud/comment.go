@@ -204,7 +204,7 @@ func PostComment(c *fiber.Ctx) error {
 	// 	return userID.IsZero()
 	// }
 	// var userExist bool = smaple_func(comment.UserID)
-	_, statusCode, err := InnerRequest(GET, "/url/"+comment.UserID.String())
+	_, statusCode, err := InnerRequest(GET, "/checkUser/"+comment.UserID.Hex())
 
 	if err != nil {
 		return c.Status(statusCode).JSON(fiber.Map{

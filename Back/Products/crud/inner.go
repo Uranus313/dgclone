@@ -29,6 +29,10 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 	*/
 
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
+
 	var productsMap = make(map[string]*models.Product) // map[primitive.ObjectID]*models.Product
 
 	if err := c.BodyParser(&productsMap); err != nil {
@@ -65,6 +69,10 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 func InnerGetOrderByID(c *fiber.Ctx) error {
 
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
+
 	orderIDString := c.Params("orderID")
 
 	orderID, err := primitive.ObjectIDFromHex(orderIDString)
@@ -91,6 +99,10 @@ func InnerGetOrderByID(c *fiber.Ctx) error {
 
 func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
+
 	orderHistoryIDString := c.Params("orderHistoryID")
 
 	orderHistoryID, err := primitive.ObjectIDFromHex(orderHistoryIDString)
@@ -116,6 +128,10 @@ func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 }
 
 func InnerGetProductByID(c *fiber.Ctx) error {
+
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
 
 	var product models.Product
 
@@ -149,6 +165,10 @@ func InnerGetProductByID(c *fiber.Ctx) error {
 }
 
 func InnerSellerBS(c *fiber.Ctx) error {
+
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
 
 	sellerIDString := c.Params("SellerID")
 
@@ -361,7 +381,7 @@ const (
 // returnes response body, status code, error
 func InnerRequest(method string, url string) (map[string]interface{}, int, error) {
 
-	const BASE_URL string = "http://localhost:3005"
+	const BASE_URL string = "http://localhost:3005/users/inner"
 
 	req, err := http.NewRequest(method, BASE_URL+url, nil)
 
@@ -369,7 +389,7 @@ func InnerRequest(method string, url string) (map[string]interface{}, int, error
 		return nil, 500, err
 	}
 
-	req.Header.Add("", auth.InnerPass)
+	req.Header.Add("inner-secret", auth.InnerPass)
 
 	res, err := http.DefaultClient.Do(req)
 
@@ -389,8 +409,10 @@ func InnerRequest(method string, url string) (map[string]interface{}, int, error
 
 	json.Unmarshal(body, &responseBody)
 
+	fmt.Println("res:", responseBody)
+
 	if res.StatusCode != 200 {
-		return nil, res.StatusCode, errors.New(responseBody["err_message"].(string))
+		return nil, res.StatusCode, errors.New(responseBody["error"].(string))
 	}
 
 	return responseBody, 200, nil

@@ -11,6 +11,10 @@ export async function auth(req, res, next, acceptedStatuses) {
   if(secret == process.env.innerSecret  && secret){
     token = req.header("x-auth-token");
   }
+  console.log(token)
+  console.log(process.env.innerSecret)
+  console.log(req.header("x-auth-token"))
+  console.log(secret)
   if (!token) {
     res.status(401).send({ error: "access denied. no token provided." });
     res.body = { error: "access denied. no token provided." };
