@@ -6,7 +6,7 @@ import userRouter from "./src/routes/user.js"
 import adminRouter from "./src/routes/admin.js"
 import employeeRouter from "./src/routes/employee.js"
 import sellerRouter from "./src/routes/seller.js"
-
+import express_status_monitor from "express-status-monitor"
 import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
 import { sendMail } from "./src/functions/sendMail.js";
@@ -27,10 +27,20 @@ DBConnection();
 const app = express();
 const port = process.env.PORT || 3005;
 // winston.add(new winston.transports.File({filename : "C:\\Users\\Hico\\Desktop\\smslogs\\users.log"}));
+const allowedOrigins = ["http://localhost:8080","http://localhost:3000","http://localhost:5173","http://myapp.local"];
 app.use(cors({
-    origin: true, // Allow all origins
-    credentials: true // Allow credentials
+    origin: (origin, callback) =>{
+        if(!origin || allowedOrigins.indexOf(origin) !== -1){
+            callback(null, true);
+        }else{
+            callback(new Error('origin not allowed'));
+        }
+    }, 
+    credentials: true,
+    methods: true,
+    headers: true,
 }));
+app.use(express_status_monitor())
 process.env.JWTSECRET = 'mysecret'
 console.log(process.env.JWTSECRET)
 
