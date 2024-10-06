@@ -21,13 +21,12 @@ const EmployeeHomePage = () => {
   const { user, setUser, isLoading } = useUser();
 
   return (
-    <div className='flex flex-wrap md:flex-nowrap '>
+    <div className='flex flex-wrap lg:flex-nowrap '>
       <InformationCard />
-
       {isLoading && <span className="loading loading-dots loading-lg m-24"></span>}
       {
         user &&
-        <span className='flex flex-wrap md:mt-24 mr-12 md:mr-0 '>
+        <span className='flex flex-wrap mr-5 md:mr-12 lg:mr-0 lg:mt-24 '>
           <CommentBox />
           <OrderBox />
           <TransactionBox />

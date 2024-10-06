@@ -45,10 +45,10 @@ const VerifyRequestList = () => {
               )
             })}
           </ul>
-          <div className='flex justify-center'>
+          <div className='pb-4 flex justify-center'>
 
-          <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-          <button disabled={!verifyRequests?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
+            <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
+            <button disabled={!verifyRequests?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
           </div>
         </div>
 

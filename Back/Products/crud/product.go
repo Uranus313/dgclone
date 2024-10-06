@@ -22,7 +22,7 @@ func GetAllProducts(c *fiber.Ctx) error {
 
 	// token = admin ????
 
-	limitString := c.Query("limit", "20")
+	limitString := c.Query("limit", "8")
 
 	limit, err := strconv.Atoi(limitString)
 
@@ -415,14 +415,17 @@ func AddProduct(c *fiber.Ctx) error {
 func AddSellerToProduct(c *fiber.Ctx) error {
 
 	// token = ????
+	// var seller map[string]interface{}
+	seller := c.Locals("ent").(map[string]interface{})
 
-	sellerIDString := c.Query("SellerID")
+	// sellerIDString := c.Query("SellerID")
 
-	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+	// sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
 
-	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
-	}
+	// if err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
+	// }
+	// sellerID := seller["_id"].(primitive.ObjectID)
 
 	var sellerCart models.SellerCart
 
@@ -431,32 +434,32 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	}
 
 	// INNER USERS API => input:sellerID, output: seller_cart
-	type API_Response struct {
-		title  string
-		rating float32
-		err    string
-	}
-	sample_func := func(sellerID primitive.ObjectID) API_Response {
-		// function logic
-		// var seller_cart = models.SellerCart{SellerID: sellerID}
-		return API_Response{
-			title:  sellerID.Hex(),
-			rating: 5,
-			// err:         nil,
-			// status:      200,
-			err: "",
-		}
-	}
-	var api_response API_Response = sample_func(sellerID)
+	// type API_Response struct {
+	// 	title  string
+	// 	rating float32
+	// 	err    string
+	// }
+	// sample_func := func(sellerID primitive.ObjectID) API_Response {
+	// 	// function logic
+	// 	// var seller_cart = models.SellerCart{SellerID: sellerID}
+	// 	return API_Response{
+	// 		title:  sellerID.Hex(),
+	// 		rating: 5,
+	// 		// err:         nil,
+	// 		// status:      200,
+	// 		err: "",
+	// 	}
+	// }
+	// var api_response API_Response = sample_func(sellerID)
 
 	// if api_response.err != nil {
 	// 	return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
 	// }
 
-	sellerCart.SellerTitle = api_response.title
-	sellerCart.SellerRating = api_response.rating
+	sellerCart.SellerTitle = seller["title"].(string)
+	sellerCart.SellerRating = seller["rating"].(float32)
 
-	prodIDString := c.Query("ProdID")
+	prodIDString := c.Params("ProdID")
 
 	prodID, err := primitive.ObjectIDFromHex(prodIDString)
 
@@ -560,9 +563,28 @@ func GetAllPendingVariants(c *fiber.Ctx) error {
 
 	// token = admin ????
 
-	var variants []models.Product
+	limitString := c.Query("limit", "20")
+
+	limit, err := strconv.Atoi(limitString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching limit from query": err.Error()})
+	}
+
+	offsetString := c.Query("offset", "0")
+
+	offset, err := strconv.Atoi(offsetString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching offset from query": err.Error()})
+	}
+
+	var hasMore bool = false
+	addlimit := limit + 1
 
 	pipeline := mongo.Pipeline{
+		{{Key: "$skip", Value: offset}},
+		{{Key: "$limit", Value: addlimit}},
 		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sellers"}}}},
 		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$sellers.seller_quantity"}}}},
 		{{Key: "$match", Value: bson.D{{Key: "sellers.seller_quantity.validation_state", Value: models.PendingValidation}}}},
@@ -587,11 +609,21 @@ func GetAllPendingVariants(c *fiber.Ctx) error {
 
 	defer cursor.Close(context.Background())
 
+	var variants []bson.M
+
 	if err := cursor.All(context.Background(), &variants); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
 	}
 
-	return c.Status(http.StatusOK).JSON(variants)
+	if len(variants) > limit {
+		hasMore = true
+		variants = variants[:limit]
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"variants": variants,
+		"hasMore":  hasMore,
+	})
 }
 
 func UpdateVariantValidationState(c *fiber.Ctx) error {
@@ -1061,12 +1093,23 @@ func CreateProdCard(product models.Product) models.ProductCard {
 		}
 	}
 
+	var prodCate models.Category
+
+	err := database.CategoryCollection.FindOne(context.Background(), bson.M{"_id": product.CategoryID}).Decode(&prodCate)
+
+	if err != nil {
+		panic(err)
+	}
+
 	return models.ProductCard{
-		ID:         product.ID,
-		Title:      product.Title,
-		Price:      product.Sellers[minPriceSellerIndex].Price,
-		Picture:    product.Images[0],
-		DiscountID: product.Sellers[minPriceSellerIndex].DiscountID,
+		ID:          product.ID,
+		Title:       product.Title,
+		Price:       product.Sellers[minPriceSellerIndex].Price,
+		Picture:     product.Images[0],
+		DiscountID:  product.Sellers[minPriceSellerIndex].DiscountID,
+		SellerCount: len(product.Sellers),
+		UrbanPrice:  product.Sellers[0].Price,
+		Commission:  prodCate.CommisionPercentage,
 	}
 }
 

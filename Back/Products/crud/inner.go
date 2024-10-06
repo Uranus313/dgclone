@@ -2,10 +2,15 @@ package crud
 
 import (
 	"context"
+	"dg-kala-sample/auth"
 	"dg-kala-sample/database"
 	"dg-kala-sample/models"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
+
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +28,10 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 		and assigns the product object in front of its keys and returns it
 
 	*/
+
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
 
 	var productsMap = make(map[string]*models.Product) // map[primitive.ObjectID]*models.Product
 
@@ -60,6 +69,10 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 func InnerGetOrderByID(c *fiber.Ctx) error {
 
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
+
 	orderIDString := c.Params("orderID")
 
 	orderID, err := primitive.ObjectIDFromHex(orderIDString)
@@ -86,6 +99,10 @@ func InnerGetOrderByID(c *fiber.Ctx) error {
 
 func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
+
 	orderHistoryIDString := c.Params("orderHistoryID")
 
 	orderHistoryID, err := primitive.ObjectIDFromHex(orderHistoryIDString)
@@ -111,6 +128,10 @@ func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 }
 
 func InnerGetProductByID(c *fiber.Ctx) error {
+
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
 
 	var product models.Product
 
@@ -144,6 +165,10 @@ func InnerGetProductByID(c *fiber.Ctx) error {
 }
 
 func InnerSellerBS(c *fiber.Ctx) error {
+
+	if c.Get("inner-secret") != auth.InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
 
 	sellerIDString := c.Params("SellerID")
 
@@ -345,21 +370,50 @@ func InnerSellerBS(c *fiber.Ctx) error {
 
 }
 
-/*
+const (
+	GET    = "GET"
+	POST   = "POST"
+	PATCH  = "PATCH"
+	PUT    = "PUT"
+	DELETE = "DELETE"
+)
 
+// returnes response body, status code, error
+func InnerRequest(method string, url string) (map[string]interface{}, int, error) {
 
-all prods count
-all orders count
+	const BASE_URL string = "http://localhost:3005/users/inner"
 
+	req, err := http.NewRequest(method, BASE_URL+url, nil)
 
-all prods list
-all orders list
+	if err != nil {
+		return nil, 500, err
+	}
 
-all pending prods
-validate prods
+	req.Header.Add("inner-secret", auth.InnerPass)
 
-add quantity to seller
-all pending seller quantities
-validate seller quantites
+	res, err := http.DefaultClient.Do(req)
 
-*/
+	if err != nil {
+		return nil, 500, err
+	}
+
+	defer res.Body.Close()
+
+	body, readErr := io.ReadAll(res.Body)
+
+	if readErr != nil {
+		return nil, 500, err
+	}
+
+	var responseBody map[string]interface{}
+
+	json.Unmarshal(body, &responseBody)
+
+	fmt.Println("res:", responseBody)
+
+	if res.StatusCode != 200 {
+		return nil, res.StatusCode, errors.New(responseBody["error"].(string))
+	}
+
+	return responseBody, 200, nil
+}

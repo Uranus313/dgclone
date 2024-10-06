@@ -1,5 +1,5 @@
+import { AccessLevel } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
-import {  AccessLevel } from "../menu/allEmployees/EmployeePopUp";
 
 
 function useGetAccessLevels(){

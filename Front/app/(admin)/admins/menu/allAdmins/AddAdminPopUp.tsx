@@ -58,7 +58,7 @@ const AddAdminPopUp = () => {
   }
   return (
     <div>
-      <button onClick={openModal} className='btn btn-primary'>اضافه کردن ادمین </button>
+      <button onClick={openModal} className='btn btn-primary mr-5 mt-12 lg:mr-0 lg:mt-0 '>اضافه کردن ادمین </button>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
           {error && <p>{error}</p>}

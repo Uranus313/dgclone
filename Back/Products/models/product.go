@@ -120,9 +120,12 @@ type UpdatableProd struct {
 }
 
 type ProductCard struct {
-	ID         primitive.ObjectID
-	Title      string
-	Price      int
-	Picture    string
-	DiscountID primitive.ObjectID
+	ID          primitive.ObjectID
+	Title       string
+	Price       int
+	Picture     string
+	DiscountID  primitive.ObjectID
+	SellerCount int
+	UrbanPrice  int
+	Commission  int
 }

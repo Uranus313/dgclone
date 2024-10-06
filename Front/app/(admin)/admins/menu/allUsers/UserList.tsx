@@ -17,9 +17,7 @@ const UserList = ({ changeList }: Props) => {
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
   let { data: users, error, isLoading } = useGetUsers({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
-  // useEffect(() =>{
-  //     console.log(error)
-  // },[error])
+  
   function handleSort(type: string){
     setTypeSort(type);
   }
@@ -43,11 +41,12 @@ const UserList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-20 rounded-md '>
+      <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
-      }} className='border-b-2 shadow-md border-white p-7 px-13' >
+      }} className='w-8/12' >
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
           <option value="users" selected>کاربران</option>
           <option value="employees">کارمندان</option>
@@ -57,11 +56,12 @@ const UserList = ({ changeList }: Props) => {
           <option value="products">محصولات</option>
           <option value="transactions"> تراکنش ها</option>
         </select>
-        <input className='md:w-3/6 mt-5 md:mt-0 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+        <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
           ref={searchRef}
           onBlur={() => handleSearch()} />
-        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20 invisible lg:visible'>مرتب سازی</button>
       </form>
+        <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-primary-color lg:px-8 lg:py-2 rounded-md lg:mx-20 invisible lg:visible'>مرتب سازی</button>
+      </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
@@ -91,8 +91,8 @@ const UserList = ({ changeList }: Props) => {
           <ul>
             <div className="flex md:justify-between py-8 text-center">
               <p className="w-1/2 md:w-1/4">نام و نام خانوادگی</p>
-              <p className="md:w-1/4 invisible md:visible">شماره تلفن</p>
-              <p className="md:w-1/4 invisible md:visible">ایمیل </p>
+              <p className="w-0 md:w-1/4 invisible md:visible ">شماره تلفن</p>
+              <p className="w-0 md:w-1/4 invisible md:visible">ایمیل </p>
               <p className="w-1/2 md:w-1/4 ">وضعیت</p>
             </div>
             {users?.data?.map((user, index) => {

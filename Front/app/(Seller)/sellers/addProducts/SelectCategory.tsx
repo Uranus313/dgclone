@@ -1,304 +1,312 @@
 'use client'
+import { Category } from '@/app/(Customer)/page';
+import useGetCategories from '@/app/hooks/useGetCategories';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react'
 
 
-export interface detail{
-    title: string,
-    keys: string[]
-  }
-  export interface Category {
-    title: string;
-    children?: Category[];
-    details: detail[]; //fix
-    parentID?: string;
-    id: string;
-    pictures: string[];
-    desc?:string;
-    link?:string;
-    theme?:string;
-  }
+// export interface detail{
+//     title: string,
+//     keys: string[]
+//   }
+//   export interface Category {
+//     title: string;
+//     children?: Category[];
+//     details: detail[]; //fix
+//     parentID?: string;
+//     id: string;
+//     pictures: string[];
+//     desc?:string;
+//     link?:string;
+//     theme?:string;
+//   }
   
   
   //#region Categories
   
   
-  export const Categories: Category[] = [
-    {
-      title: "کالای دیجیتال",
-      children: [
-        {
-          title: "لپتاپ",
-          children: [
-            {
-              title: "لپتاپ اپل",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "2",
-              id: "8",
-              pictures: ["" , ''],
-            },
-            {
-              title: "لپتاپ ایسوس",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "2",
-              id: "9",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
-          parentID: "1",
-          id: "2",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/dcb735863856217c8f64d891269b876c621772d7_1672570805.jpg'],
-        },
-        {
-          title: "موبایل",
-          children: [
-            {
-              title: "موبایل اپل",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "3",
-              id: "30",
-              pictures: ["" , ''],
-            },
-            {
-              title: "موبایل سامسونگ",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "3",
-              id: "31",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  // export const Categories: Category[] = [
+  //   {
+  //     title: "کالای دیجیتال",
+  //     children: [
+  //       {
+  //         title: "لپتاپ",
+  //         children: [
+  //           {
+  //             title: "لپتاپ اپل",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "2",
+  //             id: "8",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "لپتاپ ایسوس",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "2",
+  //             id: "9",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //         parentID: "1",
+  //         id: "2",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/dcb735863856217c8f64d891269b876c621772d7_1672570805.jpg'],
+  //       },
+  //       {
+  //         title: "موبایل",
+  //         children: [
+  //           {
+  //             title: "موبایل اپل",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "3",
+  //             id: "30",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "موبایل سامسونگ",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "3",
+  //             id: "31",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "3",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/40026b18c2b053ac4a68c3288556dc899a77aecd_1673784561.jpg'],
-        },
+  //         id: "3",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/40026b18c2b053ac4a68c3288556dc899a77aecd_1673784561.jpg'],
+  //       },
   
-        {
-          title: "کنسول بازی",
-          children: [
-            {
-              title: "پلی استیشن",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "41",
-              pictures: ["" , ''],
-            },
-            {
-              title: "ایکس باکس",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "42",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //       {
+  //         title: "کنسول بازی",
+  //         children: [
+  //           {
+  //             title: "پلی استیشن",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "41",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "ایکس باکس",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "42",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "40",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
-        },
+  //         id: "40",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+  //       },
   
-        {
-          title: "کنسول بازی",
-          children: [
-            {
-              title: "پلی استیشن",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "43",
-              pictures: ["" , ''],
-            },
-            {
-              title: "ایکس باکس",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "44",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //       {
+  //         title: "کنسول بازی",
+  //         children: [
+  //           {
+  //             title: "پلی استیشن",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "43",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "ایکس باکس",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "44",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "40",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
-        },
+  //         id: "40",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+  //       },
   
-        {
-          title: "کنسول بازی",
-          children: [
-            {
-              title: "پلی استیشن",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "45",
-              pictures: ["" , ''],
-            },
-            {
-              title: "ایکس باکس",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "42",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //       {
+  //         title: "کنسول بازی",
+  //         children: [
+  //           {
+  //             title: "پلی استیشن",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "45",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "ایکس باکس",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "42",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "40",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
-        },
+  //         id: "40",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+  //       },
   
-        {
-          title: "کنسول بازی",
-          children: [
-            {
-              title: "پلی استیشن",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "41",
-              pictures: ["" , ''],
-            },
-            {
-              title: "ایکس باکس",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "42",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //       {
+  //         title: "کنسول بازی",
+  //         children: [
+  //           {
+  //             title: "پلی استیشن",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "41",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "ایکس باکس",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "42",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "40",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
-        },
+  //         id: "40",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+  //       },
   
-        {
-          title: "کنسول بازی",
-          children: [
-            {
-              title: "پلی استیشن",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "41",
-              pictures: ["" , ''],
-            },
-            {
-              title: "ایکس باکس",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "40",
-              id: "42",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //       {
+  //         title: "کنسول بازی",
+  //         children: [
+  //           {
+  //             title: "پلی استیشن",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "41",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "ایکس باکس",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "40",
+  //             id: "42",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "40",
-          pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
-        },
+  //         id: "40",
+  //         pictures: ["" , '','https://dkstatics-public.digikala.com/digikala-products/fe1424bb03add04e7c173f49417e1b07ed358eb8_1605100837.jpg'],
+  //       },
     
-      ],
-      details: [{ title: "specs", keys: ["brand", "sth"] }],
-      parentID: "",
-      id: "1",
-      theme:'#492885',
-      desc:'تکنولوژی انقلابی / بهترین قیمت ها / همین حالا سفارش بده',
-      pictures: ["https://i.postimg.cc/L6Wbd2K9/Digital-Productss.png" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/aba1e5dca8958ac1176e25cd194ff8ac622cd383_1692600155.png'],
-    },
+  //     ],
+  //     details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //     parentID: "",
+  //     id: "1",
+  //     theme:'#492885',
+  //     desc:'تکنولوژی انقلابی / بهترین قیمت ها / همین حالا سفارش بده',
+  //     pictures: ["https://i.postimg.cc/L6Wbd2K9/Digital-Productss.png" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/aba1e5dca8958ac1176e25cd194ff8ac622cd383_1692600155.png'],
+  //   },
   
-    {
-      title: "لوازم برقی خانه",
-      children: [
-        {
-          title: "یخچال",
-          children: [
-            {
-              title: "یخچال ساید بای ساید",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "2",
-              id: "8",
-              pictures: ['' , ''],
-            },
-            {
-              title: "یخچال کمپی",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "2",
-              id: "9",
-              pictures: ["" , ''],
-            },
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
-          parentID: "1",
-          id: "60",
-          pictures: [""  , ''],
-        },
-        {
-          title: "پخت و پز",
-          children: [
-            {
-              title: "ماکروویو",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "3",
-              id: "30",
-              pictures: ["" , ''],
-            },
-            {
-              title: "توستر",
-              details: [{ title: "specs", keys: ["brand", "sth"] }],
-              parentID: "3",
-              id: "31",
-              pictures: ["" , ''],
-            },
+  //   {
+  //     title: "لوازم برقی خانه",
+  //     children: [
+  //       {
+  //         title: "یخچال",
+  //         children: [
+  //           {
+  //             title: "یخچال ساید بای ساید",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "2",
+  //             id: "8",
+  //             pictures: ['' , ''],
+  //           },
+  //           {
+  //             title: "یخچال کمپی",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "2",
+  //             id: "9",
+  //             pictures: ["" , ''],
+  //           },
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //         parentID: "1",
+  //         id: "60",
+  //         pictures: [""  , ''],
+  //       },
+  //       {
+  //         title: "پخت و پز",
+  //         children: [
+  //           {
+  //             title: "ماکروویو",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "3",
+  //             id: "30",
+  //             pictures: ["" , ''],
+  //           },
+  //           {
+  //             title: "توستر",
+  //             details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //             parentID: "3",
+  //             id: "31",
+  //             pictures: ["" , ''],
+  //           },
             
-          ],
-          details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //         ],
+  //         details: [{ title: "specs", keys: ["brand", "sth"] }],
        
-          id: "3",
-          pictures: ["" , ''],
-        },
+  //         id: "3",
+  //         pictures: ["" , ''],
+  //       },
     
-      ],
-      details: [{ title: "specs", keys: ["brand", "sth"] }],
-      parentID: "",
-      id: "1",
-      pictures: ["" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/c16b7dff700a9d99880174c32ec233d20ddb531c_1703057953.png'],
-    },  
+  //     ],
+  //     details: [{ title: "specs", keys: ["brand", "sth"] }],
+  //     parentID: "",
+  //     id: "1",
+  //     pictures: ["" , 'https://dkstatics-public.digikala.com/digikala-mega-menu/c16b7dff700a9d99880174c32ec233d20ddb531c_1703057953.png'],
+  //   },  
   
-    { 
-      title: 'کتاب و لوازم تحریر',
-      details: [{ title: 'sth' , keys: ["brand", "sth"] }],
-      id: '40',
-      pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/3582bbed0a53318c2332d2c79b051b226f02a3bb_1692600677.png'],
-    },
-    { 
-      title: 'مد و پوشاک',
-      details: [{ title: 'sth' , keys: ["brand", "sth"] }],
-      id: '40',
-      pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/5795b31a635f1e23df96a908c009f31744ede38f_1692600481.png'],
-    },
-    { 
-      title: 'کارت هدیه',
-      details: [{ title: 'sth' , keys: ["brand", "sth"] }],
-      id: '40',
-      pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/20c179dff5c513104599d33858b6b11e77ced9b4_1692601532.png'],
-    },
-    { 
-      title: 'اسباب بازی',
-      details: [{ title: 'sth' , keys: ["brand", "sth"] }],
-      id: '40',
-      pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/0c46d2532d61dd3a5b6a3afc17552c23c1b4d39e_1692600773.png'],
-    },
+  //   { 
+  //     title: 'کتاب و لوازم تحریر',
+  //     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
+  //     id: '40',
+  //     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/3582bbed0a53318c2332d2c79b051b226f02a3bb_1692600677.png'],
+  //   },
+  //   { 
+  //     title: 'مد و پوشاک',
+  //     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
+  //     id: '40',
+  //     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/5795b31a635f1e23df96a908c009f31744ede38f_1692600481.png'],
+  //   },
+  //   { 
+  //     title: 'کارت هدیه',
+  //     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
+  //     id: '40',
+  //     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/20c179dff5c513104599d33858b6b11e77ced9b4_1692601532.png'],
+  //   },
+  //   { 
+  //     title: 'اسباب بازی',
+  //     details: [{ title: 'sth' , keys: ["brand", "sth"] }],
+  //     id: '40',
+  //     pictures: ['','https://dkstatics-public.digikala.com/digikala-mega-menu/0c46d2532d61dd3a5b6a3afc17552c23c1b4d39e_1692600773.png'],
+  //   },
     
-  ];
+  // ];
   
   //#endregion
 
+interface Props{
+  Categories:Category[]
+}
 
-
-const SelectCategory = () => {
+const SelectCategory =({Categories}:Props) => {
+  
+  // const {data:Categories=[]} = useGetCategories()
   const optionsStack  = useRef<Category[][]>([Categories])
   const [options,setOptions]= useState<Category[] | undefined>(Categories) 
   function HandleOptions(children:Category[]){
     optionsStack.current.push(children)
     setOptions(children)
   }
+
+  {console.log(Categories,'cccc' , options)}
 
   return (
   
@@ -331,16 +339,16 @@ const SelectCategory = () => {
 
 
                     {options?.map(option=>(
-                        option.children 
-                            ?   <button className='flex items-center justify-between py-5 border-b border-grey-border text-start' onClick={()=>HandleOptions(option.children ?? [])} id={option.id}>
-                                    <p>{option.title}</p>
+                        option.Childs?.length != 0
+                            ?   <button className='flex items-center justify-between py-5 border-b border-grey-border text-start' onClick={()=>HandleOptions(option.Childs ?? [])} id={option.ID}>
+                                    <p>{option.Title}</p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mx-10">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                                     </svg>
                                 </button>  
                                 
-                            :   <Link href={`/sellers/addProducts/list/?category=${option.id}`} className='flex items-center justify-between py-5 border-b border-grey-border text-start' id={option.id}>
-                                    <p>{option.title}</p>
+                            :   <Link href={`/sellers/addProducts/list/?category=${option.ID}`} className='flex items-center justify-between py-5 border-b border-grey-border text-start' id={option.ID}>
+                                    <p>{option.Title}</p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mx-10 text-primary-seller">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>

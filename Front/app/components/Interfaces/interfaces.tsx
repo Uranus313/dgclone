@@ -15,12 +15,12 @@ export enum shipmentMethod {
 }
 
 export interface SellerInfosOnProduct {
-    sellerid: string,
-    sellerTitle: string,
-    sellerRating: number
-    quantity: { color: { title: string, hex: string }, quantity: number, garante: string }[],
+    seller_id: string,
+    seller_title: string,
+    seller_rating: number
+    quantity: { color: {_id:string, title: string, hex: string }, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }[], //1 pending 2 validated 3 banned
     price: number,
-    shipmentMethod?: shipmentMethod,
+    shipment_method?: number, //1 digi 2 warehouise
     discountId?: string,
 
 }
@@ -74,6 +74,10 @@ export interface OrdersHistory{
 
 
 export interface AccessLevel {
+    name: string;
+    title: string;
+}
+export interface AccessLevels {
     level: string,
     writeAccess: boolean
 }
@@ -137,7 +141,6 @@ export interface Address {
 }
 
 
-
 export interface SellerSetVarientOnProduct {
     sellerID: string,
     productID: string,
@@ -150,26 +153,31 @@ export interface SellerSetVarientOnProduct {
 
 }
 
+export interface details{
+    title: string, map:{[key: string]: string} 
+}
+
 
 export interface ProductInterface {
-    id?: string,
-    sellcount: number,
-    visitCount: number,
+    _id?: string,
+    sell_count: number | undefined,
+    date_added?: string | undefined,
+    brand_id: string | undefined,
+    visit_count: number,
     visits: string[],
     title: string
     sellers: SellerInfosOnProduct[],
-    rating: { rate: number, rateNum: number },
-    brand: string,
-    original: boolean,
-    categoryID: string,
-    details: { title: string, map: { key: string, value: string }[] }[],
-    madeInIran: boolean
+    rating: { rate: number, rate_num: number },
+    category_id: string,
+    details: details[],
+    is_from_iran: boolean,
+    is_original: boolean,
     images: string[],
     dimentions: { length: number, width: number, height: number },
-    wieght: number,
+    wieght_KG: number,
     description?: string,
-    prosNcons?: { pros: string[], cons: string[] },
-    recentComments: Comment[]
+    validation_state: number
+
 }
 
 
@@ -180,13 +188,19 @@ export interface Comment {
     type: commentType
     answers?: Comment[]  //for question comments
     id: string
+    _id: string
     productID: string
+    product_id: string
     rate?: number //for buyers
     order?: { color: { title: string, hex: string }, sellerTitle: string } //for normal comments
     user: { userid: string, firstname: string, lastname: string }
+    user_id:string
     content: string
     disAndlike?: { userid: string, disOlike: boolean }[] //for questions
     dateSent: string
+    date_sent:string
+    comment_type: number
+    validation_state: number
 }
 
 export enum State { returned = 'returned', canceled = 'canceled', pending = 'pending', delivered = 'delivered', recivedInWareHouse = 'recivedInWareHouse' }
@@ -242,6 +256,13 @@ export interface Transaction {
 }
 
 //#region seller
+export interface VerifyRequest {
+    sellerID: string,
+    adminID: string | undefined,
+    requestDate: string | undefined,
+    state: "pending" | "accepted" | "rejected" | undefined,
+    _id: string
+}
 
 export enum EntitiyType {
     individual = "individual",
@@ -261,13 +282,14 @@ export enum companyType {
 export enum bankNumberType { shaba = "shaba", bank = "bank" }
 export enum moneyReturn { bankAccount = "bankAccount", wallet = "wallet" }
 export interface Seller {
+    _id?:string
     [key: string]: any;
     rating: number
     sellerID: string
     password: string
     storeOwner?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         firstName: string,
         lastName: string,
         birthDate: string,
@@ -279,8 +301,8 @@ export interface Seller {
     entityType?: EntitiyType,
 
     legalInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         companyIDNumber: string,
         companyEconomicNumber: string,
         shabaNumber: number,
@@ -291,16 +313,16 @@ export interface Seller {
     additionalDocuments?: string[],
 
     individualInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         nationalID: number,
         bankNumberType: bankNumberType,
         shabaNumber: number,
         bankNumber: number,
     },
     storeInfo?: {
-        _id?:string
-        id?:string
+        _id?: string
+        id?: string
         commercialName: string
         officePhoneNumber: number,
         logo?: string,
@@ -312,7 +334,7 @@ export interface Seller {
     walletID?: string,
 
     moneyReturn?: {
-        _id:string
+        _id: string
         method: moneyReturn
         bankAccount: number
     },
@@ -389,7 +411,7 @@ export interface Color {
 
 export interface Brand {
     title: string,
-    id: string,
+    _id: string,
 }
 
 export interface productSaleAnalyseCard {

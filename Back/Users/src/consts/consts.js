@@ -1,1 +1,1 @@
-export const productURL = "http://productapi/products/inner" ;
+export const productURL = "http://localhost:8080/products/inner" ;

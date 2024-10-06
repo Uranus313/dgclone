@@ -3,10 +3,10 @@
 import { useUser } from "@/app/hooks/useUser";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react';
-import { Role } from '../EmployeePopUp';
 import useGetAccessLevels from '../../../hooks/useGetAccessLevels';
 import useGetRoleEmployeeCount from '../../../hooks/useGetRoleEmployeeCount';
 import RoleEmployeePopUp from './RoleEmployeeListPopUp';
+import { Role } from "@/app/components/Interfaces/interfaces";
 
 
 export interface Props {
@@ -16,9 +16,8 @@ const RolePopUp = ({ role }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // let {data: roleList,error : roleError,isLoading : roleIsLoading} = useGetRoles(); 
   let { data: accessLevelList, error: accessLevelError, isLoading: accessLevelIsLoading } = useGetAccessLevels();
-  let { data: count, error: reError, isLoading } = useGetRoleEmployeeCount({ roleID: role._id });
+  let { data: count, error: reError, isLoading } = useGetRoleEmployeeCount(role);
 
 
   const openModal = () => {
@@ -97,7 +96,9 @@ const RolePopUp = ({ role }: Props) => {
           </div>
           <div className="mt-5 flex justify-center ">
             <button className='btn  btn-error' type='button' onClick={() => deleteRole.mutate(role._id)}>حذف نقش</button>
-            <RoleEmployeePopUp role={role}/>
+            <div onClick={closeModal}>
+              <RoleEmployeePopUp role={role} />
+            </div>
             <button className='btn btn-warning' type='button' onClick={closeModal}>خروج</button>
 
           </div>

@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import Checkbox from '../../products/Checkbox'
 import FilterButton from '../../products/FilterButton'
 import Link from 'next/link'
@@ -8,6 +9,8 @@ import SellProductPopup from './SellProductPopup'
 import useQueryNext from '@/app/hooks/useQueryNext'
 import AddProductButton from './AddProductButton'
 import AddNew from './AddNew'
+import { useSearchParams } from 'next/navigation'
+import useGetProductCards from '@/app/hooks/useGetProductCards'
 
 
 const productsCard:SellerAddProdctCard[]=[
@@ -64,9 +67,12 @@ const productsCard:SellerAddProdctCard[]=[
     brands:["اپل","ایسوس","لنوو"]
   }
   
-  const AddProductList = () => {  
-
-
+  const AddProductList = () => { 
+     
+    const {data:res} = useGetProductCards()
+    const productsCard = res?.products
+    console.log(productsCard,'hi')
+    
 
     return (
       <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
@@ -99,7 +105,7 @@ const productsCard:SellerAddProdctCard[]=[
         <p>قیمت مرجع</p>
         <p>تعداد فروشندگان</p>
         </div>
-        {productsCard.map(productCard=>(
+        {productsCard && productsCard?.map(productCard=>(
           <div className='grid grid-cols-5 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
             <div className='grid grid-cols-2 place-items-center'>
               <img className='w-20 mx-2' src={productCard.picture}/>

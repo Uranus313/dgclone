@@ -94,11 +94,15 @@ interface Props {
     searchParams:{sortOrder: string}
 }
 
-const ProductPage = ({params:{categoryID},searchParams:{sortOrder}}:Props) => {
-  let category = getCategory(categoryID)
+const ProductPage = async ({params:{categoryID},searchParams:{sortOrder}}:Props) => {
+  let category = await getCategory(categoryID)
+
+  // const res = await fetch(`http://localhost:8080/products/product/?limit=2&offset=0&&CateID=${category?.ID}`)
+  // const productss  = await res.json()
   return (
     <div>
-      <h1 className='mt-10 mb-8 mx-5 text-3xl font-black'>{category?.title}</h1>
+    
+      <h1 className='mt-10 mb-8 mx-5 text-3xl font-black'>{category?.Title}</h1>
       <div className='grid grid-cols-12 gap-2 mx-5'>
         <div className='col-span-3  bg-white rounded-md'>
           <Filter/>

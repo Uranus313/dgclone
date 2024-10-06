@@ -1,5 +1,7 @@
 'use client'
-import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, use, useContext, useEffect, useRef, useState } from 'react'
+import useGetPendingComments from '../../../hooks/useGetPendingComments';
+import CommentPopUp from './CommentPopUp';
 
 interface Props {
   changeList: (list: string) => void
@@ -13,7 +15,7 @@ const CommentList = ({ changeList }: Props) => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-//   let { data: users, error, isLoading } = useGetUsers({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+  let { data: comments, error, isLoading } = useGetPendingComments({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
   
   function handleSearch() {
     console.log(searchRef.current.value.trim());
@@ -31,32 +33,26 @@ const CommentList = ({ changeList }: Props) => {
           
         </select>
         </form>
-      {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
+      {isLoading ? <span className="loading loading-dots loading-lg"></span> :
        
         <div className=' flex-col'>
-          {/* <ul>
-            <div className="flex md:justify-between py-8 text-center">
-              <p className="w-1/2 md:w-1/4">نام و نام خانوادگی</p>
-              <p className="md:w-1/4 invisible md:visible">شماره تلفن</p>
-              <p className="md:w-1/4 invisible md:visible">ایمیل </p>
-              <p className="w-1/2 md:w-1/4 ">وضعیت</p>
-            </div>
-            {users?.data?.map((user, index) => {
+          <ul>
+            {comments?.pendingComments?.map((comment, index) => {
               return (
                 <li key={index}>
-                  <UserPopUp user={user} />
+                  <CommentPopUp comment={comment} />
                 </li>
               )
             })}
-          </ul> */}
+          </ul>
 
-          {/* <div className='my-4 flex justify-center pb-5'>
+          <div className='my-4 flex justify-center pb-5'>
             <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-            <button disabled={!users?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
-          </div> */}
+            <button disabled={!comments?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
+          </div>
 
         </div>
-      {/* } */}
+       } 
     </div>
   )
 }

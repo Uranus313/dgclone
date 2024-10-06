@@ -1,12 +1,21 @@
 package auth
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func AuthMiddleware(mode string) fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
 
 		token := c.Cookies("x-auth-token")
+		salam := c.Cookies("salam")
+
+		fmt.Println("salam:", salam)
+
+		fmt.Println("token:", token)
 
 		body, statusCode, err := AuthenticateToken(token)
 

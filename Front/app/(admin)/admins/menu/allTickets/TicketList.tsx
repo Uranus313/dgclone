@@ -19,7 +19,7 @@ const TicketList = () => {
             </div>
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 <div className=' flex-col'>
-
+    
                     {tickets?.data?.map((ticket, index) => {
                         return (
                             <div key={index}>

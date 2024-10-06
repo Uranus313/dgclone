@@ -104,7 +104,7 @@ func GetAllBrands(c *fiber.Ctx) error {
 
 	var allBrands []models.Brand
 
-	cursor, err := database.OrderCollection.Find(context.Background(), bson.M{})
+	cursor, err := database.BrandCollection.Find(context.Background(), bson.M{})
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching brands from database: ": err.Error()})

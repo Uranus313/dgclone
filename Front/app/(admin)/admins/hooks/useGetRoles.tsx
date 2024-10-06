@@ -1,5 +1,5 @@
+import { Role } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
-import { Role } from "../menu/allEmployees/EmployeePopUp";
 
 
 

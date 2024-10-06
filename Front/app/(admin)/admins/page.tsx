@@ -7,6 +7,8 @@ import AdminList from './menu/allAdmins/AdminList'
 import SellerList from './menu/allSellers/SellerList'
 import EmployeeList from './menu/allEmployees/EmployeeList'
 import TransactionList from './menu/allTransactions/TransactionList'
+import ProductList from './menu/allProducts/ProductList'
+import OrderList from './menu/allOrders/OrderList'
 
 
 
@@ -17,14 +19,15 @@ const AdminHomePage = () => {
     <div className='w-full flex'>
       <MenuSideBar />
       <div className='w-full'>
-        <CardBox />
+        <CardBox changeList={(list => setList(list))}/>
         <span>
-          {list === 'users' ? <UserList changeList={(list => setList(list))} />
-            : list === 'admins' ? <AdminList changeList={(list => setList(list))} />
-              : list === 'sellers' ? <SellerList changeList={(list => setList(list))} />
-                : list === 'employees' ? <EmployeeList changeList={(list => setList(list))} />
-                  : list === 'transactions' ? <TransactionList changeList={(list => setList(list))} />
-                    : <UserList changeList={(list => setList(list))} />}
+          {list === 'admins' ? <AdminList changeList={(list => setList(list))} />
+            : list === 'sellers' ? <SellerList changeList={(list => setList(list))} />
+              : list === 'employees' ? <EmployeeList changeList={(list => setList(list))} />
+                : list === 'transactions' ? <TransactionList changeList={(list => setList(list))} />
+                  : list === 'products' ? <ProductList changeList={(list => setList(list))} />
+                    : list === 'orders' ? <OrderList changeList={(list => setList(list))} />
+                      : <UserList changeList={(list => setList(list))} />}
         </span>
       </div>
     </div>

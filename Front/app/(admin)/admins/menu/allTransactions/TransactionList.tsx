@@ -42,24 +42,26 @@ const UserList = ({ changeList }: Props) => {
     }
     return (
         <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                handleSearch();
-            }} className='border-b-2 shadow-md border-white p-7 px-13' >
-                <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
-                    <option value="users">کاربران</option>
-                    <option value="employees">کارمندان</option>
-                    <option value="admins" > ادمین ها</option>
-                    <option value="orders">سفارش ها</option>
-                    <option value="sellers">فروشندگان</option>
-                    <option value="products">محصولات</option>
-                    <option value="transactions" selected> تراکنش ها</option>
-                </select>
-                <input className='md:w-3/6 mt-5 md:mt-0 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
-                    ref={searchRef}
-                    onBlur={() => handleSearch()} />
-                <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20 invisible lg:visible'>مرتب سازی</button>
-            </form>
+            <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSearch();
+                }} className='w-8/12' >
+                    <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
+                        <option value="users">کاربران</option>
+                        <option value="employees">کارمندان</option>
+                        <option value="admins" > ادمین ها</option>
+                        <option value="orders">سفارش ها</option>
+                        <option value="sellers">فروشندگان</option>
+                        <option value="products">محصولات</option>
+                        <option value="transactions" selected> تراکنش ها</option>
+                    </select>
+                    <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+                        ref={searchRef}
+                        onBlur={() => handleSearch()} />
+                </form>
+                    <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20 invisible lg:visible'>مرتب سازی</button>
+            </div>
             <dialog ref={dialogRef} className="modal">
                 <div className="modal-box flex justify-center">
                     <div className="my-4 flex flex-col justify-center w-1/2">
@@ -69,11 +71,11 @@ const UserList = ({ changeList }: Props) => {
                         }}> هزینه  </button>
                         <button className="rounded-md bg-primary-color px-6 py-3  " type="button" onClick={() => {
                             closeModal();
-                              handleSort("sender.entityType");
+                            handleSort("sender.entityType");
                         }}>نوع  فرستادن</button>
                         <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
                             closeModal();
-                              handleSort("receiver.entityType");
+                            handleSort("receiver.entityType");
                         }}> نوع گرفتن</button>
                         <button className="rounded-md bg-primary-color px-6 py-3 " type="button" onClick={() => {
                             closeModal();

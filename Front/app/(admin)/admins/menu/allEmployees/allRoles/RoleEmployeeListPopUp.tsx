@@ -3,9 +3,10 @@
 import userContext from '@/app/contexts/userContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react';
-import EmployeePopUp, { Role } from '../EmployeePopUp';
 import useGetAccessLevels from '../../../hooks/useGetAccessLevels';
 import useGetRoleEmployee from '../../../hooks/useGetRoleEmployee';
+import { Role } from '@/app/components/Interfaces/interfaces';
+import EmployeePopUp from '../EmployeePopUp';
 
 
 export interface Props {
