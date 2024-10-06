@@ -6,7 +6,7 @@ import userRouter from "./src/routes/user.js"
 import adminRouter from "./src/routes/admin.js"
 import employeeRouter from "./src/routes/employee.js"
 import sellerRouter from "./src/routes/seller.js"
-
+import innerRouter from "./src/routes/inner.js"
 import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
 import { sendMail } from "./src/functions/sendMail.js";
@@ -29,11 +29,12 @@ const port = process.env.PORT || 3005;
 // winston.add(new winston.transports.File({filename : "C:\\Users\\Hico\\Desktop\\smslogs\\users.log"}));
 app.use(cors({
     origin: true, // Allow all origins
-    credentials: true // Allow credentials
+    credentials: true // Allow credentialss
 }));
 process.env.JWTSECRET = 'mysecret'
 console.log(process.env.JWTSECRET)
-
+if(!process.env.NODE_ENV){  process.env.NODE_ENV= "development"}
+console.log(process.env.NODE_ENV)
 app.use(express.json());
 app.use(cookieParser());
 app.use("/users/user", userRouter);
@@ -41,6 +42,7 @@ app.use("/users/admin", adminRouter);
 app.use("/users/general", generalRouter);
 app.use("/users/employee", employeeRouter);
 app.use("/users/seller", sellerRouter);
+app.use("/users/inner", innerRouter);
 
 
 app.get("/", (req, res, next) => {

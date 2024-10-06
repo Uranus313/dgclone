@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
+import { productURL } from "../../consts/consts.js";
 Joi.objectId = joiObjectid(Joi);
 
 const userSchema = new mongoose.Schema(
@@ -127,7 +128,11 @@ export function validateUserlogInWithPhoneNumber(data) {
 export function validateLastVisitedPost(data) {
     const schema = Joi.object({
         productID: Joi.objectId().external(async (productID) => {
-            const result = await fetch("http://getProduct/" + productID);
+            const result = await fetch(productURL+"/product/" + productID, {
+        method: "GET",
+        headers: {
+            "inner-secret": process.env.innerSecret
+        }});
             const product = await result.json();
             if (!product._id) {
                 throw new Error("this product does not exists");
@@ -296,7 +301,11 @@ export function validateAddToWishList(data, wishLists) {
                     })
                 }
             });
-            const result = await fetch("http://getProduct/" + productID);
+            const result = await fetch(productURL+"/product/" + productID, {
+        method: "GET",
+        headers: {
+            "inner-secret": process.env.innerSecret
+        }});
             const product = await result.json();
             if (!product._id) {
                 throw new Error("this product does not exists");
@@ -313,7 +322,11 @@ export function validateAddToFavoriteList(data, favoriteList) {
                     throw new Error("this product is already in your favorite List");
                 }
             })
-            const result = await fetch("http://getProduct/" + productID);
+            const result = await fetch(productURL+"/product/" + productID, {
+        method: "GET",
+        headers: {
+            "inner-secret": process.env.innerSecret
+        }});
             const product = await result.json();
             if (!product._id) {
                 throw new Error("this product does not exists");

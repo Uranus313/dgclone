@@ -157,12 +157,12 @@ const sellerSchema = new mongoose.Schema(
             }]
         },
         productList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
-        saleHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
+        // saleHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
-        socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
+        // socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
         // wishLists :  { type :[{title : {type: String, required: true},products:[{type : mongoose.Schema.Types.ObjectId , ref: "products"}] }]},
         notifications: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "notifications" }] },
-        lastVisited: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
+        // lastVisited: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
         // shoppingCart :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orders" }]},
         transactionHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "transactions" }] }
     }

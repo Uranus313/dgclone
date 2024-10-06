@@ -49,7 +49,11 @@ export function validateNotificationPost (notification){
             if(!data){
                 return
             }
-            const result = await fetch("http://getorders/"+orderID);
+            const result = await fetch(productURL+"/order/"+data, {
+                method: "GET",
+                headers: {
+                    "inner-secret": process.env.innerSecret
+                }});
             const order = await result.json();
             if (!order._id){
                 throw new Error("this order does not exists");

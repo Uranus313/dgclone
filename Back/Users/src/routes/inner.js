@@ -7,40 +7,41 @@ import { getAdmins } from "../DB/CRUD/admin.js";
 import { getEmployees } from "../DB/CRUD/employee.js";
 
 import { roleAuth } from "../authorization/roleAuth.js";
+import validateId from "../functions/validateId.js";
 
 const router = express.Router();
 
 router.get("sellerCard/:id",innerAuth,async (req, res, next) => {
     const {error} = validateId(req.params.id);
     if (error){
-        res.status(400).send({err : error.details[0].message});
-            res.body = {err : error.details[0].message};
+        res.status(400).send({error : error.details[0].message});
+            res.body = {error : error.details[0].message};
         next();
         return;
     } 
     try {
         const result = await getSellers(req.params.id);
         if (result.error){
-            res.status(400).send({err : result.error});
-            res.body = {err : result.error};
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
             next();
             return;
         }
         const seller = result.response;
         if(!seller){
-            res.status(404).send({err : "seller not found"});
-            res.body = {err : "seller not found"};
+            res.status(404).send({error : "seller not found"});
+            res.body = {error : "seller not found"};
             next();
             return;
         }
         if(seller.isBanned){
-            res.status(403).send({err : "seller is banned"});
-            res.body = {err : "seller is banned"};
+            res.status(403).send({error : "seller is banned"});
+            res.body = {error : "seller is banned"};
             next();
             return;
         }if(!seller.isVerified){
-            res.status(403).send({err : "seller is not verified"});
-            res.body = {err : "seller is not verified"};
+            res.status(403).send({error : "seller is not verified"});
+            res.body = {error : "seller is not verified"};
             next();
             return;
         }
@@ -162,7 +163,9 @@ router.get("/checkToken/:token",innerAuth,async (req, res, next) => {
 
 
 router.get("/checkUser/:id",innerAuth, async (req, res, next) =>{
+    console.log("kossher")
     const {error} = validateId(req.params.id);
+    console.log(error)
     if (error){
         res.status(400).send({error : error.details[0].message});
         res.body = {error : error.details[0].message};
@@ -200,3 +203,4 @@ router.get("/checkUser/:id",innerAuth, async (req, res, next) =>{
     }
     next();
 });
+export default router

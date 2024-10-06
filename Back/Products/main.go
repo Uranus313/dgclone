@@ -41,6 +41,7 @@ func main() {
 	// fakerdata.InsertDummySaleDiscount()
 	// fakerdata.ModProds()
 	// fakerdata.ModComms()
+	// fakerdata.ModBrand()
 
 	app := fiber.New()
 
@@ -55,17 +56,17 @@ func main() {
 
 	// ------------comemnts------------
 
-	app.Get("/products/comments", crud.GetCommentsByProductID) // query params => limit, offset, ProdID
+	app.Get("/products/comments", auth.AuthMiddleware("user"), crud.GetCommentsByProductID) // query params => limit, offset, ProdID
 
-	app.Post("/products/comments", crud.PostComment) // --unchecked (request body)
+	app.Post("/products/comments", auth.AuthMiddleware("user"), crud.PostComment) // --unchecked (request body)
 
-	app.Patch("/products/comments/:CommentID", crud.UpdateCommentScore) // (request body)
+	app.Patch("/products/comments/:CommentID", auth.AuthMiddleware("user"), crud.UpdateCommentScore) // (request body)
 
-	app.Get("/products/questions", crud.GetProductQuestions) // query params => limit, offset, ProdID
+	app.Get("/products/questions", auth.AuthMiddleware("user"), crud.GetProductQuestions) // query params => limit, offset, ProdID
 
-	app.Get("/products/comments/pending", crud.GetPendingComments) // query params => limit, offset
+	app.Get("/products/comments/pending", auth.AuthMiddleware("admin"), crud.GetPendingComments) // query params => limit, offset
 
-	app.Patch("/products/validate-comments", crud.UpdateCommentValidationState) // query params => CommentID, ValidationState -> {2: validated, 3: banned}
+	app.Patch("/products/validate-comments", auth.AuthMiddleware("admin"), crud.UpdateCommentValidationState) // query params => CommentID, ValidationState -> {2: validated, 3: banned}
 
 	// ------------products-------------
 
@@ -117,7 +118,7 @@ func main() {
 
 	app.Delete("/products/brand/:BrandID", crud.DeleteBrandByID)
 
-	app.Get("/products/brand/", crud.GetAllBrands)
+	app.Get("/products/brand", crud.GetAllBrands)
 
 	// ------------discount code-----------
 
