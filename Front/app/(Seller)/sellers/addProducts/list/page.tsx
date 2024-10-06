@@ -67,9 +67,10 @@ const productsCard:SellerAddProdctCard[]=[
     brands:["اپل","ایسوس","لنوو"]
   }
   
-  const AddProductList = () => {  
-    const {data:productsCard} = useGetProductCards()
-    
+  const AddProductList = () => { 
+     
+    const {data:res} = useGetProductCards()
+    const productsCard = res?.products
     console.log(productsCard,'hi')
     
 
@@ -104,7 +105,7 @@ const productsCard:SellerAddProdctCard[]=[
         <p>قیمت مرجع</p>
         <p>تعداد فروشندگان</p>
         </div>
-        {productsCard?.map(productCard=>(
+        {productsCard && productsCard?.map(productCard=>(
           <div className='grid grid-cols-5 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
             <div className='grid grid-cols-2 place-items-center'>
               <img className='w-20 mx-2' src={productCard.picture}/>

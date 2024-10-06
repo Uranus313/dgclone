@@ -1,36 +1,14 @@
 'use client'
-import { Brand, commentType, ProductInterface, shipmentMethod } from '@/app/components/Interfaces/interfaces'
+import { Brand, commentType, details, ProductCardInterface, ProductInterface, shipmentMethod } from '@/app/components/Interfaces/interfaces'
 import useQueryNext from '@/app/hooks/useQueryNext'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ModalButton from '../ModalButton'
 import SearchableList from '@/app/components/SearchableList'
 import { forEach, update } from 'lodash'
 import ImageUpload from '@/app/components/ImageUpload'
+import { useSeller } from '@/app/hooks/useSeller'
+import useGetBrands from '@/app/hooks/useGetBrands'
 
-
-
-const Brands : Brand[]=[
-  {
-    title:'اپل',
-    id:'1'
-  },
-  {
-    title:'سامسونگ',
-    id:'2'
-  },
-  {
-    title:'شیاومی',
-    id:'3'
-  },
-  {
-    title:'ایسوس',
-    id:'4'
-  },
-  {
-    title:'لنوو',
-    id:'5'
-  },
-]
 
 const detailKeys=
       [
@@ -57,136 +35,159 @@ interface Props{
 }
 
 
-const product:ProductInterface = {
-  id:'1',
-  sellcount:100,
-  visitCount:3,
-  visits:["2019-01-16 22:10:28" ,"2019-01-16 22:10:28" ,"2019-01-16 22:10:28" ,"2019-01-16 22:10:28" , ],
-  title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook E1504GA-BQ509-i3 N305 4GB 512SSD',
+// const product:ProductInterface = {
+//   id:'1',
+//   sellcount:100,
+//   visitCount:3,
+//   visits:["2019-01-16 22:10:28" ,"2019-01-16 22:10:28" ,"2019-01-16 22:10:28" ,"2019-01-16 22:10:28" , ],
+//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook E1504GA-BQ509-i3 N305 4GB 512SSD',
   
-  sellers:[
-      {discountId:'3',
-       sellerTitle:'پیشرو تجارت خاورمیانه',
-       sellerRating:9.1,
+//   sellers:[
+//       {discountId:'3',
+//        sellerTitle:'پیشرو تجارت خاورمیانه',
+//        sellerRating:9.1,
        
-       quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:4 ,garante:'گارانتی   حامی'},{color:{hex:'#ffffff', title:'سفید'} , quantity:10, garante:'گارانتی ۲۴  حامی'}],
-       sellerid:'1',
-       shipmentMethod:shipmentMethod.option1,
-       price:19999000,
-      },
-      {
-      sellerTitle:'طرح اندیشان سمت نو',
-      sellerRating:7,
-      quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:1,garante:'گارانتی ۲۴ '},{color:{hex:'#ff9900', title:'ندانم'} , quantity:10,garante:'گارانتی  ماهه حامی'}],
-      sellerid:'2',
-      shipmentMethod:shipmentMethod.option2,
-      price:19999000,
-      },
-  ],
-  rating: {rate:4,rateNum:10},
-  brand:'اپل',
-  original:true,
-  categoryID:'2',
-  details:
-      [{title:'پردازنده',
-      map : [
-      {key:'سازنده پردازنده' , value:'Intel'},
-      {key:'سری پردازنده' , value:'Core i3'},
-      {key:'سازنده پردازنده گرافیکی' , value:'Intel'},
-      {key:'پردازنده گرافیکی' , value:'UHD Graphics'},]},
+//        quantity:[{color:{hex:'#000000', title:'سیاه',_id:'0'} , quantity:4 ,garante:'گارانتی   حامی'},{color:{hex:'#ffffff', title:'سفید'} , quantity:10, garante:'گارانتی ۲۴  حامی'}],
+//        sellerid:'1',
+//        shipmentMethod:shipmentMethod.option1,
+//        price:19999000,
+//       },
+//       {
+//       sellerTitle:'طرح اندیشان سمت نو',
+//       sellerRating:7,
+//       quantity:[{color:{hex:'#000000', title:'سیاه'} , quantity:1,garante:'گارانتی ۲۴ '},{color:{hex:'#ff9900', title:'ندانم'} , quantity:10,garante:'گارانتی  ماهه حامی'}],
+//       sellerid:'2',
+//       shipmentMethod:shipmentMethod.option2,
+//       price:19999000,
+//       },
+//   ],
+//   rating: {rate:4,rateNum:10},
+//   brand:'اپل',
+//   original:true,
+//   categoryID:'2',
+//   details:
+//       [{title:'پردازنده',
+//       map : [
+//       {key:'سازنده پردازنده' , value:'Intel'},
+//       {key:'سری پردازنده' , value:'Core i3'},
+//       {key:'سازنده پردازنده گرافیکی' , value:'Intel'},
+//       {key:'پردازنده گرافیکی' , value:'UHD Graphics'},]},
 
-      {title:'حافظه',
-      map : [
-      {key:'ظرفیت حافظه RAM' , value:'16GB'},
-      {key:'مدل پردازنده' , value:'N۳۰۵'},
-      {key:'نوع حافظه RAM' , value:'DDR4'},
-      {key:'ظرفیت حافظه داخلی' , value:'512GB'},
-      {key:'نوع حافظه داخلی' , value:'SSD'},]}    
-  ],
+//       {title:'حافظه',
+//       map : [
+//       {key:'ظرفیت حافظه RAM' , value:'16GB'},
+//       {key:'مدل پردازنده' , value:'N۳۰۵'},
+//       {key:'نوع حافظه RAM' , value:'DDR4'},
+//       {key:'ظرفیت حافظه داخلی' , value:'512GB'},
+//       {key:'نوع حافظه داخلی' , value:'SSD'},]}    
+//   ],
 
-  madeInIran:false,
-  images:['https://dkstatics-public.digikala.com/digikala-products/3fe318188a27c7941af723817bd8cc631d9ca90a_1713162171.jpg',
-          'https://dkstatics-public.digikala.com/digikala-products/82b00b1416bb88971e0cc9e215bafe03e68f28e5_1713162171.jpg',
-          'https://dkstatics-public.digikala.com/digikala-products/2ed8f1fbfd7586a8d579d22b4d5e05419effebb5_1713162171.jpg',
-          'https://dkstatics-public.digikala.com/digikala-products/7b033b72c507b7989072ce0bbe1736faf09f7210_1713162172.jpg',
-          'https://dkstatics-public.digikala.com/digikala-products/32f0175a55bffa787c1c0e6b6edfcd566adc6f93_1713162172.jpg',
-          'https://dkstatics-public.digikala.com/digikala-products/e0ceb58624f648429fa3ba2c2ec4eebde6b51f79_1713162171.jpg',
-         ] , 
-  dimentions:{length:36 , width:23 , height:17} , 
-  wieght:1.7 , 
-  description: "موردانتظارترین و تأثیرگذارترین رویداد اپل در سال 2020، نخستین کامپیوتر‌های مک با پردازنده‌ی اختصاصی این شرکت را به‌ارمغان آورد. مک‌بوک ایر نخستین لپ‌تاپ اپل با پردازنده‌ی مبتنی‌بر ARM کوپرتینونشین‌ها موسوم به M1 خواهد بود.همان‌طور که انتظار می‌رفت مک‌بوک ایر به‌لحاظ ظاهر و طراحی هیچ تفاوتی با نسخه‌ی اینتل ندارد و همانند گذشته است. تغییرات اصلی مک‌ بوک ایر در داخل آن رخ می‌دهد؛ جایی‌که تراشه اختصاصی M1 توان پردازشی موردنیاز کاربر را با بهره‌وری بالاتر و مصرف انرژی کمتر فراهم می‌سازد. این تراشه در دو نسخه‌ با گرافیک 7 یا 8 هسته‌ای درون مک بوک ایر به‌کار می‌رود؛ اما در هر دو نسخه، پردازنده‌ی مرکزی 8 هسته‌ای و واحد پردازش عصبی 16 هسته‌ای دردسترس هستند. به‌مدد بهینگی بسیار بیشتر تراشه‌‌ی اختصاصی M1، کوپرتینونشین‌ها مک‌ بوک ایر را با سیستم خنک‌کننده‌ی پسیو (بدون فن) تولید می‌کنند.اپل می‌گوید CPU داخل تراشه‌ی M1 به‌مدد 4 هسته‌ی قدرتمند و 4 هسته‌ی کم‌مصرفش در مجموع بالغ‌بر 3٫5 برابر و GPU هشت هسته‌ای آن نیز تا 5 برابر سریع‌تر از نسل گذشته عمل می‌کنند. از سوی دیگر به‌لطف واحد پردازش عصبی 16 هسته‌ای M1 پردازش‌های مبتنی‌بر یادگیری ماشین نظیر تشخیص چهره یا شناسایی اجسام تا 9 برابر سریع‌تر صورت می‌گیرد. براساس ادعای اپل، تراشه‌ی M1 موجود در داخل مک بوک ایر از «98 درصد لپ‌تاپ‌های فروخته‌شده در سال گذشته» سریع‌تر است. اپل می‌گوید به‌لطف کنترلر حافظه‌ی موجود در M1 و حافظه‌های جدید، ماژول‌های SSD مک‌بوک ایر بالغ‌بر 2 برابر سریع‌تر از گذشته هستند.اولترابوک محبوب اپل جک 3٫5 میلی‌متری هدفون و دو پورت USB 4 با پشتیبانی از USB 3.1 Gen 2 (پهنای باند 10 گیگابیت‌برثانیه) و تاندربولت 3 (پهنای باند 40 گیگابیت‌برثانیه) را دراختیار کاربر می‌گذارد. این پورت‌‌ها هم‌اکنون از گرافیک اکسترنال پشتیبانی نمی‌کنند؛ اما به‌کمک آن‌ها می‌توان یک نمایشگر اکسترنال با وضوح 6K و نرخ نوسازی 60 هرتز را به مک‌بوک ایر متصل کرد.مک بوک ایر اسپیکرهای استریو با پشتیبانی از دالبی اتموس، ماژول Wi-Fi 6 و بلوتوث 5 را در بطن خود دارد. این لپ‌تاپ همانند گذشته از وب‌کم 720p استفاده می‌کند؛ اما اکنون به‌لطف پردازنده‌ی سیگنال تصویر داخل تراشه‌ی M1 تصاویر را با نویز کمتر و گستره‌ی دینامیکی وسیع‌تری ثبت می‌کند.",
-  recentComments:[
-      {
-      type:commentType.comment,
-      // answerto?:string  //for answer comments
-      id:'1',
-      productID:'1',
-      order:{color:{hex:'#ffffff', title:'سفید'},sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
-      rate:3,
-      user:{userid:'2' , firstname:'لوگان',lastname:'پال'},
-      content:'برای دخترم گرفتم تازه به دستش رسیده ولی فوق العاده دوستش داره ',
-      disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
-      dateSent:'2024/5/1 22:20:01'
+//   madeInIran:false,
+//   images:['https://dkstatics-public.digikala.com/digikala-products/3fe318188a27c7941af723817bd8cc631d9ca90a_1713162171.jpg',
+//           'https://dkstatics-public.digikala.com/digikala-products/82b00b1416bb88971e0cc9e215bafe03e68f28e5_1713162171.jpg',
+//           'https://dkstatics-public.digikala.com/digikala-products/2ed8f1fbfd7586a8d579d22b4d5e05419effebb5_1713162171.jpg',
+//           'https://dkstatics-public.digikala.com/digikala-products/7b033b72c507b7989072ce0bbe1736faf09f7210_1713162172.jpg',
+//           'https://dkstatics-public.digikala.com/digikala-products/32f0175a55bffa787c1c0e6b6edfcd566adc6f93_1713162172.jpg',
+//           'https://dkstatics-public.digikala.com/digikala-products/e0ceb58624f648429fa3ba2c2ec4eebde6b51f79_1713162171.jpg',
+//          ] , 
+//   dimentions:{length:36 , width:23 , height:17} , 
+//   wieght:1.7 , 
+//   description: "موردانتظارترین و تأثیرگذارترین رویداد اپل در سال 2020، نخستین کامپیوتر‌های مک با پردازنده‌ی اختصاصی این شرکت را به‌ارمغان آورد. مک‌بوک ایر نخستین لپ‌تاپ اپل با پردازنده‌ی مبتنی‌بر ARM کوپرتینونشین‌ها موسوم به M1 خواهد بود.همان‌طور که انتظار می‌رفت مک‌بوک ایر به‌لحاظ ظاهر و طراحی هیچ تفاوتی با نسخه‌ی اینتل ندارد و همانند گذشته است. تغییرات اصلی مک‌ بوک ایر در داخل آن رخ می‌دهد؛ جایی‌که تراشه اختصاصی M1 توان پردازشی موردنیاز کاربر را با بهره‌وری بالاتر و مصرف انرژی کمتر فراهم می‌سازد. این تراشه در دو نسخه‌ با گرافیک 7 یا 8 هسته‌ای درون مک بوک ایر به‌کار می‌رود؛ اما در هر دو نسخه، پردازنده‌ی مرکزی 8 هسته‌ای و واحد پردازش عصبی 16 هسته‌ای دردسترس هستند. به‌مدد بهینگی بسیار بیشتر تراشه‌‌ی اختصاصی M1، کوپرتینونشین‌ها مک‌ بوک ایر را با سیستم خنک‌کننده‌ی پسیو (بدون فن) تولید می‌کنند.اپل می‌گوید CPU داخل تراشه‌ی M1 به‌مدد 4 هسته‌ی قدرتمند و 4 هسته‌ی کم‌مصرفش در مجموع بالغ‌بر 3٫5 برابر و GPU هشت هسته‌ای آن نیز تا 5 برابر سریع‌تر از نسل گذشته عمل می‌کنند. از سوی دیگر به‌لطف واحد پردازش عصبی 16 هسته‌ای M1 پردازش‌های مبتنی‌بر یادگیری ماشین نظیر تشخیص چهره یا شناسایی اجسام تا 9 برابر سریع‌تر صورت می‌گیرد. براساس ادعای اپل، تراشه‌ی M1 موجود در داخل مک بوک ایر از «98 درصد لپ‌تاپ‌های فروخته‌شده در سال گذشته» سریع‌تر است. اپل می‌گوید به‌لطف کنترلر حافظه‌ی موجود در M1 و حافظه‌های جدید، ماژول‌های SSD مک‌بوک ایر بالغ‌بر 2 برابر سریع‌تر از گذشته هستند.اولترابوک محبوب اپل جک 3٫5 میلی‌متری هدفون و دو پورت USB 4 با پشتیبانی از USB 3.1 Gen 2 (پهنای باند 10 گیگابیت‌برثانیه) و تاندربولت 3 (پهنای باند 40 گیگابیت‌برثانیه) را دراختیار کاربر می‌گذارد. این پورت‌‌ها هم‌اکنون از گرافیک اکسترنال پشتیبانی نمی‌کنند؛ اما به‌کمک آن‌ها می‌توان یک نمایشگر اکسترنال با وضوح 6K و نرخ نوسازی 60 هرتز را به مک‌بوک ایر متصل کرد.مک بوک ایر اسپیکرهای استریو با پشتیبانی از دالبی اتموس، ماژول Wi-Fi 6 و بلوتوث 5 را در بطن خود دارد. این لپ‌تاپ همانند گذشته از وب‌کم 720p استفاده می‌کند؛ اما اکنون به‌لطف پردازنده‌ی سیگنال تصویر داخل تراشه‌ی M1 تصاویر را با نویز کمتر و گستره‌ی دینامیکی وسیع‌تری ثبت می‌کند.",
+//   recentComments:[
+//       {
+//       type:commentType.comment,
+//       // answerto?:string  //for answer comments
+//       id:'1',
+//       productID:'1',
+//       order:{color:{hex:'#ffffff', title:'سفید'},sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+//       rate:3,
+//       user:{userid:'2' , firstname:'لوگان',lastname:'پال'},
+//       content:'برای دخترم گرفتم تازه به دستش رسیده ولی فوق العاده دوستش داره ',
+//       disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
+//       dateSent:'2024/5/1 22:20:01'
+//       },
+//       {
+//       type:commentType.comment,
+//       // answerto?:string  //for answer comments
+//       id:'2',
+//       productID:'1',
+//       // orderID:'5', //for normal comments
+//       user:{userid:'1' , firstname:'ممد',lastname:'علی کلی'},
+//       content:'دستگاه خوب با امکانات خوبیه،سفارش منم به موقع سالم وپلمپ تحویل دادن',
+//       disAndlike:[{userid:'3',disOlike:false},{userid:'1',disOlike:false},{userid:'4',disOlike:true},],
+//       dateSent:'2024/5/1 22:20:02'
+//       },
+//       {
+//       type:commentType.question,
+//       answers:[
+//           {
+//           type:commentType.answer,
+//           id:'3',
+//           productID:'1',
+//           order:{color:{hex:'#ffffff', title:'سفید'},sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+//           // rate:3,
+//           user:{userid:'3' , firstname:'لوگان',lastname:'پال'},
+//           content:'برای بازی نه ولی درحالت عادی 8 ساعت دووم داره',
+//           disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
+//           dateSent:'2024/5/1 22:20:01'
+//           },
+//           {
+//           type:commentType.answer,
+//           id:'6',
+//           productID:'1',
+//           order:{color:{hex:'#ffffff', title:'سفید'} ,sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
+//           // rate:3,
+//           user:{userid:'4' , firstname:'لوگان',lastname:'پال'},
+//           content:'درحالت عادی 8 ساعت دووم داره',
+//           disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
+//           dateSent:'2024/5/2 22:20:01'
+//           },
+//       ], 
+//       id:'4',
+//       productID:'1',
+//       user:{userid:'4' , firstname:'ممد',lastname:'علی کلی'},
+//       content:'شارژ نگه داشتنش خوبه؟',
+//       dateSent:'2024/5/1 22:20:02'
+//       },
+//       {
+//       type:commentType.question,
+//       // answerto?:string  //for answer comments
+//       id:'5',
+//       productID:'1',
+//       user:{userid:'4' , firstname:'لوگان',lastname:'پال'},
+//       content:'ویندوز روش نصبه؟',
+//       dateSent:'2024/5/1 22:20:01'
+//       },
+//   ] 
+// }
+
+
+async function AddProductRequest(product:ProductInterface) {
+  try {
+    const response = await fetch('http://localhost:8080/products/product', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
       },
-      {
-      type:commentType.comment,
-      // answerto?:string  //for answer comments
-      id:'2',
-      productID:'1',
-      // orderID:'5', //for normal comments
-      user:{userid:'1' , firstname:'ممد',lastname:'علی کلی'},
-      content:'دستگاه خوب با امکانات خوبیه،سفارش منم به موقع سالم وپلمپ تحویل دادن',
-      disAndlike:[{userid:'3',disOlike:false},{userid:'1',disOlike:false},{userid:'4',disOlike:true},],
-      dateSent:'2024/5/1 22:20:02'
-      },
-      {
-      type:commentType.question,
-      answers:[
-          {
-          type:commentType.answer,
-          id:'3',
-          productID:'1',
-          order:{color:{hex:'#ffffff', title:'سفید'},sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
-          // rate:3,
-          user:{userid:'3' , firstname:'لوگان',lastname:'پال'},
-          content:'برای بازی نه ولی درحالت عادی 8 ساعت دووم داره',
-          disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
-          dateSent:'2024/5/1 22:20:01'
-          },
-          {
-          type:commentType.answer,
-          id:'6',
-          productID:'1',
-          order:{color:{hex:'#ffffff', title:'سفید'} ,sellerTitle:'پیشرو تجارت خاورمیانه'}, //for normal comments
-          // rate:3,
-          user:{userid:'4' , firstname:'لوگان',lastname:'پال'},
-          content:'درحالت عادی 8 ساعت دووم داره',
-          disAndlike:[{userid:'2',disOlike:true},{userid:'3',disOlike:false},{userid:'4',disOlike:true},],
-          dateSent:'2024/5/2 22:20:01'
-          },
-      ], 
-      id:'4',
-      productID:'1',
-      user:{userid:'4' , firstname:'ممد',lastname:'علی کلی'},
-      content:'شارژ نگه داشتنش خوبه؟',
-      dateSent:'2024/5/1 22:20:02'
-      },
-      {
-      type:commentType.question,
-      // answerto?:string  //for answer comments
-      id:'5',
-      productID:'1',
-      user:{userid:'4' , firstname:'لوگان',lastname:'پال'},
-      content:'ویندوز روش نصبه؟',
-      dateSent:'2024/5/1 22:20:01'
-      },
-  ] 
+      body: JSON.stringify(product)
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    console.log('Success:', result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 const AddNew = ({productID}:Props) => {
+  const {data:Brands}= useGetBrands()
   const {searchParams} = useQueryNext()
   const set = useRef(false)
-  // const [product , setProduct] = useState<ProductInterface>(
+  const [product , setProduct] = useState<ProductInterface>()
   //   {
   //     categoryID:searchParams.get('category')??'',
   //     brand:'',
@@ -214,28 +215,32 @@ const AddNew = ({productID}:Props) => {
   const [prevProduct,setPrevProduct]=useState<ProductInterface>()
 
 
-
-
+  const categoryID = searchParams.get('category')
   const title= useRef<HTMLInputElement>(null)
   const desc= useRef<HTMLTextAreaElement>(null)
   const [brand , setBrand]= useState('انتخاب برند')
+  const[brandID , setBrandID] = useState({_id:'',title:''})
   const original= useRef<HTMLInputElement>(null)
-  const [details,setDetails]= useState<{title:string ,map:{key:string,value:string}[]}[]>([])
+  const [details,setDetails]= useState<details[]>([])
   const madeInIran= useRef<HTMLInputElement>(null)
   const height= useRef<HTMLInputElement>(null)
   const width= useRef<HTMLInputElement>(null)
   const length= useRef<HTMLInputElement>(null)
   const wieght= useRef<HTMLInputElement>(null)
   const [images , setImages]= useState<string[]>([])
-
+  const {seller} = useSeller()
   const [step,setStep] = useState(1) 
 
-  if(!set.current && productID){
-    setPrevProduct(product)
-    setImages(product.images)
-    setDetails(product.details)
-    set.current=true
-  }
+
+
+  useEffect(()=>{
+    if(!set.current && product){
+      setPrevProduct(product)
+      setImages(product?.images)
+      setDetails(product?.details)
+      set.current=true
+    }
+  },[product])
   
 
   
@@ -247,19 +252,11 @@ const AddNew = ({productID}:Props) => {
       const chunkIndex = prevDetails.findIndex(chunk => chunk.title === title);
   
       if (chunkIndex !== -1) {
-        // If the chunk exists, check if the key exists in the map
-        const mapIndex = prevDetails[chunkIndex].map.findIndex(item => item.key === key);
-  
-        let updatedMap;
-        if (mapIndex !== -1) {
-          // If the key exists, update the value
-          updatedMap = prevDetails[chunkIndex].map.map(item =>
-            item.key === key ? { key, value } : item
-          );
-        } else {
-          // If the key doesn't exist, add the new key-value pair
-          updatedMap = [...prevDetails[chunkIndex].map, { key, value }];
-        }
+        // If the chunk exists, update the map
+        const updatedMap = {
+          ...prevDetails[chunkIndex].map,
+          [key]: value
+        };
   
         // Update the chunk with the new map
         const updatedChunk = {
@@ -277,12 +274,11 @@ const AddNew = ({productID}:Props) => {
         // If the chunk doesn't exist, add a new one
         return [
           ...prevDetails,
-          { title, map: [{ key, value }] }
+          { title, map: { [key]: value } }
         ];
       }
     });
   }
-  
   
 
   return (
@@ -322,7 +318,7 @@ const AddNew = ({productID}:Props) => {
                                     <hr className='text-grey-border  my-2'></hr>
 
                                     <div className='p-10 h-96 overflow-auto'>
-                                        <SearchableList defaultValue={prevProduct?.brand} items={Brands} showKey='title' setFunc={setBrand} showFunc={setBrand} />
+                                        <SearchableList defaultValue={prevProduct?.brand_id} items={Brands??[]} showKey='title' setFunc={setBrandID} showFunc={setBrand} />
                                     </div>
                                     <hr className='text-grey-border  my-2'></hr>
                                 </div>
@@ -330,7 +326,7 @@ const AddNew = ({productID}:Props) => {
                         <div className="form-control">
                             <label className="label cursor-pointer">
                             <span className="label-text">کالای اصل</span>
-                            <input defaultChecked={!!prevProduct?.original} type='checkbox' className='checkbox' ref={original} /> 
+                            <input defaultChecked={!!prevProduct?.is_original} type='checkbox' className='checkbox' ref={original} /> 
                             </label>
                         </div>
                         {/* <button onClick={()=>{console.log(original.current?.checked , madeInIran.current?.checked)}}>gii</button> */}
@@ -338,7 +334,7 @@ const AddNew = ({productID}:Props) => {
                         <div className="form-control">
                             <label className="label cursor-pointer">
                             <span className="label-text">ساخت ایران</span>
-                            <input defaultChecked ={!!prevProduct?.madeInIran} type='checkbox' className='checkbox' ref={madeInIran} /> 
+                            <input defaultChecked ={!!prevProduct?.is_from_iran} type='checkbox' className='checkbox' ref={madeInIran} /> 
                             </label>
                         </div>
 
@@ -365,7 +361,8 @@ const AddNew = ({productID}:Props) => {
                             {chunk.keys.map((key,index2)=>(
                             <div className='grid grid-cols-2 border-b border-grey-border'>
                                 <p className='my-3 text-grey-dark'>{key}</p>
-                                <input defaultValue={prevProduct?.details[index1].map[index2].value} type='text' onChange={e=>(UpdateDetail(key,e.target.value ,chunk.title ))}  className='my-3 p-3 bg-primary-bg rounded-md border border-grey-border'/>
+                                {/* <input defaultValue={prevProduct?.details[index1].map[index2].value} type='text' onChange={e=>(UpdateDetail(key,e.target.value ,chunk.title ))}  className='my-3 p-3 bg-primary-bg rounded-md border border-grey-border'/> */}
+                                <input defaultValue={prevProduct?.details[index1].map[key]} type='text' onChange={e=>(UpdateDetail(key,e.target.value ,chunk.title ))}  className='my-3 p-3 bg-primary-bg rounded-md border border-grey-border'/>
                             </div>
                             ))}
                         </div>
@@ -382,7 +379,7 @@ const AddNew = ({productID}:Props) => {
                         </div>
                         <div className='flex items-center my-3'>
                             <p className='m-2'>وزن</p>
-                            <input defaultValue={prevProduct?.wieght} className='border border-grey-border rounded-md m-2 p-3'ref={wieght} placeholder='وزن'/> 
+                            <input defaultValue={prevProduct?.wieght_KG} className='border border-grey-border rounded-md m-2 p-3'ref={wieght} placeholder='وزن'/> 
                         </div>
                     </div>
                 
@@ -443,10 +440,10 @@ const AddNew = ({productID}:Props) => {
                             {details.map(detail=>(
                                 <div>
                                     <p>{detail.title}</p>
-                                    {detail.map.map(keyValue=>(
+                                    {Object.keys(detail.map).map(key=>(
                                         <div className='grid grid-cols-2 border-b p-3 border-grey-border gap-4 my-5'>
-                                            <p>{keyValue.key}</p>
-                                            <p>{keyValue.value}</p>
+                                            <p>{key}</p>
+                                            <p>{detail.map[key]}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -475,8 +472,37 @@ const AddNew = ({productID}:Props) => {
             <div  className='flex'>
             {step!=1 && <button className='px-5 m-5 py-2 w-fit self-end rounded-md  bg-propBubble-bg' onClick={()=>{setStep(step-1)}}>قبلی</button>}
             {step!=4 ? <button className='px-5 m-5 py-2 w-fit self-end rounded-md text-white bg-primary-seller' onClick={()=>{setStep(step+1)}}>بعدی</button>  
-            :<button className='px-5 m-5 py-2 w-fit self-end rounded-md text-white bg-primary-seller' onClick={()=>{}}>درخواست بررسی</button>
+            :<button className='px-5 m-5 py-2 w-fit self-end rounded-md text-white bg-primary-seller' onClick={()=>{
+              AddProductRequest(
+                {
+                  sell_count:0,
+                  // date_added: '',
+                  brand_id: brandID._id,
+                  visit_count: 0,
+                  visits:[],
+                  title: title.current?.value ?? '',
+                  sellers: [{
+                    seller_id: seller?._id??'',
+                    seller_title: seller?.storeInfo?.commercialName??'',
+                    seller_rating: seller?.rating??0,
+                    quantity:[], 
+                    price: 0,
+                  }],
+                  rating: { rate: 0, rate_num: 0 },
+                  category_id: categoryID??'',
+                  details: details,
+                  is_from_iran: madeInIran.current?.checked??false,
+                  is_original: original.current?.checked??false,
+                  images:images,
+                  dimentions: { length: Number(length.current?.value)??0, width: Number(width.current?.value)??0, height: Number(height.current?.value)??0 },
+                  wieght_KG: Number(wieght.current?.value),
+                  description: desc.current?.value,
+                  validation_state: 1
+                }
+              )
+            }}>درخواست بررسی</button>
              
+
             }
             </div>
         </div>
