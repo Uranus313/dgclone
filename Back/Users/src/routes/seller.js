@@ -61,7 +61,8 @@ router.post("/signUp", async (req, res, next) => {
         const token = jwt.sign({ _id: result3.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV== "development"?false : true,
+            secure: process.env.NODE_ENV == "development"?null : true,
+
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -172,7 +173,8 @@ router.patch("/verifyChangeEmail", (req, res, next) => auth(req, res, next, ["se
         const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV== "development"?false : true,
+            secure: process.env.NODE_ENV == "development"?null : true,
+
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -218,7 +220,8 @@ router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["seller"
         const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV== "development"?false : true,
+            secure: process.env.NODE_ENV == "development"?null : true,
+
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -296,7 +299,8 @@ router.post("/logIn", async (req, res, next) => {
         const token = jwt.sign({_id : result.response._id , status: "seller"},process.env.JWTSECRET,{expiresIn : '6h'});
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV== "development"?false : true,
+            secure: process.env.NODE_ENV == "development"?null : true,
+
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
@@ -803,7 +807,8 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
         const token = jwt.sign({ _id: result.response._id, status: "seller" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV== "development"?false : true,
+            secure: process.env.NODE_ENV == "development"?null : true,
+
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
