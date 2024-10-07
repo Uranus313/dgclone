@@ -14,7 +14,7 @@ export const guaranteeOptions=[
   'گارانتی خوبتع',
 ]
 
-const productPrice=190000 //if seller doesnt exist return the urban price otherwise returns that seller price
+ //if seller doesnt exist return the urban price otherwise returns that seller price
 
 
 interface Props{
@@ -24,16 +24,20 @@ interface Props{
 const Step1 = ({productCard , prevVarients}:Props) => {
   const [varients , setVarients] = useState<SellerSetVarientOnProduct[]>([])
   const priceRef = useRef<HTMLInputElement>(null);
+  let [productPrice , setProductPrice] = useState<number>()
   
   useEffect(() => {
     if(prevVarients){
       setVarients(prevVarients)
+      setProductPrice(0)
+
     } 
+    setProductPrice(productCard.UrbanPrice)
   }, []);
 
 
   function AddNewVarient(){
-    setVarients(varients => [...varients , {color:{hex:'',title:''},price:productCard.urbanPrice , garante:'',productID:productCard.productID,productPicture:productCard.picture,productTitle:productCard.title,quantity:0,sellerID:'1',shipmentMethod:shipmentMethod.option1}])
+    setVarients(varients => [...varients , {color:{hex:'',title:''},price:productCard.UrbanPrice , garante:'',productID:productCard.ID,productPicture:productCard.Picture,productTitle:productCard.Title,quantity:0,sellerID:'1',shipmentMethod:shipmentMethod.option1}])
   }
 
   function UpdateVarient(index: number, varient: SellerSetVarientOnProduct) {
