@@ -13,44 +13,44 @@ import { useSearchParams } from 'next/navigation'
 import useGetProductCards from '@/app/hooks/useGetProductCards'
 
 
-const productsCard:SellerAddProdctCard[]=[
-    {
-    title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-    productID:'55',
-    sellerCount:2,
-    picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-    commission:2,
-    urbanPrice:22000000,
-    id:'1',
-  },
-  {
-    title:'لپ تاپ 15.6 اینچی ایسوس مدلSSD-TN - کاستوم شده',
-    productID:'58',
-    sellerCount:10,
-    picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-    commission:2,
-    urbanPrice:22000000,
-    id:'2',
-  },
-  {
-    title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-    productID:'56',
-    sellerCount:11,
-    picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-    commission:2,
-    urbanPrice:22000000,
-    id:'3',
-  },
-  {
-    title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-    productID:'57',
-    sellerCount:12,
-    picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-    commission:2,
-    urbanPrice:22000000,
-    id:'4',
-  },
-  ]
+// const productsCard:SellerAddProdctCard[]=[
+//     {
+//     title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//     productID:'55',
+//     sellerCount:2,
+//     picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//     commission:2,
+//     urbanPrice:22000000,
+//     id:'1',
+//   },
+//   {
+//     title:'لپ تاپ 15.6 اینچی ایسوس مدلSSD-TN - کاستوم شده',
+//     productID:'58',
+//     sellerCount:10,
+//     picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//     commission:2,
+//     urbanPrice:22000000,
+//     id:'2',
+//   },
+//   {
+//     title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//     productID:'56',
+//     sellerCount:11,
+//     picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//     commission:2,
+//     urbanPrice:22000000,
+//     id:'3',
+//   },
+//   {
+//     title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//     productID:'57',
+//     sellerCount:12,
+//     picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//     commission:2,
+//     urbanPrice:22000000,
+//     id:'4',
+//   },
+//   ]
   
   interface Filterables{
     categories:{title:string , categoryid:string}[]
@@ -108,18 +108,18 @@ const productsCard:SellerAddProdctCard[]=[
         {productsCard && productsCard?.map(productCard=>(
           <div className='grid grid-cols-5 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
             <div className='grid grid-cols-2 place-items-center'>
-              <img className='w-20 mx-2' src={productCard.picture}/>
+              <img className='w-20 mx-2' src={productCard.Picture}/>
               <div>
-                <p className='line-clamp-2 h-fit text-sm'>{productCard.title}</p>
-                <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
+                <p className='line-clamp-2 h-fit text-md'>{productCard.Title}</p>
+                <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-xs'>{productCard.ID}</p>
               </div>
             </div>
-            <p>{productCard.commission}</p>
-            <p>{productCard.urbanPrice}</p>
-            <p>{productCard.sellerCount}</p>
-            <ModalButton id={`sellProduct`+productCard.id} title='فروش همین کالا'/>
+            <p>{productCard.Commission}</p>
+            <p>{productCard.UrbanPrice}</p>
+            <p>{productCard.SellerCount}</p>
+            <ModalButton id={`sellProduct`+productCard.ID} title='فروش همین کالا'/>
 
-            <SellProductPopup id={`sellProduct`+productCard.id} productCard={productCard}/>
+            <SellProductPopup id={`sellProduct`+productCard.ID} productCard={productCard}/>
             
           </div>
         ))}

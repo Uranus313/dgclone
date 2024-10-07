@@ -392,13 +392,12 @@ export interface SellerOrderCard {
 }
 
 export interface SellerAddProdctCard {
-    picture: string,
-    title: string,
-    productID: string
-    commission: number,
-    urbanPrice: number,//price that the first seller put
-    sellerCount: number,
-    id: string
+    Picture: string,
+    Title: string,
+    Commission: number,
+    UrbanPrice: number,//price that the first seller put
+    SellerCount: number,
+    ID:string
 }
 
 //#endregion
