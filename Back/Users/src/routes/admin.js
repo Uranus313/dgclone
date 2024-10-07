@@ -69,16 +69,12 @@ router.post("/signUp",(req,res,next) => auth(req,res,next,["admin"]),  async (re
 //checked
 
 router.post("/logIn",  async (req, res, next) =>{
-    try {
-        await validateUserLogIn(req.body); 
-    } catch (error) {
-        if (error.details){
-            res.status(400).send({error : error.details[0].message});
-            res.body = {error : error.details[0].message};
-        }else{
-            res.status(400).send({error : error.message});
-            res.body = {error : error.message};
-        }
+    const { error } = validateUserLogIn(req.body);
+    console.log("login")
+    if (error) {
+        // console.log({error : error.details[0].message})
+        res.status(400).send({ error: error.details[0].message });
+        res.body = { error: error.details[0].message };
         next();
         return;
     }
