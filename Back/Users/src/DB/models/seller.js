@@ -157,7 +157,12 @@ const sellerSchema = new mongoose.Schema(
                 }
             }]
         },
-        productList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
+        productList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] , validate:{
+            validator : (value) => {
+                return value.length === new Set(value).size
+            },
+            message: "Product list cannot contain duplicate values"
+        } },
         // saleHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
         // socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },

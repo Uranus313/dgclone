@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { innerAuth } from "../authorization/innerAuth.js";
-import { getSellers } from "../DB/CRUD/seller.js";
+import { addProductToList, getSellers } from "../DB/CRUD/seller.js";
 import { getUsers } from "../DB/CRUD/user.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getEmployees } from "../DB/CRUD/employee.js";
@@ -241,4 +241,27 @@ router.post("/notification",innerAuth, async (req, res, next) =>{
     }
     next();
 });
+
+router.post("/sellerProduct",innerAuth, async (req, res, next) =>{
+    try {
+        const result = await addProductToList(req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
 export default router

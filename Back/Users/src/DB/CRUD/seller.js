@@ -187,3 +187,16 @@ export async function addRating({newRating , sellerID}){
     result.response = response.toJSON();
     return (result);
 }
+export async function addProductToList(productID){
+    const result = {};
+    try {
+        const response = await SellerModel.findByIdAndUpdate(sellerID, { $push: { 
+            productList: productID 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
