@@ -18,7 +18,7 @@ export interface SellerInfosOnProduct {
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    quantity: { color: {_id:string, title: string, hex: string }, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }[], //1 pending 2 validated 3 banned
+    seller_quantity: { color: Color, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }[], //1 pending 2 validated 3 banned
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
     discountId?: string,
@@ -403,9 +403,9 @@ export interface SellerAddProdctCard {
 //#endregion
 
 export interface Color {
+    _id?:string,
     title: string,
-    hex: string,
-    id?: string,
+    hex: string 
 }
 
 export interface Brand {
