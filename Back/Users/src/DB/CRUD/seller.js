@@ -168,3 +168,35 @@ export async function changeSellerPassword(id, newPassword, oldPassword) {
     delete result.response.password;
     return (result);
 }
+export async function updateRating({newRating , oldRating, sellerID}){
+    const result = {};
+
+    const response = await SellerModel.findByIdAndUpdate(sellerID, { $inc: { rateSum: newRating - oldRating } }, { new: true });
+    result.response = response.toJSON();
+    return (result);
+
+
+}
+export async function addRating({newRating , sellerID}){
+    const result = {};
+
+    const response = await SellerModel.findByIdAndUpdate(sellerID, { $inc: { 
+        rateSum: newRating ,
+        rateCount : 1
+     } }, { new: true });
+    result.response = response.toJSON();
+    return (result);
+}
+export async function addProductToList({productID , sellerID}){
+    const result = {};
+    try {
+        const response = await SellerModel.findByIdAndUpdate(sellerID, { $push: { 
+            productList: productID 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
