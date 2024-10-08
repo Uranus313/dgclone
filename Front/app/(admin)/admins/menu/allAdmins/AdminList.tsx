@@ -63,7 +63,7 @@ const AdminList = ({ changeList }: Props) => {
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-          <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-red-box lg:px-8 lg:py-2 rounded-md lg:mx-10 invisible lg:visible'>مرتب سازی</button>
+          <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-primary-color lg:px-8 lg:py-2 rounded-md lg:mx-7 invisible lg:visible'>مرتب سازی</button>
           <AddAdminPopUp />
       </div>
       <dialog ref={dialogRef} className="modal">

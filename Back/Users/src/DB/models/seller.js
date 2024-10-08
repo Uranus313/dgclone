@@ -18,7 +18,8 @@ const sellerSchema = new mongoose.Schema(
         },
         isCompelete: Boolean,
         isVerified: Boolean,
-        rating: { type: Number, required: true, default: 0 },
+        rateCount : {type: Number , required: true , default: 0},
+        rateSum : {type: Number , required: true , default: 0},
         phoneNumber: { type: String, required: true },
         entityType: {
             type: String, enum: ["individual", "legal"],
@@ -156,7 +157,12 @@ const sellerSchema = new mongoose.Schema(
                 }
             }]
         },
-        productList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
+        productList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] , validate:{
+            validator : (value) => {
+                return value.length === new Set(value).size
+            },
+            message: "Product list cannot contain duplicate values"
+        } },
         // saleHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
         // socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
@@ -172,6 +178,10 @@ const sellerSchema = new mongoose.Schema(
 sellerSchema.virtual("status").get(() => {
     return "seller";
 });
+sellerSchema.virtual("rate").get(function(){
+    return this.rateSum / this.rateCount;
+}
+);
 
 sellerSchema.set('toJSON', { virtuals: true });
 sellerSchema.set('toObject', { virtuals: true });

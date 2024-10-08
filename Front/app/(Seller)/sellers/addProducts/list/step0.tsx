@@ -15,22 +15,22 @@ const Step0 = ({productCard}:Props) => {
             <div className='px-10 m-5 py-5 rounded-lg border border-grey-border overflow-auto'>
                 
                 <div className='grid grid-cols-3 gap-2'>
-                    <img className='row-span-10 w-52' src={productCard.picture}/>
+                    <img className='row-span-10 w-52' src={productCard.Picture}/>
 
                     <p className=''>عنوان کالا</p>
-                    <p className='line-clamp-1 text-grey-dark'>{productCard.title}</p>
+                    <p className='line-clamp-1 text-grey-dark'>{productCard.Title}</p>
 
                     <p>شناسه کالا</p>
-                    <p className='text-primary-seller'>{productCard.productID}</p>
+                    <p className='text-primary-seller'>{productCard.ID}</p>
 
                     <p>کمیسیون</p>
-                    <p className='text-grey-dark'>{productCard.commission}%</p>
+                    <p className='text-grey-dark'>{productCard.Commission}%</p>
                     
                     <p>قیمت مرجع</p>
-                    <p className='text-grey-dark'>{productCard.urbanPrice}</p>
+                    <p className='text-grey-dark'>{productCard.UrbanPrice}</p>
 
                     <p>تعداد فروشندگان</p>
-                    <p className='text-grey-dark'>{productCard.sellerCount}</p>
+                    <p className='text-grey-dark'>{productCard.SellerCount}</p>
                 </div>
             </div>
     </div>

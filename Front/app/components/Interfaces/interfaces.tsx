@@ -15,12 +15,12 @@ export enum shipmentMethod {
 }
 
 export interface SellerInfosOnProduct {
-    sellerid: string,
-    sellerTitle: string,
-    sellerRating: number
-    quantity: { color: { title: string, hex: string }, quantity: number, garante: string }[],
+    seller_id: string,
+    seller_title: string,
+    seller_rating: number
+    seller_quantity: { color: Color, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }[], //1 pending 2 validated 3 banned
     price: number,
-    shipmentMethod?: shipmentMethod,
+    shipment_method?: number, //1 digi 2 warehouise
     discountId?: string,
 
 }
@@ -153,35 +153,31 @@ export interface SellerSetVarientOnProduct {
 
 }
 
+export interface details{
+    title: string, map:{[key: string]: string} 
+}
+
 
 export interface ProductInterface {
-    id?: string,
-    _id: string,
-    sellcount: number,
+    _id?: string,
     sell_count: number | undefined,
-    date_added: string | undefined,
+    date_added?: string | undefined,
     brand_id: string | undefined,
-    visitCount: number,
     visit_count: number,
     visits: string[],
     title: string
     sellers: SellerInfosOnProduct[],
-    rating: { rate: number, rateNum: number },
-    brand: string,
-    original: boolean,
-    categoryID: string,
-    details: { title: string, map: { key: string, value: string }[] }[],
-    madeInIran: boolean,
+    rating: { rate: number, rate_num: number },
+    category_id: string,
+    details: details[],
     is_from_iran: boolean,
     is_original: boolean,
     images: string[],
     dimentions: { length: number, width: number, height: number },
-    wieght: number,
     wieght_KG: number,
     description?: string,
-    prosNcons?: { pros: string[], cons: string[] },
-    recentComments: Comment[],
     validation_state: number
+
 }
 
 
@@ -286,6 +282,7 @@ export enum companyType {
 export enum bankNumberType { shaba = "shaba", bank = "bank" }
 export enum moneyReturn { bankAccount = "bankAccount", wallet = "wallet" }
 export interface Seller {
+    _id?:string
     [key: string]: any;
     rating: number
     sellerID: string
@@ -395,26 +392,25 @@ export interface SellerOrderCard {
 }
 
 export interface SellerAddProdctCard {
-    picture: string,
-    title: string,
-    productID: string
-    commission: number,
-    urbanPrice: number,//price that the first seller put
-    sellerCount: number,
-    id: string
+    Picture: string,
+    Title: string,
+    Commission: number,
+    UrbanPrice: number,//price that the first seller put
+    SellerCount: number,
+    ID:string
 }
 
 //#endregion
 
 export interface Color {
+    _id?:string,
     title: string,
-    hex: string,
-    id?: string,
+    hex: string 
 }
 
 export interface Brand {
     title: string,
-    id: string,
+    _id: string,
 }
 
 export interface productSaleAnalyseCard {

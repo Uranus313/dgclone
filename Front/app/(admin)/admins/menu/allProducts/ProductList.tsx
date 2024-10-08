@@ -38,13 +38,13 @@ const ProductList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white m-20  rounded-md'>
+    <div className='  flex-col bg-white my-10 md:m-20 rounded-md '>
       <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
         <form onSubmit={(e) => {
           e.preventDefault();
           handleSearch();
         }} className='w-8/12'>
-          <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black text-center'>
+          <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
             <option value="admins" > ادمین ها</option>
@@ -53,20 +53,20 @@ const ProductList = ({ changeList }: Props) => {
             <option value="products" selected>محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
-          <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
+        <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-green-box lg:px-8 lg:py-2 rounded-md lg:mx-20 invisible lg:visible'>مرتب سازی</button>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
-            <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
+            <button className="rounded-md bg-green-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
               handleSort(1);
             }}>نام</button>
-            <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
+            <button className="rounded-md bg-green-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
               handleSort(3);
             }}> امتیاز</button>
@@ -81,11 +81,11 @@ const ProductList = ({ changeList }: Props) => {
         <div className=' flex-col'>
 
           <ul>
-            <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام </p>
-              <p className="w-1/4"> تعداد فروش</p>
-              <p className="w-1/4">وزن </p>
-              <p className="w-1/4">امتیاز </p>
+            <div className="flex md:justify-between py-8 text-center">
+              <p className="w-1/2 md:w-1/4">نام </p>
+              <p className="w-0 md:w-1/4 invisible md:visible"> تعداد فروش</p>
+              <p className="w-0 md:w-1/4 invisible md:visible">وزن </p>
+              <p className="w-1/2 md:w-1/4">امتیاز </p>
             </div>
             {products?.products?.map((product, index) => {
               return (

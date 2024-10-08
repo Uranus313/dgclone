@@ -32,9 +32,8 @@ const OrderPopUp = ({ order }: Props) => {
     return (
         <div>
             <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-                <p className="w-1/2 md:w-1/3">{order.product.productID}</p>
-                <p className="w-1/2 md:w-1/3">{((order.rate && order.rate) || "-")}</p>
-                <p className="w-0 md:w-1/3 invisible md:visible">{order.ordersdate}</p>
+                <p className="w-1/2">{order.product.productID}</p>
+                <p className="w-1/2">{((order.rate && order.rate) || "-")}</p>
             </div>
 
             <dialog ref={dialogRef} className="modal break-all">
@@ -72,9 +71,9 @@ const OrderPopUp = ({ order }: Props) => {
                             <p className="pl-2 pr-4"> تاریخ تحویل  :</p>
                             <p>{(order.recievedate && order.recievedate) || "-"}</p>
                         </div>
-                        
+
                     </div>
-                                   </div>
+                </div>
                 <form method="dialog" className="modal-backdrop" onClick={closeModal}>
                     <button type="button">close</button>
                 </form>

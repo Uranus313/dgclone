@@ -111,9 +111,9 @@ const AdminPopUp = ({ verifyRequest }: Props) => {
           getAdmin(verifyRequest.adminID);
         }
       }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-        <p className="w-1/3">{verifyRequest.sellerID}</p>
-        <p className="w-1/3">{verifyRequest.requestDate}</p>
-        <p className="w-1/3">{verifyRequest.state}</p>
+        <p className="w-1/2 md:w-1/3">{verifyRequest.sellerID}</p>
+        <p className="w-0 md:w-1/3 invisible md:visible ">{verifyRequest.requestDate}</p>
+        <p className="w-1/2 md:w-1/3">{verifyRequest.state}</p>
       </div>
 
       <dialog ref={dialogRef} className="modal">
