@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { addProductToList, getSellers } from "../DB/CRUD/seller.js";
-import { getUsers } from "../DB/CRUD/user.js";
+import { addcommentToList, addOrderHistoryToList, addOrderToCart, getUsers } from "../DB/CRUD/user.js";
 import { getAdmins } from "../DB/CRUD/admin.js";
 import { getEmployees } from "../DB/CRUD/employee.js";
 
@@ -263,5 +263,71 @@ router.post("/sellerProduct",innerAuth, async (req, res, next) =>{
     }
     next();
 });
+
+router.post("/comment",innerAuth, async (req, res, next) =>{
+    try {
+        const result = await addcommentToList(req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+router.post("/shopingCart",innerAuth, async (req, res, next) =>{
+    try {
+        const result = await addOrderToCart(req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.post("/orderHistory",innerAuth, async (req, res, next) =>{
+    try {
+        const result = await addOrderHistoryToList(req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
 
 export default router

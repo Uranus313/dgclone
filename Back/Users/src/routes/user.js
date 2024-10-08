@@ -3,7 +3,7 @@ import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
 import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify, validatePostSellerRating } from "../DB/models/user.js";
-import { addBoughtGiftCard, addreceivedGiftCard, changeUserPassword, getUsers, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
+import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUserPassword, deleteOrderFromCart, emptyTheCart, getUsers, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
@@ -1225,6 +1225,73 @@ router.post("/createWishList", (req, res, next) => auth(req, res, next, ["user"]
         console.log("Error", err);
         res.body = { error: "internal server error" };
         res.status(500).send({ error: "internal server error" });
+    }
+    next();
+});
+router.delete("/shopingCart/:productID",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+    try {
+        const result = await deleteOrderFromCart({userID: req.user._id , productID: req.params.productID});
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+    try {
+
+        let result = await fetch(productURL+"/buyTheCart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "inner-secret": process.env.innerSecret
+            },
+            body: JSON.stringify(req.user)
+        });
+        const resultJSON = await result.json()
+        if(!result.ok){
+            res.status(400).send(resultJSON);
+            res.body = resultJSON;
+            next();
+            return;
+        }
+        result= await addOrderHistoryToList({userID : req.user._id , ...resultJSON});
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        result= await emptyTheCart(req.user._id );
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });

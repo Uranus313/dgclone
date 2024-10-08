@@ -83,7 +83,12 @@ const userSchema = new mongoose.Schema(
         },
         boughtGiftCards: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "giftCards" }] },
         receivedGiftCards: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "giftCards" }] },
-        orderHistories: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orderHistories" }] },
+        orderHistories: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orderHistories" }] ,validate:{
+            validator : (value) => {
+                return value.length === new Set(value).size
+            },
+            message: "order Histories cannot contain duplicate values"
+        }  },
         ratedSellers: [{
             rate : {type: Number , max: 5 , min : 0 , required : true},
             selledID : { type: mongoose.Schema.Types.ObjectId, ref: "sellers" }

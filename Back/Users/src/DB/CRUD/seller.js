@@ -187,7 +187,7 @@ export async function addRating({newRating , sellerID}){
     result.response = response.toJSON();
     return (result);
 }
-export async function addProductToList(productID){
+export async function addProductToList({productID , sellerID}){
     const result = {};
     try {
         const response = await SellerModel.findByIdAndUpdate(sellerID, { $push: { 
