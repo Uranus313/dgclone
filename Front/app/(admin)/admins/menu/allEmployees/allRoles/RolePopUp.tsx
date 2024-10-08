@@ -69,11 +69,11 @@ const RolePopUp = ({ role }: Props) => {
   return (
     <div>
       <div onClick={openModal} className='px-20 flex border-b-2 border-border-color-list text-center'>
-        <p className=' my-8 w-1/4'>{role.name}</p>
-        <p className=' my-8 w-2/4'>{role._id}</p>
+        <p className=' my-8 w-1/2 md:w-1/4 ml-14 md:mx-0'>{role.name}</p>
+        <p className=' my-8 w-0 md:w-2/4 invisible md:visible'>{role._id}</p>
 
         {isLoading && <span className="loading loading-dots loading-lg my-8"></span>}
-        {count?.count && <p className=' my-8 w-1/4'>{count?.count}</p>}
+        {count?.count && <p className=' my-8 w-1/2 md:w-1/4'>{count?.count}</p>}
 
       </div>
 

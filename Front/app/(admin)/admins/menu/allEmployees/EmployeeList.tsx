@@ -71,12 +71,12 @@ const EmployeeList = ({ changeList }: Props) => {
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
-            <button className="rounded-md bg-primary-color px-6 py-3"  type="button" onClick={() => {
+            <button className="rounded-md bg-red-box px-6 py-3"  type="button" onClick={() => {
               closeModal();
               handleSort("lastName");
               handleSort("firstName");
             }}>نام و نام خانوادگی</button>
-            <button className="rounded-md bg-primary-color px-6 py-3  my-3" type="button" onClick={() => {
+            <button className="rounded-md bg-red-box px-6 py-3  my-3" type="button" onClick={() => {
               closeModal();
               handleSort("phoneNumber");
             }}>شماره تلفن</button>

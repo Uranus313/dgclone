@@ -87,10 +87,10 @@ const ProductPopUp = ({ product }: Props) => {
     return (
         <div>
             <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-                <p className="w-1/4">{product.title}</p>
-                <p className="w-1/4">{product.sell_count}</p>
-                <p className="w-1/4">{((product.wieght && product.wieght) || "-")}</p>
-                <p className="w-1/4 text-red-500">{product.rating.rate}</p>
+                <p className="w-1/2 md:w-1/4">{product.title}</p>
+                <p className="w-0 md:w-1/4 invisible md:visible">{product.sell_count}</p>
+                <p className="w-0 md:w-1/4 invisible md:visible">{((product.wieght_KG && product.wieght_KG) || "-")}</p>
+                <p className="w-1/2 md:w-1/4">{product.rating.rate}</p>
             </div>
 
             <dialog ref={dialogRef} className="modal break-all">

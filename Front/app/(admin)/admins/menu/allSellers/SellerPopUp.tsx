@@ -266,18 +266,18 @@ const SellerPopUp = ({ seller }: Props) => {
         }}
         className=" flex py-5 border-b-2 border-b-border-color-list text-center"
       >
-        <p className="w-1/4">{(seller.storeInfo?.commercialName && seller.storeInfo?.commercialName) || "-"}</p>
-        <p className="w-1/4">{(seller.phoneNumber && seller.phoneNumber) || "-"}</p>
+        <p className="w-1/2 md:w-1/4">{(seller.storeInfo?.commercialName && seller.storeInfo?.commercialName) || "-"}</p>
+        <p className="w-0 md:w-1/4 invisible md:visible">{(seller.phoneNumber && seller.phoneNumber) || "-"}</p>
         {seller.isVerified ? (
-          <p className="w-1/4 text-red-500">تایید شده</p>
+          <p className="w-1/2 md:w-1/4 text-red-500">تایید شده</p>
         ) : (
-          <p className="w-1/4 text-red-500">تایید نشده</p>
+          <p className="w-1/2 md:w-1/4 text-red-500">تایید نشده</p>
         )}
 
         {seller.isBanned ? (
-          <p className="w-1/4 text-red-500">بن شده</p>
+          <p className="w-0 md:w-1/4 invisible md:visible text-red-500">بن شده</p>
         ) : (
-          <p className="w-1/4 text-red-500"> -</p>
+          <p className="w-0 md:w-1/4 invisible md:visible text-red-500"> -</p>
         )}
 
       </div>
