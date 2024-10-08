@@ -77,7 +77,7 @@ const ProductPopUp = ({ product }: Props) => {
         onSuccess: (savedUser) => {
             console.log(savedUser);
             product.validation_state = 3;
-         },
+        },
         onError: (error) => {
             console.log(error);
             setError(error.message)
@@ -86,46 +86,49 @@ const ProductPopUp = ({ product }: Props) => {
 
 
     return (
-        <div className='w-full p-10 border-b-2 border-border'>
-            <div className=' pb-5'>
-                <p className='text-text-color'>اسم: {product.title}</p>
+        <div>
+            {product.validation_state == 1 &&
+                <div className='w-full p-10 border-b-2 border-border'>
+                    <div className=' pb-5'>
+                        <p className='text-text-color'>اسم: {product.title}</p>
 
-            </div>
-            <div className=''>
-                <img className='border-0 ml-56' src={product.images[0]} width='70' height='90' />
-                <Link className=' text-primary-color ' href={"/products/" + product.category_id + "/" + product._id + "/"}>دیدن صفحه محصول</Link>
-                <div >
-                    {user &&
-                        <div>
-                            {user.roleID &&
+                    </div>
+                    <div className=''>
+                        <img className='border-0 ml-56' src={product.images[0]} width='70' height='90' />
+                        <Link className=' text-primary-color ' href={"/products/" + product.category_id + "/" + product._id + "/"}>دیدن صفحه محصول</Link>
+                        <div >
+                            {user &&
                                 <div>
-
-                                    {user.roleID.accessLevels &&
+                                    {user.roleID &&
                                         <div>
-                                            {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "productManage" && accessLevel.writeAccess === true) &&
 
+                                            {user.roleID.accessLevels &&
                                                 <div>
-                                                    <button onClick={() => unbanProduct.mutate()} className='text-green-box border-green-box border-2 my-5 mb-8 ml-3 py-2 px-5 rounded-md'>
-                                                        تایید
-                                                    </button>
-                                                    <button onClick={() => banProduct.mutate()} className='text-red-box border-red-box border-2 rounded-md my-5 mb-8 py-2 px-5'>
-                                                        رد
-                                                    </button>
+                                                    {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "productManage" && accessLevel.writeAccess === true) &&
+
+                                                        <div>
+                                                            <button onClick={() => unbanProduct.mutate()} className='text-green-box border-green-box border-2 my-5 mb-8 ml-3 py-2 px-5 rounded-md'>
+                                                                تایید
+                                                            </button>
+                                                            <button onClick={() => banProduct.mutate()} className='text-red-box border-red-box border-2 rounded-md my-5 mb-8 py-2 px-5'>
+                                                                رد
+                                                            </button>
+                                                        </div>
+                                                    }
                                                 </div>
                                             }
                                         </div>
                                     }
                                 </div>
                             }
-                        </div>
-                    }
 
+
+                        </div>
+                    </div>
 
                 </div>
-            </div>
-
+            }
         </div>
-
     )
 }
 
