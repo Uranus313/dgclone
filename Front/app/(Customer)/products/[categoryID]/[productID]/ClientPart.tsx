@@ -11,14 +11,15 @@ interface Props{
 
 const ClientPart = ({product}:Props) => {
     
+    const jsonString = JSON.stringify(product);
+    console.log('prod',jsonString , 'prod');
     let ColorsWithSellers:{color:Color,sellers:SellerInfosOnProduct[]}[] = []
-    const [selectedColor , setSelectedColor] = useState(product.sellers[0].quantity[0].color)
+    const [selectedColor , setSelectedColor] = useState(product?.sellers[0]?.seller_quantity[0]?.color ?? {hex:'#000000',title:'N/A',_id:'0'})
     const [selectedSeller , setSelectedSeller] = useState<SellerInfosOnProduct>()
-    
     
 
     product.sellers.forEach(seller => {
-        seller.quantity.forEach(colorQuantity=>{
+        seller.seller_quantity.forEach(colorQuantity=>{
             if (colorQuantity.quantity != 0 ){
                 const foundColor:{color:Color,sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color.title === colorQuantity.color.title)
 
@@ -35,13 +36,14 @@ const ClientPart = ({product}:Props) => {
 
     let otherSellersCount = (ColorsWithSellers.find(item => item.color === selectedColor)?.sellers.length ?? 0) - 1
     useEffect(()=>{
-        const sellers = product.sellers.filter(seller=>seller.quantity.some(color=>color.color==selectedColor))
+        const sellers = product.sellers.filter(seller=>seller.seller_quantity.some(color=>color.color==selectedColor))
         const bestSellerman = sellers.reduce((prevSeller, currentSeller) => {
-            return currentSeller.sellerRating > prevSeller.sellerRating ? currentSeller : prevSeller;
+            return currentSeller?.seller_rating > prevSeller?.seller_rating ? currentSeller : prevSeller;
         });
         setSelectedSeller(bestSellerman)
     },[selectedColor])
     
+  console.log('len',otherSellersCount)
   return (
     <div className='grid grid-cols-12 gap-4 overflow-hidden'>
         <div className='col-span-4'>
@@ -56,7 +58,7 @@ const ClientPart = ({product}:Props) => {
                     <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
                 </svg>
                 <p className='mx-1 text-lg'>{product.rating.rate}</p>
-                <p className='mx-2 text-grey-light'>(خریدار {product.rating.rateNum} امتیاز)</p>
+                <p className='mx-2 text-grey-light'>(خریدار {product?.rating?.rate_num} امتیاز)</p>
                 <p className='mx-2 text-grey-light'>بازخورد</p>
                 <p className='mx-2 text-grey-light'>پرسش</p>
             </div>
@@ -73,12 +75,13 @@ const ClientPart = ({product}:Props) => {
 
                     <p className='text-xl mt-10 mb-3'>ویژگی ها:</p>
                     <div className='grid grid-cols-3 gap-2'>    
-                        {product.details[0].map.map((detail)=>{
-                            return <div className='mb-1 rounded-lg text-sm bg-propBubble-bg py-3 px-5'>
-                                <p className='line-clamp-1 mb-2 text-grey-dark'>{detail.key}</p>
-                                <p className='line-clamp-1'>{detail.value}</p>
-                            </div>
-                        }).slice(0,5)}
+                        {Object.entries(product.details[0].map).slice(0, 5).map(([key, value]) => (
+                        <div className='mb-1 rounded-lg text-sm bg-propBubble-bg py-3 px-5' key={key}>
+                            <p className='line-clamp-1 mb-2 text-grey-dark'>{key}</p>
+                            <p className='line-clamp-1'>{value}</p>
+                        </div>
+                        ))}
+
 
                         <div className='mb-1 rounded-lg border border-primary-color flex justify-center items-center py-3 px-5'>
                             <p className='line-clamp-1 text-center text-lg text-primary-color'>بیشتر</p>
@@ -105,7 +108,7 @@ const ClientPart = ({product}:Props) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
                                 </svg>
 
-                                <h2 className='text-sm mx-2 mt-1 '>{selectedSeller?.sellerTitle}</h2>
+                                <h2 className='text-sm mx-2 mt-1 '>{selectedSeller?.seller_title}</h2>
                             </div>
 
                             <div className='flex'>
@@ -113,7 +116,7 @@ const ClientPart = ({product}:Props) => {
                                     <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
                                 </svg>
 
-                                <h2 className='mx-1 mt-1 '>{selectedSeller?.sellerRating}</h2>
+                                <h2 className='mx-1 mt-1 '>{selectedSeller?.seller_rating}</h2>
                             </div>
 
                         </div>
@@ -123,7 +126,7 @@ const ClientPart = ({product}:Props) => {
                                 <h2 className='text-3xl'>{selectedSeller?.price}</h2>
                                 <Image className='mx-1 object-contain' objectFit='contain' src={f} width='30' height='100' alt='تومان'/>
                             </div>
-                            <div className="tooltip" data-tip={`این کالا توسط فروشنده ی آن ${selectedSeller?.sellerTitle} قیمت گذاری شده `}>
+                            <div className="tooltip" data-tip={`این کالا توسط فروشنده ی آن ${selectedSeller?.seller_title} قیمت گذاری شده `}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mt-1 text-grey-dark">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                                 </svg>
@@ -141,7 +144,7 @@ const ClientPart = ({product}:Props) => {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-grey-dark">
                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                             </svg>
-                            <p className='text-grey-dark mx-2'>{selectedSeller?.quantity.find(quantity=>quantity.color==selectedColor)?.garante}</p>
+                            <p className='text-grey-dark mx-2'>{selectedSeller?.seller_quantity.find(quantity=>quantity.color==selectedColor)?.guarantee.title}</p>
                         </div>
                     </div>
 
@@ -154,18 +157,18 @@ const ClientPart = ({product}:Props) => {
             <SeeMore minItemsCount={3}>
   {[
     ...(ColorsWithSellers.find(item => item.color === selectedColor)?.sellers || []).map(seller => (
-      <div className='w-full border grid grid-cols-4 border-primary-color py-5 rounded-md mb-5' key={seller.sellerid}>
+      <div className='w-full border grid grid-cols-4 border-primary-color py-5 rounded-md mb-5' key={seller.seller_id}>
         <div className='flex items-center'>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
           </svg>
           <div>
-            <p className='mb-4 text-xl'>{seller.sellerTitle}</p>
+            <p className='mb-4 text-xl'>{seller.seller_title}</p>
             <div className='flex'>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 text-primary-color">
                 <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
               </svg>
-              <p className='text-lg'>{seller.sellerRating}</p>
+              <p className='text-lg'>{seller.seller_rating}</p>
             </div>
           </div>
         </div>
@@ -173,7 +176,7 @@ const ClientPart = ({product}:Props) => {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-2 ">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
           </svg>
-          <p className=''>{seller.quantity.find(quantity=>quantity.color==selectedColor)?.garante}</p>
+          <p className=''>{seller.seller_quantity.find(quantity=>quantity.color==selectedColor)?.guarantee.title}</p>
         </div>
         <div className='flex items-center justify-center'>
           <p className='text-3xl'>{seller?.price}</p>
