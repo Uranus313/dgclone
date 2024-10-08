@@ -94,7 +94,8 @@ router.post("/logIn",  async (req, res, next) =>{
         delete result.response.password;
         res.cookie('x-auth-token',token,{
             httpOnly: true,
-            secure: process.env.NODE_ENV== "development"?false : true,
+            // secure: process.env.NODE_ENV== "development"?false : true,
+            secure: true,
             sameSite: 'none',
             maxAge: 6 * 60 * 60 * 1000
         });
