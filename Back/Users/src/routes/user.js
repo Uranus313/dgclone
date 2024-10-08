@@ -2,8 +2,8 @@ import express from "express"
 import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
-import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify } from "../DB/models/user.js";
-import { addBoughtGiftCard, addreceivedGiftCard, changeUserPassword, getUsers, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify, validatePostSellerRating } from "../DB/models/user.js";
+import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUserPassword, deleteOrderFromCart, emptyTheCart, getUsers, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
@@ -19,6 +19,7 @@ import { sendMail } from "../functions/sendMail.js";
 import { deletePhoneNumberVerification, getPhoneNumberVerifications, savePhoneNumberVerification } from "../DB/CRUD/phoneNumberVerification.js";
 import { sendSMS } from "../functions/sendSMS.js";
 import { productURL } from "../consts/consts.js";
+import { addRating, updateRating } from "../DB/CRUD/seller.js";
 
 const router = express.Router();
 
@@ -1131,9 +1132,9 @@ router.get("/myTransactions", (req, res, next) => auth(req, res, next, ["user"])
     next();
 });
 
-router.post("/lastVisited", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
+router.post("/sellerRating", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
     try {
-        await validateLastVisitedPost(req.body);
+        await validatePostSellerRating(req.body);
     } catch (error) {
         if (error.details) {
             res.status(400).send({ error: error.details[0].message });
@@ -1146,17 +1147,72 @@ router.post("/lastVisited", (req, res, next) => auth(req, res, next, ["user"]), 
         return;
     }
     try {
-        const foundIndex = req.user.lastVisited.indexOf(req.body.productID);
-        if (foundIndex != -1) {
-            for (let index = foundIndex; index > 0; index--) {
-                req.user.lastVisited[index] = req.user.lastVisited[index - 1];
-            }
-            req.user.lastVisited[0] = req.body.productID;
-        } else {
-            req.user.lastVisited.pop();
-            req.user.lastVisited.unshift(req.body.productID);
+        const oldIndex = null;
+        const sameRateChecker = false;
+        for (let index = 0; index < req.user.ratedSellers.length; index++) {
+            if(req.user.ratedSellers[index].sellerID == req.body.sellerID){
+                oldIndex = index;
+                if(oldRate == req.body.rate){
+                    sameRateChecker = true;
+                }
+            }                     
         }
-        const result = await updateUser(req.user._id, { lastVisited: req.user.lastVisited })
+        if(sameRateChecker){
+            res.status(400).send({ error: "this rating is the same as the old one" });
+            res.body = { error: "this rating is the same as the old one" };
+            next();
+            return;
+        }
+        if(oldIndex){
+            const result = await updateRating({newRating : req.body.rate , oldRating : req.user.ratedSellers[oldIndex], sellerID: req.body.sellerID});
+            req.user.ratedSellers[oldIndex].rate = req.body.rate;
+            await updateUser(req.user._id , {ratedSellers : req.user.ratedSellers});
+            if(result.response){
+                res.send({result : "your rating is successfully submitted"});
+                res.body = {result : "your rating is successfully submitted"};
+            }
+        }else{
+            const result = await addRating({newRating : req.body.rate , sellerID: req.body.sellerID});
+            req.user.ratedSellers.push({
+                rate : req.body.rate,
+                sellerID: req.body.sellerID
+            })
+            await updateUser(req.user._id , {ratedSellers : req.user.ratedSellers});
+            if(result.response){
+                res.send({result : "your rating is successfully submitted"});
+                res.body = {result : "your rating is successfully submitted"};
+            }
+        }
+        
+        
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+});
+
+router.post("/createWishList", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
+    try {
+        await validateCreateWishList(req.body, req.user.wishLists);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await updateUser(req.user._id, {
+            wishLists: [...req.user.wishLists, { title: req.body.title, products: [] }]
+        });
+
         if (result.error) {
             res.status(400).send({ error: result.error });
             res.body = { error: result.error };
@@ -1169,6 +1225,73 @@ router.post("/lastVisited", (req, res, next) => auth(req, res, next, ["user"]), 
         console.log("Error", err);
         res.body = { error: "internal server error" };
         res.status(500).send({ error: "internal server error" });
+    }
+    next();
+});
+router.delete("/shopingCart/:productID",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+    try {
+        const result = await deleteOrderFromCart({userID: req.user._id , productID: req.params.productID});
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+    try {
+
+        let result = await fetch(productURL+"/buyTheCart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "inner-secret": process.env.innerSecret
+            },
+            body: JSON.stringify(req.user)
+        });
+        const resultJSON = await result.json()
+        if(!result.ok){
+            res.status(400).send(resultJSON);
+            res.body = resultJSON;
+            next();
+            return;
+        }
+        result= await addOrderHistoryToList({userID : req.user._id , ...resultJSON});
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        result= await emptyTheCart(req.user._id );
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
     }
     next();
 });

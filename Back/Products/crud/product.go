@@ -4,6 +4,7 @@ import (
 	"context"
 	"dg-kala-sample/database"
 	"dg-kala-sample/models"
+	"fmt"
 
 	// "fmt"
 	"net/http"
@@ -1148,13 +1149,116 @@ func GetProdsAndOrdersCount(c *fiber.Ctx) error {
 	})
 }
 
-// Get => incredible products
+func GetSellerProducts(c *fiber.Ctx) error {
 
-// ----------done------------
-// Patch => Add seller to product
-// Patch => update rating
-// Patch => update quantity
-// Delete => delete product by id
-// Patch => edit product -> title, desc, images, details, dimentions, weight, pros&cons
-// Get => most disscount products
-// Get => Infinite scroll products -> query params = limit, offset, categoryID
+	seller := c.Locals("ent").(map[string]interface{})
+
+	// limitString := c.Query("limit", "20")
+
+	// limit, err := strconv.Atoi(limitString)
+
+	// if err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching limit from query": err.Error()})
+	// }
+
+	// offsetString := c.Query("offset", "0")
+
+	// offset, err := strconv.Atoi(offsetString)
+
+	// if err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching offset from query": err.Error()})
+	// }
+
+	var sellerProds []models.ProductCard
+
+	for _, prodID := range seller["productList"].([]primitive.ObjectID) {
+
+		var product models.Product
+
+		filter := bson.M{"_id": prodID}
+
+		err := database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				errMessage := fmt.Sprintf("Inconsistency! prod id %#v in seller prod list not found", prodID)
+				return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": errMessage})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		if product.ValidationState == models.Validated {
+			prodCard := CreateProdCard(product)
+			sellerProds = append(sellerProds, prodCard)
+		}
+	}
+
+	return c.Status(http.StatusOK).JSON(sellerProds)
+}
+
+func ChangeSellerPrice(c *fiber.Ctx) error {
+
+	prodIDString := c.Query("prodID")
+
+	prodID, err := primitive.ObjectIDFromHex(prodIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
+	}
+
+	sellerIDString := c.Query("SellerID")
+
+	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
+	}
+
+	newPriceString := c.Query("NewPrice")
+
+	newPrice, err := strconv.Atoi(newPriceString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching new price from query": err.Error()})
+	}
+
+	var product models.Product
+
+	filter := bson.M{"_id": prodID}
+
+	err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching product from database",
+			"error":   err.Error(),
+		})
+	}
+
+	var sellerFound bool = false
+
+	for index, seller := range product.Sellers {
+		if seller.SellerID == sellerID {
+			sellerFound = true
+			if product.Sellers[index].Price == newPrice {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "new price is equal to old price"})
+			}
+			product.Sellers[index].Price = newPrice
+			break
+		}
+	}
+
+	if !sellerFound {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Seller not found in product seller list"})
+	}
+
+	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
+
+	_, err = database.ProductCollection.UpdateByID(context.Background(), prodID, update)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "new price set succesfully"})
+}

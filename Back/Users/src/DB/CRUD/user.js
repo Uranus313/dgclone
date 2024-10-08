@@ -162,3 +162,68 @@ export async function changeUserPassword(id,newPassword , oldPassword ){
     return(result);
 }
 
+export async function addcommentToList({commentID , userID}){
+    const result = {};
+    try {
+        const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
+            socialIntractions: commentID 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
+export async function addOrderToCart({productID , userID}){
+    const result = {};
+    try {
+        const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
+            shoppingCart: productID 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
+export async function deleteOrderFromCart({productID , userID}){
+    const result = {};
+    try {
+        const response = await UserModel.findByIdAndUpdate(userID, { $pull: { 
+            shoppingCart: productID 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
+export async function emptyTheCart( userID){
+    const result = {};
+    try {
+        const response = await UserModel.findByIdAndUpdate(userID, { $set: { 
+            shoppingCart: [] 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
+export async function addOrderHistoryToList({orderHistoryID , userID}){
+    const result = {};
+    try {
+        const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
+            shoppingCart: orderHistoryID 
+         } }, { new: true });
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}

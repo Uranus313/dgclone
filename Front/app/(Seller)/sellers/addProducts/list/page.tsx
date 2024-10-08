@@ -10,7 +10,7 @@ import useQueryNext from '@/app/hooks/useQueryNext'
 import AddProductButton from './AddProductButton'
 import AddNew from './AddNew'
 import { useSearchParams } from 'next/navigation'
-import useGetProductCards from '@/app/hooks/useGetProductCards'
+import useGetProductCards from '@/app/(Customer)/users/useGetProductCards'
 
 
 // const productsCard:SellerAddProdctCard[]=[

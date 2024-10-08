@@ -100,6 +100,10 @@ func main() {
 
 	app.Patch("/products/validate-variant", crud.UpdateVariantValidationState) // query params => prodID, SellerID, ColorID, ValidationState -> {2: validated, 3: banned}
 
+	app.Get("/products/seller/allProds", crud.GetSellerProducts)
+
+	app.Patch("/products/seller/setNewPrice", crud.ChangeSellerPrice) // query params => prodID, SellerID, NewPrice
+
 	// --------------category-----------------
 
 	app.Post("/products/category", crud.AddCategory) // (request body)
@@ -206,6 +210,5 @@ func main() {
 		return c.SendString("Query parameters received")
 	})
 
-	log.Fatal(app.Listen(":8080"))
-
+	log.Fatal(app.ListenTLS(":8080", "./cert.pem", "./key.pem"))
 }
