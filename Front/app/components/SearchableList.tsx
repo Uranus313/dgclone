@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { Color } from './Interfaces/interfaces';
+
 
 
 interface Props{
