@@ -10,7 +10,7 @@ import { Comment } from "@/app/components/Interfaces/interfaces";
 interface Props {
   comment: Comment
 }
-const CommentList = ({comment}: Props) => {
+const CommentPopUp = ({comment}: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error, setError] = useState<string | null>(null);
@@ -120,4 +120,4 @@ const CommentList = ({comment}: Props) => {
   )
 }
 
-export default CommentList
+export default CommentPopUp
