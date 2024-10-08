@@ -15,9 +15,7 @@ const SellerList = ({ changeList }: Props) => {
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
   let { data: sellers, error, isLoading } = useGetSellers({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
-  // useEffect(() =>{
-  //     console.log(error)
-  // },[error])
+  
   function handleSort(type: string) {
     setTypeSort(type);
   }
@@ -40,13 +38,13 @@ const SellerList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white m-20  rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-20 rounded-md '>
       <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
         <form onSubmit={(e) => {
           e.preventDefault();
           handleSearch();
         }} className='w-8/12'>
-          <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black text-center'>
+          <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
             <option value="admins" > ادمین ها</option>
@@ -55,21 +53,21 @@ const SellerList = ({ changeList }: Props) => {
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
-          <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-        <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20'>مرتب سازی</button>
+        <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-blue-box lg:px-8 lg:py-2 rounded-md lg:mx-20 invisible lg:visible'>مرتب سازی</button>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
-            <button className="rounded-md bg-primary-color px-6 py-3" type="button" onClick={() => {
+            <button className="rounded-md bg-blue-box px-6 py-3" type="button" onClick={() => {
               closeModal();
               handleSort("lastName");
               handleSort("firstName");
             }}>نام و نام خانوادگی</button>
-            <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
+            <button className="rounded-md bg-blue-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
               handleSort("phoneNumber");
             }}>شماره تلفن</button>
@@ -84,11 +82,11 @@ const SellerList = ({ changeList }: Props) => {
         <div className=' flex-col'>
 
           <ul>
-            <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام تجاری</p>
-              <p className="w-1/4">شماره تلفن</p>
-              <p className="w-1/4">تاییدیه </p>
-              <p className="w-1/4">وضعیت</p>
+            <div className="flex md:justify-between py-8 text-center">
+              <p className="w-1/2 md:w-1/4">نام تجاری</p>
+              <p className="w-0 md:w-1/4 invisible md:visible">شماره تلفن</p>
+              <p className="w-1/2 md:w-1/4">تاییدیه </p>
+              <p className="w-0 md:w-1/4 invisible md:visible">وضعیت</p>
             </div>
             {sellers?.data?.map((seller, index) => {
               return (

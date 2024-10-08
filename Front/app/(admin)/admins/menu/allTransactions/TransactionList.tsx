@@ -56,28 +56,28 @@ const UserList = ({ changeList }: Props) => {
                         <option value="products">محصولات</option>
                         <option value="transactions" selected> تراکنش ها</option>
                     </select>
-                    <input className='w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+                    <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
                         ref={searchRef}
                         onBlur={() => handleSearch()} />
                 </form>
-                    <button onClick={() => { openModal() }} className='bg-primary-color px-8 py-2 rounded-md mx-20 invisible lg:visible'>مرتب سازی</button>
+                    <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-greener-box lg:px-8 lg:py-2 rounded-md lg:mx-20 invisible lg:visible'>مرتب سازی</button>
             </div>
             <dialog ref={dialogRef} className="modal">
                 <div className="modal-box flex justify-center">
                     <div className="my-4 flex flex-col justify-center w-1/2">
-                        <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
+                        <button className="rounded-md bg-greener-box px-6 py-3 my-3" type="button" onClick={() => {
                             closeModal();
                             handleSort("money");
                         }}> هزینه  </button>
-                        <button className="rounded-md bg-primary-color px-6 py-3  " type="button" onClick={() => {
+                        <button className="rounded-md bg-greener-box px-6 py-3  " type="button" onClick={() => {
                             closeModal();
                             handleSort("sender.entityType");
                         }}>نوع  فرستادن</button>
-                        <button className="rounded-md bg-primary-color px-6 py-3 my-3" type="button" onClick={() => {
+                        <button className="rounded-md bg-greener-box px-6 py-3 my-3" type="button" onClick={() => {
                             closeModal();
                             handleSort("receiver.entityType");
                         }}> نوع گرفتن</button>
-                        <button className="rounded-md bg-primary-color px-6 py-3 " type="button" onClick={() => {
+                        <button className="rounded-md bg-greener-box px-6 py-3 " type="button" onClick={() => {
                             closeModal();
                             handleSort("date");
                         }}>  تاریخ </button>

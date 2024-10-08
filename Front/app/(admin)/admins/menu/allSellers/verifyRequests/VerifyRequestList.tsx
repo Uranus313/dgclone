@@ -18,13 +18,13 @@ const VerifyRequestList = () => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' w-full bg-white rounded-lg'>
+    <div className=' flex-col bg-white my-10 md:m-20 rounded-md '>
 
       {/* <button onClick={() => setState("pending")} className={state == "pending"? " btn btn-primary" : "btn btn-secondary"}>در انتظار</button>
             <button onClick={() => setState("accepted")} className={state == "accepted"? " btn btn-primary" : "btn btn-secondary"}>قبول شده</button>
             <button onClick={() => setState("rejected")} className={state == "rejected"? " btn btn-primary" : "btn btn-secondary"}>رد شده</button> */}
 
-      <div className='border-b-2 shadow-md border-white p-7 px-15 w-full' >
+      <div className=' border-b-2 shadow-md border-white p-7 px-15 w-full' >
         <p> درخواست های تایید</p>
       </div>
       {isLoading ? <span className="loading loading-dots loading-lg"></span> :
@@ -33,9 +33,9 @@ const VerifyRequestList = () => {
 
           <ul>
             <div className="flex justify-between py-8 text-center w-full">
-              <p className="w-1/3">آی دی فروشنده</p>
-              <p className="w-1/3">تاریخ درخواست</p>
-              <p className="w-1/3">وضعیت </p>
+              <p className="w-1/2 md:w-1/3">آی دی فروشنده</p>
+              <p className="w-0 md:w-1/3 invisible md:visible ">تاریخ درخواست</p>
+              <p className="w-1/2 md:w-1/3">وضعیت </p>
             </div>
             {verifyRequests?.data?.map((verifyRequest, index) => {
               return (

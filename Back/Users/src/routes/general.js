@@ -855,7 +855,9 @@ router.get('/logOut',async (req,res,next) =>{
     try {
         res.cookie('x-auth-token',' ',{
             httpOnly: true,
-            secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
+            secure: true,
+
             sameSite: 'none',
             expires: new Date(0)
         });

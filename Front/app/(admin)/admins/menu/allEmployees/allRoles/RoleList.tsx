@@ -22,10 +22,10 @@ const RoleList = () => {
         // error && <p>{error.message}</p>
         <div className=' flex-col my-8'>
           <ul>
-          <div className="flex justify-between py-8 font-bold px-20  border-b-2 border-border-color-list text-center">
-              <p className="w-1/4">شغل </p>
-              <p className="w-2/4"> آی دی</p>
-              <p className="w-1/4">تعداد </p>
+          <div className="flex md:justify-between py-8 font-bold px-20  border-b-2 border-border-color-list text-center">
+              <p className="w-1/2 md:w-1/4 ml-14 md:mx-0">شغل </p>
+              <p className="w-0 md:w-2/4 invisible md:visible"> آی دی</p>
+              <p className="w-1/2 md:w-1/4 ">تعداد </p>
             </div>
             {roles?.map((role, index) => {
               return (

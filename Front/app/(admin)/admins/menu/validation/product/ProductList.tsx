@@ -49,12 +49,6 @@ const ProductList = ({ changeList }: Props) => {
         <div className=' flex-col'>
 
           <ul>
-            <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام </p>
-              <p className="w-1/4"> برند</p>
-              <p className="w-1/4">وزن </p>
-              <p className="w-1/4">امتیاز </p>
-            </div>
             {products?.products?.map((product, index) => {
               return (
                 <li key={index}>
@@ -63,10 +57,7 @@ const ProductList = ({ changeList }: Props) => {
               )
             })}
           </ul>
-          <div className='my-4 flex justify-center pb-5'>
-            <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-            <button disabled={!products?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
-          </div>
+         
         </div>
 
       }
