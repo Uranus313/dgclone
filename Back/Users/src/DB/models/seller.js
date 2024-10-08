@@ -18,7 +18,8 @@ const sellerSchema = new mongoose.Schema(
         },
         isCompelete: Boolean,
         isVerified: Boolean,
-        rating: { type: Number, required: true, default: 0 },
+        rateCount : {type: Number , required: true , default: 0},
+        rateSum : {type: Number , required: true , default: 0},
         phoneNumber: { type: String, required: true },
         entityType: {
             type: String, enum: ["individual", "legal"],
@@ -172,6 +173,10 @@ const sellerSchema = new mongoose.Schema(
 sellerSchema.virtual("status").get(() => {
     return "seller";
 });
+sellerSchema.virtual("rate").get(function(){
+    return this.rateSum / this.rateCount;
+}
+);
 
 sellerSchema.set('toJSON', { virtuals: true });
 sellerSchema.set('toObject', { virtuals: true });

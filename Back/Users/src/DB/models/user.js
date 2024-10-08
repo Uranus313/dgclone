@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Joi from "joi";
 import joiObjectid from "joi-objectid";
 import { productURL } from "../../consts/consts.js";
+import { SellerModel } from "./seller.js";
 Joi.objectId = joiObjectid(Joi);
 
 const userSchema = new mongoose.Schema(
@@ -83,6 +84,10 @@ const userSchema = new mongoose.Schema(
         boughtGiftCards: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "giftCards" }] },
         receivedGiftCards: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "giftCards" }] },
         orderHistories: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orderHistories" }] },
+        ratedSellers: [{
+            rate : {type: Number , max: 5 , min : 0 , required : true},
+            selledID : { type: mongoose.Schema.Types.ObjectId, ref: "sellers" }
+        }],
         socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
         favoriteList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
         wishLists: { type: [{ title: { type: String, required: true }, products: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] }] },
@@ -370,5 +375,17 @@ export function validateUserUnban(data) {
             }
         }).required()
     });
+    return schema.validateAsync(data);
+}
+export function validatePostSellerRating(data) {
+    const schema = Joi.object({
+        sellerID: Joi.objectId().external(async (sellerID) => {
+            const seller = await SellerModel.find({ _id: sellerID }).findOne();
+            if (!seller) {
+                throw new Error("seller not found")
+            }
+        }).required(),
+        rate : Joi.number().max(5).min(0).required()
+    })
     return schema.validateAsync(data);
 }
