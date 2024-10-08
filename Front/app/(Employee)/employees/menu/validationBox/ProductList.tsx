@@ -20,7 +20,7 @@ const ProductList = () => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' bg-white rounded-md'>
+    <div className='text-right bg-white rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
@@ -33,12 +33,6 @@ const ProductList = () => {
 
         <div className=' flex-col'>
           <ul>
-            <div className="flex justify-between py-8 text-center">
-              <p className="w-1/4">نام </p>
-              <p className="w-1/4"> برند</p>
-              <p className="w-1/4">وزن </p>
-              <p className="w-1/4">امتیاز </p>
-            </div>
             {products?.products?.map((product, index) => {
               return (
                 <li key={index}>

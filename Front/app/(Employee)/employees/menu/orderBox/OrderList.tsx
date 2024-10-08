@@ -1,6 +1,7 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import useGetOrders from '../../hooks/useGetOrders';
+import OrderPopUp from './OrderPopUp';
 
 
 
@@ -32,11 +33,14 @@ const OrderList = () => {
        
         <div className=' flex-col'>
           <ul>
-            
+          <div className="flex justify-between py-8 text-center">
+              <p className="w-1/2"> آی دی محصول </p>
+              <p className="w-1/2"> امتیاز</p>
+            </div>
             {orders?.orders?.map((order, index) => {
               return (
                 <li key={index}>
-                  {/* <orderPopUp order={order} /> */}
+                  <OrderPopUp order={order} />
                 </li>
               )
             })}

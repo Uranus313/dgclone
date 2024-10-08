@@ -11,7 +11,7 @@ const notificationSchema  = new mongoose.Schema(
         title: {type: String , required : true},
         teaser: {type: String , required : true},
         userEmail: {type: String },
-        userPhone: {type: String , required : true},
+        userPhone: {type: String },
         imageUrl: {type: String},
         orderID: {type : mongoose.Schema.Types.ObjectId },
         userType: {type: String , enum : ["seller","user"], required : true, validate:{

@@ -5,7 +5,7 @@ import _ from "lodash";
 import { generateRandomString } from "../functions/randomString.js";
 import { changeWalletMoney, getWallets, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
-import { getNotifications } from "../DB/CRUD/notification.js";
+import { getNotifications, saveNotification } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
 import { innerAuth } from "../authorization/innerAuth.js";
 import { validateChangeEmail, validateChangeEmailVerify, validateChangePhoneNumberVerify, validateSellerChangeinfo, validateSellerChangePhoneNumber, validateSellerlogInWithPhoneNumber, validateSellerPost, validateVerificationChange } from "../DB/models/seller.js";
@@ -393,6 +393,7 @@ router.patch("/verifyRequest", (req, res, next) => roleAuth(req, res, next, [{ l
                 next();
                 return;
             }
+
         }
         if (req.user.status == "admin") {
             const result = await updateVerifyRequest(req.body.requestID, { adminID: req.user._id, state: req.body.state });
@@ -402,6 +403,12 @@ router.patch("/verifyRequest", (req, res, next) => roleAuth(req, res, next, [{ l
                 next();
                 return;
             }
+            saveNotification({ content: (req.body.state == "accepted")? " درخواست تایید شما قبول شد و از حالا می توانید کار خود را شروع کنید، موفق باشید.": "درخواست تایید شما رد شد، لطفا بعد از مرور دوباره مدارک خود تلاش کنید.",
+                title: (req.body.state == "accepted")? " درخواست تایید شما قبول شد." :"درخواست تایید شما رد شد." ,
+                teaser:(req.body.state == "accepted")? " درخواست تایید شما قبول شد." :"درخواست تایید شما رد شد.",
+                userType:"seller",
+                sellerID: result.response.sellerID
+            })
             res.send(result.response);
             res.body = result.response;
         } else {
@@ -455,6 +462,12 @@ router.patch("/verifySeller/:sellerID", (req, res, next) => roleAuth(req, res, n
             await updateVerifyRequest(undefined, req.params.sellerID, { employeeID: req.user._id, state: "accepted" })
 
         }
+        saveNotification({  content: " اکانت شما تایید شد و از حالا می توانید کار خود را شروع کنید، موفق باشید.",
+            title:" اکانت شما تایید شد."  ,
+            teaser:" اکانت شما تایید شد.",
+            userType:"seller",
+            sellerID: result.response.sellerID
+        })
 
         res.send(result.response);
         res.body = result.response;
@@ -495,7 +508,12 @@ router.patch("/refuteSeller/:sellerID", (req, res, next) => roleAuth(req, res, n
             await updateVerifyRequest(undefined, req.params.sellerID, { employeeID: req.user._id, state: "rejected" })
 
         }
-
+        saveNotification({  content: " تاییدیه اکانت شما باطل شد ",
+            title:" تاییدیه اکانت شما باطل شد "  ,
+            teaser:" تاییدیه اکانت شما باطل شد ",
+            userType:"seller",
+            sellerID: result.response.sellerID
+        })
         res.send(result.response);
         res.body = result.response;
     } catch (err) {

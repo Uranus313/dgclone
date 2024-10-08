@@ -8,6 +8,8 @@ import { getEmployees } from "../DB/CRUD/employee.js";
 
 import { roleAuth } from "../authorization/roleAuth.js";
 import validateId from "../functions/validateId.js";
+import { validateNotificationPost } from "../DB/models/notification.js";
+import { saveNotification } from "../DB/CRUD/notification.js";
 
 const router = express.Router();
 
@@ -163,7 +165,6 @@ router.get("/checkToken/:token",innerAuth,async (req, res, next) => {
 
 
 router.get("/checkUser/:id",innerAuth, async (req, res, next) =>{
-    console.log("kossher")
     const {error} = validateId(req.params.id);
     console.log(error)
     if (error){
@@ -196,6 +197,43 @@ router.get("/checkUser/:id",innerAuth, async (req, res, next) =>{
             next();
             return;
         }
+    } catch (err) {
+        console.log("Error",err);
+        res.body = {error:"internal server error"};
+        res.status(500).send({error:"internal server error"});
+    }
+    next();
+});
+
+router.post("/notification",innerAuth, async (req, res, next) =>{
+    try {
+        await validateNotificationPost(req.body);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await saveNotification(req.body);
+        if (result.error){
+            res.status(400).send({error : result.error});
+            res.body = {error : result.error};
+            next();
+            return;
+        }
+        
+        res.send(result.response);
+        res.body = result.response;
+        next();
+        return;
+        
     } catch (err) {
         console.log("Error",err);
         res.body = {error:"internal server error"};

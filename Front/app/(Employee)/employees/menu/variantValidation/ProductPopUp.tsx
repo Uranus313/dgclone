@@ -14,11 +14,11 @@ const ProductPopUp = ({ product }: Props) => {
         <div className='w-full p-10 border-b-2 border-border'>
             <div className='flex pb-5'>
                 <p className='text-text-color'>آی دی محصول : </p>
-                <p>{product.id}</p>
+                <p>{product._id}</p>
                 <p className='text-text-color'>اسم: </p>
                 <p>{product.title}</p>
                 <p className='pr-20 pl-5 text-text-color'> آی دی فروشنده   : </p>
-                <p>{product.sellers[0].sellerid}</p>
+                <p>{product.sellers && product.sellers[0].seller_id || "-"}</p>
             </div>
             <div className='flex justify-center'>
                 {user &&
@@ -29,7 +29,6 @@ const ProductPopUp = ({ product }: Props) => {
                                 {user.roleID.accessLevels &&
                                     <div>
                                         {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "productManage" && accessLevel.writeAccess === true) &&
-
                                             <div>
                                                 <button onClick={() => {
                                                 }} className='text-green-box border-green-box border-2 py-5 pb-8 mx-3'>
