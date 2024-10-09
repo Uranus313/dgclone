@@ -125,7 +125,7 @@ func main() {
 
 	app.Post("/products/discountcode", crud.AddDiscountCode) // (request body)
 
-	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query params => DCode, UserID
+	app.Get("/products/discountcode", crud.CheckUserDiscountCode) // query params => DCode, UserID
 
 	// ------------sale discount-----------
 
@@ -155,17 +155,23 @@ func main() {
 
 	app.Get("/products/order", crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle
 
+	app.Post("products/order/orderListTotalPrice", crud.GetOrderListTotalPrice)
+
+	app.Patch("/products/order", crud.UpdateOrderState) // query params => OrderID, State
+
 	// -------------inner--------------
 
-	app.Get("/products/inner/ProductMapAssign", crud.InnerProductMapAssign)
+	app.Get("/products/inner/ProductMapAssign", auth.InnerAuth, crud.InnerProductMapAssign)
 
-	app.Get("/products/inner/order/:orderID", crud.InnerGetOrderByID)
+	app.Get("/products/inner/order/:orderID", auth.InnerAuth, crud.InnerGetOrderByID)
 
-	app.Get("/products/inner/orderHistory/:orderHistoryID", crud.InnerGetOrderHistoryByID)
+	app.Get("/products/inner/orderHistory/:orderHistoryID", auth.InnerAuth, crud.InnerGetOrderHistoryByID)
 
-	app.Get("/products/inner/product/:ProdID", crud.InnerGetOrderByID)
+	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetOrderByID)
 
-	app.Get("/products/inner/sellerSaleInfo/:SellerID", crud.InnerSellerBS)
+	app.Get("/products/inner/sellerSaleInfo/:SellerID", auth.InnerAuth, crud.InnerSellerBS)
+
+	app.Post("/products/inner/orderHistory", auth.InnerAuth, crud.InnerAddOrderHistory)
 
 	log.Fatal(app.ListenTLS(":8080", "./cert.pem", "./key.pem"))
 }

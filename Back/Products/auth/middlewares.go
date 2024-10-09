@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,7 +20,7 @@ func AuthMiddleware(mode string) fiber.Handler {
 
 		body, statusCode, err := AuthenticateToken(token)
 
-		if err != nil || statusCode != 200 {
+		if err != nil || statusCode != http.StatusOK {
 			return c.Status(statusCode).JSON(fiber.Map{
 				"message": "Authentication Failed",
 				"error":   err.Error(),
@@ -27,13 +28,22 @@ func AuthMiddleware(mode string) fiber.Handler {
 		}
 
 		if body["status"].(string) != mode {
-			return c.Status(403).JSON(fiber.Map{"error": "you do not have access to this method"})
+			return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "you do not have access to this method"})
 		}
 
 		c.Locals("ent", body)
 
 		return c.Next()
 	}
+}
+
+func InnerAuth(c *fiber.Ctx) error {
+
+	if c.Get("inner-secret") != InnerPass {
+		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	}
+
+	return c.Next()
 }
 
 // func UserAuthMiddleware(c *fiber.Ctx) error {

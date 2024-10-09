@@ -4,6 +4,7 @@ import (
 	"context"
 	"dg-kala-sample/database"
 	"dg-kala-sample/models"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -84,15 +85,9 @@ func AddDiscountCode(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(discountCode)
 }
 
-func UpdateUserDiscountCode(c *fiber.Ctx) error {
+func CheckUserDiscountCode(c *fiber.Ctx) error {
 
 	DCode := c.Query("DCode")
-
-	// DCodeID, err := primitive.ObjectIDFromHex(DCodeIDString)
-
-	// if err != nil {
-	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching Discount Code id from query": err.Error()})
-	// }
 
 	userIDString := c.Query("UserID")
 
@@ -124,7 +119,7 @@ func UpdateUserDiscountCode(c *fiber.Ctx) error {
 			if discount_code.DiscountUsers[i].Is_used {
 				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "user already used their discount code"})
 			}
-			discount_code.DiscountUsers[i].Is_used = true
+			// discount_code.DiscountUsers[i].Is_used = true
 			break
 		}
 	}
@@ -133,24 +128,100 @@ func UpdateUserDiscountCode(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).SendString("user id not found")
 	}
 
+	// update := bson.M{"$set": discount_code}
+
+	// updateResult, err := database.DiscountCodeCollection.UpdateOne(context.TODO(), filter, update)
+
+	// if err != nil {
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+	// 		"message": "error while updating discount code module",
+	// 		"error":   err.Error(),
+	// 	})
+	// }
+
+	// if updateResult.MatchedCount == 0 {
+	// 	return c.Status(fiber.StatusNotFound).SendString("No document found with the given ID")
+	// }
+
+	// if updateResult.ModifiedCount == 0 {
+	// 	return c.Status(http.StatusExpectationFailed).SendString("discount code was not modified as expected")
+	// }
+
+	return c.Status(http.StatusOK).JSON(discount_code)
+}
+
+func UpdateUserDiscountCode(DCode string, userID primitive.ObjectID) (int, int, error) {
+
+	// DCode := c.Query("DCode")
+
+	// userIDString := c.Query("UserID")
+
+	// userID, err := primitive.ObjectIDFromHex(userIDString)
+
+	// if err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching user id from query": err.Error()})
+	// }
+
+	var discount_code models.DiscountCode
+
+	filter := bson.M{"code": DCode}
+
+	err := database.DiscountCodeCollection.FindOne(context.Background(), filter).Decode(&discount_code)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "discount code not found"})
+			return 0, http.StatusNotFound, errors.New("discount code not found")
+		}
+		// return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return 0, http.StatusInternalServerError, err
+	}
+
+	var userfound bool = false
+
+	for i, discountUser := range discount_code.DiscountUsers {
+
+		if discountUser.UserID == userID {
+			userfound = true
+			if discount_code.DiscountUsers[i].Is_used {
+				// return 0, c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "user already used their discount code"})
+				return 0, http.StatusBadRequest, errors.New("user already used their discount code")
+			}
+			discount_code.DiscountUsers[i].Is_used = true
+			break
+		}
+	}
+
+	if !userfound {
+		// return 0, c.Status(http.StatusBadRequest).SendString("user id not found")
+		return 0, http.StatusBadRequest, errors.New("user id not found")
+	}
+
 	update := bson.M{"$set": discount_code}
 
 	updateResult, err := database.DiscountCodeCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "error while updating discount code module",
-			"error":   err.Error(),
-		})
+		// return 0, c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		// 	"message": "error while updating discount code module",
+		// 	"error":   err.Error(),
+		// })
+		return 0, http.StatusInternalServerError, err
 	}
 
 	if updateResult.MatchedCount == 0 {
-		return c.Status(fiber.StatusNotFound).SendString("No document found with the given ID")
+		// return 0, c.Status(fiber.StatusNotFound).SendString("No document found with the given ID")
+		return 0, http.StatusNotFound, errors.New("no document found with the given ID")
 	}
 
 	if updateResult.ModifiedCount == 0 {
-		return c.Status(http.StatusExpectationFailed).SendString("discount code was not modified as expected")
+		// return 0, c.Status(http.StatusExpectationFailed).SendString("discount code was not modified as expected")
+		return 0, http.StatusExpectationFailed, errors.New("discount code was not modified as expected")
 	}
 
-	return c.Status(http.StatusOK).SendString("discount code user updated succesfully")
+	// return 0, c.Status(http.StatusOK).JSON(fiber.Map{
+	// 	"message":       "discount code user updated succesfully",
+	// 	"discount_code": discount_code,
+	// })
+	return discount_code.Value, http.StatusOK, nil
 }

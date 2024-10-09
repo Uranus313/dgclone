@@ -30,9 +30,9 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 	*/
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	var productsMap = make(map[string]*models.Product) // map[primitive.ObjectID]*models.Product
 
@@ -70,9 +70,9 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 func InnerGetOrderByID(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	orderIDString := c.Params("orderID")
 
@@ -100,9 +100,9 @@ func InnerGetOrderByID(c *fiber.Ctx) error {
 
 func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	orderHistoryIDString := c.Params("orderHistoryID")
 
@@ -130,9 +130,9 @@ func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 
 func InnerGetProductByID(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	var product models.Product
 
@@ -167,9 +167,9 @@ func InnerGetProductByID(c *fiber.Ctx) error {
 
 func InnerSellerBS(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	sellerIDString := c.Params("SellerID")
 
@@ -373,21 +373,57 @@ func InnerSellerBS(c *fiber.Ctx) error {
 
 func InnerAddOrderHistory(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
+
+	type requestBody struct {
+		UserID        primitive.ObjectID   `json:"user_id"`
+		OrdersList    []primitive.ObjectID `json:"orders_list"`
+		DisscountCode string               `json:"disscount_code"`
+		Address       map[string]any       `json:"address"`
 	}
 
-	var orderHistory models.OrderHistory
+	// var orderHistory models.OrderHistory
+	var reqBody requestBody
 
-	if err := c.BodyParser(&orderHistory); err != nil {
+	if err := c.BodyParser(&reqBody); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid Request Body",
 			"error":   err.Error(),
 		})
 	}
 
-	orderHistory.OrderHistoryDate = time.Now()
-	orderHistory.State = models.Pending
+	// orderHistory.OrderHistoryDate = time.Now()
+	// orderHistory.State = models.Pending
+
+	discountCodeValue, statusCode, err := UpdateUserDiscountCode(reqBody.DisscountCode, reqBody.UserID)
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "problem with the disscount code",
+			"error":   err.Error(),
+		})
+	}
+
+	totalPrice, statusCode, err := CalculateTotalOrderListPrice(reqBody.OrdersList)
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "problem with order ids",
+			"error":   err.Error(),
+		})
+	}
+
+	var orderHistory = models.OrderHistory{
+		UserID:           reqBody.UserID,
+		OrdersList:       reqBody.OrdersList,
+		OrderHistoryDate: time.Now(),
+		State:            models.Pending,
+		TotalPrice:       totalPrice,
+		TotalDisscount:   discountCodeValue,
+		Address:          reqBody.Address,
+	}
 
 	insertResult, err := database.OrderHistoryCollection.InsertOne(context.Background(), orderHistory)
 
