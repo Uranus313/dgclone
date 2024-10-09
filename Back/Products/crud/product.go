@@ -47,13 +47,7 @@ func GetAllProducts(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sort method from query": err.Error()})
 	}
 
-	brandIDString := c.Query("BrandID", primitive.NilObjectID.Hex())
-
-	brandID, err := primitive.ObjectIDFromHex(brandIDString)
-
-	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching brand id from query": err.Error()})
-	}
+	prodTitle := c.Query("prodTitle", "")
 
 	/*
 		valid_sort_methods = {
@@ -66,20 +60,33 @@ func GetAllProducts(c *fiber.Ctx) error {
 	var product_list []models.Product
 	var filter primitive.M
 
-	if brandID.IsZero() {
-		filter = bson.M{"$or": []bson.M{
-			{"validation_state": models.Validated},
-			{"validation_state": models.Banned},
-		}}
-	} else {
+	if prodTitle != "" {
 		filter = bson.M{
 			"$or": []bson.M{
 				{"validation_state": models.Validated},
 				{"validation_state": models.Banned},
 			},
-			"brand_id": brandID,
+			"title": product_list,
 		}
+		var searchedProd models.Product
+		err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&searchedProd)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "product not found"})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+		product_list = append(product_list, searchedProd)
+		return c.Status(http.StatusOK).JSON(fiber.Map{
+			"products": product_list,
+			"hasMore":  false,
+		})
 	}
+
+	filter = bson.M{"$or": []bson.M{
+		{"validation_state": models.Validated},
+		{"validation_state": models.Banned},
+	}}
 
 	findOpts := options.Find().SetSkip(int64(offset)).SetLimit(int64(limit))
 
@@ -457,6 +464,7 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	// 	return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
 	// }
 
+	sellerCart.SellerID = seller["_id"].(primitive.ObjectID)
 	sellerCart.SellerTitle = seller["title"].(string)
 	sellerCart.SellerRating = seller["rating"].(float32)
 
@@ -484,6 +492,18 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 		return c.Status(http.StatusExpectationFailed).JSON(fiber.Map{"error": "product was not modified"})
 	}
 
+	_, statusCode, err := InnerRequest(PUT, "/sellerProduct", nil, map[string]string{
+		"sellerID":  seller["_id"].(string),
+		"productID": prodIDString,
+	})
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
+
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "seller cart added to product succesfully"})
 }
 
@@ -505,13 +525,12 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
 	}
 
-	var variant models.SellerQuantity
+	var variants []models.SellerQuantity
 
-	if err := c.BodyParser(&variant); err != nil {
+	if err := c.BodyParser(&variants); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid request body"})
 	}
 
-	variant.ValidationState = models.PendingValidation
 	// variant.VariantID = primitive.NewObjectID()
 
 	var product models.Product
@@ -532,18 +551,23 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 	for index, seller := range product.Sellers {
 		if seller.SellerID == sellerID {
 			sellerFound = true
-			for _, quantity := range seller.SellerQuantity {
-				if variant.Color.ID == quantity.Color.ID {
-					return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "duplicate varient/color"})
+			for _, variant := range variants {
+				variant.ValidationState = models.PendingValidation
+				for _, quantity := range seller.SellerQuantity {
+					if variant.Color.ID == quantity.Color.ID {
+						errMessage := fmt.Sprintf("duplicate varient/color: %#v", variant.Color.Title)
+						return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+					}
 				}
+				product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
 			}
-			product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
 			break
 		}
 	}
 
 	if !sellerFound {
-		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
+		// return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "seller not found"})
+		return AddSellerToProduct(c)
 	}
 
 	update := bson.M{"$set": bson.M{"sellers": product.Sellers}}
@@ -598,6 +622,7 @@ func GetAllPendingVariants(c *fiber.Ctx) error {
 				{Key: "shipment_method", Value: "$sellers.shipment_method"},
 				{Key: "price", Value: "$sellers.price"},
 				{Key: "discount_id", Value: "$sellers.discount_id"},
+				{Key: "_id", Value: "$_id"},
 			}},
 		},
 	}

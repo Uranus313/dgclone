@@ -40,6 +40,18 @@ func AddOrder(c *fiber.Ctx) error {
 
 	order.ID = insertResult.InsertedID.(primitive.ObjectID)
 
+	_, statusCode, err := InnerRequest(PUT, "/ShoppingCart", nil, map[string]string{
+		"orderID": order.ID.Hex(),
+		"userID":  order.UserID.Hex(),
+	})
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
+
 	return c.Status(http.StatusCreated).JSON(order)
 
 }
