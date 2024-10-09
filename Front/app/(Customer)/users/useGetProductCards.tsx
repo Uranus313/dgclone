@@ -1,6 +1,6 @@
 'use client'
 import { useQuery } from "@tanstack/react-query";
-import { SellerAddProdctCard } from "../components/Interfaces/interfaces";
+import { SellerAddProdctCard } from "../../components/Interfaces/interfaces";
 import { useSearchParams } from "next/navigation";
 
 interface Props{

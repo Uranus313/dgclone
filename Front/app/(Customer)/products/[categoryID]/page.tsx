@@ -5,7 +5,9 @@ import Link from 'next/link'
 import { getCategory } from '@/app/Functions/ServerFunctions'
 import Filter from './Filter'
 import Sort from './Sort'
-import ScrollLinkComponent from '@/app/components/ScrollLinkComponent'
+import InfiniteScrollProducts from './InfiniteScrollProducts'
+
+
 
 
 // const products : SellerAddProdctCard[] = [
@@ -45,7 +47,7 @@ interface Props {
 const ProductPage = async ({params:{categoryID},searchParams:{sortOrder}}:Props) => {
   let category = await getCategory(categoryID)
 
-  const res = await fetch(`http://localhost:8080/products/product/?limit=20&offset=0&&CateID=${category?.ID}`)
+  const res = await fetch(`http://localhost:8080/products/product/?limit=12&offset=0&&CateID=${category?.ID}`)
   const temp  = await res.json()
   const products:SellerAddProdctCard[] = temp.products
   
@@ -77,8 +79,8 @@ const ProductPage = async ({params:{categoryID},searchParams:{sortOrder}}:Props)
               )
 
               )}
-              <ScrollLinkComponent/>
           </div>
+              <InfiniteScrollProducts categoryID={categoryID}/>
         </div>
       </div>
     </div>
