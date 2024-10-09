@@ -1259,7 +1259,7 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
                 "Content-Type": "application/json",
                 "inner-secret": process.env.innerSecret
             },
-            body: JSON.stringify(req.user)
+            body: JSON.stringify(req.user.shoppingCart)
         });
         const resultJSON = await result.json()
         if(!result.ok){
@@ -1268,7 +1268,13 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
             next();
             return;
         }
-        result= await addOrderHistoryToList({userID : req.user._id , ...resultJSON});
+        if(!resultJSON?.orderHistoryID){
+            res.status(400).send({error: "no order history found"});
+            res.body = {error: "no order history found"};
+            next();
+            return;
+        }
+        result= await addOrderHistoryToList({userID : req.user._id ,orderHistoryID: resultJSON.orderHistoryID});
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};

@@ -242,9 +242,9 @@ router.post("/notification",innerAuth, async (req, res, next) =>{
     next();
 });
 
-router.post("/sellerProduct",innerAuth, async (req, res, next) =>{
+router.put("/sellerProduct",innerAuth, async (req, res, next) =>{
     try {
-        const result = await addProductToList(req.body);
+        const result = await addProductToList(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -264,9 +264,9 @@ router.post("/sellerProduct",innerAuth, async (req, res, next) =>{
     next();
 });
 
-router.post("/comment",innerAuth, async (req, res, next) =>{
+router.put("/comment",innerAuth, async (req, res, next) =>{
     try {
-        const result = await addcommentToList(req.body);
+        const result = await addcommentToList(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -285,9 +285,9 @@ router.post("/comment",innerAuth, async (req, res, next) =>{
     }
     next();
 });
-router.post("/shopingCart",innerAuth, async (req, res, next) =>{
+router.put("/shopingCart",innerAuth, async (req, res, next) =>{
     try {
-        const result = await addOrderToCart(req.body);
+        const result = await addOrderToCart(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
@@ -307,9 +307,9 @@ router.post("/shopingCart",innerAuth, async (req, res, next) =>{
     next();
 });
 
-router.post("/orderHistory",innerAuth, async (req, res, next) =>{
+router.put("/orderHistory",innerAuth, async (req, res, next) =>{
     try {
-        const result = await addOrderHistoryToList(req.body);
+        const result = await addOrderHistoryToList(req.query);
         if (result.error){
             res.status(400).send({error : result.error});
             res.body = {error : result.error};
