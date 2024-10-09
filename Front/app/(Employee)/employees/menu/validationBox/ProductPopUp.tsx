@@ -32,8 +32,9 @@ const ProductPopUp = ({ product }: Props) => {
     };
     const unbanProduct = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
+            const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
                 method: "PATCH",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -59,8 +60,9 @@ const ProductPopUp = ({ product }: Props) => {
 
     const banProduct = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
+            const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
                 method: "PATCH",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },

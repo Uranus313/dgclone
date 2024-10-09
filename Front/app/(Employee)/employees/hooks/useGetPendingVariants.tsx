@@ -1,8 +1,8 @@
-import { ProductInterface } from "@/app/components/Interfaces/interfaces";
+import { ProductVariant } from "@/app/components/Interfaces/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
 interface ProductListResponse {
-    products : ProductInterface[],
+    products : ProductVariant[],
     hasMore : boolean
 }
 interface Query{
@@ -16,7 +16,9 @@ function useGetPendingVariants(query : Query){
     return useQuery({
         queryKey : ['pendingVariantList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/seller/pendingVariants");
+            const result = await fetch("https://localhost:8080/products/seller/pendingVariants", {
+                credentials: 'include'
+            });
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){

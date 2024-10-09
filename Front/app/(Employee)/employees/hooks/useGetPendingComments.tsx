@@ -15,7 +15,9 @@ function useGetPendingComments(query : Query){
     return useQuery({
         queryKey : ['commentList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/comments/pending");
+            const result = await fetch("https://localhost:8080/products/comments/pending", {
+                credentials: 'include'
+            });
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){

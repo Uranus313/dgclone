@@ -86,7 +86,7 @@ const OrderList = ({ changeList }: Props) => {
 
           <ul>
             <div className="flex md:justify-between py-8 text-center">
-              <p className="w-1/2 md:w-1/3"> آی دی محصول </p>
+              <p className="w-1/2 md:w-1/3"> نام محصول </p>
               <p className="w-1/2 md:w-1/3"> امتیاز</p>
               <p className="w-0 md:w-1/3 invisible md:visible">تاریخ سفارش </p>
             </div>

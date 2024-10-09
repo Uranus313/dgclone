@@ -31,8 +31,9 @@ const CommentPopUp = ({ comment }: Props) => {
     };
     const unbanComment = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=2`, {
+            const result = await fetch("https://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=2`, {
                 method: "PATCH",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -59,8 +60,9 @@ const CommentPopUp = ({ comment }: Props) => {
 
     const banComment = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=3`, {
+            const result = await fetch("https://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=3`, {
                 method: "PATCH",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },

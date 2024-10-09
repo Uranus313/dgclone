@@ -1,6 +1,6 @@
 'use client'
 
-import { ProductInterface } from "@/app/components/Interfaces/interfaces";
+import { ProductVariant } from "@/app/components/Interfaces/interfaces";
 import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
@@ -9,7 +9,7 @@ import Link from "next/link";
 
 
 interface Props {
-    product: ProductInterface
+    product: ProductVariant
 }
 const ProductPopUp = ({ product }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +32,9 @@ const ProductPopUp = ({ product }: Props) => {
     };
     const unbanProduct = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-variant" + `?prodID=${product._id}&SellerID=${product.sellers[0].seller_id}&ColorID=${product.sellers[0].quantity[0].color._id}&ValidationState=2`, {
+            const result = await fetch("https://localhost:8080/products/validate-variant" + `?prodID=${product._id}&SellerID=${product.seller_id}&ColorID=${product.seller_quantity.color._id}&ValidationState=2`, {
                 method: "PATCH",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -49,7 +50,7 @@ const ProductPopUp = ({ product }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            product.validation_state = 2;
+            product.seller_quantity.validation_state = 2;
         },
         onError: (error) => {
             console.log(error);
@@ -59,8 +60,9 @@ const ProductPopUp = ({ product }: Props) => {
 
     const banProduct = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-variant" + `?prodID=${product._id}&SellerID=${product.sellers[0].seller_id}&ColorID=${product.sellers[0].quantity[0].color._id}&ValidationState=3`, {
+            const result = await fetch("https://localhost:8080/products/validate-variant" + `?prodID=${product._id}&SellerID=${product.seller_id}&ColorID=${product.seller_quantity.color._id}&ValidationState=3`, {
                 method: "PATCH",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -76,7 +78,7 @@ const ProductPopUp = ({ product }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            product.validation_state = 3;
+            product.seller_quantity.validation_state = 3;
         },
         onError: (error) => {
             console.log(error);
@@ -86,15 +88,23 @@ const ProductPopUp = ({ product }: Props) => {
 
     return (
         <div>
-            {product.validation_state == 1 &&
+            {product.seller_quantity.validation_state == 1 &&
                 <div className='w-full p-10 border-b-2 border-border'>
-                    <div className='flex pb-5'>
-                        <p className='text-text-color'>آی دی محصول : </p>
-                        <p>{product._id}</p>
-                        <p className='text-text-color'>اسم: </p>
-                        <p>{product.title}</p>
-                        <p className='pr-20 pl-5 text-text-color'> آی دی فروشنده   : </p>
-                        <p>{product.sellers && product.sellers[0].seller_id || "-"}</p>
+                    <div className=' pb-5'>
+                        <div className='flex pb-5'>
+                            <p className='text-text-color'>آی دی محصول : </p>
+                            <p className="pr-5">{product._id}</p>
+                            <p className='text-text-color pr-10'> رنگ: </p>
+                            <p className="pr-5">{product.seller_quantity.color.title}</p>
+                        </div>
+                        <div className='flex pb-5'>
+
+                            <p className='text-text-color'>آی دی فروشنده: </p>
+                            <p className="pr-5">{product.seller_id}</p>
+                            <p className='text-text-color pr-10'>اسم فروشنده: </p>
+                            <p className="pr-5">{product.seller_title}</p>
+                        </div>
+
                     </div>
                     <div className='flex justify-center'>
                         {user &&
