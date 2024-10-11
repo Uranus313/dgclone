@@ -61,22 +61,31 @@ func GetAllProducts(c *fiber.Ctx) error {
 	var filter primitive.M
 
 	if prodTitle != "" {
+
 		filter = bson.M{
 			"$or": []bson.M{
 				{"validation_state": models.Validated},
 				{"validation_state": models.Banned},
 			},
-			"title": product_list,
+			"title": prodTitle,
 		}
-		var searchedProd models.Product
-		err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&searchedProd)
+
+		cursor, err := database.ProductCollection.Find(context.Background(), filter)
+
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "product not found"})
 			}
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
-		product_list = append(product_list, searchedProd)
+
+		if err := cursor.All(context.Background(), &product_list); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while decoding cursor",
+				"error":   err.Error(),
+			})
+		}
+
 		return c.Status(http.StatusOK).JSON(fiber.Map{
 			"products": product_list,
 			"hasMore":  false,

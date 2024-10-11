@@ -19,17 +19,6 @@ const UserList = () => {
     }
     return (
         <div className=' bg-white rounded-md'>
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSearch();
-                }}>
-
-                <input className='bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md w-5/6' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
-                    ref={searchRef}
-                    onBlur={() => handleSearch()} />
-            </form>
-
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 <div className=' flex-col'>
                     <ul>

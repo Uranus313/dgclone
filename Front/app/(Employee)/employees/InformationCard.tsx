@@ -45,6 +45,7 @@ function InformationCard() {
                     <div className="py-3 font-extrabold flex">
                         <p className="w-11/12"> {user.firstName} {user.lastName} </p>
                         <svg
+                            className="invisible lg:visible"
                             fill="#000000"
                             height="25px"
                             width="25px"

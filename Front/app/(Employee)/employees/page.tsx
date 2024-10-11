@@ -13,6 +13,7 @@ import TicketBox from './menu/ticketBox/TicketBox';
 import ProductValidation from './menu/validationBox/ProductValidation';
 import VariantBox from './menu/variantValidation/VariantBox';
 import { useUser } from '@/app/hooks/useUser';
+import CategoryBox from './menu/categoryBox/CategoryBox';
 
 
 const EmployeeHomePage = () => {
@@ -36,6 +37,7 @@ const EmployeeHomePage = () => {
           <ProductValidation />
           <VariantBox />
           <TicketBox />
+          <CategoryBox />
         </span>
       }
 

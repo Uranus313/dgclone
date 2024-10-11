@@ -108,7 +108,10 @@ const ProductPopUp = ({ product }: Props) => {
 
     return (
         <div>
-            <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
+            <div onClick={() => {
+                openModal();
+                getCategory(product.category_id);
+            }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
                 <p className="w-1/2">{product.title}</p>
                 <p className="w-1/2">{product.rating.rate}</p>
             </div>

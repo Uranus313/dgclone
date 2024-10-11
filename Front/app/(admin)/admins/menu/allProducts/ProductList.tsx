@@ -14,7 +14,7 @@ const ProductList = ({ changeList }: Props) => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-  let { data: products, error, isLoading } = useGetProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+  let { data: products, error, isLoading } = useGetProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search});
 
   function handleSort(type: number) {
     setTypeSort(type);
@@ -53,7 +53,7 @@ const ProductList = ({ changeList }: Props) => {
             <option value="products" selected>محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
-          <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام محصول'
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
