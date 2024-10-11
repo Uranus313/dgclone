@@ -59,7 +59,7 @@ const AdminList = ({ changeList }: Props) => {
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
-          <input className='w-full mt-6 lg:mt-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
+          <input className='w-full mt-6 lg:mt-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام خانوادگی'
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
