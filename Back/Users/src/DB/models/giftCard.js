@@ -16,6 +16,9 @@ const giftCardSchema  = new mongoose.Schema(
     }
 );
 
+giftCardSchema.index({code : 1})
+
+
 export const GiftCardModel = mongoose.model("giftCards",giftCardSchema);
 
 export function validateGiftCardPost (data){

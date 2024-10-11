@@ -103,6 +103,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+userSchema.index({phoneNumber : 1 })
 
 userSchema.virtual("status").get(() => {
     return "user";

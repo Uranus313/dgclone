@@ -9,5 +9,6 @@ const phoneNumberVerificationSchema  = new mongoose.Schema(
     }
 );
 
+phoneNumberVerificationSchema.index({phoneNumber : 1})
 
 export const PhoneNumberVerificationModel = mongoose.model("phoneNumberVerifications",phoneNumberVerificationSchema);

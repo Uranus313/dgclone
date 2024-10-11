@@ -8,6 +8,6 @@ const emailVerificationSchema  = new mongoose.Schema(
         createdAt : {type: Date , required : true , default: Date.now() , expires: '2m'}
     }
 );
-
+emailVerificationSchema.index({email : 1})
 
 export const EmailVerificationModel = mongoose.model("emailVerifications",emailVerificationSchema);

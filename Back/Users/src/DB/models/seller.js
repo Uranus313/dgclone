@@ -182,6 +182,8 @@ sellerSchema.virtual("rate").get(function(){
     return this.rateSum / this.rateCount;
 }
 );
+sellerSchema.index({isVerified : 1,phoneNumber : 1 })
+
 
 sellerSchema.set('toJSON', { virtuals: true });
 sellerSchema.set('toObject', { virtuals: true });

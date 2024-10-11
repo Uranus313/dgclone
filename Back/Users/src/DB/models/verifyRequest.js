@@ -15,6 +15,8 @@ const verifyRequestSchema  = new mongoose.Schema(
     }
 );
 
+sellerSchema.index({state : 1 , sellerID : 1  })
+
 export const VerifyRequestModel = mongoose.model("verifyRequests",verifyRequestSchema);
 
 export function validateVerifyRequestAnswer (notification){
@@ -35,5 +37,6 @@ export function validateVerifyRequestAnswer (notification){
     })
     return schema.validateAsync(notification);
 }
+
 
 

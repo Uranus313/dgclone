@@ -23,6 +23,7 @@ const employeeSchema  = new mongoose.Schema(
     }
 );
 
+employeeSchema.index({phoneNumber : 1})
 
 employeeSchema.virtual("status").get(() => {
     return "employee";

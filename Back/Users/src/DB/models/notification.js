@@ -34,6 +34,8 @@ const notificationSchema  = new mongoose.Schema(
         type : {type: String,enum: ["information" , "order","suggestion","question"], required: true}
     }
 );
+notificationSchema.index({userID : 1, sellerID : 1 , type : 1})
+
 
 export const NotificationModel = mongoose.model("notifications",notificationSchema);
 
