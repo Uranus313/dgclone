@@ -20,7 +20,7 @@ const AdminHomePage = () => {
       <MenuSideBar />
       <div className='w-full'>
         <CardBox changeList={(list => setList(list))}/>
-        <span>
+        <span id="list">
           {list === 'admins' ? <AdminList changeList={(list => setList(list))} />
             : list === 'sellers' ? <SellerList changeList={(list => setList(list))} />
               : list === 'employees' ? <EmployeeList changeList={(list => setList(list))} />

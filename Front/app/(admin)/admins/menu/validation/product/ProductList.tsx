@@ -18,7 +18,7 @@ const ProductList = ({ changeList }: Props) => {
   let searchRef = useRef<any>('');
   let { data: products, error, isLoading } = useGetPendingProducts({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
 
-  
+
   const openModal = () => {
     if (dialogRef.current) {
       dialogRef.current.showModal();
@@ -42,10 +42,10 @@ const ProductList = ({ changeList }: Props) => {
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
           <option value="comments">کامنت ها</option>
           <option value="products" selected>محصولات</option>
-          
+
         </select>
-        </form>
-        {isLoading ? <span className="loading loading-dots loading-lg"></span> :
+      </form>
+      {isLoading ? <span className="loading loading-dots loading-lg"></span> :
         <div className=' flex-col'>
 
           <ul>
@@ -57,7 +57,10 @@ const ProductList = ({ changeList }: Props) => {
               )
             })}
           </ul>
-         
+          <div className='my-4 flex justify-center pb-5'>
+            <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
+            <button disabled={!products?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button>
+          </div>
         </div>
 
       }

@@ -76,7 +76,7 @@ const SignIn = () => {
           Password:
           <input type="password" ref={passwordRef}/>
         </label>
-        <button onClick={handleSignInSubmit} className="btn btn-primary">enter</button>
+        <button onClick={handleSignInSubmit} className="btn btn-primary mt-5">enter</button>
     </div>
     
   </>
