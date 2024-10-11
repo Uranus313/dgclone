@@ -348,13 +348,13 @@ export function validateAddToFavoriteList(data, favoriteList) {
 
 export function validateAddress(data) {
     const schema = Joi.object({
-        country: Joi.string().required(),
+        country: Joi.string(),
         province: Joi.string().required(),
         city: Joi.string().required(),
         postalCode: Joi.string().required(),
         additionalInfo: Joi.string(),
-        number: Joi.string().required(),
-        unit: Joi.string().required(),
+        number: Joi.string(),
+        unit: Joi.string(),
         coordinates: Joi.object({
             x: Joi.string().required(),
             y: Joi.string().required()
@@ -393,4 +393,31 @@ export function validatePostSellerRating(data) {
         rate : Joi.number().max(5).min(0).required()
     })
     return schema.validateAsync(data);
+}
+export function validateBuyTheCart(data) {
+    const schema = Joi.object({
+        
+        address: Joi.object({
+            country: Joi.string(),
+            province: Joi.string().required(),
+            city: Joi.string().required(),
+            postalCode: Joi.string().required(),
+            additionalInfo: Joi.string(),
+            number: Joi.string(),
+            unit: Joi.string(),
+            coordinates: Joi.object({
+                x: Joi.string().required(),
+                y: Joi.string().required()
+            }
+            ).required(),
+            receiver: Joi.object({
+                firstName: Joi.string().required(),
+                lastName: Joi.string().required(),
+                phoneNumber: Joi.string().min(11).max(12).required()
+            }
+            ).required(),
+        }).required(),
+        discount : Joi.string().max(200)
+    })
+    return schema.validate(data);
 }

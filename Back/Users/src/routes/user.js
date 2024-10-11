@@ -2,7 +2,7 @@ import express from "express"
 import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
-import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify, validatePostSellerRating } from "../DB/models/user.js";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify, validatePostSellerRating, validateBuyTheCart } from "../DB/models/user.js";
 import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUserPassword, deleteOrderFromCart, emptyTheCart, getUsers, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
@@ -1251,6 +1251,13 @@ router.delete("/shopingCart/:productID",(req, res, next) => auth(req, res, next,
 });
 
 router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+    const { error } = validateBuyTheCart(req.body);
+    if (error) {
+        res.status(400).send({ error: error.details[0].message });
+        res.body = { error: error.details[0].message };
+        next();
+        return;
+    }
     try {
 
         let result = await fetch(productURL+"/buyTheCart", {
@@ -1259,7 +1266,14 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
                 "Content-Type": "application/json",
                 "inner-secret": process.env.innerSecret
             },
-            body: JSON.stringify(req.user.shoppingCart)
+            body: JSON.stringify(
+                {
+                    OrderList : req.user.shoppingCart,
+                    UserID : req.user._id,
+                    Address: req.body.address,
+                    TotalDisscount : req.body.discount
+
+                })
         });
         const resultJSON = await result.json()
         if(!result.ok){
