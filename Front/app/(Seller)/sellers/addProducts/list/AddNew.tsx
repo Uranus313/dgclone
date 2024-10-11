@@ -164,7 +164,7 @@ interface Props{
 
 async function AddProductRequest(product:ProductInterface) {
   try {
-    const response = await fetch('http://localhost:8080/products/product', {
+    const response = await fetch('https://localhost:8080/products/product', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

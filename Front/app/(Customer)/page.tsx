@@ -37,7 +37,8 @@ export default async function Home() {
   // }, [Cate])
 
   
-  const res = await fetch("http://localhost:8080/products/category")
+  //server
+  const res = await fetch("https://localhost:8080/products/category")
   categories  = await res.json()
 
 

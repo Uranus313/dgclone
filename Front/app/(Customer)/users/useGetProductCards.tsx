@@ -4,18 +4,16 @@ import { SellerAddProdctCard } from "../../components/Interfaces/interfaces";
 import { useSearchParams } from "next/navigation";
 
 interface Props{
-    category:string|null
+   categoryID: string
 }
-function useGetProductCards(){
-    const searchParams = useSearchParams();
-    const category = searchParams.get('category');
+function useGetProductCards({categoryID}:Props){
+   
     console.log('1')
     return useQuery<{products:SellerAddProdctCard[],hasMore:boolean}>({
-        queryKey : ['productCards'],
+        queryKey : ['productCards',categoryID],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch(`http://localhost:8080/products/product/?CateID=${category}&&limit=20&&offset=0`, {
-                            credentials: 'include'});
+            const result = await fetch(`https://dummyjson.com/users`, );
                            
             const jsonResult = await result.json();
             if(result.ok){

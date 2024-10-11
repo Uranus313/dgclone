@@ -29,7 +29,7 @@ DBConnection();
 const app = express();
 const port = process.env.PORT || 3005;
 // winston.add(new winston.transports.File({filename : "C:\\Users\\Hico\\Desktop\\smslogs\\users.log"}));
-const allowedOrigins = ["http://localhost:8080","http://localhost:3000","http://localhost:5173","http://myapp.local"];
+const allowedOrigins = ["https://localhost:8080", "http://localhost:3000", "http://localhost:5173", "http://myapp.local"];
 // app.use(cors({
 //     origin: (origin, callback) =>{
 //         console.log(origin)
@@ -51,7 +51,7 @@ app.use(cors({
 app.use(express_status_monitor())
 process.env.JWTSECRET = 'mysecret'
 console.log(process.env.JWTSECRET)
-if(!process.env.NODE_ENV){  process.env.NODE_ENV= "development"}
+if (!process.env.NODE_ENV) { process.env.NODE_ENV = "development" }
 console.log(process.env.NODE_ENV)
 app.use(express.json());
 app.use(cookieParser());

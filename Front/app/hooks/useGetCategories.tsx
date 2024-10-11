@@ -6,7 +6,7 @@ function useGetCategories(){
         queryKey : ['categories'],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch("http://localhost:8080/products/category", {
+            const result = await fetch("https://127.0.0.1:8080/products/category", {
                             credentials: 'include'});
                            
             const jsonResult = await result.json();

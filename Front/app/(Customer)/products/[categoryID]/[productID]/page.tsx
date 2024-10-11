@@ -161,7 +161,8 @@ interface Props {
 }
 const ProductPage = async({params:{productID}}:Props) => {
     
-    const res = await fetch(`http://localhost:8080/products/product/${productID}`)
+    //server
+    const res = await fetch(`https://localhost:8080/products/product/${productID}`)
     const temp  = await res.json()
     const product:ProductInterface = temp.product
     const recentComments:Comment[] = temp.comments
