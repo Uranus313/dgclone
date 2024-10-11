@@ -15,7 +15,7 @@ const verifyRequestSchema  = new mongoose.Schema(
     }
 );
 
-sellerSchema.index({state : 1 , sellerID : 1  })
+verifyRequestSchema.index({state : 1 , sellerID : 1  })
 
 export const VerifyRequestModel = mongoose.model("verifyRequests",verifyRequestSchema);
 
