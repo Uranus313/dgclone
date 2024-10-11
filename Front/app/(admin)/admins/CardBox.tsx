@@ -22,10 +22,17 @@ function CardBox({ changeList }: Props) {
     const { data: transactionCount, error: tError, isLoading: isTransactionCountLoading } = useGetTransactionCount();
     const { data: productAndOrderCount, error: poError, isLoading: isCountLoading } = useGetProdsAndOrdersCount();
 
+    function goToList() {
+        const element = document.getElementById("list");
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     return (
 
-        <div className='w-9/12 text-white text-center pr-20'>
-            <div className='md:flex mt-20'>
+        <div className='w-9/12 text-white text-center pr-20' >
+            <div className='md:flex mt-10 md:mt-20' id="cardBox">
                 <div className='bg-primary-color flex-1 mx-5 rounded-md '>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
@@ -42,7 +49,10 @@ function CardBox({ changeList }: Props) {
                             <p>کاربران</p>
                         </div>
                     </div>
-                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("users") }}>نشان دادن کاربران </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
+                        changeList("users");
+                        goToList();
+                    }}>نشان دادن کاربران </button>
                 </div>
                 <div className='bg-red-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -61,7 +71,10 @@ function CardBox({ changeList }: Props) {
                             <p>کارمندان</p>
                         </div>
                     </div>
-                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("employees") }}>نشان دادن کارمندان </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
+                        changeList("employees");
+                        goToList();
+                    }}>نشان دادن کارمندان </button>
                 </div>
                 <div className='bg-purple-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -85,7 +98,10 @@ function CardBox({ changeList }: Props) {
                             }
                         </div>
                     </div>
-                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("orders") }}>نشان دادن سفارش ها </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
+                        changeList("orders");
+                        goToList();
+                    }}>نشان دادن سفارش ها </button>
                 </div>
             </div>
             <div className='md:flex mt-16'>
@@ -106,7 +122,10 @@ function CardBox({ changeList }: Props) {
                             <p> فروشندگان</p>
                         </div>
                     </div>
-                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("sellers") }}>نشان دادن فروشندگان </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
+                        changeList("sellers");
+                        goToList();
+                    }}>نشان دادن فروشندگان </button>
                 </div>
                 <div className='bg-green-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -130,7 +149,10 @@ function CardBox({ changeList }: Props) {
                             }
                         </div>
                     </div>
-                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("products") }}>نشان دادن محصولات </button>
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
+                        changeList("products");
+                        goToList();
+                    }}>نشان دادن محصولات </button>
                 </div>
                 <div className='bg-greener-box flex-1 mx-5 rounded-md mt-10 md:mt-0'>
                     <div className='flex'>
@@ -150,8 +172,11 @@ function CardBox({ changeList }: Props) {
                             <p> تراکنش ها</p>
                         </div>
                     </div>
-                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => { changeList("transactions") }}>نشان دادن تراکنش ها </button>
-                
+                    <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
+                        changeList("transactions");
+                        goToList();
+                    }}>نشان دادن تراکنش ها </button>
+
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { ProductInterface } from "@/app/components/Interfaces/interfaces";
+import { Category, ProductInterface } from "@/app/components/Interfaces/interfaces";
 import { useUser } from "@/app/hooks/useUser";
 import { useMutation } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
@@ -11,6 +11,7 @@ export interface Props {
 }
 const ProductPopUp = ({ product }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [category, setCategory] = useState<Category | null>(null);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error, setError] = useState<string | null>(null);
     const { user } = useUser();
@@ -28,6 +29,25 @@ const ProductPopUp = ({ product }: Props) => {
             setIsOpen(false);
         }
     };
+    async function getCategory(category_id: string) {
+        if (!category_id) {
+            return
+        }
+        const result = await fetch("https://localhost:8080/products/category/" + category_id, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const jsonResult = await result.json();
+        console.log(jsonResult);
+        if (result.ok) {
+            setCategory(jsonResult);
+        } else {
+            setError(jsonResult.error);
+        }
+    }
     const unbanProd = useMutation({
         mutationFn: async () => {
             const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
@@ -88,7 +108,10 @@ const ProductPopUp = ({ product }: Props) => {
 
     return (
         <div>
-            <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
+            <div onClick={() => {
+                openModal();
+                getCategory(product.category_id);
+            }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
                 <p className="w-1/2 md:w-1/4">{product.title}</p>
                 <p className="w-0 md:w-1/4 invisible md:visible">{product.sell_count}</p>
                 <p className="w-0 md:w-1/4 invisible md:visible">{((product.wieght_KG && product.wieght_KG) || "-")}</p>
@@ -100,9 +123,10 @@ const ProductPopUp = ({ product }: Props) => {
                     {error && <p>{error}</p>}
                     <h3 className="font-bold text-lg pb-2">{product.title}</h3>
                     <div className='block'>
-                        <div className=' justify-between pb-2'>
-                            <p>آیدی برند :</p>
-                            <p>{product.brand_id}</p>
+                        <div className='flex pb-2'>
+                            <p className="pl-2"> برند :</p>
+                            {(!category && !error) && <span className="loading loading-dots loading-lg"></span>}
+                            {category?.title && <p>{category?.title}</p>}
                         </div>
                         <div className='flex pb-2'>
                             <p className="pl-2"> امتیاز :</p>
@@ -171,14 +195,14 @@ const ProductPopUp = ({ product }: Props) => {
                     </div>
                     {user &&
                         <div className="my-4 flex justify-center">
-                            {product.validation_state != 3 ?(
+                            {product.validation_state != 3 ? (
 
                                 <div>
                                     <button className='btn btn-error' type='button' onClick={() => banProd.mutate()}>بن</button>
                                 </div>
-                            ):(
+                            ) : (
                                 <div>
-                                <button className='btn btn-error' type='button' onClick={() => unbanProd.mutate()}>لغو بن </button>
+                                    <button className='btn btn-error' type='button' onClick={() => unbanProd.mutate()}>لغو بن </button>
                                 </div>
                             )
                             }

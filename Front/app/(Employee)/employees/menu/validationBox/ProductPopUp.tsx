@@ -123,8 +123,6 @@ const ProductPopUp = ({ product }: Props) => {
                                     }
                                 </div>
                             }
-
-
                         </div>
                     </div>
 

@@ -18,19 +18,19 @@ export interface SellerInfosOnProduct {
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    seller_quantity: { color: Color, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }[], //1 pending 2 validated 3 banned
+    seller_quantity: { color: Color, quantity: number, guarantee: { title: string, _id: string }, validation_state: number }[], //1 pending 2 validated 3 banned
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
     discountId?: string,
 
 }
 
-export interface ProductVariant{
+export interface ProductVariant {
     _id: string,
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    seller_quantity: { color: Color, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }, //1 pending 2 validated 3 banned
+    seller_quantity: { color: Color, quantity: number, guarantee: { title: string, _id: string }, validation_state: number }, //1 pending 2 validated 3 banned
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
     discount_id?: string,
@@ -66,21 +66,21 @@ export interface Order {
     userid: string,
     rate?: number,
     state: State,
-    ordersdate:string
-    recievedate:string
+    ordersdate: string
+    recievedate: string
 }
 
 
-export interface OrdersHistory{
-    _id?:string
-    userid:string,
-    orders:Order[]
-    ordersdate:string
-    recievedate:string
-    state?:State,
-    price:number , 
-    discount?:number,
-    address?:Address
+export interface OrdersHistory {
+    _id?: string
+    userid: string,
+    orders: Order[]
+    ordersdate: string
+    recievedate: string
+    state?: State,
+    price: number,
+    discount?: number,
+    address?: Address
 }
 
 
@@ -164,8 +164,8 @@ export interface SellerSetVarientOnProduct {
 
 }
 
-export interface details{
-    title: string, map:{[key: string]: string} 
+export interface details {
+    title: string, map: { [key: string]: string }
 }
 
 
@@ -205,11 +205,11 @@ export interface Comment {
     rate?: number //for buyers
     order?: { color: { title: string, hex: string }, sellerTitle: string } //for normal comments
     user: { userid: string, firstname: string, lastname: string }
-    user_id:string
+    user_id: string
     content: string
     disAndlike?: { userid: string, disOlike: boolean }[] //for questions
     dateSent: string
-    date_sent:string
+    date_sent: string
     comment_type: number
     validation_state: number
 }
@@ -293,7 +293,7 @@ export enum companyType {
 export enum bankNumberType { shaba = "shaba", bank = "bank" }
 export enum moneyReturn { bankAccount = "bankAccount", wallet = "wallet" }
 export interface Seller {
-    _id?:string
+    _id?: string
     [key: string]: any;
     rating: number
     sellerID: string
@@ -408,15 +408,15 @@ export interface SellerAddProdctCard {
     Commission: number,
     UrbanPrice: number,//price that the first seller put
     SellerCount: number,
-    ID:string
+    ID: string
 }
 
 //#endregion
 
 export interface Color {
-    _id?:string,
+    _id?: string,
     title: string,
-    hex: string 
+    hex: string
 }
 
 export interface Brand {
@@ -434,3 +434,22 @@ export interface productSaleAnalyseCard {
     saleCount: number,
     visits: number
 }
+
+export interface Category {
+    ID?: string,
+    title: string,
+    Childs?: Category[],
+    Detail: detail[],
+    CommisionPercentage: number,
+    ParentID?: string,
+    Pictures: string[],
+    Description?: string,
+    Link?: string,
+    Theme?: string
+}
+
+export interface detail {
+    title: string,
+    keys: string[]
+}
+

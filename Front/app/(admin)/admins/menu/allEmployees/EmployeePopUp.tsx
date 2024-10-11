@@ -136,8 +136,11 @@ const EmployeePopUp = ({ employee }: Props) => {
             </div>
             <div className=' flex justify-between pb-2'>
               <p>آیدی :</p>
-
               <p>{employee._id}</p>
+            </div>
+            <div className=' flex justify-between pb-2'>
+              <p>شغل :</p>
+              <p>{employee.roleID?.name}</p>
             </div>
           </div>
           <div className='my-4 flex justify-center'>

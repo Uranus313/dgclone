@@ -12,6 +12,7 @@ import cookieParser from 'cookie-parser'
 import { validateAdminPost } from "./src/DB/models/admin.js";
 import { sendMail } from "./src/functions/sendMail.js";
 import { sendSMS } from "./src/functions/sendSMS.js";
+process.env.innerSecret = "mehr+kar+pass";
 // async function asynctest(){
 //     try {
 //         const result = await validateAdminPost({phoneNumber : "11"})
