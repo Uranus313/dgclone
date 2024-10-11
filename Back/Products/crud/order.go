@@ -40,8 +40,19 @@ func AddOrder(c *fiber.Ctx) error {
 
 	order.ID = insertResult.InsertedID.(primitive.ObjectID)
 
-	return c.Status(http.StatusCreated).JSON(order)
+	_, statusCode, err := InnerRequest(PUT, "/ShoppingCart", nil, map[string]string{
+		"orderID": order.ID.Hex(),
+		"userID":  order.UserID.Hex(),
+	})
 
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusCreated).JSON(order)
 }
 
 func GetOrdersInOrdersHistory(c *fiber.Ctx) error {
@@ -343,4 +354,119 @@ func SellerIncomeChart(c *fiber.Ctx) error {
 		"recentSaleChartList": recentSaleChartList,
 		"profit":              profit,
 	})
+}
+
+func GetOrderListTotalPrice(c *fiber.Ctx) error {
+
+	type requestBody struct {
+		OrdersList []primitive.ObjectID `json:"orders_list"`
+	}
+
+	var reqBody requestBody
+
+	if err := c.BodyParser(&reqBody); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
+	totalPrice, statusCode, err := CalculateTotalOrderListPrice(reqBody.OrdersList)
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "problem with order ids",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"totalPrice": totalPrice,
+	})
+}
+
+func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (int, int, error) {
+
+	var totalPrice int = 0
+
+	for _, orderID := range orderIDList {
+		var order models.Order
+		filter := bson.M{"_id": orderID}
+		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				return 0, http.StatusNotFound, err
+			}
+			return 0, http.StatusInternalServerError, err
+		}
+		totalPrice += order.Product.Price
+	}
+
+	return totalPrice, http.StatusOK, nil
+}
+
+func UpdateOrderState(c *fiber.Ctx) error {
+
+	orderIDString := c.Query("OrderID")
+
+	orderID, err := primitive.ObjectIDFromHex(orderIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching order id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	stateString := c.Query("State")
+
+	state, err := strconv.Atoi(stateString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching validation state from query",
+			"error":   err.Error(),
+		})
+	}
+
+	if state == 2 || state < 1 || state > 5 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid state",
+			"valid requests": fiber.Map{
+				"1": "delivered",
+				"3": "canceled",
+				"4": "returned",
+				"5": "recievedInWareHouse",
+			},
+		})
+	}
+
+	update := bson.M{"$set": bson.M{"state": state}}
+
+	updateResult, err := database.OrderCollection.UpdateByID(context.Background(), orderID, update)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while updating order",
+			"error":   err.Error(),
+		})
+	}
+
+	if updateResult.MatchedCount == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "order not found"})
+	}
+
+	if updateResult.ModifiedCount == 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "order was not modified"})
+	}
+
+	// _, statusCode, err := InnerRequest(POST,"/notification",map[string]string{
+
+	// },nil)
+
+	// if err != nil {
+	// 	return c.Status(statusCode).JSON(fiber.Map{
+	// 		"message": "Inner API Error",
+	// 		"error":   err.Error(),
+	// 	})
+	// }
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "order state updated succesfully"})
 }

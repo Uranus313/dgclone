@@ -25,6 +25,17 @@ export interface SellerInfosOnProduct {
 
 }
 
+export interface ProductVariant{
+    _id: string,
+    seller_id: string,
+    seller_title: string,
+    seller_rating: number
+    seller_quantity: { color: Color, quantity: number, guarantee: {title:string,_id:string} , validation_state:number }, //1 pending 2 validated 3 banned
+    price: number,
+    shipment_method?: number, //1 digi 2 warehouise
+    discount_id?: string,
+}
+
 export interface Ticket {
     _id: string;
     isSeen: boolean;

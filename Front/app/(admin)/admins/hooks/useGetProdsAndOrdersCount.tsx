@@ -4,7 +4,9 @@ function useGetProdsAndOrdersCount() {
     return useQuery({
         queryKey: ['productOrderCount'],
         queryFn: async () => {
-            const result = await fetch("http://localhost:8080/products/prodAndOrdersCount");
+            const result = await fetch("https://localhost:8080/products/prodAndOrdersCount", {
+                credentials: 'include'
+            });
             const jsonResult = await result.json();
             console.log(jsonResult)
             if (result.ok) {

@@ -16,7 +16,9 @@ function useGetPendingProducts(query : Query){
     return useQuery({
         queryKey : ['pemdingProductroductList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/allPendingProducts");
+            const result = await fetch("https://localhost:8080/products/allPendingProducts", {
+                credentials: 'include'
+            });
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){

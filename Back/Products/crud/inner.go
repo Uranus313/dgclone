@@ -1,6 +1,7 @@
 package crud
 
 import (
+	"bytes"
 	"context"
 	"dg-kala-sample/auth"
 	"dg-kala-sample/database"
@@ -29,9 +30,9 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 	*/
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	var productsMap = make(map[string]*models.Product) // map[primitive.ObjectID]*models.Product
 
@@ -69,9 +70,9 @@ func InnerProductMapAssign(c *fiber.Ctx) error {
 
 func InnerGetOrderByID(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	orderIDString := c.Params("orderID")
 
@@ -99,9 +100,9 @@ func InnerGetOrderByID(c *fiber.Ctx) error {
 
 func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	orderHistoryIDString := c.Params("orderHistoryID")
 
@@ -129,9 +130,9 @@ func InnerGetOrderHistoryByID(c *fiber.Ctx) error {
 
 func InnerGetProductByID(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	var product models.Product
 
@@ -166,9 +167,9 @@ func InnerGetProductByID(c *fiber.Ctx) error {
 
 func InnerSellerBS(c *fiber.Ctx) error {
 
-	if c.Get("inner-secret") != auth.InnerPass {
-		return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
-	}
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
 
 	sellerIDString := c.Params("SellerID")
 
@@ -370,6 +371,88 @@ func InnerSellerBS(c *fiber.Ctx) error {
 
 }
 
+func InnerAddOrderHistory(c *fiber.Ctx) error {
+
+	// if c.Get("inner-secret") != auth.InnerPass {
+	// 	return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Inner Password"})
+	// }
+
+	type requestBody struct {
+		UserID        primitive.ObjectID   `json:"user_id"`
+		OrdersList    []primitive.ObjectID `json:"orders_list"`
+		DisscountCode string               `json:"disscount_code"`
+		Address       map[string]any       `json:"address"`
+	}
+
+	// var orderHistory models.OrderHistory
+	var reqBody requestBody
+
+	if err := c.BodyParser(&reqBody); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid Request Body",
+			"error":   err.Error(),
+		})
+	}
+
+	// orderHistory.OrderHistoryDate = time.Now()
+	// orderHistory.State = models.Pending
+
+	discountCodeValue, statusCode, err := UpdateUserDiscountCode(reqBody.DisscountCode, reqBody.UserID)
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "problem with the disscount code",
+			"error":   err.Error(),
+		})
+	}
+
+	totalPrice, statusCode, err := CalculateTotalOrderListPrice(reqBody.OrdersList)
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "problem with order ids",
+			"error":   err.Error(),
+		})
+	}
+
+	var orderHistory = models.OrderHistory{
+		UserID:           reqBody.UserID,
+		OrdersList:       reqBody.OrdersList,
+		OrderHistoryDate: time.Now(),
+		State:            models.Pending,
+		TotalPrice:       totalPrice,
+		TotalDisscount:   discountCodeValue,
+		Address:          reqBody.Address,
+	}
+
+	insertResult, err := database.OrderHistoryCollection.InsertOne(context.Background(), orderHistory)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to add order",
+			"error":   err.Error(),
+		})
+	}
+
+	orderHistory.ID = insertResult.InsertedID.(primitive.ObjectID)
+
+	// _, statusCode, err := InnerRequest(POST,"/notification",map[string]string{
+
+	// },nil)
+
+	// if err != nil {
+	// 	return c.Status(statusCode).JSON(fiber.Map{
+	// 		"message": "Inner API Error",
+	// 		"error":   err.Error(),
+	// 	})
+	// }
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"message":        "order history added susscesfully",
+		"orderHistoryID": orderHistory.ID,
+	})
+}
+
 const (
 	GET    = "GET"
 	POST   = "POST"
@@ -379,17 +462,33 @@ const (
 )
 
 // returnes response body, status code, error
-func InnerRequest(method string, url string) (map[string]interface{}, int, error) {
+func InnerRequest(
+	method string,
+	url string,
+	requestBody map[string]string,
+	queryParams map[string]string,
+) (map[string]interface{}, int, error) {
 
 	const BASE_URL string = "http://localhost:3005/users/inner"
 
-	req, err := http.NewRequest(method, BASE_URL+url, nil)
+	reqBody, err := json.Marshal(requestBody)
+
+	if err != nil {
+		return nil, 500, err
+	}
+
+	rBody := bytes.NewBuffer(reqBody)
+
+	req, err := http.NewRequest(method, BASE_URL+url, rBody)
 
 	if err != nil {
 		return nil, 500, err
 	}
 
 	req.Header.Add("inner-secret", auth.InnerPass)
+	for key, value := range queryParams {
+		req.Header.Add(key, value)
+	}
 
 	res, err := http.DefaultClient.Do(req)
 

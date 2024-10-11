@@ -2,15 +2,12 @@ package main
 
 import (
 	"context"
-	// "dg-kala-sample/auth"
 	"dg-kala-sample/auth"
 	"dg-kala-sample/crud"
 	"dg-kala-sample/database"
 
 	// fakerdata "dg-kala-sample/fakerData"
-
 	"log"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -88,7 +85,7 @@ func main() {
 
 	app.Get("/products/prodAndOrdersCount", crud.GetProdsAndOrdersCount)
 
-	app.Get("/products/allProducts", crud.GetAllProducts) //query params => limit, offset, SortMethod, BrandID
+	app.Get("/products/allProducts", crud.GetAllProducts) //query params => limit, offset, SortMethod, prodTitle
 
 	app.Get("/products/allPendingProducts", crud.GetAllPendingProds) //query params => limit, offset
 
@@ -128,7 +125,7 @@ func main() {
 
 	app.Post("/products/discountcode", crud.AddDiscountCode) // (request body)
 
-	app.Put("/products/discountcode", crud.UpdateUserDiscountCode) // query params => DCode, UserID
+	app.Get("/products/discountcode", crud.CheckUserDiscountCode) // query params => DCode, UserID
 
 	// ------------sale discount-----------
 
@@ -158,57 +155,23 @@ func main() {
 
 	app.Get("/products/order", crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle
 
+	app.Post("products/order/orderListTotalPrice", crud.GetOrderListTotalPrice)
+
+	app.Patch("/products/order", crud.UpdateOrderState) // query params => OrderID, State
+
 	// -------------inner--------------
 
-	app.Get("/products/inner/ProductMapAssign", crud.InnerProductMapAssign)
+	app.Get("/products/inner/ProductMapAssign", auth.InnerAuth, crud.InnerProductMapAssign)
 
-	app.Get("/products/inner/order/:orderID", crud.InnerGetOrderByID)
+	app.Get("/products/inner/order/:orderID", auth.InnerAuth, crud.InnerGetOrderByID)
 
-	app.Get("/products/inner/orderHistory/:orderHistoryID", crud.InnerGetOrderHistoryByID)
+	app.Get("/products/inner/orderHistory/:orderHistoryID", auth.InnerAuth, crud.InnerGetOrderHistoryByID)
 
-	app.Get("/products/inner/product/:ProdID", crud.InnerGetOrderByID)
+	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetOrderByID)
 
-	app.Get("/products/inner/sellerSaleInfo/:SellerID", crud.InnerSellerBS)
+	app.Get("/products/inner/sellerSaleInfo/:SellerID", auth.InnerAuth, crud.InnerSellerBS)
 
-	// ------------tests-------------
-
-	app.Post("/products/addpost", func(c *fiber.Ctx) error {
-		// Get the Authorization header
-		authHeader := c.Get("Authorization")
-
-		// Check if the header is not empty and contains the Bearer token
-		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Unauthorized",
-			})
-		}
-
-		// Extract the token from the header (remove "Bearer " prefix)
-		token := strings.TrimPrefix(authHeader, "Bearer ")
-
-		// Now you can use the token as needed
-		log.Println("Token:", token)
-
-		// Continue processing
-		return c.Next()
-
-	})
-
-	app.Get("/products/query-parameters", func(c *fiber.Ctx) error {
-		// Retrieve query parameters
-		category := c.Query("category") // "electronics"
-		sort := c.Query("sort")         // "price"
-
-		// You can also provide a default value if the parameter is not present
-		limit := c.Query("limit", "10") // if limit is not provided, it will default to "10"
-
-		// Output for demonstration purposes
-		// fmt.Printf("Category: %s, Sort: %s, Limit: %s\n", category, sort, limit)
-		log.Printf("Category: %s, Sort: %s, Limit: %s\n", category, sort, limit)
-
-		// Return a response
-		return c.SendString("Query parameters received")
-	})
+	app.Post("/products/inner/orderHistory", auth.InnerAuth, crud.InnerAddOrderHistory)
 
 	log.Fatal(app.ListenTLS(":8080", "./cert.pem", "./key.pem"))
 }

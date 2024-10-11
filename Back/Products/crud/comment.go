@@ -204,11 +204,11 @@ func PostComment(c *fiber.Ctx) error {
 	// 	return userID.IsZero()
 	// }
 	// var userExist bool = smaple_func(comment.UserID)
-	_, statusCode, err := InnerRequest(GET, "/checkUser/"+comment.UserID.Hex())
+	_, statusCode, err := InnerRequest(GET, "/checkUser/"+comment.UserID.Hex(), nil, nil)
 
 	if err != nil {
 		return c.Status(statusCode).JSON(fiber.Map{
-			"message": "Problem With User ID",
+			"message": "Inner API Error (There Could be a Problem With User ID)",
 			"error":   err.Error(),
 		})
 	}
@@ -226,6 +226,18 @@ func PostComment(c *fiber.Ctx) error {
 	}
 
 	comment.ID = insertResult.InsertedID.(primitive.ObjectID)
+
+	_, statusCode, err = InnerRequest(PUT, "/comment", nil, map[string]string{
+		"commentID": comment.ID.Hex(),
+		"userID":    comment.UserID.Hex(),
+	})
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
 
 	return c.Status(http.StatusCreated).JSON(comment)
 }

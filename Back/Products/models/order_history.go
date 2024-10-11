@@ -15,5 +15,5 @@ type OrderHistory struct {
 	State            StateType            `json:"state" bson:"state"`
 	TotalPrice       int                  `json:"total_price" bson:"total_price"`
 	TotalDisscount   int                  `json:"total_disscount" bson:"total_disscount"`
-	Address          string               `json:"address" bson:"address"`
+	Address          map[string]any       `json:"address" bson:"address"`
 }

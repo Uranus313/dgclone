@@ -15,7 +15,9 @@ function useGetProducts(query : Query){
     return useQuery({
         queryKey : ['productList', query],
         queryFn : async () => {
-            const result = await fetch("http://localhost:8080/products/allProducts"+`?limit=${query.limit}&offset=${query.floor}&SortMethod=${query.sort}`);
+            const result = await fetch("https://localhost:8080/products/allProducts"+`?limit=${query.limit}&offset=${query.floor}&SortMethod=${query.sort}`, {
+                credentials: 'include'
+            });
             const jsonResult = await result.json();
             console.log(jsonResult)
             if(result.ok){
