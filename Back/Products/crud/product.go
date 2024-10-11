@@ -66,7 +66,7 @@ func GetAllProducts(c *fiber.Ctx) error {
 				{"validation_state": models.Validated},
 				{"validation_state": models.Banned},
 			},
-			"title": product_list,
+			"title": prodTitle,
 		}
 		var searchedProd models.Product
 		err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&searchedProd)
