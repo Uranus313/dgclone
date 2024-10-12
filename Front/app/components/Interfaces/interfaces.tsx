@@ -196,22 +196,20 @@ export interface ProductInterface {
 export enum commentType { comment = 'comment', answer = 'answer', question = 'question' }
 
 export interface Comment {
-    type: commentType
     answers?: Comment[]  //for question comments
-    id: string
-    _id: string
-    productID: string
-    product_id: string
+    _id?: string
+    answers_to?:string
+    product_id?: string
+    order_id?:string
     rate?: number //for buyers
     order?: { color: { title: string, hex: string }, sellerTitle: string } //for normal comments
-    user: { userid: string, firstname: string, lastname: string }
-    user_id: string
-    content: string
-    disAndlike?: { userid: string, disOlike: boolean }[] //for questions
-    dateSent: string
-    date_sent: string
-    comment_type: number
-    validation_state: number
+    user?: { userid: string, firstname: string, lastname: string }
+    user_id?: string
+    content?: string
+    'likes&disslikes'?: { userid: string, disOlike: boolean }[] //for questions
+    date_sent?: Date
+    comment_type?: number
+    validation_state?: number
 }
 
 export enum State { returned = 'returned', canceled = 'canceled', pending = 'pending', delivered = 'delivered', recivedInWareHouse = 'recivedInWareHouse' }

@@ -41,6 +41,9 @@ export default async function Home() {
   const res = await fetch("https://localhost:8080/products/category")
   categories  = await res.json()
 
+  // const res2 = await fetch("https://localhost:8080/products/salediscount/MostDiscounts")
+  // const mostProducts  = await res2.json()
+
 
   // const rest = await fetch("http://localhost:8080/products/color")
   // const categoriets  = await res.json()
@@ -55,6 +58,7 @@ export default async function Home() {
         <Incredibles />
       </div>
 
+      {/* <h1>{JSON.stringify(mostProducts)}</h1> */}
       <div className='p5 my-5'>
         <h1 className='text-black text-center text-xl pb-10'>خرید بر اساس دسته بندی</h1>
 

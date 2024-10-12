@@ -485,7 +485,7 @@ const AddNew = ({productID}:Props) => {
                     seller_id: seller?._id??'',
                     seller_title: seller?.storeInfo?.commercialName??'',
                     seller_rating: seller?.rating??0,
-                    quantity:[], 
+                    seller_quantity:[], 
                     price: 0,
                   }],
                   rating: { rate: 0, rate_num: 0 },
