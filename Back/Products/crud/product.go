@@ -632,6 +632,7 @@ func GetAllPendingVariants(c *fiber.Ctx) error {
 				{Key: "price", Value: "$sellers.price"},
 				{Key: "discount_id", Value: "$sellers.discount_id"},
 				{Key: "_id", Value: "$_id"},
+				{Key: "category_id", Value: "category_id"},
 			}},
 		},
 	}

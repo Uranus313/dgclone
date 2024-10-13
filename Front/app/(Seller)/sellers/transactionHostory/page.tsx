@@ -1,68 +1,17 @@
+'use client'
 import { Transaction, TransactionSide } from '@/app/components/Interfaces/interfaces'
 import React from 'react'
-import { seller } from '../page'
 import Checkbox from '../products/Checkbox'
 import RadioOptions from '../saleAnalyse/RadioOptions'
+import { useSeller } from '@/app/hooks/useSeller'
+import useGetSellerTransactions from '@/app/hooks/useGetSellerTransactions'
 
 
-const transactionHistory : Transaction[]=[
-  { transactionID:'1',
-    date:'2024/08/22 22:09:01',
-    userid:'1',
-    moneyAmount:3000000,
-    title:'تسویه حساب روز اخیر',
-    reciver:{
-      reciverID:'1',
-      type:TransactionSide.seller,
-    },
-    sender:{
-      type:TransactionSide.digiMarket,
-    },
-  },
-  { transactionID:'2',
-    date:'2024/08/22 22:09:01',
-    userid:'1',
-    moneyAmount:3000000,
-    title:'تسویه حساب پانزده روز اخیر',
-    reciver:{
-      reciverID:'1',
-      type:TransactionSide.seller,
-    },
-    sender:{
-      type:TransactionSide.digiMarket,
-    },
-  },
-  { transactionID:'3',
-    date:'2024/08/22 22:09:01',
-    userid:'1',
-    moneyAmount:3000000,
-    title:'تسویه حساب پانزده روز اخیر',
-    reciver:{
-      reciverID:'1',
-      type:TransactionSide.seller,
-    },
-    sender:{
-      type:TransactionSide.digiMarket,
-    },
-  },
-  { transactionID:'4',
-    date:'2024/08/22 22:09:01',
-    userid:'1',
-    moneyAmount:3000000,
-    title:'جریمه ی تاخیر زمانی',
-    additionalinfo:'در صورت اعتراض شناسه ی تراکنش را با توضیحات مربوطه به صورت تیکت برای همکاران ما ارسال نمایید',
-    reciver:{
-      type:TransactionSide.digiMarket,
-    },
-    sender:{
-      type:TransactionSide.seller,
-      senderID:'1'
-    },
-  },
-  
-]
 
 const TransactionHistory = () => {
+  const {seller}=useSeller()
+  const {data:transactionHistory}=useGetSellerTransactions()
+  console.log('teee',JSON.stringify(transactionHistory))
   return (
     <div className='bg-white p-5 my-4 rounded-lg'>
       <h1 className='text-xl text-grey-dark '>تاریخچه ی تراکنش ها</h1>
@@ -103,11 +52,11 @@ const TransactionHistory = () => {
       </div>
 
 
-      {transactionHistory.map(transaction=>{
+      {transactionHistory?.map(transaction=>{
           return <div className="collapse collapse-arrow bg-propBubble-bg my-3">
               <input type="checkbox" name="my-accordion-2" />
               <div className="collapse-title font-medium flex ">
-                {transaction.reciver.reciverID==seller.sellerID && transaction.reciver.type==TransactionSide.seller 
+                {transaction.receiver.receiverID==seller?.sellerID 
                 ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-green-box">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
               </svg>
@@ -123,21 +72,21 @@ const TransactionHistory = () => {
               <div className="collapse-content bg-primary-bg border border-grey-border">
                 <div className='grid grid-cols-2 pt-5 gap-5'>
                 <p>شناسه ی تراکنش :</p>
-                <p>{transaction.transactionID}</p>
+                <p>{transaction._id}</p>
                 <hr className='col-span-2 text-grey-border'></hr>
 
                 <p>فرستنده :</p>
-                <p>{transaction.sender.type}</p>
+                {/* <p>{transaction.sender.entityType}</p> */}
                 <hr className='col-span-2 text-grey-border'></hr>
 
                 <p>گیرنده :</p>
-                <p>{transaction.reciver.type}</p>
+                {/* <p>{transaction.reciver.}</p> */}
                 <hr className='col-span-2 text-grey-border'></hr>
 
                 <p>مبلغ :</p>
-                {transaction.reciver.reciverID==seller.sellerID && transaction.reciver.type==TransactionSide.seller
-                  ?<p className='text-green-box font-bold text-2xl'>{transaction.moneyAmount}+</p>
-                  :<p className='text-red-box font-bold text-2xl'>{transaction.moneyAmount}-</p>
+                {transaction.receiver.receiverID==seller?.sellerID
+                  ?<p className='text-green-box font-bold text-2xl'>{transaction.money}+</p>
+                  :<p className='text-red-box font-bold text-2xl'>{transaction.money}-</p>
                 }
                 <hr className='col-span-2 text-grey-border'></hr>
                 

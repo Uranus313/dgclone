@@ -141,10 +141,16 @@ func PostComment(c *fiber.Ctx) error {
 
 	// token := "?????"
 
+	user := c.Locals("ent").(map[string]interface{})
+
 	var comment models.Comment
 
 	if err := c.BodyParser(&comment); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
+	if comment.Content == "" {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "comment content can not be empty"})
 	}
 
 	if comment.CommentType != models.RegularComment {
@@ -159,26 +165,26 @@ func PostComment(c *fiber.Ctx) error {
 		}
 	}
 
-	if !comment.OrderID.IsZero() {
-		var order models.Order
-		filter := bson.M{"_id": comment.OrderID}
-		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Order ID, Order Not Found"})
-			}
-			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-				"message": "something went wrong while fetching data from orders collection",
-				"error":   err.Error(),
-			})
-		}
-		if order.UserID != comment.UserID {
-			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided user id does not match the user id in the submited order"})
-		}
-		if order.Product.ProdID != comment.ProductID {
-			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided product id does not match the product id in the submited order"})
-		}
-	}
+	// if !comment.OrderID.IsZero() {
+	// 	var order models.Order
+	// 	filter := bson.M{"_id": comment.OrderID}
+	// 	err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+	// 	if err != nil {
+	// 		if err == mongo.ErrNoDocuments {
+	// 			return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "Invalid Order ID, Order Not Found"})
+	// 		}
+	// 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+	// 			"message": "something went wrong while fetching data from orders collection",
+	// 			"error":   err.Error(),
+	// 		})
+	// 	}
+	// 	if order.UserID != comment.UserID {
+	// 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided user id does not match the user id in the submited order"})
+	// 	}
+	// 	if order.Product.ProdID != comment.ProductID {
+	// 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Inconsisteny! the provided product id does not match the product id in the submited order"})
+	// 	}
+	// }
 
 	var prod models.Product
 
@@ -195,26 +201,50 @@ func PostComment(c *fiber.Ctx) error {
 		})
 	}
 
-	if len(comment.LikesAndDisslikes) > 0 {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the new comment does not have any likes or disslikes"})
-	}
+	// if len(comment.LikesAndDisslikes) > 0 {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the new comment does not have any likes or disslikes"})
+	// }
 
 	// Inner API => takes userID as input and returns a bool showcasing wether the user exists or not
 	// smaple_func := func(userID primitive.ObjectID) bool {
 	// 	return userID.IsZero()
 	// }
 	// var userExist bool = smaple_func(comment.UserID)
-	_, statusCode, err := InnerRequest(GET, "/checkUser/"+comment.UserID.Hex(), nil, nil)
+	// _, statusCode, err := InnerRequest(GET, "/checkUser/"+comment.UserID.Hex(), nil, nil)
 
-	if err != nil {
-		return c.Status(statusCode).JSON(fiber.Map{
-			"message": "Inner API Error (There Could be a Problem With User ID)",
-			"error":   err.Error(),
-		})
-	}
+	// if err != nil {
+	// 	return c.Status(statusCode).JSON(fiber.Map{
+	// 		"message": "Inner API Error (There Could be a Problem With User ID)",
+	// 		"error":   err.Error(),
+	// 	})
+	// }
 
+	comment.LikesAndDisslikes = []models.LikeOrDisslike{}
 	comment.DateSent = time.Now()
 	comment.ValidationState = models.PendingValidation
+	comment.UserID, _ = primitive.ObjectIDFromHex(user["_id"].(string))
+
+	filter = bson.M{
+		"user_id":         comment.UserID,
+		"product.prod_id": comment.ProductID,
+	}
+
+	var order models.Order
+
+	err = database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			comment.OrderID = primitive.NilObjectID
+		} else {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "something went wrong while fetching data from orders collection",
+				"error":   err.Error(),
+			})
+		}
+	} else {
+		comment.OrderID = order.ID
+	}
 
 	insertResult, err := database.CommentCollection.InsertOne(context.Background(), comment)
 
@@ -227,17 +257,17 @@ func PostComment(c *fiber.Ctx) error {
 
 	comment.ID = insertResult.InsertedID.(primitive.ObjectID)
 
-	_, statusCode, err = InnerRequest(PUT, "/comment", nil, map[string]string{
-		"commentID": comment.ID.Hex(),
-		"userID":    comment.UserID.Hex(),
-	})
+	// _, statusCode, err := InnerRequest(PUT, "/comment", nil, map[string]string{
+	// 	"commentID": comment.ID.Hex(),
+	// 	"userID":    comment.UserID.Hex(),
+	// })
 
-	if err != nil {
-		return c.Status(statusCode).JSON(fiber.Map{
-			"message": "Inner API Error",
-			"error":   err.Error(),
-		})
-	}
+	// if err != nil {
+	// 	return c.Status(statusCode).JSON(fiber.Map{
+	// 		"message": "Inner API Error",
+	// 		"error":   err.Error(),
+	// 	})
+	// }
 
 	return c.Status(http.StatusCreated).JSON(comment)
 }

@@ -20,12 +20,16 @@ const SecondLayout = ({
   const pathname = usePathname();
   let {data: serverUser,error,isLoading} = useUserCheckToken();
   const showNavbar = pathname !== "/employees/signIn";
+  
   useEffect(() => {
     setLoading(isLoading);
     if(error){
         setSeller(null);
+        console.log('errrrr',error)
     }else if (serverUser?._id && !_.isEqual(serverUser,seller)){
         setSeller(serverUser);
+        console.log('ssssss',serverUser)
+
     }
 },[serverUser,isLoading]);
   return (
