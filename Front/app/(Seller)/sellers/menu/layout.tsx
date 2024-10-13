@@ -30,8 +30,11 @@ const MenuLayout = ({
         // console.log(!isLoading)
 
         if(!isLoading && seller?.status != UserStatus.seller){
+            console.log('ssssss',JSON.stringify(seller))
             router.push("/sellers/signIn");
         }
+        console.log('zzzzz',seller?.status)
+
     },
       [seller,isLoading]  
     )

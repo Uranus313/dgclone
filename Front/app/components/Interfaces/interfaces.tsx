@@ -243,6 +243,7 @@ export enum TransactionSide { digikala = 'digiMarket', user = 'user', seller = '
 export enum SenderType { bankAccount = "bankAccount", wallet = "wallet" }
 
 export interface Transaction {
+    _id:string
     userid: string,
     money: number,
     title: string,
@@ -292,6 +293,8 @@ export enum bankNumberType { shaba = "shaba", bank = "bank" }
 export enum moneyReturn { bankAccount = "bankAccount", wallet = "wallet" }
 export interface Seller {
     _id?: string
+    status?:string
+    isVerified:boolean,
     [key: string]: any;
     rating: number
     sellerID: string

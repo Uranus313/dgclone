@@ -1,4 +1,4 @@
-import { ProductCardSeller, StateProduct } from '@/app/components/Interfaces/interfaces'
+import { ProductCardSeller, SellerAddProdctCard, StateProduct } from '@/app/components/Interfaces/interfaces'
 import ProductCard from '@/app/components/ProductCar/ProductCard'
 import { updateQueries } from '@/app/Functions/ServerFunctions'
 import useQueryNext from '@/app/hooks/useQueryNext'
@@ -14,47 +14,48 @@ import EditProduct from './EditProduct'
 import AddNew from '../addProducts/list/AddNew'
 
 const productsCard:ProductCardSeller[]=[
-  {
-  title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-  categoryTitle:'لپتاپ',
-  categoryID:'2',
-  productID:'55',
-  brand:'Asus',
-  state:StateProduct.accepted,
-  varientCount:2,
-  picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-},
-{
-  title:'لپ تاپ 15.6 اینچی ایسوس مدلSSD-TN - کاستوم شده',
-  categoryTitle:'لپتاپ',
-  categoryID:'2',
-  productID:'58',
-  brand:'Asus',
-  state:StateProduct.accepted,
-  varientCount:1,
-  picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-},
-{
-  title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-  categoryTitle:'لپتاپ',
-  categoryID:'2',
-  productID:'56',
-  brand:'Asus',
-  state:StateProduct.inCheckingOrder,
-  varientCount:1,
-  picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-},
-{
-  title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-  categoryTitle:'لپتاپ',
-  categoryID:'2',
-  productID:'57',
-  brand:'Asus',
-  state:StateProduct.rejected,
-  varientCount:1,
-  picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-},
-]
+//   {
+//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//   categoryTitle:'لپتاپ',
+//   categoryID:'2',
+//   productID:'55',
+//   brand:'Asus',
+//   state:StateProduct.accepted,
+//   varientCount:2,
+//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+// },
+// {
+//   title:'لپ تاپ 15.6 اینچی ایسوس مدلSSD-TN - کاستوم شده',
+//   categoryTitle:'لپتاپ',
+//   categoryID:'2',
+//   productID:'58',
+//   brand:'Asus',
+//   state:StateProduct.accepted,
+//   varientCount:1,
+//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+// },
+// {
+//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//   categoryTitle:'لپتاپ',
+//   categoryID:'2',
+//   productID:'56',
+//   brand:'Asus',
+//   state:StateProduct.inCheckingOrder,
+//   varientCount:1,
+//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+// },
+// {
+//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//   categoryTitle:'لپتاپ',
+//   categoryID:'2',
+//   productID:'57',
+//   brand:'Asus',
+//   state:StateProduct.rejected,
+//   varientCount:1,
+//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+// },
+// ]
+
 
 interface Filterables{
   categories:{title:string , categoryid:string}[]
@@ -69,7 +70,12 @@ const filterables:Filterables={
   brands:["اپل","ایسوس","لنوو"]
 }
 
-const Products = () => {  
+const Products = async() => {  
+
+  //server
+  const res = await fetch("https://localhost:8080/products/seller/allProds")
+  const productsCard:SellerAddProdctCard[]  = await res.json()
+
   return (
     <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
       <h1 className='text-xl font-bold text-grey-dark'>مدیریت کالا ها</h1>
@@ -139,13 +145,13 @@ const Products = () => {
       {productsCard.map(productCard=>(
         <div className='grid grid-cols-7 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
           <div className='grid grid-cols-2 place-items-center'>
-            <img className='w-20 mx-2' src={productCard.picture}/>
+            <img className='w-20 mx-2' src={productCard.Picture}/>
             <div>
-              <p className='line-clamp-2 h-fit text-sm'>{productCard.title}</p>
+              <p className='line-clamp-2 h-fit text-sm'>{productCard.Title}</p>
               <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
             </div>
           </div>
-          <FilterButton id={productCard.categoryID} query='category' title={productCard.categoryTitle} />
+          <FilterButton id={productCard.CategoryID} query='category' title={productCard.categoryTitle} />
           <FilterButton id={productCard.brand} query='brand' title={productCard.brand} />
           <p>{productCard.state}</p>
           <p>{productCard.varientCount}</p>
