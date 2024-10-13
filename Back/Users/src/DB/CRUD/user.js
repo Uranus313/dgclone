@@ -168,8 +168,13 @@ export async function addcommentToList({commentID , userID}){
         const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
             socialIntractions: commentID 
          } }, { new: true });
+         if(!response){
+            result.error = "user not found";
+            return result
+         }
         result.response = response.toJSON();
     } catch (error) {
+        console.log(error)
         result.error = error
     }
     
@@ -181,6 +186,10 @@ export async function addOrderToCart({productID , userID}){
         const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
             shoppingCart: productID 
          } }, { new: true });
+         if(!response){
+            result.error = "user not found";
+            return result
+         }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
@@ -194,6 +203,10 @@ export async function deleteOrderFromCart({productID , userID}){
         const response = await UserModel.findByIdAndUpdate(userID, { $pull: { 
             shoppingCart: productID 
          } }, { new: true });
+         if(!response){
+            result.error = "user not found";
+            return result
+         }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
@@ -207,6 +220,10 @@ export async function emptyTheCart( userID){
         const response = await UserModel.findByIdAndUpdate(userID, { $set: { 
             shoppingCart: [] 
          } }, { new: true });
+         if(!response){
+            result.error = "user not found";
+            return result
+         }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
@@ -220,6 +237,10 @@ export async function addOrderHistoryToList({orderHistoryID , userID}){
         const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
             shoppingCart: orderHistoryID 
          } }, { new: true });
+         if(!response){
+            result.error = "user not found";
+            return result
+         }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
