@@ -257,17 +257,17 @@ func PostComment(c *fiber.Ctx) error {
 
 	comment.ID = insertResult.InsertedID.(primitive.ObjectID)
 
-	// _, statusCode, err := InnerRequest(PUT, "/comment", nil, map[string]string{
-	// 	"commentID": comment.ID.Hex(),
-	// 	"userID":    comment.UserID.Hex(),
-	// })
+	_, statusCode, err := InnerRequest(PUT, "/comment", nil, map[string]string{
+		"commentID": comment.ID.Hex(),
+		"userID":    comment.UserID.Hex(),
+	})
 
-	// if err != nil {
-	// 	return c.Status(statusCode).JSON(fiber.Map{
-	// 		"message": "Inner API Error",
-	// 		"error":   err.Error(),
-	// 	})
-	// }
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
 
 	return c.Status(http.StatusCreated).JSON(comment)
 }

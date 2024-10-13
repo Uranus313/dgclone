@@ -4,6 +4,7 @@ import (
 	"context"
 	"dg-kala-sample/database"
 	"dg-kala-sample/models"
+	"errors"
 	"fmt"
 
 	// "fmt"
@@ -1204,7 +1205,94 @@ func GetSellerProducts(c *fiber.Ctx) error {
 	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching offset from query": err.Error()})
 	// }
 
-	var sellerProds []models.ProductCard
+	type ProductSellerCard struct {
+		title          string
+		categoryTitle  string
+		categoryID     primitive.ObjectID
+		productID      primitive.ObjectID
+		brand          string
+		state          models.ValidationState
+		varientCount   int
+		picture        string
+		totalSellPrice int
+		totalSellCount int
+		viewCount      int
+	}
+
+	var sellerProds []ProductSellerCard
+
+	createProductSellerCard := func(product models.Product, sellerID primitive.ObjectID) (*ProductSellerCard, error) {
+
+		var prodCate models.Category
+
+		filter := bson.M{"_id": product.CategoryID}
+
+		database.CategoryCollection.FindOne(context.Background(), filter).Decode(&prodCate)
+
+		var prodBrand models.Brand
+
+		filter = bson.M{"_id": product.BrandID}
+
+		err := database.BrandCollection.FindOne(context.Background(), filter).Decode(&prodBrand)
+
+		if err != nil {
+			return nil, err
+		}
+
+		sellerFound := false
+		sellerIndex := 0
+
+		for index, sellerCart := range product.Sellers {
+			if sellerCart.SellerID == sellerID {
+				sellerIndex = index
+				sellerFound = true
+				break
+			}
+		}
+
+		if !sellerFound {
+			return nil, errors.New("inconsistency error! seller was not found in product seller cards list")
+		}
+
+		var prodOrders []models.Order
+
+		filter = bson.M{
+			"product.prod_id": product.ID,
+			"state":           models.Delivered,
+		}
+
+		cursor, err := database.OrderCollection.Find(context.Background(), filter)
+
+		if err != nil {
+			return nil, err
+		}
+
+		defer cursor.Close(context.Background())
+
+		if err := cursor.All(context.Background(), &prodOrders); err != nil {
+			return nil, err
+		}
+
+		sumSellPrice := 0
+
+		for _, order := range prodOrders {
+			sumSellPrice += order.Product.Price * order.Quantity
+		}
+
+		return &ProductSellerCard{
+			title:          product.Title,
+			categoryTitle:  prodCate.Title,
+			categoryID:     product.CategoryID,
+			productID:      product.ID,
+			brand:          prodBrand.Title,
+			state:          product.ValidationState,
+			varientCount:   len(product.Sellers[sellerIndex].SellerQuantity),
+			picture:        product.Images[0],
+			totalSellPrice: sumSellPrice,
+			totalSellCount: len(prodOrders),
+			viewCount:      product.VisitCount,
+		}, nil
+	}
 
 	for _, prodID := range seller["productList"].([]primitive.ObjectID) {
 
@@ -1223,8 +1311,19 @@ func GetSellerProducts(c *fiber.Ctx) error {
 		}
 
 		if product.ValidationState == models.Validated {
-			prodCard := CreateProdCard(product)
-			sellerProds = append(sellerProds, prodCard)
+
+			sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
+
+			prodCard, err := createProductSellerCard(product, sellerID)
+
+			if err != nil {
+				return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+					"message": "error while creating product seller card",
+					"error":   err.Error(),
+				})
+			}
+
+			sellerProds = append(sellerProds, *prodCard)
 		}
 	}
 

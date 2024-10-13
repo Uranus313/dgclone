@@ -486,9 +486,11 @@ func InnerRequest(
 	}
 
 	req.Header.Add("inner-secret", auth.InnerPass)
+	query := req.URL.Query()
 	for key, value := range queryParams {
-		req.Header.Add(key, value)
+		query.Add(key, value)
 	}
+	req.URL.RawQuery = query.Encode()
 
 	res, err := http.DefaultClient.Do(req)
 

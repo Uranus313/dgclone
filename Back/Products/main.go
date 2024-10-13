@@ -6,7 +6,7 @@ import (
 	"dg-kala-sample/crud"
 	"dg-kala-sample/database"
 
-	// fakerdata "dg-kala-sample/fakerData"
+	fakerdata "dg-kala-sample/fakerData"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,7 +35,7 @@ func main() {
 	// fakerdata.InsertDummyProducts()
 	// fakerdata.InsertDummyComments()
 	// fakerdata.InsertDummyDiscountCode()
-	// fakerdata.InsertDummySaleDiscount()
+	fakerdata.InsertDummySaleDiscount()
 	// fakerdata.ModProds()
 	// fakerdata.ModComms()
 	// fakerdata.ModBrand()
