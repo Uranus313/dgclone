@@ -50,7 +50,7 @@ const ProductPopUp = ({ product }: Props) => {
     }
     const unbanProd = useMutation({
         mutationFn: async () => {
-            const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
+            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
                 method: "PATCH",
                 credentials: 'include',
                 headers: {
@@ -79,7 +79,7 @@ const ProductPopUp = ({ product }: Props) => {
 
     const banProd = useMutation({
         mutationFn: async () => {
-            const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
+            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
                 method: "PATCH",
                 credentials: 'include',
                 headers: {
@@ -108,7 +108,10 @@ const ProductPopUp = ({ product }: Props) => {
 
     return (
         <div>
-            <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
+            <div onClick={() => {
+                openModal();
+                getCategory(product.category_id);
+            }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
                 <p className="w-1/2">{product.title}</p>
                 <p className="w-1/2">{product.rating.rate}</p>
             </div>

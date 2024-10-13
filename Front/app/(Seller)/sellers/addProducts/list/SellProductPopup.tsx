@@ -9,27 +9,27 @@ import Step1 from './step1';
 export const colorpallete:Color[]=[
     {
         hex:'#ffffff',
-        id:'1',
+        _id:'1',
         title:'سفید'
     },
     {
         hex:'#000000',
-        id:'2',
+        _id:'2',
         title:'سیاه'
     },
     {
         hex:'#C03131',
-        id:'3',
+        _id:'3',
         title:'قرمز'
     },
     {
         hex:'#4A90E2',
-        id:'4',
+        _id:'4',
         title:'آبی'
     },
     {
         hex:'#4BAA45',
-        id:'5',
+        _id:'5',
         title:'سبز'
     },
 ]

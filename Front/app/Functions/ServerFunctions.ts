@@ -4,7 +4,8 @@ import { Category } from "../(Customer)/page";
 export async function getCategory(id: string): Promise<Category | undefined> {
     let category: Category | undefined;
     let found = false;
-    const res = await fetch("http://localhost:8080/products/category");
+    //server
+    const res = await fetch("https://localhost:8080/products/category");
     const categories: Category[] = await res.json();
     categories.forEach(category1 => {
         if (category1.ID === id && !found) {

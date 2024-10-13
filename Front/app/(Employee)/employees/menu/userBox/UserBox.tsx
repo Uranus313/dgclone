@@ -32,7 +32,7 @@ function UserBox() {
     };
 
     return (
-        <div className="justify-center text-center mx-5">
+        <div className="justify-center text-center mx-5 pb-5">
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
                 user &&
                 <div>

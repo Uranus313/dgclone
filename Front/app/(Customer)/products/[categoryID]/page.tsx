@@ -1,11 +1,13 @@
+// 'use client'
 import ProductCard from '@/app/components/ProductCar/ProductCard'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ProductCardInterface, SellerAddProdctCard } from '@/app/components/Interfaces/interfaces'
 import Link from 'next/link'
 import { getCategory } from '@/app/Functions/ServerFunctions'
 import Filter from './Filter'
 import Sort from './Sort'
 import InfiniteScrollProducts from './InfiniteScrollProducts'
+import useGetProductCards from '../../users/useGetProductCards'
 
 
 
@@ -44,17 +46,28 @@ interface Props {
     searchParams:{sortOrder: string}
 }
 
-const ProductPage = async ({params:{categoryID},searchParams:{sortOrder}}:Props) => {
+const ProductPage =  async({params:{categoryID},searchParams:{sortOrder}}:Props) => {
   let category = await getCategory(categoryID)
 
-  const res = await fetch(`http://localhost:8080/products/product/?limit=12&offset=0&&CateID=${category?.ID}`)
-  const temp  = await res.json()
-  const products:SellerAddProdctCard[] = temp.products
   
+
+  // server
+  const res = await fetch(`https://localhost:8080/products/product/?limit=12&offset=0&&CateID=${categoryID}`)
+  // const res = await fetch('https://hub.dummyapis.com/products?noofRecords=10&idStarts=1001&currency=usd')
+  const temp  = await res.json()
+  const products : SellerAddProdctCard[]|undefined = await temp.products
+
+  // const {data:temp} = useGetProductCards({categoryID:categoryID})
+
+  // console.log('ssssss',JSON.stringify(temp))
+  // useEffect(()=>{
+  //   console.log('ssssssssssssssssss',products)
+  // },[products])
   return (
     <div>
       
       <h1 className='mt-10 mb-8 mx-5 text-3xl font-black'>{category?.Title}</h1>
+      {/* <h1>{JSON.stringify(temp)}ffffff</h1> */}
       <div className='grid grid-cols-12 gap-2 mx-5'>
         <div className='col-span-3  bg-white rounded-md'>
           <Filter/>
@@ -71,8 +84,8 @@ const ProductPage = async ({params:{categoryID},searchParams:{sortOrder}}:Props)
           </div>
           <div className=' grid grid-cols-3 mt-4 place-items-center'>
               {products?.map((product)=>(
-                <Link href={`/products/${categoryID}/${product.ID}`} className='m-2 p-4 bg-white rounded-md flex flex-col' key={product.ID}>
-                  <img className='w-2/3 self-center mb-10 mt-3' src={product.Picture}/>
+                <Link href={`/products/${categoryID}/${product?.ID}`} className='m-2 p-4 bg-white rounded-md flex flex-col' key={product.ID}>
+                  <img className='w-2/3 self-center mb-10 mt-3' src={product?.Picture}/>
                   <p className='text-lg font-semibold '>{product.Title}</p>
                   <p className='pt-3 text-primary-color text-lg'>{product.UrbanPrice}</p>
                 </Link>
