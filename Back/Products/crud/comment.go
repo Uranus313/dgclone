@@ -147,13 +147,13 @@ func PostComment(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
-	if comment.CommentType.String() != "Comment" {
+	if comment.CommentType != models.RegularComment {
 		if comment.OrderID != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non regular comments do not contain an order id field"})
 		}
 	}
 
-	if comment.CommentType.String() != "Answer" {
+	if comment.CommentType != models.Answer {
 		if comment.AnswersTo != primitive.NilObjectID {
 			return c.Status(http.StatusConflict).JSON(fiber.Map{"error: ": "non answer comments do not contain an answer to field"})
 		}

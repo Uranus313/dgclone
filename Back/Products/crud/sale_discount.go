@@ -46,7 +46,7 @@ func GetMostDiscounts(c *fiber.Ctx) error {
 	// 	return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while decoding cursor": err.Error()})
 	// }
 
-	cateIDString := c.Params("CateID", "000000000000000000000000")
+	cateIDString := c.Params("CateID", primitive.NilObjectID.Hex())
 
 	cateID, err := primitive.ObjectIDFromHex(cateIDString)
 

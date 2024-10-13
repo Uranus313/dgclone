@@ -12,6 +12,7 @@ async function AddCommentRequest(comment:Comment) {
   try {
     const response = await fetch('https://localhost:8080/products/comments', {
       method: 'POST',
+      credentials:'include',
       headers: {
         'Content-Type': 'application/json'
       },
