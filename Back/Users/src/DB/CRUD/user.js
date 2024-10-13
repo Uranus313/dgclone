@@ -166,7 +166,7 @@ export async function addcommentToList({commentID , userID}){
     const result = {};
     try {
         const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
-            socialIntractions: commentID 
+            socialInteractions: commentID 
          } }, { new: true });
          if(!response){
             result.error = "user not found";
