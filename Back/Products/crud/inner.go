@@ -511,6 +511,8 @@ func InnerRequest(
 	fmt.Println("res:", responseBody)
 
 	if res.StatusCode != 200 {
+		fmt.Println("ererree:", responseBody["error"])
+		fmt.Println("status:", res.Status)
 		return nil, res.StatusCode, errors.New(responseBody["error"].(string))
 	}
 
