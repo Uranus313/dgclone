@@ -193,6 +193,10 @@ export async function addProductToList({productID , sellerID}){
         const response = await SellerModel.findByIdAndUpdate(sellerID, { $push: { 
             productList: productID 
          } }, { new: true });
+         if(!response){
+            result.error = "seller not found";
+            return result
+         }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
