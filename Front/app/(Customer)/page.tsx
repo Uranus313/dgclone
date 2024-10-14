@@ -43,6 +43,8 @@ export default async function Home() {
 
   // const res2 = await fetch("https://localhost:8080/products/salediscount/MostDiscounts")
   // const mostProducts  = await res2.json()
+  // const res2 = await fetch("https://localhost:8080/products/salediscount/MostDiscounts")
+  // const mostProducts  = await res2.json()
 
 
   // const rest = await fetch("https://localhost:8080/products/color")
@@ -58,14 +60,14 @@ export default async function Home() {
         <Incredibles />
       </div>
 
-      
+      {/* <h1>{JSON.stringify(mostProducts)}</h1> */}
       <div className='p5 my-5'>
         <h1 className='text-black text-center text-xl pb-10'>خرید بر اساس دسته بندی</h1>
 
         <div className='flex justify-center'>
           {categories.map((category) => (
             <div className='mx-5' key={category.ID}>
-              {category?.Pictures?.length>=2 && <img width='100px' src={category?.Pictures[1]??''} alt={category.Title} />}
+              { category.Pictures.length>0 &&<img width='100px' src={category.Pictures[1]} alt={category.Title} />}
               <p className='text-center text-xs mt-3 font-semibold'>{category.Title}</p>
             </div>
           ))}

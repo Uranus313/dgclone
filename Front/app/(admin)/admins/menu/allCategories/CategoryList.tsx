@@ -1,6 +1,9 @@
 'use client'
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import AddCategoryPopUp from './AddCategoryPopUp';
+import useGetCategories from '../../hooks/useGetCategories';
+import { Category } from '@/app/components/Interfaces/interfaces';
+import Category1LayerPopUp from './Category1LayerPopUp';
 
 
 const CategoryList = () => {
@@ -12,32 +15,28 @@ const CategoryList = () => {
     let [page, setPage] = useState<number>(0);
     let [search, setSearch] = useState<string | null>('');
     let searchRef = useRef<any>('');
-    //   let { data: users, error, isLoading } = useGetUsers({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+    let { data: category, error, isLoading } = useGetCategories();
 
     return (
         <div className=' flex-col bg-white my-10 md:m-10 rounded-md '>
-            {/* <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'> */}
-               <AddCategoryPopUp />
-            {/* </div> */}
-            {/* {isLoading ? <span className="loading loading-dots loading-lg"></span> : */}
-            <div className=' flex-col'>
-                <ul>
-                    {/* {users?.data?.map((user, index) => {
-              return (
-                <li key={index}>
-                  <UserPopUp user={user} />
-                </li>
-              )
-            })} */}
-                </ul>
-
-                <div className='my-4 flex justify-center pb-5'>
-                    <button disabled={page == 0} onClick={() => setPage(page - 1)} className='btn btn-primary mx-3'>قبلی</button>
-                    {/* <button disabled={!users?.hasMore} onClick={() => setPage(page + 1)} className='btn btn-primary'>بعدی</button> */}
-                </div>
-
+            <div className='flex border-b-2 shadow-md border-white w-full p-7'>
+                <AddCategoryPopUp cateId="000000000000000000000000" size="47px" color="#BD1684" />
+                <p className='text-primary-color pt-3'>اضافه کردن دسته بندی</p>
             </div>
-            {/* }  */}
+            {isLoading ? <span className="loading loading-dots loading-lg"></span> :
+                <div className=' flex-col'>
+                    <ul>
+                        {category.map((category: Category, index: React.Key | null | undefined) => {
+                            return (
+                                <li key={index}>
+                                    <Category1LayerPopUp category={category} />
+
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
+            }
         </div>
     )
 }

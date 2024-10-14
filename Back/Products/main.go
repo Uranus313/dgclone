@@ -45,9 +45,11 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:5173, http://localhost:3000, http://localhost:3005, http://myapp.local, https://localhost:3000",
 		AllowHeaders:     "Origin,Content-Type,Accept,Authorization",
-		AllowMethods:     "*",
+		AllowMethods:     "POST, PUT, GET, DELETE, PATCH",
 		AllowCredentials: true,
 	}))
+	// app.Use(cors.New(cors.Config{}))
+	
 	app.Get("/metrics", monitor.New())
 	app.Use(logger.New())
 

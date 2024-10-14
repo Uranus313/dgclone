@@ -2,7 +2,7 @@
 
 import { ProductInterface } from "@/app/components/Interfaces/interfaces";
 import { useUser } from "@/app/hooks/useUser";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
 import { Comment } from "@/app/components/Interfaces/interfaces";
 import Link from "next/link";
@@ -16,7 +16,7 @@ const ProductPopUp = ({ product }: Props) => {
     const [error, setError] = useState<string | null>(null);
     const { user } = useUser();
 
-
+    const queryClient = useQueryClient();
     const unbanProduct = useMutation({
         mutationFn: async () => {
             const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
@@ -37,7 +37,7 @@ const ProductPopUp = ({ product }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            product.validation_state = 2;
+            queryClient.invalidateQueries({ queryKey: ["pendingProductroductList"] });
         },
         onError: (error) => {
             console.log(error);
@@ -65,7 +65,7 @@ const ProductPopUp = ({ product }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            product.validation_state = 3;
+            queryClient.invalidateQueries({ queryKey: ["pendingProductroductList"] });
         },
         onError: (error) => {
             console.log(error);

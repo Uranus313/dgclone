@@ -50,8 +50,6 @@ const CommentPopUp = ({ comment }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            
-            // comment.validation_state = 2;
             queryClient.invalidateQueries({ queryKey: ["commentList"] });
             closeModal();
         },
@@ -81,7 +79,6 @@ const CommentPopUp = ({ comment }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            // comment.validation_state = 3;
             queryClient.invalidateQueries({ queryKey: ["commentList"] });
             closeModal();
         },
@@ -106,7 +103,10 @@ const CommentPopUp = ({ comment }: Props) => {
                         <div className='lg:flex lg:pt-6'>
 
                             <p className=' pl-3 text-text-color'> تاریخ  : </p>
-                            <p>{comment.date_sent}</p>
+                            {comment.date_sent &&
+
+                            <p>{comment.date_sent?.toString()}</p>
+                            }
                             <p className='lg:pr-20 pl-3 text-text-color '> نوع  : </p>
                             {comment.comment_type == 1 && <p>عادی</p>}
                             {comment.comment_type == 2 && <p>سوال</p>}
