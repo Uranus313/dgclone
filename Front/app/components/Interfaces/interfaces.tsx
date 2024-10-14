@@ -429,11 +429,15 @@ export interface productSaleAnalyseCard {
     productID: string,
     picture: string,
     productTitle: string,
-    productCategoryID: string,
-    productCategoryTitle: string,
-    saleValue: number,
-    saleCount: number,
-    visits: number
+    categoryID: string,
+    categoryTitle: string,
+    title:string
+    brand:string
+    state:number
+    varientCount:number
+    totalSellPrice:number
+    totalSellCount:number
+    viewCount:number
 }
 
 export interface Category {

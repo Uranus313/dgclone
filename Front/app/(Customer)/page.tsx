@@ -43,6 +43,8 @@ export default async function Home() {
 
   // const res2 = await fetch("https://localhost:8080/products/salediscount/MostDiscounts")
   // const mostProducts  = await res2.json()
+  // const res2 = await fetch("https://localhost:8080/products/salediscount/MostDiscounts")
+  // const mostProducts  = await res2.json()
 
 
   // const rest = await fetch("http://localhost:8080/products/color")
