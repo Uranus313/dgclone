@@ -19,20 +19,24 @@ const CategoryList = () => {
 
     return (
         <div className=' flex-col bg-white my-10 md:m-10 rounded-md '>
-               <AddCategoryPopUp />
-            {isLoading ? <span className="loading loading-dots loading-lg"></span> :
-            <div className=' flex-col'>
-                <ul>
-                    {category.map((category: Category, index: React.Key | null | undefined) => {
-              return (
-                <li key={index}>
-                    <Category1LayerPopUp category={category} />
-                </li>
-              )
-            })}
-                </ul>
+            <div className='flex border-b-2 shadow-md border-white w-full p-7'>
+                <AddCategoryPopUp cateId="000000000000000000000000" size="47px" color="#BD1684" />
+                <p className='text-primary-color pt-3'>اضافه کردن دسته بندی</p>
             </div>
-             } 
+            {isLoading ? <span className="loading loading-dots loading-lg"></span> :
+                <div className=' flex-col'>
+                    <ul>
+                        {category.map((category: Category, index: React.Key | null | undefined) => {
+                            return (
+                                <li key={index}>
+                                    <Category1LayerPopUp category={category} />
+
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
+            }
         </div>
     )
 }

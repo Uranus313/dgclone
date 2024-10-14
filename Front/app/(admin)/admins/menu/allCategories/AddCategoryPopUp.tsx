@@ -4,8 +4,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import useGetRoles from "../../hooks/useGetRoles";
-
-const AddCategoryPopUp = () => {
+export interface Props {
+    cateId: string
+    size: string
+    color: string
+}
+const AddCategoryPopUp = ({ cateId,size,color }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [error, setError] = useState<string | null>(null);
@@ -45,7 +49,8 @@ const AddCategoryPopUp = () => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            // queryClient.invalidateQueries({ queryKey: ["employeeList"] });
+            queryClient.invalidateQueries({ queryKey: ["categoryList"] });
+            queryClient.invalidateQueries({ queryKey: ['childCategoryList' + cateId] });
             closeModal();
 
         },
@@ -55,30 +60,27 @@ const AddCategoryPopUp = () => {
         },
     });
     async function submit(formData: any) {
-        addCategory.mutate(formData);
+        addCategory.mutate({ formData, parent_id: cateId });
     }
     return (
         <div>
-            <div className="flex border-b-2 shadow-md border-white w-full p-7 ">
-                <button className=' ' onClick={() => { openModal() }}>
-                    <svg
-                        fill="#BD1684"
-                        height="47px"
-                        width="47px"
-                        version="1.1"
-                        viewBox="-3.08 -3.08 34.12 34.12"
-                        stroke="#000000"
-                        stroke-width="0.00027963">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_traerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <path d="M13.98,0C6.259,0,0,6.26,0,13.982s6.259,13.981,13.98,13.981c7.725,0,13.983-6.26,13.983-13.981 C27.963,6.26,21.705,0,13.98,0z M21.102,16.059h-4.939v5.042h-4.299v-5.042H6.862V11.76h5.001v-4.9h4.299v4.9h4.939v4.299H21.102z "></path>
+            <button onClick={() => { openModal() }}>
+                <svg
+                    fill={color}
+                    height={size}
+                    width={size}
+                    version="1.1"
+                    viewBox="-3.08 -3.08 34.12 34.12"
+                    stroke="#000000"
+                    stroke-width="0.00027963">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_traerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path d="M13.98,0C6.259,0,0,6.26,0,13.982s6.259,13.981,13.98,13.981c7.725,0,13.983-6.26,13.983-13.981 C27.963,6.26,21.705,0,13.98,0z M21.102,16.059h-4.939v5.042h-4.299v-5.042H6.862V11.76h5.001v-4.9h4.299v4.9h4.939v4.299H21.102z "></path>
 
-                        </g>
-                    </svg>
-                </button>
-                <p className='text-primary-color pt-3'>اضافه کردن دسته بندی</p>
-            </div>
+                    </g>
+                </svg>
+            </button>
             <dialog ref={dialogRef} className="modal">
                 <div className="modal-box">
                     {error && <p>{error}</p>}
@@ -86,13 +88,13 @@ const AddCategoryPopUp = () => {
                     <form >
                         {/* onSubmit={handleSubmit(submit)} */}
                         <label className="p-2 block ">
-                            <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام'  {...register("title")} />
+                            <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام' required  {...register("title")} />
                         </label>
                         <label className="p-2 block">
-                            <textarea className="bg-primary-bg rounded-md h-24" placeholder='توضیحات' {...register("description")} />
+                            <textarea className="bg-primary-bg rounded-md h-24" placeholder='توضیحات' required {...register("description")} />
                         </label>
                         <label className="p-2 block">
-                            <input type="url" className="bg-primary-bg rounded-md" placeholder=' لینک ' {...register("link")} />
+                            <input type="url" className="bg-primary-bg rounded-md" placeholder=' لینک ' required {...register("link")} />
                         </label>
                         <div className=" my-4">
                             <button className="btn btn-success mx-3" type="submit">

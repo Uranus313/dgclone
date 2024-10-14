@@ -441,7 +441,7 @@ export interface productSaleAnalyseCard {
 }
 
 export interface Category {
-    ID?: string,
+    _id: string,
     title: string,
     Childs?: Category[],
     Detail: detail[],
