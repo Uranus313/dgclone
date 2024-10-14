@@ -14,7 +14,7 @@ const InfiniteScrollProducts = ({categoryID}:Props) => {
     const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:categoryID , limit:12})
     console.log('prod prod',data)
     const totalFetchedGames =
-    data?.pages.reduce((total, page) => total + page.products.length, 0) ||
+    data?.pages.reduce((total, page) => total + page?.products?.length, 0) ||
     0;
     return (
         <InfiniteScroll

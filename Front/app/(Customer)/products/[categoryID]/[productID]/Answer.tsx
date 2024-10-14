@@ -2,8 +2,8 @@
 import React, { useRef, useEffect } from 'react'
 
 interface Props {
-  questionID: string
-  questionContent:string
+  questionID: string|undefined
+  questionContent:string|undefined
 }
 
 const Answer = ({ questionID , questionContent }: Props) => {

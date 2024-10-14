@@ -45,7 +45,7 @@ export function validateNotificationPost (notification){
         title: Joi.string().min(1).max(100).required(),
         teaser: Joi.string().min(1).max(100).required(),
         userEmail : Joi.string().email(),
-        userPhone : Joi.string().required(),
+        userPhone : Joi.string(),
         imageUrl: Joi.string(),
         orderID : Joi.objectId().external( async (data) => {
             if(!data){

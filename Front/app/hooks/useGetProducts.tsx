@@ -12,7 +12,7 @@ function useGetProducts({ limit, categoryID }: Props) {
         queryKey: ['product', categoryID],
         initialPageParam: 1,
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetch(`http://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit}&&CateID=${categoryID}`, {
+            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit}&&CateID=${categoryID}`, {
                 credentials: 'include'
             });
 

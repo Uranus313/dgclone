@@ -214,7 +214,7 @@ const NavBar = () => {
         </div>
 
         <div className="text-primary-color flex">
-          <svg
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -232,9 +232,9 @@ const NavBar = () => {
               strokeLinejoin="round"
               d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
             />
-          </svg>
+          </svg> */}
 
-          <p className="mx-2">لطفا شهرتان را انتخاب کنید</p>
+          {/* <p className="mx-2">لطفا شهرتان را انتخاب کنید</p> */}
         </div>
       </div>
       }

@@ -18,7 +18,7 @@ import { levels } from "../authorization/accessLevels.js";
 import { roleAuth } from "../authorization/roleAuth.js";
 import { getWareHouses } from "../DB/CRUD/wareHouse.js";
 import { getTickets } from "../DB/CRUD/ticket.js";
-
+import { sellerSaleInfo } from "../functions/sellerSaleInfo.js";
 const router = express.Router();
 //checked
 router.get("/allUsers", (req,res,next) => roleAuth(req,res,next,[{level : levels.userManage}]) ,async (req, res,next) =>{

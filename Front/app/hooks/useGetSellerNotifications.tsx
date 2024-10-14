@@ -1,20 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "../(Customer)/page";
-function useGetColors(){
-    console.log('1')
+export interface Notification{
+    _id: string,
+    content:string,
+    title:string,
+    teaser:string,
+    imageUrl? : string,
+    orderID? : string,
+    isSeen? : boolean,
+    date : string,
+    type : string
+}
+function useGetSellerNotifications(){
+    
     return useQuery({
-        queryKey : ['colors'],
+        queryKey : ['notifications'],
         queryFn : async () => {
-            console.log('2')
-            const result = await fetch("https://localhost:8080/products/color", {
+            const result = await fetch("http://localhost:3005/users/seller/myNotifications", {
                             credentials: 'include'});
-                           
             const jsonResult = await result.json();
+            console.log(jsonResult)
             if(result.ok){
-                console.log('4')
                 return jsonResult
             }else{
-                console.log('err')
                 throw new Error(jsonResult.error);
             }    
         },
@@ -23,4 +30,4 @@ function useGetColors(){
         retry: 2
     })
 }
-export default useGetColors;
+export default useGetSellerNotifications;

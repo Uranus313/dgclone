@@ -7,7 +7,7 @@ function useGetBrands(){
         queryKey : ['brand'],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch("http://localhost:8080/products/brand/", {
+            const result = await fetch("https://localhost:8080/products/brand/", {
                             credentials: 'include'});
                            
             const jsonResult = await result.json();

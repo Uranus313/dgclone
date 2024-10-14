@@ -1,20 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "../(Customer)/page";
-function useGetColors(){
-    console.log('1')
-    return useQuery({
-        queryKey : ['colors'],
+import { Transaction } from "../components/Interfaces/interfaces";
+
+function useGetSellerTransactions(){
+    return useQuery<Transaction[]>({
+        queryKey : ['sellerTransations'],
         queryFn : async () => {
-            console.log('2')
-            const result = await fetch("https://localhost:8080/products/color", {
+            const result = await fetch("http://localhost:3005/users/seller/myTransactions", {
                             credentials: 'include'});
-                           
             const jsonResult = await result.json();
+            console.log(jsonResult)
             if(result.ok){
-                console.log('4')
                 return jsonResult
             }else{
-                console.log('err')
                 throw new Error(jsonResult.error);
             }    
         },
@@ -23,4 +20,4 @@ function useGetColors(){
         retry: 2
     })
 }
-export default useGetColors;
+export default useGetSellerTransactions;
