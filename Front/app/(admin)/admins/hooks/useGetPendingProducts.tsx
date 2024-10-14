@@ -14,7 +14,7 @@ interface Query{
 
 function useGetPendingProducts(query : Query){
     return useQuery({
-        queryKey : ['pemdingProductroductList', query],
+        queryKey : ['pendingProductroductList', query],
         queryFn : async () => {
             const result = await fetch("https://localhost:8080/products/allPendingProducts", {
                 credentials: 'include'
