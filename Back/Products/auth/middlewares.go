@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func AuthMiddleware(mode string) fiber.Handler {
+func AuthMiddleware(modes []string) fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
 
@@ -27,7 +27,16 @@ func AuthMiddleware(mode string) fiber.Handler {
 			})
 		}
 
-		if body["status"].(string) != mode {
+		var modeApproved bool = false
+
+		for _, mode := range modes {
+			if body["status"].(string) == mode {
+				modeApproved = true
+				break
+			}
+		}
+
+		if !modeApproved {
 			return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "you do not have access to this method"})
 		}
 

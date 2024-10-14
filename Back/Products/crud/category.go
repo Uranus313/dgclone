@@ -24,9 +24,10 @@ func AddCategory(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
-	if len(category.Childs) > 0 {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the new category can not contain children"})
-	}
+	// if len(category.Childs) > 0 {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the new category can not contain children"})
+	// }
+	category.Childs = []primitive.ObjectID{}
 
 	insertResult, err := database.CategoryCollection.InsertOne(context.Background(), category)
 
@@ -267,10 +268,87 @@ func EditCategory(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "category updated suseefully"})
 }
 
-// ---------done------------
-// Get => get all categories -> make tree (treefy)
-// Get => get category by id
-// Patch => add child to category --> added as a part of "add category method"
-// Patch => edit category -> title, images, desc, link?, theme, detail
+func GetFirstLayerCates(c *fiber.Ctx) error {
+
+	var layer1Cates []models.Category
+
+	filter := bson.M{"parent_id": primitive.NilObjectID}
+
+	cursor, err := database.CategoryCollection.Find(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching from categories collection",
+			"error":   err.Error(),
+		})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &layer1Cates); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while decoding cursor",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(layer1Cates)
+}
+
+func GetCateChildren(c *fiber.Ctx) error {
+
+	cateIDString := c.Params("CateID")
+
+	cateID, err := primitive.ObjectIDFromHex(cateIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching cate id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	var category models.Category
+
+	filter := bson.M{"_id": cateID}
+
+	err = database.CategoryCollection.FindOne(context.Background(), filter).Decode(&category)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "category not found"})
+		}
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching from categories collection",
+			"error":   err.Error(),
+		})
+	}
+
+	var cateChildren []models.Category
+
+	for _, childID := range category.Childs {
+
+		var child models.Category
+
+		filter = bson.M{"_id": childID}
+
+		err = database.CategoryCollection.FindOne(context.Background(), filter).Decode(&child)
+
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				errMessage := fmt.Sprintf("Inconsistency error! child id %#v in category not found", childID)
+				return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": errMessage})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while fetching from categories collection",
+				"error":   err.Error(),
+			})
+		}
+
+		cateChildren = append(cateChildren, child)
+	}
+
+	return c.Status(http.StatusOK).JSON(cateChildren)
+}
 
 // Json Crack extension
