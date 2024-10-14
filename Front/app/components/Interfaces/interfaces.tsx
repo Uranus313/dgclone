@@ -442,7 +442,7 @@ export interface productSaleAnalyseCard {
 
 export interface Category {
     ID?: string,
-    title: string,
+    Title: string,
     Childs?: Category[],
     Detail: detail[],
     CommisionPercentage: number,

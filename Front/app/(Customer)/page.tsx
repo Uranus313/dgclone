@@ -45,7 +45,7 @@ export default async function Home() {
   // const mostProducts  = await res2.json()
 
 
-  // const rest = await fetch("http://localhost:8080/products/color")
+  // const rest = await fetch("https://localhost:8080/products/color")
   // const categoriets  = await res.json()
 
 

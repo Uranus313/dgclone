@@ -3,7 +3,7 @@ import ModalButton from './ModalButton'
 import SelectCategory from './SelectCategory'
 
 const AddProduct = async() => {
-  const res = await fetch("http://localhost:8080/products/category")
+  const res = await fetch("https://localhost:8080/products/category")
   const categories  = await res.json()
   return (
     <div className='flex justify-center'>

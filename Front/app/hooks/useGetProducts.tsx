@@ -5,14 +5,15 @@ import { useRef } from "react";
 interface Props {
     limit: number,
     categoryID: string
+    pageParamm?:number
 }
 
-function useGetProducts({ limit, categoryID }: Props) {
+function useGetProducts({ limit, categoryID , pageParamm=0 }: Props) {
     return useInfiniteQuery({
         queryKey: ['product', categoryID],
         initialPageParam: 1,
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit}&&CateID=${categoryID}`, {
+            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit*pageParamm}&&CateID=${categoryID}`, {
                 credentials: 'include'
             });
 

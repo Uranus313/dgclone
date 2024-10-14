@@ -71,7 +71,7 @@ func main() {
 
 	app.Post("/products/product", auth.AuthMiddleware([]string{"seller"}), crud.AddProduct) // (request body)
 
-	app.Patch("/products/product/AddSeller/:ProdID", auth.AuthMiddleware([]string{"seller"}), crud.AddSellerToProduct) // --unchecked (request body)
+	app.Patch("/products/product/AddSeller/:ProdID", auth.AuthMiddleware([]string{"seller"}), crud.AddSellerToProduct) // --unchecked
 
 	app.Patch("/products/product/UpdateRating", auth.AuthMiddleware([]string{"user"}), crud.UpdateProductRating) // query params => ProductID, Rating
 
@@ -81,7 +81,7 @@ func main() {
 
 	app.Patch("/products/product", auth.AuthMiddleware([]string{"seller", "admin"}), crud.EditProduct) // (request body)
 
-	app.Get("/products/product", auth.AuthMiddleware([]string{"user"}), crud.InfiniteScrolProds) // query params => limit, offset, CateID
+	app.Get("/products/product", crud.InfiniteScrolProds) // query params => limit, offset, CateID
 
 	app.Get("/products/prodAndOrdersCount", auth.AuthMiddleware([]string{"admin"}), crud.GetProdsAndOrdersCount)
 
@@ -105,7 +105,7 @@ func main() {
 
 	app.Post("/products/category", auth.AuthMiddleware([]string{"admin"}), crud.AddCategory) // (request body)
 
-	app.Get("/products/category", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetAllCategories)
+	app.Get("/products/category", crud.GetAllCategories)
 
 	app.Get("/products/category/:CateID", auth.AuthMiddleware([]string{"seller", "admin"}), crud.GetCategoryByID)
 

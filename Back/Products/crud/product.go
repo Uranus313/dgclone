@@ -445,11 +445,9 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	// }
 	// sellerID := seller["_id"].(primitive.ObjectID)
 
-	var sellerCart models.SellerCart
-
-	if err := c.BodyParser(&sellerCart); err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
-	}
+	// if err := c.BodyParser(&sellerCart); err != nil {
+	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	// }
 
 	// INNER USERS API => input:sellerID, output: seller_cart
 	// type API_Response struct {
@@ -474,9 +472,21 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	// 	return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
 	// }
 
-	sellerCart.SellerID = seller["_id"].(primitive.ObjectID)
-	sellerCart.SellerTitle = seller["title"].(string)
-	sellerCart.SellerRating = seller["rating"].(float32)
+	sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
+
+	var sellerCart = models.SellerCart{
+		SellerID:       sellerID,
+		SellerTitle:    seller["title"].(string),
+		SellerRating:   seller["rating"].(float32),
+		SellerQuantity: []models.SellerQuantity{},
+		ShipmentMethod: models.Digi_Kala,
+		DiscountID:     primitive.NilObjectID,
+		Price:          0,
+	}
+
+	// sellerCart.SellerID = seller["_id"].(primitive.ObjectID)
+	// sellerCart.SellerTitle =
+	// sellerCart.SellerRating =
 
 	prodIDString := c.Params("ProdID")
 
