@@ -1,4 +1,4 @@
-import { ProductCardSeller, SellerAddProdctCard, StateProduct } from '@/app/components/Interfaces/interfaces'
+import { ProductCardSeller, productSaleAnalyseCard, SellerAddProdctCard, StateProduct } from '@/app/components/Interfaces/interfaces'
 import ProductCard from '@/app/components/ProductCar/ProductCard'
 import { updateQueries } from '@/app/Functions/ServerFunctions'
 import useQueryNext from '@/app/hooks/useQueryNext'
@@ -13,7 +13,7 @@ import AddVarient from './AddVarient'
 import EditProduct from './EditProduct'
 import AddNew from '../addProducts/list/AddNew'
 
-const productsCard:ProductCardSeller[]=[
+// const productsCard:ProductCardSeller[]=[
 //   {
 //   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
 //   categoryTitle:'لپتاپ',
@@ -74,7 +74,7 @@ const Products = async() => {
 
   //server
   const res = await fetch("https://localhost:8080/products/seller/allProds")
-  const productsCard:SellerAddProdctCard[]  = await res.json()
+  const productsCard:productSaleAnalyseCard[]  = await res.json()
 
   return (
     <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
@@ -145,18 +145,18 @@ const Products = async() => {
       {productsCard.map(productCard=>(
         <div className='grid grid-cols-7 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
           <div className='grid grid-cols-2 place-items-center'>
-            <img className='w-20 mx-2' src={productCard.Picture}/>
+            <img className='w-20 mx-2' src={productCard.picture}/>
             <div>
-              <p className='line-clamp-2 h-fit text-sm'>{productCard.Title}</p>
+              <p className='line-clamp-2 h-fit text-sm'>{productCard.productTitle}</p>
               <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
             </div>
           </div>
-          <FilterButton id={productCard.CategoryID} query='category' title={productCard.categoryTitle} />
-          <FilterButton id={productCard.brand} query='brand' title={productCard.brand} />
+          <FilterButton id={productCard.categoryID} query='category' title={productCard.categoryTitle} />
+          {/* <FilterButton id={productCard.brand} query='brand' title={productCard.brand} /> */}
           <p>{productCard.state}</p>
           <p>{productCard.varientCount}</p>
 
-          {productCard.state==StateProduct.accepted &&
+          {productCard.state==1 &&
           <div className='flex gap-4 col-span-2'>
             <ModalButton noMargin={true} additionalCss='bg-primary-seller text-white rounded-md px-4 py-2' title='مدیریت تنوع' id='addNewVarient'/>
 
