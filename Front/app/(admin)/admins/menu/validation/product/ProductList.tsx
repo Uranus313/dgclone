@@ -35,7 +35,7 @@ const ProductList = ({ changeList }: Props) => {
 
 
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-10 rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
       }} className='border-b-2 shadow-md border-white p-7 px-13' >

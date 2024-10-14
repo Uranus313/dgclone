@@ -2,7 +2,7 @@
 
 import { ProductInterface } from "@/app/components/Interfaces/interfaces";
 import { useUser } from "@/app/hooks/useUser";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useRef, useState } from 'react'
 import { Comment } from "@/app/components/Interfaces/interfaces";
 
@@ -29,6 +29,7 @@ const CommentPopUp = ({ comment }: Props) => {
             setIsOpen(false);
         }
     };
+    const queryClient = useQueryClient();
     const unbanComment = useMutation({
         mutationFn: async () => {
             const result = await fetch("https://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=2`, {
@@ -49,7 +50,9 @@ const CommentPopUp = ({ comment }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            comment.validation_state = 2;
+            
+            // comment.validation_state = 2;
+            queryClient.invalidateQueries({ queryKey: ["commentList"] });
             closeModal();
         },
         onError: (error) => {
@@ -78,7 +81,8 @@ const CommentPopUp = ({ comment }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            comment.validation_state = 3;
+            // comment.validation_state = 3;
+            queryClient.invalidateQueries({ queryKey: ["commentList"] });
             closeModal();
         },
         onError: (error) => {
@@ -92,25 +96,26 @@ const CommentPopUp = ({ comment }: Props) => {
             {comment.validation_state == 1 &&
                 <div className='w-full p-10 border-b-2 border-border'>
                     <div className=' pb-5'>
-                        <div className='flex'>
+                        <div className='lg:flex'>
 
-                            <p className='text-text-color'>آی دی محصول : </p>
-                            <p className='pl-7'>{comment.product_id}</p>
-                            <p className='text-text-color'>آی دی کاربر : </p>
+                            <p className='text-text-color pl-3'>آی دی محصول : </p>
+                            <p className='lg:pl-5'>{comment.product_id}</p>
+                            <p className='text-text-color pl-3'>آی دی کاربر : </p>
                             <p>{comment.user_id}</p>
                         </div>
-                        <div className='flex pt-6'>
+                        <div className='lg:flex lg:pt-6'>
 
-                            <p className=' pl-5 text-text-color'> تاریخ  : </p>
+                            <p className=' pl-3 text-text-color'> تاریخ  : </p>
                             <p>{comment.date_sent}</p>
-                            <p className='pr-20 pl-5 text-text-color'> نوع  : </p>
+                            <p className='lg:pr-20 pl-3 text-text-color '> نوع  : </p>
                             {comment.comment_type == 1 && <p>عادی</p>}
                             {comment.comment_type == 2 && <p>سوال</p>}
                             {comment.comment_type == 3 && <p>جواب</p>}
 
                         </div>
                     </div>
-                    <p className='pb-5 m-5 break-all'>پیام : {comment.content}</p>
+                    <p className='pb-5 my-1 break-all text-text-color'>پیام : </p>
+                    <p>{comment.content}</p>
                     {/* <button className='text-primary-color py-5 pb-8 w-full text-right' >بیشتر</button> */}
                     <button className='text-green-box border-green-box border-2 my-5 mb-8 mx-3 py-2 px-5 rounded-md' onClick={() => unbanComment.mutate()}>
                         تایید

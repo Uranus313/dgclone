@@ -22,7 +22,7 @@ const CommentList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-10 rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSearch();

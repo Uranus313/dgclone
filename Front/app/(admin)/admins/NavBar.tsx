@@ -75,7 +75,8 @@ function NavBar() {
                 <li className="py-1"><Link href={"/admins/menu/validation"} onClick={menu}>ارزیابی</Link></li>
                 <li className="py-1.5"><Link href={"/admins/menu/allTickets"} onClick={menu}>بلیط ها</Link></li>
                 <li className="py-1"><Link href={"/admins/menu/allEmployees/allRoles"} onClick={menu}>نقش ها</Link></li>
-                <li className="py-1.5 text-nowrap"><Link href={"/admins/menu/allSellers/verifyRequests"} onClick={menu}> درخواست تایید</Link></li>
+                <li className="py-1.5"><Link href={"/admins/menu/allCategories"}>دسته بندی ها</Link></li>
+                <li className="py-1 text-nowrap"><Link href={"/admins/menu/allSellers/verifyRequests"} onClick={menu}> درخواست تایید</Link></li>
                 <li className="pt-1.5 text-nowrap">
                   <button onClick={() => logOut.mutate()}>
                     خروج از حساب
