@@ -54,7 +54,7 @@ const UserList = ({ changeList }: Props) => {
                         <option value="orders">سفارش ها</option>
                         <option value="sellers">فروشندگان</option>
                         <option value="products">محصولات</option>
-                        <option value="transactions" selected> تراکنش ها</option>
+                        <option value="transactions" defaultChecked> تراکنش ها</option>
                     </select>
                 </form>
                     <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-greener-box lg:px-8 lg:py-2 rounded-md lg:mx-20 invisible lg:visible'>مرتب سازی</button>
