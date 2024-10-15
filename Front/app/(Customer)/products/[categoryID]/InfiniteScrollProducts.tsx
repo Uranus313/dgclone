@@ -9,10 +9,11 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 interface Props{
     categoryID:string
     startFromBeg?:number
+    sort?:string
 }
-const InfiniteScrollProducts = ({categoryID , startFromBeg=1}:Props) => {
+const InfiniteScrollProducts = ({categoryID ,sort, startFromBeg=1}:Props) => {
 
-    const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:categoryID , limit:12 , pageParamm:startFromBeg})
+    const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:categoryID , sort:sort, limit:12 , pageParamm:startFromBeg})
     console.log('prod prod',data)
     const totalFetchedGames =
     data?.pages.reduce((total, page) => total + page?.products?.length, 0) ||

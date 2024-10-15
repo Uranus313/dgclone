@@ -38,7 +38,7 @@ const Products = () => {
   return (
     <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
       <h1 className='text-xl font-bold text-grey-dark'>مدیریت کالا ها</h1>
-      <h1>{JSON.stringify(productsCard)}</h1>
+      {/* <h1>{JSON.stringify(productsCard)}</h1> */}
       <div className='py-5'>
         <label className="input w-full input-bordered flex items-center gap-2">
           <input type="text" className="grow " placeholder=" جستجو بر اساس نام یا شناسه ی کالا " />
@@ -102,7 +102,7 @@ const Products = () => {
       <p>وضعیت</p>
       <p>تعداد تنوع</p>
       </div>
-      {/* {productsCard.map(productCard=>(
+      {productsCard?.map(productCard=>(
         <div className='grid grid-cols-7 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
           <div className='grid grid-cols-2 place-items-center'>
             <img className='w-20 mx-2' src={productCard.picture}/>
@@ -112,8 +112,8 @@ const Products = () => {
             </div>
           </div>
           <FilterButton id={productCard.categoryID} query='category' title={productCard.categoryTitle} />
-          {/* <FilterButton id={productCard.brand} query='brand' title={productCard.brand} /> */}
-          {/* <p>{productCard.state}</p>
+          <FilterButton id={productCard.brand} query='brand' title={productCard.brand} />
+          <p>{productCard.state}</p>
           <p>{productCard.varientCount}</p>
 
           {productCard.state==1 &&
@@ -130,9 +130,9 @@ const Products = () => {
               <AddVarient productID={productCard.productID}/>
               <AddNew productID={productCard.productID}/>
           </div>
-          } */}
-        {/* </div> */}
-       {/* ))} */}
+          }
+        </div>
+       ))}
     </div>
   )
 }

@@ -1,20 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "../(Customer)/page";
-import { productSaleAnalyseCard } from "../components/Interfaces/interfaces";
-
-
-
-function useGetSellerProducts(){
-    return useQuery<productSaleAnalyseCard[]>({
-        queryKey : ['productss'],
+import { SellerSetVarientOnProduct } from "../components/Interfaces/interfaces";
+function useGetSellerVarients(){
+    console.log('1')
+    return useQuery<SellerSetVarientOnProduct[]>({
+        queryKey : ['colors'],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch(`https://localhost:8080/products/seller/allProds`, {
+            const result = await fetch("https://localhost:8080/products/color", {
                             credentials: 'include'});
                            
             const jsonResult = await result.json();
             if(result.ok){
-                console.log('4',jsonResult)
+                console.log('4')
                 return jsonResult
             }else{
                 console.log('err')
@@ -26,4 +24,4 @@ function useGetSellerProducts(){
         retry: 2
     })
 }
-export default useGetSellerProducts;
+export default useGetSellerVarients;

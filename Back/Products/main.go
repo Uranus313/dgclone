@@ -49,7 +49,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 	// app.Use(cors.New(cors.Config{}))
-	
+
 	app.Get("/metrics", monitor.New())
 	app.Use(logger.New())
 
@@ -69,7 +69,7 @@ func main() {
 
 	// ------------products-------------
 
-	app.Get("/products/product/:ProdID", auth.AuthMiddleware([]string{"user", "admin"}), crud.GetProductByID)
+	app.Get("/products/product/:ProdID", crud.GetProductByID)
 
 	app.Post("/products/product", auth.AuthMiddleware([]string{"seller"}), crud.AddProduct) // (request body)
 
@@ -135,7 +135,7 @@ func main() {
 
 	// ------------sale discount-----------
 
-	app.Get("/products/salediscount/MostDiscounts", auth.AuthMiddleware([]string{"user"}), crud.GetMostDiscounts) // query params => CateID
+	app.Get("/products/salediscount/MostDiscounts", crud.GetMostDiscounts) // query params => CateID
 
 	app.Post("/products/salediscount", auth.AuthMiddleware([]string{"seller"}), crud.AddSaleDiscount) // query params => ProdID, SellerID, EndDate, NewPrice | note. EndDate layout must be "yyyy-mm-dd 15:04:05" format
 

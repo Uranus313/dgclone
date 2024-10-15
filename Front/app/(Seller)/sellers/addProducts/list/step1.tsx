@@ -2,6 +2,7 @@
 import {  Color, SellerAddProdctCard, SellerSetVarientOnProduct, shipmentMethod } from '@/app/components/Interfaces/interfaces'
 import React, { useEffect, useRef, useState } from 'react'
 import VarientCard from './VarientCard'
+import useGetSellerVarients from '@/app/hooks/useGetSellerVarients'
 
 
 
@@ -22,18 +23,20 @@ interface Props{
     prevVarients?:SellerSetVarientOnProduct[]
 }
 const Step1 = ({productCard , prevVarients}:Props) => {
-  const [varients , setVarients] = useState<SellerSetVarientOnProduct[]>([])
+  const {data:vars} = useGetSellerVarients()
+  const {data:price} = useGetSellerVarients()
+  const [varients , setVarients] = useState<SellerSetVarientOnProduct[]>(vars??[])
   const priceRef = useRef<HTMLInputElement>(null);
   let [productPrice , setProductPrice] = useState<number>()
   
-  useEffect(() => {
-    if(prevVarients){
-      setVarients(prevVarients)
-      setProductPrice(0)
+  // useEffect(() => {
+  //   if(prevVarients){
+  //     setVarients(prevVarients)
+  //     setProductPrice(0)
 
-    } 
-    setProductPrice(productCard.UrbanPrice)
-  }, []);
+  //   } 
+  //   setProductPrice(productCard.UrbanPrice)
+  // }, []);
 
 
   function AddNewVarient(){

@@ -128,4 +128,5 @@ type ProductCard struct {
 	SellerCount int
 	UrbanPrice  int
 	Commission  int
+	CategoryID  primitive.ObjectID
 }

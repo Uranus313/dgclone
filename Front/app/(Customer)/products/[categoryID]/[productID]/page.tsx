@@ -29,7 +29,7 @@ const ProductPage = async({params:{productID}}:Props) => {
                     </div>
                     <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
                     className="collapse-content bg-white border-2 border-propBubble-bg">
-                        <p className='mt-5'>{product.description}</p>
+                        <p className='mt-5'>{product?.description}</p>
                     </div>
                 </div>
 

@@ -185,7 +185,7 @@ export interface ProductInterface {
     is_original: boolean,
     images: string[],
     dimentions: { length: number, width: number, height: number },
-    wieght_KG: number,
+    weight_KG: number,
     description?: string,
     validation_state: number
 
@@ -410,6 +410,7 @@ export interface SellerAddProdctCard {
     UrbanPrice: number,//price that the first seller put
     SellerCount: number,
     ID: string
+    CategoryID:string
 }
 
 //#endregion

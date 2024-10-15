@@ -1,19 +1,29 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Brand, ProductInterface, SellerAddProdctCard } from "../components/Interfaces/interfaces";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import useQueryNext from "./useQueryNext";
 
 interface Props {
     limit: number,
     categoryID: string
     pageParamm?:number
+    sort?:string
 }
 
-function useGetProducts({ limit, categoryID , pageParamm=0 }: Props) {
+function useGetProducts({sort, limit, categoryID , pageParamm=0 }: Props) {
+    const {searchParams} = useQueryNext()
+    const [sortOrder,setSortOrder]=useState(searchParams.get("sortOrder")) 
+
+    useEffect(()=>{
+        setSortOrder(searchParams.get('sortOrder'))
+    },[searchParams.get('sortOrder')])
+
+
     return useInfiniteQuery({
         queryKey: ['product', categoryID],
         initialPageParam: 1,
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit*pageParamm}&&CateID=${categoryID}`, {
+            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit*pageParamm}&&CateID=${categoryID}&&SortMethod=${sortOrder}`, {
                 credentials: 'include'
             });
 

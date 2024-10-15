@@ -254,7 +254,7 @@ const AddNew = ({productID}:Props) => {
                         </div>
                         <div className='flex items-center my-3'>
                             <p className='m-2'>وزن</p>
-                            <input defaultValue={prevProduct?.wieght_KG} className='border border-grey-border rounded-md m-2 p-3'ref={wieght} placeholder='وزن'/> 
+                            <input defaultValue={prevProduct?.weight_KG} className='border border-grey-border rounded-md m-2 p-3'ref={wieght} placeholder='وزن'/> 
                         </div>
                     </div>
                 
@@ -370,7 +370,7 @@ const AddNew = ({productID}:Props) => {
                   is_original: original.current?.checked??false,
                   images:images,
                   dimentions: { length: Number(length.current?.value)??0, width: Number(width.current?.value)??0, height: Number(height.current?.value)??0 },
-                  wieght_KG: Number(wieght.current?.value),
+                  weight_KG: Number(wieght.current?.value),
                   description: desc.current?.value,
                   validation_state: 1
                 }

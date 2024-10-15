@@ -413,9 +413,28 @@ func AddProduct(c *fiber.Ctx) error {
 	// }
 
 	// Patch(add product to seller prods)
+	if product.Title == "" ||
+		product.Description == "" ||
+		len(product.Details) == 0 ||
+		product.CategoryID.IsZero() ||
+		product.BrandID.IsZero() ||
+		product.Dimentions.Height == 0 ||
+		product.Dimentions.Length == 0 ||
+		product.Dimentions.Width == 0 ||
+		len(product.Images) == 0 {
+
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "all necessory fields must be field"})
+	}
 
 	product.DateAdded = time.Now()
 	product.ValidationState = models.PendingValidation
+	product.SellCount = 0
+	product.VisitCount = 0
+	product.Vists = []time.Time{}
+	product.Rating = models.Rating{
+		Rate:    0,
+		RateNum: 0,
+	}
 
 	var sellerCart models.SellerCart = CreateSellerCart(seller)
 
@@ -1215,6 +1234,7 @@ func CreateProdCard(product models.Product) models.ProductCard {
 		SellerCount: len(product.Sellers),
 		UrbanPrice:  product.Sellers[0].Price,
 		Commission:  prodCate.CommisionPercentage,
+		CategoryID:  product.CategoryID,
 	}
 }
 
@@ -1299,7 +1319,7 @@ func GetSellerProducts(c *fiber.Ctx) error {
 
 		var prodBrand models.Brand
 
-		// filter = bson.M{"_id": product.BrandID}
+		filter = bson.M{"_id": product.BrandID}
 
 		// err := database.BrandCollection.FindOne(context.Background(), filter).Decode(&prodBrand)
 

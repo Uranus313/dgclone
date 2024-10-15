@@ -109,31 +109,37 @@ const BestSellerProducts:ProductCardInterface[] = [
   ]
   //#endregion
 
+interface BestDicounts{
+  discount:{_id:string,prod:{prod_id:string,seller_id:string,original_price:number,category_id:string},new_price:number,end_date:Date},percenrage:number,product:SellerAddProdctCard
+}
 
 interface Props{
     categoryID?:string;
     color?:string;
-    data: SellerAddProdctCard[]
+    data: BestDicounts[]
 }
 
 
-// {"discount":{"_id":"670c3a531684af4970f7ff8b","prod":{"prod_id":"6701d1ba71d45cf3c74c3d4e","seller_id":"6701755968449eaadc51dc34","original_price":414,"category_id":"000000000000000000000000"},"new_price":0,"end_date":"2024-12-18T18:17:55Z"},"percenrage":100,"product":{"ID":"6701d1ba71d45cf3c74c3d4e","Title":"rerum","Price":390,"Picture":"https://dkstatics-public.digikala.com/digikala-products/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/format,webp/quality,q_80","DiscountID":"000000000000000000000000","SellerCount":2,"UrbanPrice":390,"Commission":0}}
 
 
 
-const BestProducts = async({data:BestSellerProducts,categoryID='',color=''}:Props) => {
+const BestProductsDiscount = async({data:BestDiscountProducts,categoryID='',color=''}:Props) => {
 
   return (
     <div>
         <div className='grid-flow-col grid-rows-3 grid overflow-auto rounded-md mx-auto border-grey-border border-2 w-10/12 bg-white'>
 
-            {BestSellerProducts.map((BestSeller , index)=>{
+            {BestDiscountProducts.map((BestDiscount , index)=>{
               console.log(categoryID)
-              return <Link className='w-72' href={'/products/'+BestSeller.CategoryID+"/"+BestSeller.ID} key={BestSeller.ID}>
+              return <Link className='w-72' href={'/products/'+BestDiscount.product.CategoryID+"/"+BestDiscount.product.ID} key={BestDiscount.product.ID}>
                 <div className='flex items-center p-3' >
-                  <img width='70px' src={BestSeller.Picture}/>
+                  <img width='70px' src={BestDiscount.product.Picture}/>
                   <h1 className={`m-3 ${color===""?'text-primary-color':''}  font-extrabold text-3xl`} style={{color:color}}>{index+1}</h1>
-                  <h1 className=' line-clamp-2 text-sm font-thin text-grey-dark'>{BestSeller.Title}</h1>
+                  <div>
+                    <h1 className=' line-clamp-2 text-sm font-thin text-grey-dark'>{BestDiscount.product.Title}</h1>
+                    <h1 className=' line-clamp-2  line-through font-thin text-grey-dark'>{BestDiscount.discount.prod.original_price}</h1>
+                    <h1 className=' line-clamp-2 text-lg text-black'>{BestDiscount.discount.new_price}</h1>
+                  </div>
                   
                 </div>
                 <hr className='my-2 mx-auto text-grey-border w-3/4'></hr>
@@ -144,4 +150,4 @@ const BestProducts = async({data:BestSellerProducts,categoryID='',color=''}:Prop
   )
 }
 
-export default BestProducts
+export default BestProductsDiscount

@@ -11,11 +11,10 @@ const Sort = () => {
     searchParams.delete
     return (
         <div>
-            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='mostViewed'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'mostViewed'}] , searchParams:searchParams})}>پربازدید ترین</button>
-            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='bestSellers'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'bestSellers'}] , searchParams:searchParams})}>پرفروش ترین</button>
-            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='cheapest'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'cheapest'}] , searchParams:searchParams})}>ارزان ترین</button>
-            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='mostExpensive'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'mostExpensive'}] , searchParams:searchParams})}>گران ترین</button>
-            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='newest'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'newest'}] , searchParams:searchParams})}>جدید ترین</button>
+            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='1'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'1'}] , searchParams:searchParams})}>پربازدید ترین</button>
+            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='2'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'2'}] , searchParams:searchParams})}>ارزان ترین</button>
+            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='3'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'3'}] , searchParams:searchParams})}>گران ترین</button>
+            <button className={`text-sm mx-2 ${searchParams.get('sortOrder')==='4'?'text-primary-color' :''}`} onClick={()=>updateQueries({dicts:[{param:'sortOrder',value:'4'}] , searchParams:searchParams})}>جدید ترین</button>
         </div>
     )
 }

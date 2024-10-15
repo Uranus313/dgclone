@@ -3,7 +3,6 @@ import Link from "next/link";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import useUserCheckToken from "../hooks/useCheckToken";
 import userContext from "../contexts/userContext";
-import { Categories , Category } from "./page";
 import {useRouter} from 'next/navigation'
 import MegaMenu from "./MegaMenu";
 import { useUser } from "../hooks/useUser";
@@ -179,7 +178,7 @@ const NavBar = () => {
             <p className="mx-2 ">کارت هدیه</p>
           </Link>
 
-          <Link href="/" className="flex">
+          <Link href="/bestSellers" className="flex">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

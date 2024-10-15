@@ -27,6 +27,9 @@ func AddCategory(c *fiber.Ctx) error {
 	// if len(category.Childs) > 0 {
 	// 	return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "the new category can not contain children"})
 	// }
+	if category.Title == "" {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "category title can not be empty"})
+	}
 	category.Childs = []primitive.ObjectID{}
 
 	insertResult, err := database.CategoryCollection.InsertOne(context.Background(), category)
