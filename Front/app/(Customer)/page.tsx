@@ -67,7 +67,7 @@ export default async function Home() {
         <div className='flex justify-center'>
           {categories.map((category) => (
             <div className='mx-5' key={category.ID}>
-              { category.Pictures.length>0 &&<img width='100px' src={category.Pictures[1]} alt={category.Title} />}
+              {category?.Pictures?.length >0 &&<img width='100px' src={category.Pictures[1]} alt={category.Title} />}
               <p className='text-center text-xs mt-3 font-semibold'>{category.Title}</p>
             </div>
           ))}
