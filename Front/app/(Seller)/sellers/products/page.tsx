@@ -1,3 +1,4 @@
+'use client'
 import { ProductCardSeller, productSaleAnalyseCard, SellerAddProdctCard, StateProduct } from '@/app/components/Interfaces/interfaces'
 import ProductCard from '@/app/components/ProductCar/ProductCard'
 import { updateQueries } from '@/app/Functions/ServerFunctions'
@@ -12,49 +13,7 @@ import Step1 from '../addProducts/list/step1'
 import AddVarient from './AddVarient'
 import EditProduct from './EditProduct'
 import AddNew from '../addProducts/list/AddNew'
-
-// const productsCard:ProductCardSeller[]=[
-//   {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'55',
-//   brand:'Asus',
-//   state:StateProduct.accepted,
-//   varientCount:2,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدلSSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'58',
-//   brand:'Asus',
-//   state:StateProduct.accepted,
-//   varientCount:1,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'56',
-//   brand:'Asus',
-//   state:StateProduct.inCheckingOrder,
-//   varientCount:1,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'57',
-//   brand:'Asus',
-//   state:StateProduct.rejected,
-//   varientCount:1,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// ]
+import useGetSellerProducts from '@/app/hooks/useGetSellerProducts'
 
 
 interface Filterables{
@@ -70,15 +29,16 @@ const filterables:Filterables={
   brands:["اپل","ایسوس","لنوو"]
 }
 
-const Products = async() => {  
+const Products = () => {  
 
   //server
-  const res = await fetch("https://localhost:8080/products/seller/allProds")
-  const productsCard:productSaleAnalyseCard[]  = await res.json()
-
+  // const res = await fetch("https://localhost:8080/products/seller/allProds",{credentials:'include'})
+  // const productsCard = await res.json()
+  const {data:productsCard} = useGetSellerProducts()
   return (
     <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
       <h1 className='text-xl font-bold text-grey-dark'>مدیریت کالا ها</h1>
+      <h1>{JSON.stringify(productsCard)}</h1>
       <div className='py-5'>
         <label className="input w-full input-bordered flex items-center gap-2">
           <input type="text" className="grow " placeholder=" جستجو بر اساس نام یا شناسه ی کالا " />
@@ -142,7 +102,7 @@ const Products = async() => {
       <p>وضعیت</p>
       <p>تعداد تنوع</p>
       </div>
-      {productsCard.map(productCard=>(
+      {/* {productsCard.map(productCard=>(
         <div className='grid grid-cols-7 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
           <div className='grid grid-cols-2 place-items-center'>
             <img className='w-20 mx-2' src={productCard.picture}/>
@@ -153,7 +113,7 @@ const Products = async() => {
           </div>
           <FilterButton id={productCard.categoryID} query='category' title={productCard.categoryTitle} />
           {/* <FilterButton id={productCard.brand} query='brand' title={productCard.brand} /> */}
-          <p>{productCard.state}</p>
+          {/* <p>{productCard.state}</p>
           <p>{productCard.varientCount}</p>
 
           {productCard.state==1 &&
@@ -170,9 +130,9 @@ const Products = async() => {
               <AddVarient productID={productCard.productID}/>
               <AddNew productID={productCard.productID}/>
           </div>
-          }
-        </div>
-      ))}
+          } */}
+        {/* </div> */}
+       {/* ))} */}
     </div>
   )
 }

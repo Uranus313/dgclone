@@ -116,7 +116,7 @@ interface Props{
     color?:string;
 }
 const BestProducts = async({filter,categoryID='',color=''}:Props) => {
-  // const res = await fetch("http://localhost:8080/products/color")
+  // const res = await fetch("https://localhost:8080/products/color")
   // const categories  = await res.json()
   // console.log(categories)
   return (
