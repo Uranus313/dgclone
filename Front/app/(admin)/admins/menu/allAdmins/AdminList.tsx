@@ -53,7 +53,7 @@ const AdminList = ({ changeList }: Props) => {
           <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
-            <option value="admins" selected> ادمین ها</option>
+            <option value="admins" defaultChecked> ادمین ها</option>
             <option value="orders">سفارش ها</option>
             <option value="sellers">فروشندگان</option>
             <option value="products">محصولات</option>

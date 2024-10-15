@@ -48,7 +48,7 @@ const OrderList = ({ changeList }: Props) => {
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
             <option value="admins" > ادمین ها</option>
-            <option value="orders" selected>سفارش ها</option>
+            <option value="orders" defaultChecked>سفارش ها</option>
             <option value="sellers" >فروشندگان</option>
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
