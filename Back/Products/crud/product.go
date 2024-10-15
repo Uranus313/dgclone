@@ -391,6 +391,8 @@ func GetProductByID(c *fiber.Ctx) error {
 
 func AddProduct(c *fiber.Ctx) error {
 
+	seller := c.Locals("ent").(map[string]interface{})
+
 	var product models.Product
 
 	// token := "?????"
@@ -415,6 +417,10 @@ func AddProduct(c *fiber.Ctx) error {
 	product.DateAdded = time.Now()
 	product.ValidationState = models.PendingValidation
 
+	var sellerCart models.SellerCart = CreateSellerCart(seller)
+
+	product.Sellers = append(product.Sellers, sellerCart)
+
 	insertResult, err := database.ProductCollection.InsertOne(context.Background(), product)
 
 	if err != nil {
@@ -426,8 +432,34 @@ func AddProduct(c *fiber.Ctx) error {
 
 	product.ID = insertResult.InsertedID.(primitive.ObjectID)
 
+	_, statusCode, err := InnerRequest(PUT, "/sellerProduct", nil, map[string]string{
+		"sellerID":  seller["_id"].(string),
+		"productID": product.ID.Hex(),
+	})
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
+
 	return c.Status(http.StatusCreated).JSON(product)
 
+}
+
+func CreateSellerCart(seller map[string]interface{}) models.SellerCart {
+	sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
+
+	return models.SellerCart{
+		SellerID:       sellerID,
+		SellerTitle:    seller["storeInfo"].(map[string]interface{})["commercialName"].(string),
+		SellerRating:   seller["rating"].(float64),
+		SellerQuantity: []models.SellerQuantity{},
+		ShipmentMethod: models.Digi_Kala,
+		DiscountID:     primitive.NilObjectID,
+		Price:          0,
+	}
 }
 
 func AddSellerToProduct(c *fiber.Ctx) error {
@@ -472,17 +504,18 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 	// 	return c.Status(api_response.status).JSON(fiber.Map{"error from inner user api": api_response.message})
 	// }
 
-	sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
+	// sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
 
-	var sellerCart = models.SellerCart{
-		SellerID:       sellerID,
-		SellerTitle:    seller["title"].(string),
-		SellerRating:   seller["rating"].(float32),
-		SellerQuantity: []models.SellerQuantity{},
-		ShipmentMethod: models.Digi_Kala,
-		DiscountID:     primitive.NilObjectID,
-		Price:          0,
-	}
+	// var sellerCart = models.SellerCart{
+	// 	SellerID:       sellerID,
+	// 	SellerTitle:    seller["title"].(string),
+	// 	SellerRating:   seller["rating"].(float32),
+	// 	SellerQuantity: []models.SellerQuantity{},
+	// 	ShipmentMethod: models.Digi_Kala,
+	// 	DiscountID:     primitive.NilObjectID,
+	// 	Price:          0,
+	// }
+	var sellerCart models.SellerCart = CreateSellerCart(seller)
 
 	// sellerCart.SellerID = seller["_id"].(primitive.ObjectID)
 	// sellerCart.SellerTitle =
@@ -494,6 +527,31 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
+	}
+
+	filter := bson.M{"_id": prodID}
+	var prod models.Product
+
+	err = database.ProductCollection.FindOne(context.Background(), filter).Decode(&prod)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "product not found"})
+		}
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	sellerFound := false
+
+	for _, prodSellerCart := range prod.Sellers {
+		if prodSellerCart.SellerID == sellerCart.SellerID {
+			sellerFound = true
+			break
+		}
+	}
+
+	if sellerFound {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "duplicate! seller already found in product seller list"})
 	}
 
 	update := bson.M{"$push": bson.M{"sellers": sellerCart}}
@@ -1216,17 +1274,17 @@ func GetSellerProducts(c *fiber.Ctx) error {
 	// }
 
 	type ProductSellerCard struct {
-		title          string
-		categoryTitle  string
-		categoryID     primitive.ObjectID
-		productID      primitive.ObjectID
-		brand          string
-		state          models.ValidationState
-		varientCount   int
-		picture        string
-		totalSellPrice int
-		totalSellCount int
-		viewCount      int
+		Title          string                 `json:"title"`
+		CategoryTitle  string                 `json:"categoryTitle"`
+		CategoryID     primitive.ObjectID     `json:"categoryID"`
+		ProductID      primitive.ObjectID     `json:"productID"`
+		Brand          string                 `json:"brand"`
+		State          models.ValidationState `json:"state"`
+		VarientCount   int                    `json:"varientCount"`
+		Picture        string                 `json:"picture"`
+		TotalSellPrice int                    `json:"totalSellPrice"`
+		TotalSellCount int                    `json:"totalSellCount"`
+		ViewCount      int                    `json:"viewCount"`
 	}
 
 	var sellerProds []ProductSellerCard
@@ -1241,13 +1299,14 @@ func GetSellerProducts(c *fiber.Ctx) error {
 
 		var prodBrand models.Brand
 
-		filter = bson.M{"_id": product.BrandID}
+		// filter = bson.M{"_id": product.BrandID}
 
-		err := database.BrandCollection.FindOne(context.Background(), filter).Decode(&prodBrand)
+		// err := database.BrandCollection.FindOne(context.Background(), filter).Decode(&prodBrand)
 
-		if err != nil {
-			return nil, err
-		}
+		// if err != nil {
+		// 	return nil, errors.New("error while fetching brand: " + err.Error())
+		// }
+		prodBrand.Title = "some random brand"
 
 		sellerFound := false
 		sellerIndex := 0
@@ -1274,13 +1333,13 @@ func GetSellerProducts(c *fiber.Ctx) error {
 		cursor, err := database.OrderCollection.Find(context.Background(), filter)
 
 		if err != nil {
-			return nil, err
+			return nil, errors.New("error while fetching orders: " + err.Error())
 		}
 
 		defer cursor.Close(context.Background())
 
 		if err := cursor.All(context.Background(), &prodOrders); err != nil {
-			return nil, err
+			return nil, errors.New("error while decoding orders cursor: " + err.Error())
 		}
 
 		sumSellPrice := 0
@@ -1289,22 +1348,35 @@ func GetSellerProducts(c *fiber.Ctx) error {
 			sumSellPrice += order.Product.Price * order.Quantity
 		}
 
+		var prodImage string
+
+		if len(product.Images) > 0 {
+			prodImage = product.Images[0]
+		} else {
+			prodImage = ""
+		}
+
 		return &ProductSellerCard{
-			title:          product.Title,
-			categoryTitle:  prodCate.Title,
-			categoryID:     product.CategoryID,
-			productID:      product.ID,
-			brand:          prodBrand.Title,
-			state:          product.ValidationState,
-			varientCount:   len(product.Sellers[sellerIndex].SellerQuantity),
-			picture:        product.Images[0],
-			totalSellPrice: sumSellPrice,
-			totalSellCount: len(prodOrders),
-			viewCount:      product.VisitCount,
+			Title:          product.Title,
+			CategoryTitle:  prodCate.Title,
+			CategoryID:     product.CategoryID,
+			ProductID:      product.ID,
+			Brand:          prodBrand.Title,
+			State:          product.ValidationState,
+			VarientCount:   len(product.Sellers[sellerIndex].SellerQuantity),
+			Picture:        prodImage,
+			TotalSellPrice: sumSellPrice,
+			TotalSellCount: len(prodOrders),
+			ViewCount:      product.VisitCount,
 		}, nil
 	}
 
-	for _, prodID := range seller["productList"].([]primitive.ObjectID) {
+	// nefkrlgne
+	// var prfmdsk []models.Product
+
+	for _, prodIDInterface := range seller["productList"].([]interface{}) {
+
+		prodID, _ := primitive.ObjectIDFromHex(prodIDInterface.(string))
 
 		var product models.Product
 
@@ -1320,22 +1392,26 @@ func GetSellerProducts(c *fiber.Ctx) error {
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
 
-		if product.ValidationState == models.Validated {
+		sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
 
-			sellerID, _ := primitive.ObjectIDFromHex(seller["_id"].(string))
+		prodCard, err := createProductSellerCard(product, sellerID)
 
-			prodCard, err := createProductSellerCard(product, sellerID)
-
-			if err != nil {
-				return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
-					"message": "error while creating product seller card",
-					"error":   err.Error(),
-				})
-			}
-
-			sellerProds = append(sellerProds, *prodCard)
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "error while creating product seller card",
+				"error":   err.Error(),
+			})
 		}
+
+		sellerProds = append(sellerProds, *prodCard)
+		// prfmdsk = append(prfmdsk, product)
+		fmt.Println("prod seller card:", *prodCard)
+		fmt.Println()
+
 	}
+
+	fmt.Println("prod cards: ", sellerProds)
+	// fmt.Println("\n\nprods: ", prfmdsk)
 
 	return c.Status(http.StatusOK).JSON(sellerProds)
 }
