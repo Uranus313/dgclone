@@ -49,7 +49,7 @@ const SellerList = ({ changeList }: Props) => {
             <option value="employees">کارمندان</option>
             <option value="admins" > ادمین ها</option>
             <option value="orders">سفارش ها</option>
-            <option value="sellers" defaultChecked>فروشندگان</option>
+            <option value="sellers" selected>فروشندگان</option>
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>

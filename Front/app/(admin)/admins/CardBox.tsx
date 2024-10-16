@@ -32,7 +32,7 @@ function CardBox({ changeList }: Props) {
     return (
 
         <div className='w-9/12 text-white text-center pr-20' >
-            <div className='md:flex mt-10 md:mt-20' id="cardBox">
+            <div className='md:flex mt-10 md:mt-20'>
                 <div className='bg-primary-color flex-1 mx-5 rounded-md '>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :

@@ -8,6 +8,7 @@ import useGetAccessLevels from "../../../hooks/useGetAccessLevels";
 const AddRolePopUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
   // const {user , setUser , isLoading} = useUser();
   const { register, handleSubmit, getValues } = useForm();
@@ -31,6 +32,9 @@ const AddRolePopUp = () => {
     if (dialogRef.current) {
       dialogRef.current.close();
       setIsOpen(false);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     }
   };
   const queryClient = useQueryClient();
@@ -101,7 +105,7 @@ const AddRolePopUp = () => {
         <div className="modal-box">
           {error && <p>{error}</p>}
           <h3 className="font-bold text-lg border-b-2 border-border-color-list py-3">اضافه کردن نقش</h3>
-          <form onSubmit={handleSubmit(submit)}>
+          <form ref={formRef} onSubmit={handleSubmit(submit)}>
 
             <input className=" bg-white placeholder-neutral-400 my-7 mb-4 px-4 py-2 rounded-md border-2 border-neutral-200" type="text" {...register("name")} placeholder="نام شغل" />
 

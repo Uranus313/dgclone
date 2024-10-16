@@ -1,8 +1,7 @@
 "use client";
 
-import { Category } from "@/app/components/Interfaces/interfaces";
+import ImageUpload from "@/app/components/ImageUpload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { title } from "process";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 export interface Props {
@@ -10,8 +9,10 @@ export interface Props {
     size: string
     color: string
     hasDetail: Boolean
+    picNum: Boolean
 }
-const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
+
+const AddCategoryPopUp = ({ cateId, size, color, hasDetail, picNum }: Props) => {
     const [theme, setTheme] = useState('#BD1684');
     const [isOpen, setIsOpen] = useState(false);
     const [details, setDetails] = useState([{ title: '', keys: [''] }]);
@@ -21,6 +22,7 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [link, setLink] = useState("");
+    const [pictures, setPictures] = useState<string[]>([]);
 
     const handleChangeTitle = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const newDetails = [...details];
@@ -33,6 +35,7 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
         newDetails[detailIndex].keys[countIndex] = event.target.value;
         setDetails(newDetails);
     };
+
     const addDetail = () => {
         setDetails([...details, { title: '', keys: [''] }]);
     };
@@ -42,20 +45,7 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
         newDetails[index].keys.push('');
         setDetails(newDetails);
     };
-    const handleChangeColor = (e: any) => {
-        setTheme(e.target.value);
-    };
 
-    const handleChangeTitleCategory = (e: any) => {
-        setTitle(e.target.value);
-    };
-
-    const handleChangeDescription = (e: any) => {
-        setDescription(e.target.value);
-    };
-    const handleChangeLink = (e: any) => {
-        setLink(e.target.value);
-    };
 
     const openModal = () => {
         if (dialogRef.current) {
@@ -68,6 +58,12 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
         if (dialogRef.current) {
             dialogRef.current.close();
             setIsOpen(false);
+            setTitle("");
+            setDescription("");
+            setLink("");
+            setTheme('#BD1684');
+            setDetails([{ title: '', keys: [''] }]);
+            setPictures([]);
         }
     };
 
@@ -103,8 +99,10 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
         },
     });
     async function submit() {
-        addCategory.mutate({ title: title, description: description, link: link, parent_id: cateId, theme: theme, details: details });
+        addCategory.mutate({ title: title, description: description, link: link, parent_id: cateId, theme: theme, details: details, pictures: pictures });
+
     }
+
     return (
         <div>
             <button onClick={() => { openModal() }}>
@@ -130,10 +128,10 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
                     <h3 className="font-bold text-lg mr-3">اضافه کردن دسته بندی</h3>
                     <form onSubmit={handleSubmit(submit)}>
                         <label className="p-2 block ">
-                            <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام' value={title} onChange={handleChangeTitleCategory} required />
+                            <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام' value={title} onChange={(e) => setTitle(e.target.value)} required />
                         </label>
                         <label className="p-2 block">
-                            <textarea className="bg-primary-bg rounded-md h-24" placeholder='توضیحات' value={description} onChange={handleChangeDescription} required />
+                            <textarea className="bg-primary-bg rounded-md h-24" placeholder='توضیحات' value={description} onChange={(e) => setDescription(e.target.value)} required />
                         </label>
                         {hasDetail &&
                             <div>
@@ -178,13 +176,23 @@ const AddCategoryPopUp = ({ cateId, size, color, hasDetail }: Props) => {
                             </div>
                         }
                         <label className="p-2 block">
-                            <input type="url" className="bg-primary-bg rounded-md" placeholder=' لینک ' value={link} onChange={handleChangeLink} required />
+                            <input type="url" className="bg-primary-bg rounded-md" placeholder=' لینک ' value={link} onChange={(e) => setLink(e.target.value)} required />
                         </label>
+
+                        <div className="grid grid-cols-3 gap-4 py-4">
+                            <ImageUpload defaultImage={true} setImages={setPictures} />
+                            {pictures.map((picture, index) => (
+                                <ImageUpload prevProductImage={picture} index={index} setImages={setPictures} />
+                            ))}
+                        </div>
+                        {picNum &&
+                            <p className="px-2 py-2 text-text-color w-3/4">برای این دسته بندی حداقل دو عکس اپلود کنید</p>
+                        }
                         <label className="p-2 block">
                             <p>
                                 تم دسته بندی :
                             </p>
-                            <input type="color" className="w-1/3 border-2 rounded-md border-border-color-list" value={theme} onChange={handleChangeColor} color={theme} />
+                            <input type="color" className="w-1/3 border-2 rounded-md border-border-color-list " value={theme} onChange={(e) => setTheme(e.target.value)} color={theme} />
                         </label>
                         <div className=" my-4">
                             <button className="btn btn-success mx-3" type="submit">
