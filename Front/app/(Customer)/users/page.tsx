@@ -14,6 +14,7 @@ const UsersPage = async () => {
         <Link className='btn' href="/users/new">New User</Link>
 
         <Suspense fallback={<p>Loading...</p>}>
+        
             <UserTable/>
         </Suspense>
         
