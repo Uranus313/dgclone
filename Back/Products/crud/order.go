@@ -494,3 +494,38 @@ func UpdateOrderState(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "order state updated succesfully"})
 }
+
+func GetOrdersByUserID(c *fiber.Ctx) error {
+
+	user := c.Locals("ent").(map[string]interface{})
+
+	var ordersList []models.Order
+
+	userID, err := primitive.ObjectIDFromHex(user["_id"].(string))
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	filter := bson.M{"user_id": userID}
+
+	cursor, err := database.OrderCollection.Find(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching from orders collection",
+			"error":   err.Error(),
+		})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &ordersList); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching decoding cursor",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(ordersList)
+}
