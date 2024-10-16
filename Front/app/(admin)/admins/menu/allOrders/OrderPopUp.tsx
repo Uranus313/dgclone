@@ -50,7 +50,7 @@ const OrderPopUp = ({ order }: Props) => {
         },
         onSuccess: (savedUser) => {
             console.log(savedUser);
-            queryClient.invalidateQueries({ queryKey: ["orderlist"] });
+            queryClient.invalidateQueries({ queryKey: ["orderList"] });
         },
         onError: (error) => {
             console.log(error);
@@ -61,8 +61,8 @@ const OrderPopUp = ({ order }: Props) => {
     return (
         <div>
             <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-                <p className="w-1/2 md:w-1/3">{order.product.productTitle}</p>
-                <p className="w-1/2 md:w-1/3">{((order.rate && order.rate) || "-")}</p>
+                <p className="w-2/5 md:w-1/3">{order.product.productTitle}</p>
+                <p className="w-2/5 md:w-1/3">{((order.rate && order.rate) || "-")}</p>
                 <p className="w-0 md:w-1/3 invisible md:visible">{order.ordersdate}</p>
             </div>
 
