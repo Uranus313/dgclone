@@ -15,7 +15,7 @@ const Category1LayerPopUp = ({ category }: Props) => {
     return (
         <div className="border-b-2 border-b-border-color-list w-full pt-6 pb-8 px-16">
             <div className="flex">
-                <AddCategoryPopUp cateId={category._id} size="38px" color="#b94b94" hasDetail={false} />
+                <AddCategoryPopUp cateId={category._id} size="38px" color="#b94b94" hasDetail={false} picNum={false} />
                 <button className='pb-1' onClick={() => setIsOpen(!isOpen)}>{category.title}</button>
             </div>
 

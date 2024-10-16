@@ -20,7 +20,7 @@ const CategoryList = () => {
     return (
         <div className=' flex-col bg-white my-10  rounded-md '>
             <div className='flex w-full '>
-                <AddCategoryPopUp cateId="000000000000000000000000" size="47px" color="#BD1684" hasDetail={false} />
+                <AddCategoryPopUp cateId="000000000000000000000000" size="47px" color="#BD1684" hasDetail={false} picNum={true} />
                 <p className='text-primary-color pt-3'>اضافه کردن دسته بندی</p>
             </div>
             {isLoading ? <span className="loading loading-dots loading-lg"></span> :
