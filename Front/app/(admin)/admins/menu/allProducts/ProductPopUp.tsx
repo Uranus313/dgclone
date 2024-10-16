@@ -114,7 +114,7 @@ const ProductPopUp = ({ product }: Props) => {
             }} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
                 <p className="w-1/2 md:w-1/4">{product.title}</p>
                 <p className="w-0 md:w-1/4 invisible md:visible">{product.sell_count}</p>
-                <p className="w-0 md:w-1/4 invisible md:visible">{((product.wieght_KG && product.wieght_KG) || "-")}</p>
+                <p className="w-0 md:w-1/4 invisible md:visible">{((product.weight_KG && product.weight_KG) || "-")}</p>
                 <p className="w-1/2 md:w-1/4">{product.rating.rate}</p>
             </div>
 
@@ -181,7 +181,7 @@ const ProductPopUp = ({ product }: Props) => {
                         </div>
                         <div className=' flex pb-2'>
                             <p className="pl-2"> وزن  :</p>
-                            <p>{(product.wieght_KG && product.wieght_KG) || "-"}</p>
+                            <p>{(product.weight_KG && product.weight_KG) || "-"}</p>
                         </div>
                         <div className=' flex justify-between pb-2'>
                             <p>تاریخ اضافه شدن :</p>

@@ -48,7 +48,7 @@ const UserList = ({ changeList }: Props) => {
         handleSearch();
       }} className='w-8/12' >
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
-          <option value="users" defaultChecked>کاربران</option>
+          <option value="users" selected>کاربران</option>
           <option value="employees">کارمندان</option>
           <option value="admins" > ادمین ها</option>
           <option value="orders">سفارش ها</option>
