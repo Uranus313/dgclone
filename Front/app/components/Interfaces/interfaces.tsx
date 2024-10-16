@@ -14,14 +14,21 @@ export enum shipmentMethod {
     option3 = 'o3',
 }
 
+export interface Quantity{
+   color: Color,
+   quantity: number,
+   guarantee: { title: string, _id: string },
+   validation_state?: number //1 pending 2 validated 3 banned
+}
+
 export interface SellerInfosOnProduct {
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    seller_quantity: { color: Color, quantity: number, guarantee: { title: string, _id: string }, validation_state: number }[], //1 pending 2 validated 3 banned
+    seller_quantity:Quantity[], //1 pending 2 validated 3 banned
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
-    discountId?: string,
+    discount_id?: string,
 
 }
 
@@ -30,7 +37,7 @@ export interface ProductVariant {
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    seller_quantity: { color: Color, quantity: number, guarantee: { title: string, _id: string }, validation_state: number }, //1 pending 2 validated 3 banned
+    seller_quantity:Quantity, 
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
     discount_id?: string,
@@ -129,6 +136,7 @@ export interface User {
         method: "bankAccount" | "wallet";
         bankAccount: string | null | undefined;
     };
+    shoppingCart:string[];
     addresses: Address[];
 }
 
@@ -440,6 +448,7 @@ export interface productSaleAnalyseCard {
     totalSellPrice:number
     totalSellCount:number
     viewCount:number
+    sellerCart:SellerInfosOnProduct
 }
 
 export interface Category {

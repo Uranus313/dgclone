@@ -126,7 +126,7 @@ const Products = () => {
             
 
                 
-              <AddVarient productID={productCard.productID}/>
+              <AddVarient productCard={productCard}/>
               <AddNew productID={productCard.productID}/>
           </div>
           }

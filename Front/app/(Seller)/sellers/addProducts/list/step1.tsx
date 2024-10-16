@@ -1,5 +1,5 @@
 'use client'
-import {  Color, SellerAddProdctCard, SellerSetVarientOnProduct, shipmentMethod } from '@/app/components/Interfaces/interfaces'
+import {  Color, productSaleAnalyseCard, Quantity, SellerAddProdctCard, SellerSetVarientOnProduct, shipmentMethod } from '@/app/components/Interfaces/interfaces'
 import React, { useEffect, useRef, useState } from 'react'
 import VarientCard from './VarientCard'
 import useGetSellerVarients from '@/app/hooks/useGetSellerVarients'
@@ -19,31 +19,25 @@ export const guaranteeOptions=[
 
 
 interface Props{
-    productCard:SellerAddProdctCard
-    prevVarients?:SellerSetVarientOnProduct[]
+    productCard:productSaleAnalyseCard
 }
-const Step1 = ({productCard , prevVarients}:Props) => {
-  const {data:vars} = useGetSellerVarients()
-  const {data:price} = useGetSellerVarients()
-  const [varients , setVarients] = useState<SellerSetVarientOnProduct[]>(vars??[])
+const Step1 = ({productCard}:Props) => {
+  // const {data:price} = useGetSellerVarients()
+  const [varients , setVarients] = useState<Quantity[]>(productCard?.sellerCart?.seller_quantity??[])
   const priceRef = useRef<HTMLInputElement>(null);
   let [productPrice , setProductPrice] = useState<number>()
   
   // useEffect(() => {
-  //   if(prevVarients){
-  //     setVarients(prevVarients)
-  //     setProductPrice(0)
-
-  //   } 
-  //   setProductPrice(productCard.UrbanPrice)
-  // }, []);
+  //   console.log('prrrr',productCard)
+  //    setVarients(productCard?.sellerCart?.seller_quantity)
+  // }, [productCard]);
 
 
   function AddNewVarient(){
-    setVarients(varients => [...varients , {color:{hex:'',title:''},price:productCard.UrbanPrice , garante:'',productID:productCard.ID,productPicture:productCard.Picture,productTitle:productCard.Title,quantity:0,sellerID:'1',shipmentMethod:shipmentMethod.option1}])
+    setVarients(varients => [...varients ,{color:{hex:'',title:''},quantity:0,guarantee:{_id:'0',title:''},}])
   }
 
-  function UpdateVarient(index: number, varient: SellerSetVarientOnProduct) {
+  function UpdateVarient(index: number, varient: Quantity) {
     setVarients(varients => {
       const newVarients = [...varients]; // Create a copy of the state array
       newVarients[index] = varient; // Update the specific item
@@ -70,7 +64,7 @@ const Step1 = ({productCard , prevVarients}:Props) => {
         <div className='h-60 overflow-auto'>
           {varients.map((varient,index)=>(
             <div key={index}>  
-             <VarientCard varient={varient} index={index} update={UpdateVarient}/>
+             <VarientCard varient={varient} product={productCard} index={index} update={UpdateVarient}/>
             </div>
           ))}
 

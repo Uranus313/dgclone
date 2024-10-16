@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import useGetProducts from '../../../hooks/useGetProducts'
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useSearchParams } from 'next/navigation';
 
 
 
@@ -12,6 +13,7 @@ interface Props{
     sort?:string
 }
 const InfiniteScrollProducts = ({categoryID ,sort, startFromBeg=1}:Props) => {
+
 
     const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:categoryID, limit:12 , pageParamm:startFromBeg})
     console.log('prod prod',data)
