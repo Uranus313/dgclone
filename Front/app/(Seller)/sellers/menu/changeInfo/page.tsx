@@ -5,6 +5,7 @@ import PasswordPopUp from "./PasswordPopUp";
 import MoneyReturnPopUp from "./MoneyReturnPopUp";
 import { useSeller } from "@/app/hooks/useSeller";
 import AddAddressPopUp from "./AddAddressPopUp";
+import ChangeEmail from "./ChangeEmail";
 // type FormValues = {
 //   phoneNumber?: string;
 //   firstName?: string;
@@ -122,15 +123,7 @@ const MyFormComponent = () => {
         inputType="number"
         mainText="سلام"
       />
-      <InputPopUp
-        inputDetails={[{ title: "ایمیل", type: "email", name: "email" }]}
-        buttonMode="input"
-        titleLabel="پست الکترونیکی"
-        inputDefaultValue={seller?.storeOwner?.email??''}
-        inputType="text"
-        mainText="سلام"
-        isStoreOwner={true}
-      />
+      <ChangeEmail/>
 
       <InputPopUp
         inputDetails={[

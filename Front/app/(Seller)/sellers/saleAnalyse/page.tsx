@@ -53,7 +53,7 @@ import useGetSellerAnalyseProducts from '@/app/hooks/useGetSellerAnalyseProducts
 // ]
 
 const SaleAnalyse = () => {
-  const {data:productsCard} = useGetSellerAnalyseProducts()
+  const {data:productsCard , isLoading} = useGetSellerAnalyseProducts()
   return (
 <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
         <h1 className='text-xl font-bold text-grey-dark'>فروش کالا</h1>
@@ -117,8 +117,9 @@ const SaleAnalyse = () => {
             <p>{productCard.totalSellPrice}</p>
             <p>{productCard.totalSellCount}</p>
             <p>{productCard.viewCount}</p>
-          </div>
-        ))}
+          </div> 
+        ))} 
+        {isLoading ? <span className="loading loading-dots loading-lg"></span> : ''}
       </div>
   )
 }

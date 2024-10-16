@@ -407,6 +407,7 @@ export interface SellerAddProdctCard {
     Picture: string,
     Title: string,
     Commission: number,
+    Price:number,
     UrbanPrice: number,//price that the first seller put
     SellerCount: number,
     ID: string

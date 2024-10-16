@@ -43,7 +43,7 @@ const MegaMenu = () => {
                 {categories && categories[selected].Childs?.map((category2) => {
                     return (
                       <div className="">
-                        <Link className="" href={`/products/${category2.ID}/?sortOrder=mostViewed`}>
+                        <Link className="" href={`/products/${category2.ID}/?sortOrder=1`}>
                           <p className="mb-2 border-r-4 pr-2 border-solid border-primary-color mt-3 font-bold hover:text-primary-color">
                             {category2?.Title}
                           </p>
@@ -52,7 +52,7 @@ const MegaMenu = () => {
                         {category2.Childs?.map((category3) => {
                             return (
                               <div className="py-2 text-sm text-grey-dark">
-                                <Link href={`/products/${category3.ID}/?sortOrder=mostViewed`}>
+                                <Link href={`/products/${category3.ID}/?sortOrder=1`}>
                                   <p className="hover:text-primary-color">{category3.Title}</p>
                                 </Link>
                               </div>

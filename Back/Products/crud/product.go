@@ -473,7 +473,7 @@ func CreateSellerCart(seller map[string]interface{}) models.SellerCart {
 	return models.SellerCart{
 		SellerID:       sellerID,
 		SellerTitle:    seller["storeInfo"].(map[string]interface{})["commercialName"].(string),
-		SellerRating:   seller["rating"].(float64),
+		SellerRating:   seller["rate"].(float64),
 		SellerQuantity: []models.SellerQuantity{},
 		ShipmentMethod: models.Digi_Kala,
 		DiscountID:     primitive.NilObjectID,
