@@ -44,12 +44,36 @@ const ClientPart = ({product}:Props) => {
     },[selectedColor])
     
   console.log('len',otherSellersCount)
+
+  async function AddToList(){
+        try {
+          const response = await fetch('http://localhost:3005/users/user/addToFavoriteList', {
+            credentials:'include',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({productID:product._id})
+          });
+      
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+      
+          const result = await response.json();
+          console.log('Success:', result);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      
+  }
   return (
     <div className='grid grid-cols-12 gap-4 overflow-hidden'>
         <div className='col-span-4'>
             <Gallery images={product.images} />
+            
         </div>
-
+        <button onClick={AddToList} className='btn text-lg p-5 bg-black text-white'>giiii</button>
 
         <div className='col-span-8'>
             <h1 className='text-lg font-black'>{product.title}</h1>

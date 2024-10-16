@@ -4,54 +4,46 @@ import SearchableDropdown from '@/app/components/SearchableDropDown/SeachableDro
 import { colorpallete } from './SellProductPopup'
 import ModalButton from '../ModalButton'
 import SearchableList from '@/app/components/SearchableList'
-import { Color, SellerSetVarientOnProduct } from '@/app/components/Interfaces/interfaces'
+import { Color, productSaleAnalyseCard, Quantity, SellerSetVarientOnProduct } from '@/app/components/Interfaces/interfaces'
 import { guaranteeOptions } from './step1'
 import { indexOf } from 'lodash'
+import useGetColors from '@/app/hooks/useGetColors'
 
 interface Props {
     index: number,
-    varient: SellerSetVarientOnProduct,
-    update: (index: number, varient: SellerSetVarientOnProduct) => void,
+    varient: Quantity,
+    update: (index: number, varient: Quantity) => void,
+    product:productSaleAnalyseCard
 }
 
-const VarientCard = ({ index, varient, update }: Props) => {
+const VarientCard = ({ index, varient, update,product }: Props) => {
     const [valueColor, setValueColor] = useState('رنگ')
+    const [valueGaurantee , setValueGuarantee] = useState('گارانتی')
     const [color, setColor] = useState<Color>(varient.color)
-
+    const {data:colorpallete} = useGetColors()
     const quantityRef = useRef<HTMLInputElement>(null);
-    const [guarantee, setGuarantee] = useState<string>('گارانتی')
-    const [updatedVarient, setUpdatedVarient] = useState<SellerSetVarientOnProduct>(varient)
+    const [guarantee, setGuarantee] = useState<{_id:string,title:string}>({_id:'',title:'گارانتی'})
+    const [updatedVarient, setUpdatedVarient] = useState<Quantity>(varient)
 
     useEffect(() => {
         console.log('in')
         setUpdatedVarient({
             color: color,
-            // price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
-            garante: guarantee,
-            productID: varient.productID,
-            productPicture: varient.productPicture,
-            productTitle: varient.productTitle,
-            quantity: quantityRef.current?.value ? parseInt(quantityRef.current.value) : varient.quantity,
-            sellerID: varient.sellerID,
-            shipmentMethod: varient.shipmentMethod
+            guarantee:guarantee,
+            quantity:quantityRef.current?.value ? parseInt(quantityRef.current.value) : varient.quantity
         })
         update(index , {
             color: color,
             // price: priceRef.current?.value ? parseFloat(priceRef.current.value) : varient.price,
-            garante: guarantee,
-            productID: varient.productID,
-            productPicture: varient.productPicture,
-            productTitle: varient.productTitle,
+            guarantee: guarantee,
             quantity: quantityRef.current?.value ? parseInt(quantityRef.current.value) : varient.quantity,
-            sellerID: varient.sellerID,
-            shipmentMethod: varient.shipmentMethod
         })
     }, [color, guarantee, quantityRef])
 
     return (
         <div className='grid grid-cols-5 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
-            <img className='w-20' src={varient.productPicture} />
-            <p className='line-clamp-1 h-fit '>{varient.productTitle}</p>
+            <img className='w-20' src={product.picture} />
+            <p className='line-clamp-1 h-fit '>{product.title}</p>
 
             <ModalButton title={valueColor} solid={false} id={'colorModal'+index} />
             <dialog id={"colorModal"+index} className="modal">
@@ -71,7 +63,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
 
             <input type='number' defaultValue={varient.quantity} ref={quantityRef} className='w-32' placeholder={"تعداد"} />
 
-            <ModalButton  title={guarantee} solid={false} id={'gauranteeModal'+index} />
+            <ModalButton  title={valueGaurantee} solid={false} id={'gauranteeModal'+index} />
             <dialog id={"gauranteeModal"+index} className="modal">
                 <div className="modal-box  w-4/12 max-w-5xl p-2 flex flex-col">
                     <form method="dialog" className='inline'>
@@ -81,7 +73,7 @@ const VarientCard = ({ index, varient, update }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList defaultValue={varient.garante} items={guaranteeOptions} setFunc={setGuarantee} showFunc={setGuarantee} />
+                        <SearchableList defaultValue={varient.guarantee.title} items={guaranteeOptions} setFunc={setGuarantee} showFunc={setValueGuarantee} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>
