@@ -166,6 +166,8 @@ func main() {
 
 	app.Patch("/products/order", auth.AuthMiddleware([]string{"admin"}), crud.UpdateOrderState) // query params => OrderID, State
 
+	app.Get("/products/order/userOrders", auth.AuthMiddleware([]string{"user"}), crud.GetOrdersByUserID)
+
 	// -------------inner--------------
 
 	app.Get("/products/inner/ProductMapAssign", auth.InnerAuth, crud.InnerProductMapAssign)
