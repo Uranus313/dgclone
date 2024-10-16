@@ -1,12 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "../(Customer)/page";
-import { Brand } from "../components/Interfaces/interfaces";
-function useGetBrands(){
-    return useQuery<Brand[]>({
-        queryKey : ['brand'],
+function useGetGaurantees(){
+    return useQuery<{_id:string,title:string}[]>({
+        queryKey : ['ggg'],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch("https://localhost:8080/products/brand/", {
+            const result = await fetch("https://localhost:8080/products/guarantee", {
                             credentials: 'include'});
                            
             const jsonResult = await result.json();
@@ -23,6 +21,4 @@ function useGetBrands(){
         retry: 2
     })
 }
-
-// ha ha ha
-export default useGetBrands;
+export default useGetGaurantees;

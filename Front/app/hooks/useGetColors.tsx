@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "../(Customer)/page";
+import { Color } from "../components/Interfaces/interfaces";
 function useGetColors(){
-    console.log('1')
-    return useQuery({
+    return useQuery<Color[]>({
         queryKey : ['colors'],
         queryFn : async () => {
             console.log('2')

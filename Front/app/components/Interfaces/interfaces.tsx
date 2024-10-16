@@ -136,6 +136,7 @@ export interface User {
         method: "bankAccount" | "wallet";
         bankAccount: string | null | undefined;
     };
+    shoppingCart:string[];
     addresses: Address[];
 }
 

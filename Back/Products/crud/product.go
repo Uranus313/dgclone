@@ -1185,6 +1185,9 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 
 	var pipeline mongo.Pipeline
 
+	fmt.Println("cate id list:", cateIDs)
+	fmt.Println("bramd id list:", brandFilters)
+
 	switch sortMethod {
 	case 1:
 		// findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
@@ -1200,7 +1203,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
@@ -1218,7 +1221,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
 				{{Key: "$skip", Value: offset}},
@@ -1237,7 +1240,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
@@ -1255,7 +1258,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
 				{{Key: "$skip", Value: offset}},
@@ -1274,7 +1277,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
@@ -1292,7 +1295,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
 				{{Key: "$skip", Value: offset}},
@@ -1312,7 +1315,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
 				{{Key: "$skip", Value: offset}},
@@ -1329,7 +1332,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 					// {Key: "category_id", Value: cateID},
 					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-					{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
 				}}},
 				{{Key: "$limit", Value: limit}},
@@ -1424,7 +1427,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 				// {Key: "category_id", Value: cateID},
 				{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 				{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
-				{Key: "minPrice", Value: bson.D{{Key: "$st", Value: maxPriceFilter}}},
+				{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
 			}}},
 			{{Key: "$limit", Value: 1}},
 			{{Key: "$skip", Value: limit + offset}},

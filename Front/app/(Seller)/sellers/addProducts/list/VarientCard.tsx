@@ -5,9 +5,9 @@ import { colorpallete } from './SellProductPopup'
 import ModalButton from '../ModalButton'
 import SearchableList from '@/app/components/SearchableList'
 import { Color, productSaleAnalyseCard, Quantity, SellerSetVarientOnProduct } from '@/app/components/Interfaces/interfaces'
-import { guaranteeOptions } from './step1'
 import { indexOf } from 'lodash'
 import useGetColors from '@/app/hooks/useGetColors'
+import useGetGaurantees from '@/app/hooks/useGetGaurantees'
 
 interface Props {
     index: number,
@@ -24,6 +24,15 @@ const VarientCard = ({ index, varient, update,product }: Props) => {
     const quantityRef = useRef<HTMLInputElement>(null);
     const [guarantee, setGuarantee] = useState<{_id:string,title:string}>({_id:'',title:'گارانتی'})
     const [updatedVarient, setUpdatedVarient] = useState<Quantity>(varient)
+    const {data:guaranteeOptions , isLoading} = useGetGaurantees()
+    const {data:colorOptions}=useGetColors()
+    const [g,setG]=useState<{_id:string,title:string}[]>()
+
+    useEffect(()=>{
+        setG(guaranteeOptions)
+        console.log('gggg',guaranteeOptions)
+        console.log('gggg',colorOptions)
+    },[guaranteeOptions , colorOptions])
 
     useEffect(() => {
         console.log('in')
@@ -55,7 +64,7 @@ const VarientCard = ({ index, varient, update,product }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList defaultValue={varient.color.title} items={colorpallete} showKey='title' setFunc={setColor} showFunc={setValueColor} />
+                        <SearchableList defaultValue={varient.color.title} items={colorpallete??[]} showKey='title' setFunc={setColor} showFunc={setValueColor} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>
@@ -73,7 +82,7 @@ const VarientCard = ({ index, varient, update,product }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList defaultValue={varient.guarantee.title} items={guaranteeOptions} setFunc={setGuarantee} showFunc={setValueGuarantee} />
+                        <SearchableList defaultValue={varient.guarantee.title} items={guaranteeOptions??[]} setFunc={setGuarantee} showFunc={setValueGuarantee} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>
