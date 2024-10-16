@@ -1188,7 +1188,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 	switch sortMethod {
 	case 1:
 		// findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
-		if len(brandFilters) == 0 {
+		if len(brandFilters) != 0 {
 			pipeline = mongo.Pipeline{
 				{{Key: "$addFields", Value: bson.D{
 					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1225,7 +1225,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 			}
 		}
 	case 2:
-		if len(brandFilters) == 0 {
+		if len(brandFilters) != 0 {
 			pipeline = mongo.Pipeline{
 				{{Key: "$addFields", Value: bson.D{
 					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1262,7 +1262,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 			}
 		}
 	case 3:
-		if len(brandFilters) == 0 {
+		if len(brandFilters) != 0 {
 			pipeline = mongo.Pipeline{
 				{{Key: "$addFields", Value: bson.D{
 					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1754,4 +1754,48 @@ func ChangeSellerPrice(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "new price set succesfully"})
+}
+
+func GetProductInList(c *fiber.Ctx) error {
+
+	queryParams := c.Queries()
+
+	var productIDs []primitive.ObjectID
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("ProductIDs[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			productID, err := primitive.ObjectIDFromHex(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting product id": err.Error()})
+			}
+			productIDs = append(productIDs, productID)
+		} else {
+			break
+		}
+	}
+
+	var products []models.ProductCard
+
+	for _, productID := range productIDs {
+
+		var product models.Product
+
+		filter := bson.M{"_id": productID}
+
+		err := database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				errMessage := fmt.Sprintf("product id %#v not found", productID)
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		productCard := CreateProdCard(product)
+
+		products = append(products, productCard)
+	}
+
+	return c.Status(http.StatusOK).JSON(products)
 }
