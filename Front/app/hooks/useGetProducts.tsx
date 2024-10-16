@@ -7,23 +7,24 @@ interface Props {
     limit: number,
     categoryID: string
     pageParamm?:number
-    sort?:string
+    sort?:boolean
 }
 
-function useGetProducts({sort, limit, categoryID , pageParamm=0 }: Props) {
+function useGetProducts({ limit, categoryID, pageParamm=0 , sort=true }: Props) {
     const {searchParams} = useQueryNext()
     const [sortOrder,setSortOrder]=useState(searchParams.get("sortOrder")) 
 
     useEffect(()=>{
         setSortOrder(searchParams.get('sortOrder'))
+        console.log(sortOrder)
     },[searchParams.get('sortOrder')])
 
 
     return useInfiniteQuery({
-        queryKey: ['product', categoryID],
+        queryKey: ['product', sortOrder],
         initialPageParam: 1,
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit*pageParamm}&&CateID=${categoryID}&&SortMethod=${sortOrder}`, {
+            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit * pageParamm}&CateID=${categoryID}${sort ? `&SortMethod=${sortOrder}` : ''}`, {
                 credentials: 'include'
             });
 

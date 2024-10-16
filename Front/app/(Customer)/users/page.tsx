@@ -3,7 +3,7 @@ import ProductCard from '../../components/ProductCar/ProductCard'
 import UserTable from './UserTable';
 import Link from 'next/link';
 
-
+//ha ha ha
 
 
 const UsersPage = async () => {
@@ -14,6 +14,7 @@ const UsersPage = async () => {
         <Link className='btn' href="/users/new">New User</Link>
 
         <Suspense fallback={<p>Loading...</p>}>
+
             <UserTable/>
         </Suspense>
         

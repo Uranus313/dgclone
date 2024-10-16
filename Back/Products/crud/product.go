@@ -473,7 +473,7 @@ func CreateSellerCart(seller map[string]interface{}) models.SellerCart {
 	return models.SellerCart{
 		SellerID:       sellerID,
 		SellerTitle:    seller["storeInfo"].(map[string]interface{})["commercialName"].(string),
-		SellerRating:   seller["rating"].(float64),
+		SellerRating:   seller["rate"].(float64),
 		SellerQuantity: []models.SellerQuantity{},
 		ShipmentMethod: models.Digi_Kala,
 		DiscountID:     primitive.NilObjectID,
@@ -1047,6 +1047,36 @@ func EditProduct(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "Product Updated Successfully"})
 }
 
+func findCateIDs(cateID primitive.ObjectID, cateIDList *[]primitive.ObjectID) (int, error) {
+
+	cateFilter := bson.M{"_id": cateID}
+
+	var cate models.Category
+
+	*cateIDList = append(*cateIDList, cateID)
+
+	err := database.CategoryCollection.FindOne(context.Background(), cateFilter).Decode(&cate)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			errMessage := fmt.Sprintf("category %#v not found", cateID)
+			return http.StatusBadRequest, errors.New(errMessage)
+		}
+		return http.StatusInternalServerError, err
+	}
+
+	for _, childID := range cate.Childs {
+
+		statusCode, err := findCateIDs(childID, cateIDList)
+
+		if err != nil {
+			return statusCode, err
+		}
+	}
+
+	return http.StatusOK, nil
+}
+
 func InfiniteScrolProds(c *fiber.Ctx) error {
 
 	limitString := c.Query("limit", "20")
@@ -1090,22 +1120,51 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		}
 	*/
 
+	// filter => brand, price (min,max), is available
+
+	queryParams := c.Queries()
+
+	var brandFilters []primitive.ObjectID
+
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("brandFilters[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			brandFilter, err := primitive.ObjectIDFromHex(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting brand filter": err.Error()})
+			}
+			brandFilters = append(brandFilters, brandFilter)
+		} else {
+			break
+		}
+	}
+
+	var cateIDs []primitive.ObjectID
+
+	statusCode, err := findCateIDs(cateID, &cateIDs)
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "error while fetching from categories collection",
+			"error":   err.Error(),
+		})
+	}
+
 	findOptions := options.Find()
 
 	findOptions.SetLimit(int64(limit))
 	findOptions.SetSkip(int64(offset))
 
-	var filter primitive.M
 	var pipeline mongo.Pipeline
 
 	switch sortMethod {
 	case 1:
 		findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
-		filter = bson.M{"category_id": cateID}
 	case 2:
 		pipeline = mongo.Pipeline{
 			{{Key: "$match", Value: bson.D{
-				{Key: "category_id", Value: cateID},
+				// {Key: "category_id", Value: cateID},
+				{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 			}}},
 			{{Key: "$addFields", Value: bson.D{
 				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1117,7 +1176,8 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 	case 3:
 		pipeline = mongo.Pipeline{
 			{{Key: "$match", Value: bson.D{
-				{Key: "category_id", Value: cateID},
+				// {Key: "category_id", Value: cateID},
+				{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
 			}}},
 			{{Key: "$addFields", Value: bson.D{
 				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1128,7 +1188,6 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		}
 	case 4:
 		findOptions.SetSort(bson.D{{Key: "date_added", Value: -1}})
-		filter = bson.M{"category_id": cateID}
 	default:
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid Sort Method",
@@ -1142,8 +1201,16 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 	}
 
 	var cursor *mongo.Cursor
+	var filter = bson.M{}
 
 	if sortMethod == 1 || sortMethod == 4 {
+
+		filter["category_id"] = bson.M{"$in": cateIDs}
+
+		if len(brandFilters) != 0 {
+			filter["brand_id"] = bson.M{"$in": brandFilters}
+		}
+
 		cursor, err = database.ProductCollection.Find(context.Background(), filter, findOptions)
 	} else {
 		cursor, err = database.ProductCollection.Aggregate(context.Background(), pipeline)
@@ -1305,6 +1372,7 @@ func GetSellerProducts(c *fiber.Ctx) error {
 		TotalSellPrice int                    `json:"totalSellPrice"`
 		TotalSellCount int                    `json:"totalSellCount"`
 		ViewCount      int                    `json:"viewCount"`
+		SellerCart     models.SellerCart      `json:"sellerCart"`
 	}
 
 	var sellerProds []ProductSellerCard
@@ -1388,6 +1456,7 @@ func GetSellerProducts(c *fiber.Ctx) error {
 			TotalSellPrice: sumSellPrice,
 			TotalSellCount: len(prodOrders),
 			ViewCount:      product.VisitCount,
+			SellerCart:     product.Sellers[sellerIndex],
 		}, nil
 	}
 

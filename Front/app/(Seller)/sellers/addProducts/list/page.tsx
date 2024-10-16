@@ -72,7 +72,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
   const AddProductList = () => { 
     const {searchParams}= useQueryNext()
     const category = searchParams.get("category")
-    const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:category??'' , limit:10 , pageParamm:1})
+    const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:category??'' , limit:10 , pageParamm:1 , sort:false})
     
     const totalFetchedGames =
     data?.pages.reduce((total, page) => total + page?.products?.length, 0) ||
@@ -116,7 +116,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
             loader={<span className="loading loading-dots loading-lg"></span>}
             endMessage={
             <p style={{ textAlign: "center" }}>
-                <b>رسیدی به تهش</b>
+                {!isLoading ?<b>رسیدی به تهش</b> : <span className="loading loading-dots loading-lg"></span>}
             </p>
             }
         >
