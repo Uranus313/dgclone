@@ -82,7 +82,7 @@ const VarientCard = ({ index, varient, update,product }: Props) => {
                     <hr className='text-grey-border  my-2'></hr>
 
                     <div className='p-10 h-96 overflow-auto'>
-                        <SearchableList defaultValue={varient.guarantee.title} items={guaranteeOptions??[]} setFunc={setGuarantee} showFunc={setValueGuarantee} />
+                        <SearchableList defaultValue={varient.guarantee.title} showKey='title' items={guaranteeOptions??[]} setFunc={setGuarantee} showFunc={setValueGuarantee} />
                     </div>
                     <hr className='text-grey-border  my-2'></hr>
                 </div>
