@@ -24,4 +24,6 @@ function useGetBrands(){
         retry: 2
     })
 }
+
+// ha ha ha
 export default useGetBrands;
