@@ -174,7 +174,7 @@ func main() {
 
 	app.Get("/products/inner/orderHistory/:orderHistoryID", auth.InnerAuth, crud.InnerGetOrderHistoryByID)
 
-	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetOrderByID)
+	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetProductByID)
 
 	app.Get("/products/inner/sellerSaleInfo/:SellerID", auth.InnerAuth, crud.InnerSellerBS)
 
