@@ -8,7 +8,7 @@ function useGetBrands(){
             console.log('2')
             const result = await fetch("https://localhost:8080/products/brand/", {
                             credentials: 'include'});
-                           
+                            
             const jsonResult = await result.json();
             if(result.ok){
                 console.log('4')
