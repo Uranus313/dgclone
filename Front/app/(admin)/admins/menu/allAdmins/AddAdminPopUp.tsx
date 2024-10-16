@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 const AddAdminPopUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
   // const {user , setUser , isLoading} = useUser();
   const { register, handleSubmit, getValues } = useForm();
@@ -22,6 +23,9 @@ const AddAdminPopUp = () => {
     if (dialogRef.current) {
       dialogRef.current.close();
       setIsOpen(false);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     }
   };
   const queryClient = useQueryClient();
@@ -63,7 +67,7 @@ const AddAdminPopUp = () => {
         <div className="modal-box">
           {error && <p>{error}</p>}
           <h3 className="font-bold text-lg">اضافه کردن ادمین</h3>
-          <form onSubmit={handleSubmit(submit)}>
+          <form ref={formRef} onSubmit={handleSubmit(submit)}>
             <label className='p-2 block'>
               <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام' {...register("firstName")} />
             </label>
