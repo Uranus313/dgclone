@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Category } from "../(Customer)/page";
 import { Brand } from "../components/Interfaces/interfaces";
 function useGetBrands(){
-    console.log('1')
     return useQuery<Brand[]>({
         queryKey : ['brand'],
         queryFn : async () => {

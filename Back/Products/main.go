@@ -166,6 +166,8 @@ func main() {
 
 	app.Patch("/products/order", auth.AuthMiddleware([]string{"admin"}), crud.UpdateOrderState) // query params => OrderID, State
 
+	app.Get("/products/order/userOrders", auth.AuthMiddleware([]string{"user"}), crud.GetOrdersByUserID)
+
 	// -------------inner--------------
 
 	app.Get("/products/inner/ProductMapAssign", auth.InnerAuth, crud.InnerProductMapAssign)
@@ -174,7 +176,7 @@ func main() {
 
 	app.Get("/products/inner/orderHistory/:orderHistoryID", auth.InnerAuth, crud.InnerGetOrderHistoryByID)
 
-	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetOrderByID)
+	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetProductByID)
 
 	app.Get("/products/inner/sellerSaleInfo/:SellerID", auth.InnerAuth, crud.InnerSellerBS)
 

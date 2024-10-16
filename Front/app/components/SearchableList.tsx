@@ -14,7 +14,7 @@ interface Props{
 
 const SearchableList = ({items , showKey , setKey, defaultValue , setFunc,showFunc}:Props) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const filteredItems = items.filter(item =>
+  const filteredItems = items?.filter(item =>
    showKey ? item[showKey].toLowerCase().includes(searchTerm.toLowerCase()) : item.toLowerCase().includes(searchTerm.toLowerCase()) 
   );
 

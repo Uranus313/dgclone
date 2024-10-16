@@ -715,8 +715,9 @@ router.post("/addToWishList", (req, res, next) => auth(req, res, next, ["user"])
 
 router.post("/addToFavoriteList", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
     try {
-        await validateAddToFavoriteList(req.body);
+        await validateAddToFavoriteList(req.body, req.user.favoriteList);
     } catch (error) {
+        console.log(error)
         if (error.details) {
             res.status(400).send({ error: error.details[0].message });
             res.body = { error: error.details[0].message };

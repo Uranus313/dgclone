@@ -13,8 +13,9 @@ const OrderList = ({ changeList }: Props) => {
   let [pageSize, setPageSize] = useState<number>(8);
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
+  let [state, setState] = useState<string>('2');
   let searchRef = useRef<any>('');
-  let { data: orders, error, isLoading } = useGetOrders({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+  let { data: orders, error, isLoading } = useGetOrders({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search,state:state });
 
   function handleSort(type: number) {
     setTypeSort(type);
@@ -38,12 +39,12 @@ const OrderList = ({ changeList }: Props) => {
     setSearch(searchRef.current.value.trim());
   }
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md '>
-      <div className='flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
+    <div className='flex-col bg-white my-10 md:m-20 rounded-md '>
+      <div className='lg:flex border-b-2 shadow-md border-white p-7 px-13 w-full'>
         <form onSubmit={(e) => {
           e.preventDefault();
           handleSearch();
-        }} className='w-8/12'>
+        }} className=' w-8/12'>
           <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
@@ -57,25 +58,30 @@ const OrderList = ({ changeList }: Props) => {
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-          <button onClick={() => { openModal() }} className=' bg-purple-box lg:px-8 lg:py-2 rounded-md lg:mx-20 '>انتخاب وضعیت</button>
+          <button onClick={() => { openModal() }} className=' bg-purple-box px-8 py-2 rounded-md mx-6 my-5 lg:my-0 lg:mx-20 '>انتخاب وضعیت</button>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
             <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
+              setState('2');
             }}>در انتظار</button>
             <button className="rounded-md bg-purple-box px-6 py-3 " type="button" onClick={() => {
               closeModal();
+              setState('4');
             }}>  برگشت خورده</button>
             <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
+              setState('1');
             }}> تحویل داده</button>
             <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
+              setState('5');
             }}> در انبار</button>
             <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
+              setState('3');
             }}> کنسل شده</button>
             <button className="btn btn-warning  " type="button" onClick={closeModal}>خروج</button>
           </div>
@@ -85,12 +91,12 @@ const OrderList = ({ changeList }: Props) => {
         </form>
       </dialog>
       {isLoading ? <span className="loading loading-dots loading-lg"></span> :
-        <div className=' flex-col'>
+        <div className='flex-col'>
 
           <ul>
             <div className="flex md:justify-between py-8 text-center">
-              <p className="w-1/2 md:w-1/3"> نام محصول </p>
-              <p className="w-1/2 md:w-1/3"> امتیاز</p>
+              <p className="w-2/5 md:w-1/3"> محصول </p>
+              <p className="w-2/5 md:w-1/3"> امتیاز</p>
               <p className="w-0 md:w-1/3 invisible md:visible">تاریخ سفارش </p>
             </div>
             {orders?.orders?.map((order, index) => {
