@@ -48,7 +48,7 @@ const OrderList = ({ changeList }: Props) => {
             <option value="users">کاربران</option>
             <option value="employees">کارمندان</option>
             <option value="admins" > ادمین ها</option>
-            <option value="orders" defaultChecked>سفارش ها</option>
+            <option value="orders" selected>سفارش ها</option>
             <option value="sellers" >فروشندگان</option>
             <option value="products">محصولات</option>
             <option value="transactions"> تراکنش ها</option>
@@ -57,23 +57,26 @@ const OrderList = ({ changeList }: Props) => {
             ref={searchRef}
             onBlur={() => handleSearch()} />
         </form>
-          <button onClick={() => { openModal() }} className='w-0 h-0 lg:w-auto lg:h-auto bg-purple-box lg:px-8 lg:py-2 rounded-md lg:mx-20 invisible lg:visible'>مرتب سازی</button>
+          <button onClick={() => { openModal() }} className=' bg-purple-box lg:px-8 lg:py-2 rounded-md lg:mx-20 '>انتخاب وضعیت</button>
       </div>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box flex justify-center">
           <div className="my-4 flex flex-col justify-center w-1/2">
             <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
-              handleSort(1);
-            }}>اسم محصول</button>
+            }}>در انتظار</button>
             <button className="rounded-md bg-purple-box px-6 py-3 " type="button" onClick={() => {
               closeModal();
-              handleSort(2);
-            }}>  امتیاز</button>
+            }}>  برگشت خورده</button>
             <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
               closeModal();
-              handleSort(3);
-            }}> تاریخ سفارش</button>
+            }}> تحویل داده</button>
+            <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
+              closeModal();
+            }}> در انبار</button>
+            <button className="rounded-md bg-purple-box px-6 py-3 my-3" type="button" onClick={() => {
+              closeModal();
+            }}> کنسل شده</button>
             <button className="btn btn-warning  " type="button" onClick={closeModal}>خروج</button>
           </div>
         </div>

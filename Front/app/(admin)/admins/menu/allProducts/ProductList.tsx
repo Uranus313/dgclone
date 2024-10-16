@@ -50,7 +50,7 @@ const ProductList = ({ changeList }: Props) => {
             <option value="admins" > ادمین ها</option>
             <option value="orders">سفارش ها</option>
             <option value="sellers" >فروشندگان</option>
-            <option value="products" defaultChecked>محصولات</option>
+            <option value="products" selected>محصولات</option>
             <option value="transactions"> تراکنش ها</option>
           </select>
           <input className='mt-6 mr-6 lg:mt-0 lg:mr-0 lg:w-4/6 bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md' type="text" placeholder='جست و جو بر حسب نام محصول'

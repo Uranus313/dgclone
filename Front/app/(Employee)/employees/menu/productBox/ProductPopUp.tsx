@@ -178,7 +178,7 @@ const ProductPopUp = ({ product }: Props) => {
                         </div>
                         <div className=' flex pb-2'>
                             <p className="pl-2"> وزن  :</p>
-                            <p>{(product.wieght_KG && product.wieght_KG) || "-"}</p>
+                            <p>{(product.weight_KG && product.weight_KG) || "-"}</p>
                         </div>
                         <div className=' flex justify-between pb-2'>
                             <p>تاریخ اضافه شدن :</p>
