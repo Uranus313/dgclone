@@ -135,6 +135,26 @@ func GetAllOrders(c *fiber.Ctx) error {
 
 	prodTitle := c.Query("ProdTitle", "")
 
+	queryParams := c.Queries()
+
+	var orderStates []int
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("OrderStates[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			orderState, err := strconv.Atoi(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting order state": err.Error()})
+			}
+			if orderState < 1 || orderState > 5 {
+				errMessage := fmt.Sprintf("order state %v is not valid", orderState)
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid order state entry - " + errMessage})
+			}
+			orderStates = append(orderStates, orderState)
+		} else {
+			break
+		}
+	}
+
 	/*
 		valid_sort_methods = {
 			1: "product title",
@@ -168,9 +188,12 @@ func GetAllOrders(c *fiber.Ctx) error {
 	var filter primitive.M
 
 	if prodTitle != "" {
-		filter = bson.M{"product.title": prodTitle}
+		filter = bson.M{
+			"product.title": prodTitle,
+			"state":         bson.M{"$in": orderStates},
+		}
 	} else {
-		filter = bson.M{}
+		filter = bson.M{"state": bson.M{"$in": orderStates}}
 	}
 
 	cursor, err := database.OrderCollection.Find(context.Background(), filter, findOpts)
@@ -426,11 +449,12 @@ func UpdateOrderState(c *fiber.Ctx) error {
 		})
 	}
 
-	if state == 2 || state < 1 || state > 5 {
+	if state < 1 || state > 5 {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": "invalid state",
 			"valid requests": fiber.Map{
 				"1": "delivered",
+				"2": "pending",
 				"3": "canceled",
 				"4": "returned",
 				"5": "recievedInWareHouse",

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "../(Customer)/page";
-import { SellerSetVarientOnProduct } from "../components/Interfaces/interfaces";
+import { SellerInfosOnProduct, SellerSetVarientOnProduct } from "../components/Interfaces/interfaces";
 function useGetSellerVarients(){
     console.log('1')
-    return useQuery<SellerSetVarientOnProduct[]>({
+    return useQuery<SellerInfosOnProduct>({
         queryKey : ['colors'],
         queryFn : async () => {
             console.log('2')

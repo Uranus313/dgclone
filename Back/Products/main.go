@@ -5,6 +5,7 @@ import (
 	"dg-kala-sample/auth"
 	"dg-kala-sample/crud"
 	"dg-kala-sample/database"
+	"fmt"
 
 	// fakerdata "dg-kala-sample/fakerData"
 	"log"
@@ -159,7 +160,7 @@ func main() {
 
 	app.Get("/products/order/sellerIncomeChart", auth.AuthMiddleware([]string{"admin"}), crud.SellerIncomeChart) // query params => SellerID, sDateHistory
 
-	app.Get("/products/order", auth.AuthMiddleware([]string{"admin"}), crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle
+	app.Get("/products/order", auth.AuthMiddleware([]string{"admin"}), crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle, OrderStates[]
 
 	app.Post("products/order/orderListTotalPrice", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetOrderListTotalPrice)
 
@@ -178,6 +179,32 @@ func main() {
 	app.Get("/products/inner/sellerSaleInfo/:SellerID", auth.InnerAuth, crud.InnerSellerBS)
 
 	app.Post("/products/inner/orderHistory", auth.InnerAuth, crud.InnerAddOrderHistory)
+
+	app.Get("/test", func(c *fiber.Ctx) error {
+		queries := c.Queries()
+		// tt = tt.(slices)
+
+		var list []string
+		for i := 0; ; i++ {
+			key := fmt.Sprintf("List[%d]", i)
+			if value, ok := queries[key]; ok {
+				list = append(list, value)
+			} else {
+				break
+			}
+		}
+		return c.JSON(fiber.Map{
+			"1": list,
+			"2": queries["bo"],
+		})
+	})
+
+	app.Get("/checkEnt", auth.AuthMiddleware([]string{"user", "admin", "seller", "employee"}), func(c *fiber.Ctx) error {
+
+		ent := c.Locals("ent")
+
+		return c.Status(200).JSON(ent)
+	})
 
 	log.Fatal(app.ListenTLS(":8080", "./cert.pem", "./key.pem"))
 }

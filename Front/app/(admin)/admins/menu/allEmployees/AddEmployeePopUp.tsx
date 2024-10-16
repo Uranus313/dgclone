@@ -8,9 +8,11 @@ import useGetRoles from "../../hooks/useGetRoles";
 const AddEmployeePopUp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, getValues } = useForm();
   const [selectedRole, setSelectedRole] = useState<string | undefined>(undefined);
+
   let {
     data: roleList,
     error: roleError,
@@ -28,6 +30,9 @@ const AddEmployeePopUp = () => {
     if (dialogRef.current) {
       dialogRef.current.close();
       setIsOpen(false);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     }
   };
   const queryClient = useQueryClient();
@@ -77,7 +82,7 @@ const AddEmployeePopUp = () => {
         <div className="modal-box">
           {error && <p>{error}</p>}
           <h3 className="font-bold text-lg mr-3">استخدام کارمند</h3>
-          <form onSubmit={handleSubmit(submit)}>
+          <form ref={formRef} onSubmit={handleSubmit(submit)}>
             <label className="p-2 block ">
               <input type="text" className="bg-primary-bg rounded-md" placeholder=' نام'  {...register("firstName")} />
             </label>

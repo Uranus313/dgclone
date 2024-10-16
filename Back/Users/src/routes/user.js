@@ -63,7 +63,7 @@ router.post("/signUp", async (req, res, next) => {
         const token = jwt.sign({ _id: result3.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-                        // secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
             secure: true,
 
 
@@ -79,7 +79,7 @@ router.post("/signUp", async (req, res, next) => {
     }
     next();
 });
-router.post("/logInWithPhoneNumber",async (req, res, next) => {
+router.post("/logInWithPhoneNumber", async (req, res, next) => {
     try {
         await validateUserlogInWithPhoneNumber(req.body);
     } catch (error) {
@@ -94,31 +94,31 @@ router.post("/logInWithPhoneNumber",async (req, res, next) => {
         return;
     }
     try {
-        const prevRequest = await getPhoneNumberVerifications(undefined,req.body.phoneNumber);
-        if(prevRequest.response){
+        const prevRequest = await getPhoneNumberVerifications(undefined, req.body.phoneNumber);
+        if (prevRequest.response) {
             res.status(400).send({ error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." });
             res.body = { error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." };
             next();
             return;
         }
         const randomCode = generateRandomString(6);
-        const result = await savePhoneNumberVerification( {phoneNumber :req.body.phoneNumber , verificationCode : randomCode});
+        const result = await savePhoneNumberVerification({ phoneNumber: req.body.phoneNumber, verificationCode: randomCode });
         if (result.error) {
             res.status(400).send({ error: result.error });
             res.body = { error: result.error };
             next();
             return;
         }
-        const sendResult = await sendSMS({message:"کد تایید دیجیمارکت:" + "\n" + result.response.verificationCode,phoneNumber :req.body.phoneNumber});
+        const sendResult = await sendSMS({ message: "کد تایید دیجیمارکت:" + "\n" + result.response.verificationCode, phoneNumber: req.body.phoneNumber });
         console.log(sendResult)
-        if(sendResult.error){
+        if (sendResult.error) {
             res.status(400).send({ error: "در ارسال پیامک اشکالی به وجود آمد" });
             res.body = { error: "در ارسال پیامک اشکالی به وجود آمد" };
             next();
             return;
         }
-        res.send({message:"کد ایجاد شد"});
-        res.body = {message:"کد ایجاد شد"};
+        res.send({ message: "کد ایجاد شد" });
+        res.body = { message: "کد ایجاد شد" };
     } catch (err) {
         console.log("Error", err);
         res.body = { error: "internal server error" };
@@ -142,31 +142,31 @@ router.post("/testPhoneNumber", async (req, res, next) => {
         return;
     }
     try {
-        const prevRequest = await getPhoneNumberVerifications(undefined,req.body.phoneNumber);
-        if(prevRequest.response){
+        const prevRequest = await getPhoneNumberVerifications(undefined, req.body.phoneNumber);
+        if (prevRequest.response) {
             res.status(400).send({ error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." });
             res.body = { error: "به این شماره کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." };
             next();
             return;
         }
         const randomCode = generateRandomString(6);
-        const result = await savePhoneNumberVerification( {phoneNumber :req.body.phoneNumber , verificationCode : randomCode});
+        const result = await savePhoneNumberVerification({ phoneNumber: req.body.phoneNumber, verificationCode: randomCode });
         if (result.error) {
             res.status(400).send({ error: result.error });
             res.body = { error: result.error };
             next();
             return;
         }
-        const sendResult = await sendSMS({message:"کد تایید دیجیمارکت:" + "\n" + result.response.verificationCode,phoneNumber :req.body.phoneNumber});
+        const sendResult = await sendSMS({ message: "کد تایید دیجیمارکت:" + "\n" + result.response.verificationCode, phoneNumber: req.body.phoneNumber });
         console.log(sendResult)
-        if(sendResult?.error){
+        if (sendResult?.error) {
             res.status(400).send({ error: "در ارسال پیامک اشکالی به وجود آمد" });
             res.body = { error: "در ارسال پیامک اشکالی به وجود آمد" };
             next();
             return;
         }
-        res.send({message:"کد ایجاد شد"});
-        res.body = {message:"کد ایجاد شد"};
+        res.send({ message: "کد ایجاد شد" });
+        res.body = { message: "کد ایجاد شد" };
     } catch (err) {
         console.log("Error", err);
         res.body = { error: "internal server error" };
@@ -191,20 +191,20 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
         return;
     }
     try {
-        const prevRequest = await getPhoneNumberVerifications(undefined,req.body.phoneNumber);
-        if(!prevRequest.response){
+        const prevRequest = await getPhoneNumberVerifications(undefined, req.body.phoneNumber);
+        if (!prevRequest.response) {
             res.status(404).send({ error: "not found" });
             res.body = { error: "not found" };
             next();
             return;
         }
-        if(prevRequest.response.verificationCode != req.body.verificationCode){
+        if (prevRequest.response.verificationCode != req.body.verificationCode) {
             res.status(404).send({ error: "کد اشتباه است" });
             res.body = { error: "کد اشتباه است" };
             next();
             return;
         }
-        const deleteresult = await deletePhoneNumberVerification( undefined , req.body.phoneNumber);
+        const deleteresult = await deletePhoneNumberVerification(undefined, req.body.phoneNumber);
         if (deleteresult.error) {
             // res.status(400).send({ error: deleteresult.error });
             // res.body = { error: deleteresult.error };
@@ -213,19 +213,19 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
             return;
         }
         let result = {};
-        if(req.body.mode=="change"){
-            await auth(req,res,undefined,["user"]);
-            if(!req.user){
+        if (req.body.mode == "change") {
+            await auth(req, res, undefined, ["user"]);
+            if (!req.user) {
                 return;
             }
-            result = await updateUser(req.user._id, {phoneNumber : req.body.phoneNumber});
+            result = await updateUser(req.user._id, { phoneNumber: req.body.phoneNumber });
             if (result.error) {
                 res.status(400).send({ error: result.error });
                 res.body = { error: result.error };
                 next();
                 return;
             }
-        }else if (req.body.mode=="signUp"){
+        } else if (req.body.mode == "signUp") {
             result = await saveUser(req.body);
             if (result.error) {
                 res.status(400).send({ error: result.error });
@@ -240,21 +240,21 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
                 next();
                 return;
             }
-        }else if (req.body.mode=="logIn"){
-            result = await getUsers(undefined,{phoneNumber: req.body.phoneNumber});
+        } else if (req.body.mode == "logIn") {
+            result = await getUsers(undefined, { phoneNumber: req.body.phoneNumber });
             if (result.error) {
                 res.status(400).send({ error: result.error });
                 res.body = { error: result.error };
                 next();
                 return;
             }
-            if (!result.response[0]){
+            if (!result.response[0]) {
                 res.status(404).send({ error: "user not found" });
                 res.body = { error: "user not found" };
                 next();
                 return;
             }
-            if(result.response[0].isBanned){
+            if (result.response[0].isBanned) {
                 res.status(404).send({ error: "user is banned" });
                 res.body = { error: "user is banned" };
                 next();
@@ -262,11 +262,11 @@ router.patch("/verifyPhoneNumber", async (req, res, next) => {
             }
             result.response = result.response[0];
         }
-        
+
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-                        // secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
             secure: true,
 
 
@@ -355,30 +355,30 @@ router.patch("/changeEmail", (req, res, next) => auth(req, res, next, ["user"]),
         return;
     }
     try {
-        const prevRequest = await getEmailVerifications(undefined,req.body.email);
-        if(prevRequest.response){
+        const prevRequest = await getEmailVerifications(undefined, req.body.email);
+        if (prevRequest.response) {
             res.status(400).send({ error: "به این ایمیل کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." });
             res.body = { error: "به این ایمیل کدی ارسال شده است. لطفا برای درخواست مجدد صبر کنید." };
             next();
             return;
         }
         const randomCode = generateRandomString(6);
-        const result = await saveEmailVerification( {email :req.body.email , verificationCode : randomCode});
+        const result = await saveEmailVerification({ email: req.body.email, verificationCode: randomCode });
         if (result.error) {
             res.status(400).send({ error: result.error });
             res.body = { error: result.error };
             next();
             return;
         }
-        const sendResult = await sendMail({title:"کد تایید ایمیل",text:result.response.verificationCode,targetEmail :req.body.email});
-        if(sendResult.error){
+        const sendResult = await sendMail({ title: "کد تایید ایمیل", text: result.response.verificationCode, targetEmail: req.body.email });
+        if (sendResult.error) {
             res.status(400).send({ error: "در ارسال ایمیل اشکالی به وجود آمد" });
             res.body = { error: "در ارسال ایمیل اشکالی به وجود آمد" };
             next();
             return;
         }
-        res.send({message:"کد ایجاد شد"});
-        res.body = {message:"کد ایجاد شد"};
+        res.send({ message: "کد ایجاد شد" });
+        res.body = { message: "کد ایجاد شد" };
     } catch (err) {
         console.log("Error", err);
         res.body = { error: "internal server error" };
@@ -404,20 +404,20 @@ router.patch("/verifyChangeEmail", (req, res, next) => auth(req, res, next, ["us
         return;
     }
     try {
-        const prevRequest = await getEmailVerifications(undefined,req.body.email);
-        if(!prevRequest.response){
+        const prevRequest = await getEmailVerifications(undefined, req.body.email);
+        if (!prevRequest.response) {
             res.status(404).send({ error: "not found" });
             res.body = { error: "not found" };
             next();
             return;
         }
-        if(prevRequest.response.verificationCode != req.body.verificationCode){
+        if (prevRequest.response.verificationCode != req.body.verificationCode) {
             res.status(404).send({ error: "کد اشتباه است" });
             res.body = { error: "کد اشتباه است" };
             next();
             return;
         }
-        const deleteresult = await deleteEmailVerification( undefined , req.body.email);
+        const deleteresult = await deleteEmailVerification(undefined, req.body.email);
         if (deleteresult.error) {
             // res.status(400).send({ error: deleteresult.error });
             // res.body = { error: deleteresult.error };
@@ -425,7 +425,7 @@ router.patch("/verifyChangeEmail", (req, res, next) => auth(req, res, next, ["us
             next();
             return;
         }
-        const result = await updateUser(req.user._id, {email : req.body.email});
+        const result = await updateUser(req.user._id, { email: req.body.email });
         if (result.error) {
             res.status(400).send({ error: result.error });
             res.body = { error: result.error };
@@ -435,7 +435,7 @@ router.patch("/verifyChangeEmail", (req, res, next) => auth(req, res, next, ["us
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-                        // secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
             secure: true,
 
 
@@ -480,7 +480,7 @@ router.patch("/changeMyinfo", (req, res, next) => auth(req, res, next, ["user"])
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-                        // secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
             secure: true,
 
 
@@ -563,7 +563,7 @@ router.post("/logIn", async (req, res, next) => {
         const token = jwt.sign({ _id: result.response._id, status: "user" }, process.env.JWTSECRET, { expiresIn: '6h' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
-                        // secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
             secure: true,
 
 
@@ -604,7 +604,7 @@ router.get("/myLists", (req, res, next) => auth(req, res, next, ["user"]), async
             next();
             return;
         }
-        const result = await fetch(productURL+"/ProductMapAssign", {
+        const result = await fetch(productURL + "/ProductMapAssign", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1054,19 +1054,19 @@ router.get("/myNotifications", (req, res, next) => auth(req, res, next, ["user"]
     try {
         let floor = 0;
         let limit = 30;
-        if(req.query.floor && Number.isInteger(req.query.floor)){
+        if (req.query.floor && Number.isInteger(req.query.floor)) {
             floor == req.query.floor;
         }
-        if(req.query.limit && Number.isInteger(req.query.limit) && req.query.limit <= 500){
+        if (req.query.limit && Number.isInteger(req.query.limit) && req.query.limit <= 500) {
             limit = req.query.limit;
         }
         const notifArray = [];
-        for (let index = req.user.notifications.length - floor - 1; index >= 0 ; index--) {
+        for (let index = req.user.notifications.length - floor - 1; index >= 0; index--) {
             const element = req.user.notifications[index];
             notifArray.push(element);
-            
+
         }
-        if(notifArray.length == 0){
+        if (notifArray.length == 0) {
             res.send([]);
             res.body = [];
             next();
@@ -1150,41 +1150,41 @@ router.post("/sellerRating", (req, res, next) => auth(req, res, next, ["user"]),
         const oldIndex = null;
         const sameRateChecker = false;
         for (let index = 0; index < req.user.ratedSellers.length; index++) {
-            if(req.user.ratedSellers[index].sellerID == req.body.sellerID){
+            if (req.user.ratedSellers[index].sellerID == req.body.sellerID) {
                 oldIndex = index;
-                if(oldRate == req.body.rate){
+                if (oldRate == req.body.rate) {
                     sameRateChecker = true;
                 }
-            }                     
+            }
         }
-        if(sameRateChecker){
+        if (sameRateChecker) {
             res.status(400).send({ error: "this rating is the same as the old one" });
             res.body = { error: "this rating is the same as the old one" };
             next();
             return;
         }
-        if(oldIndex){
-            const result = await updateRating({newRating : req.body.rate , oldRating : req.user.ratedSellers[oldIndex], sellerID: req.body.sellerID});
+        if (oldIndex) {
+            const result = await updateRating({ newRating: req.body.rate, oldRating: req.user.ratedSellers[oldIndex], sellerID: req.body.sellerID });
             req.user.ratedSellers[oldIndex].rate = req.body.rate;
-            await updateUser(req.user._id , {ratedSellers : req.user.ratedSellers});
-            if(result.response){
-                res.send({result : "your rating is successfully submitted"});
-                res.body = {result : "your rating is successfully submitted"};
+            await updateUser(req.user._id, { ratedSellers: req.user.ratedSellers });
+            if (result.response) {
+                res.send({ result: "your rating is successfully submitted" });
+                res.body = { result: "your rating is successfully submitted" };
             }
-        }else{
-            const result = await addRating({newRating : req.body.rate , sellerID: req.body.sellerID});
+        } else {
+            const result = await addRating({ newRating: req.body.rate, sellerID: req.body.sellerID });
             req.user.ratedSellers.push({
-                rate : req.body.rate,
+                rate: req.body.rate,
                 sellerID: req.body.sellerID
             })
-            await updateUser(req.user._id , {ratedSellers : req.user.ratedSellers});
-            if(result.response){
-                res.send({result : "your rating is successfully submitted"});
-                res.body = {result : "your rating is successfully submitted"};
+            await updateUser(req.user._id, { ratedSellers: req.user.ratedSellers });
+            if (result.response) {
+                res.send({ result: "your rating is successfully submitted" });
+                res.body = { result: "your rating is successfully submitted" };
             }
         }
-        
-        
+
+
     } catch (err) {
         console.log("Error", err);
         res.body = { error: "internal server error" };
@@ -1228,12 +1228,12 @@ router.post("/createWishList", (req, res, next) => auth(req, res, next, ["user"]
     }
     next();
 });
-router.delete("/shopingCart/:productID",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+router.delete("/shopingCart/:productID", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
     try {
-        const result = await deleteOrderFromCart({userID: req.user._id , productID: req.params.productID});
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
+        const result = await deleteOrderFromCart({ userID: req.user._id, productID: req.params.productID });
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
             next();
             return;
         }
@@ -1241,16 +1241,16 @@ router.delete("/shopingCart/:productID",(req, res, next) => auth(req, res, next,
         res.body = result.response;
         next();
         return;
-        
+
     } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
     }
     next();
 });
 
-router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) =>{
+router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
     const { error } = validateBuyTheCart(req.body);
     if (error) {
         res.status(400).send({ error: error.details[0].message });
@@ -1260,7 +1260,7 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
     }
     try {
 
-        let result = await fetch(productURL+"/buyTheCart", {
+        let result = await fetch(productURL + "/buyTheCart", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1268,37 +1268,37 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
             },
             body: JSON.stringify(
                 {
-                    OrderList : req.user.shoppingCart,
-                    UserID : req.user._id,
+                    OrderList: req.user.shoppingCart,
+                    UserID: req.user._id,
                     Address: req.body.address,
-                    TotalDisscount : req.body.discount
+                    TotalDisscount: req.body.discount
 
                 })
         });
         const resultJSON = await result.json()
-        if(!result.ok){
+        if (!result.ok) {
             res.status(400).send(resultJSON);
             res.body = resultJSON;
             next();
             return;
         }
-        if(!resultJSON?.orderHistoryID){
-            res.status(400).send({error: "no order history found"});
-            res.body = {error: "no order history found"};
+        if (!resultJSON?.orderHistoryID) {
+            res.status(400).send({ error: "no order history found" });
+            res.body = { error: "no order history found" };
             next();
             return;
         }
-        result= await addOrderHistoryToList({userID : req.user._id ,orderHistoryID: resultJSON.orderHistoryID});
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
+        result = await addOrderHistoryToList({ userID: req.user._id, orderHistoryID: resultJSON.orderHistoryID });
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
             next();
             return;
         }
-        result= await emptyTheCart(req.user._id );
-        if (result.error){
-            res.status(400).send({error : result.error});
-            res.body = {error : result.error};
+        result = await emptyTheCart(req.user._id);
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
             next();
             return;
         }
@@ -1307,11 +1307,25 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
         res.body = result.response;
         next();
         return;
-        
+
     } catch (err) {
-        console.log("Error",err);
-        res.body = {error:"internal server error"};
-        res.status(500).send({error:"internal server error"});
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+});
+
+router.get("/test", async (req, res, next) => {
+    try {
+
+        console.log(req.query);
+        res.send("tested");
+
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
     }
     next();
 });

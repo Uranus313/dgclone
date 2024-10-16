@@ -107,7 +107,7 @@ const Products = () => {
           <div className='grid grid-cols-2 place-items-center'>
             <img className='w-20 mx-2' src={productCard.picture}/>
             <div>
-              <p className='line-clamp-2 h-fit text-sm'>{productCard.productTitle}</p>
+              <p className='line-clamp-2 h-fit text-sm'>{productCard.title}</p>
               <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
             </div>
           </div>
@@ -115,8 +115,7 @@ const Products = () => {
           <FilterButton id={productCard.brand} query='brand' title={productCard.brand} />
           <p>{productCard.state}</p>
           <p>{productCard.varientCount}</p>
-
-          {productCard.state==1 &&
+          {productCard.state==2 &&
           <div className='flex gap-4 col-span-2'>
             <ModalButton noMargin={true} additionalCss='bg-primary-seller text-white rounded-md px-4 py-2' title='مدیریت تنوع' id='addNewVarient'/>
 

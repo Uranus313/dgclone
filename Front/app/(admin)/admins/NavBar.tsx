@@ -39,21 +39,11 @@ function NavBar() {
 
   const menu = () => {
     setIsVisible(!isVisible);
-    const element = document.getElementById("cardBox");
-    if(element){
-      if(isVisible){
-        element.className="md:flex mt-10 md:mt-20";
-      }else{
-        element.className="mt-0 md:flex md:mt-20";
-      }
-    }
-    
   };
 
 
   return (
-    <div className={` w-full bg-white p-3 px-5 bg-opacity-0 md:bg-opacity-100  ${isVisible ? 'md:fixed' : 'fixed'
-                }`} >
+    <div className=" w-full bg-white p-3 px-5 bg-opacity-0 md:bg-opacity-100 fixed ">
       <div className=" flex justify-between ">
         <div className="flex w-7/12 ">
           {isLoading && <span className="loading loading-dots loading-lg"></span>}
@@ -69,7 +59,7 @@ function NavBar() {
                   <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 Z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 Z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 Z"></path>
                 </svg>
               </button>
-              <ul className={`md:w-0 md:h-0 transition-all duration-500 ease-in-out transform ${isVisible ? 'opacity-100 max-h-full md:opacity-0 md:h-0' : 'opacity-0 max-h-0'
+              <ul className={`md:w-0 md:h-0 transition-all duration-500 ease-in-out transform px-8 py-4 rounded-md bg-primary-bg ${isVisible ? 'opacity-100 max-h-full md:opacity-0 md:h-0' : 'opacity-0 max-h-0'
                 } overflow-hidden`}>
                 <li className="py-1.5"><Link href={"/admins"} onClick={menu}>داشبورد</Link></li>
                 <li className="py-1"><Link href={"/admins/menu/validation"} onClick={menu}>ارزیابی</Link></li>
