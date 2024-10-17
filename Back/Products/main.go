@@ -107,6 +107,7 @@ func main() {
 
 	app.Get("/products/product/productsInList", auth.AuthMiddleware([]string{"user", "seller"}), crud.GetProductInList)
 
+	app.Get("/products/ordersInList", auth.AuthMiddleware([]string{"user", "seller"}), crud.GetOrdersInList)
 	// --------------category-----------------
 
 	app.Post("/products/category", auth.AuthMiddleware([]string{"admin"}), crud.AddCategory) // (request body)

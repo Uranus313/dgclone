@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import f from '../../../../assets/images/tomann.png'
 import Gallery from './Gallery'
 import SeeMore from '@/app/components/SeeMore/SeeMore'
+import { useQueryClient } from '@tanstack/react-query'
 interface Props{
     product : ProductInterface
 }
@@ -70,7 +71,7 @@ const ClientPart = ({product}:Props) => {
 
 
 
-  
+  let queryClient = useQueryClient()
   async function AddOrder(order:Order){
     try {
       const response = await fetch('https://localhost:8080/products/order', {
@@ -85,7 +86,7 @@ const ClientPart = ({product}:Props) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+      queryClient.invalidateQueries({queryKey: "user"})
       const result = await response.json();
       console.log('Success:', result);
     } catch (error) {

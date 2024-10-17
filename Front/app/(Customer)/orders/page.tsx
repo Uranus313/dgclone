@@ -10,68 +10,72 @@ import NoOrderImage from './noOrder.png'
 import { useUser } from '@/app/hooks/useUser'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import useGetShoppingCart from '@/app/hooks/useGetShoppingCart'
 
 
-const orders: Order[]=[
-  {
-    _id:'1' ,
-    product:{
-        productID:'2',
-        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل TUF Gaming F15 FX506HE-HN393W-i7 11800H 32GB 1SSD RTX3050Ti - کاستوم شده',
-        price:19000000,
-        color:{title:'قرمز' , hex:'#ad2432'},
-        garantee:'گارانتی خوب',
-        sellerid:'2',
-        sellerTitle:'فروشگاه خوب',
-        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-    },
-    quantity:1,
-    userid:'1',
-    state:State.pending,  
-    recievedate:'',
-    ordersdate:'',
-  },
+// const orders: Order[]=[
+//   {
+//     _id:'1' ,
+//     product:{
+//         productID:'2',
+//         productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل TUF Gaming F15 FX506HE-HN393W-i7 11800H 32GB 1SSD RTX3050Ti - کاستوم شده',
+//         price:19000000,
+//         color:{title:'قرمز' , hex:'#ad2432'},
+//         garantee:'گارانتی خوب',
+//         sellerid:'2',
+//         sellerTitle:'فروشگاه خوب',
+//         picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//     },
+//     quantity:1,
+//     userid:'1',
+//     state:State.pending,  
+//     recievedate:'',
+//     ordersdate:'',
+//   },
 
-  {
-    _id:'2' ,
-    product:{
-        productID:'3',
-        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل TUF Gaming F15 FX506HE-HN393W-i7 11800H 32GB 1SSD RTX3050Ti - کاستوم شده',
-        price:19000000,
-        color:{title:'قرمز' , hex:'#ad2432'},
-        garantee:'گارانتی خوب',
-        sellerid:'2',
-        sellerTitle:'فروشگاه خوب',
-        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-    },
-    quantity:1,
-    userid:'1',
-    state:State.pending,  
-    recievedate:'',
-    ordersdate:'',
-  },
-]
+//   {
+//     _id:'2' ,
+//     product:{
+//         productID:'3',
+//         productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل TUF Gaming F15 FX506HE-HN393W-i7 11800H 32GB 1SSD RTX3050Ti - کاستوم شده',
+//         price:19000000,
+//         color:{title:'قرمز' , hex:'#ad2432'},
+//         garantee:'گارانتی خوب',
+//         sellerid:'2',
+//         sellerTitle:'فروشگاه خوب',
+//         picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//     },
+//     quantity:1,
+//     userid:'1',
+//     state:State.pending,  
+//     recievedate:'',
+//     ordersdate:'',
+//   },
+// ]
 
 const OrderCart = () => {
   let [finalPrice , setFinalPrice ]= useState(0)
 
-  const {orderCart , setOrderCart}=useOrderCart()
+  // const {orderCart , setOrderCart}=useOrderCart()
   const {user} = useUser()
   const manage = useRouter()
+  const {data:orderCart} = useGetShoppingCart()
+
+  console.log("ooooo",orderCart)
 
 
   useEffect(()=>{
-    setOrderCart({...orderCart , orders : orders})
+    // setOrderCart({...orderCart , orders : orders})
   },[])
 
-  useEffect(()=>{
-    let tempFinalPrice=0
-    orderCart.orders.forEach(order=>{
-      tempFinalPrice += order.product.price * order.quantity
-    })
-    setFinalPrice(tempFinalPrice)
-    setOrderCart({...orderCart , price:tempFinalPrice , orders:orders})
-  },[orderCart])
+  // useEffect(()=>{
+  //   let tempFinalPrice=0
+  //   orderCart.orders.forEach(order=>{
+  //     tempFinalPrice += order.product.price * order.quantity
+  //   })
+  //   setFinalPrice(tempFinalPrice)
+  //   setOrderCart({...orderCart , price:tempFinalPrice , orders:orders})
+  // },[orderCart])
 
   
   return (
@@ -82,7 +86,7 @@ const OrderCart = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Order list section */}
         <div className="md:col-span-3">
-          {orderCart.orders.map((order, index) => (
+          {orderCart.map((order:any, index:any) => (
             <div
               key={index}
               className="grid gap-4 grid-cols-1 sm:grid-cols-6 mb-5 bg-white rounded-xl border border-grey-border p-5"

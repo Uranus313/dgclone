@@ -23,14 +23,17 @@ import (
 func AddOrder(c *fiber.Ctx) error {
 
 	// token := "????"
+	user := c.Locals("ent").(map[string]interface{})
 
 	var order models.Order
 
 	if err := c.BodyParser(&order); err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body: " + err.Error()})
 	}
 
 	order.State = models.Pending
+	userID, _ := primitive.ObjectIDFromHex(user["_id"].(string))
+	order.UserID = userID
 
 	insertResult, err := database.OrderCollection.InsertOne(context.Background(), order)
 
@@ -40,7 +43,7 @@ func AddOrder(c *fiber.Ctx) error {
 
 	order.ID = insertResult.InsertedID.(primitive.ObjectID)
 
-	_, statusCode, err := InnerRequest(PUT, "/ShoppingCart", nil, map[string]string{
+	_, statusCode, err := InnerRequest(PUT, "/shopingCart", nil, map[string]string{
 		"orderID": order.ID.Hex(),
 		"userID":  order.UserID.Hex(),
 	})

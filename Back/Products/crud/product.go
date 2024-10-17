@@ -240,7 +240,7 @@ func UpdateProdValidationState(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"message": "error while fetching prod id from params",
+			"message": "error while fetching prod id from params1",
 			"error":   err.Error(),
 		})
 	}
@@ -297,7 +297,7 @@ func GetProductByID(c *fiber.Ctx) error {
 	prodID, err := primitive.ObjectIDFromHex(prodIDString)
 
 	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching prod id from params": err.Error()})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching prod id from params2": err.Error()})
 	}
 
 	visit_time := time.Now()
@@ -1814,4 +1814,49 @@ func GetProductInList(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(products)
+}
+
+func GetOrdersInList(c *fiber.Ctx) error {
+
+	queryParams := c.Queries()
+
+	var orderIDs []primitive.ObjectID
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("OrderIDs[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			orderID, err := primitive.ObjectIDFromHex(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting order id": err.Error()})
+			}
+			orderIDs = append(orderIDs, orderID)
+		} else {
+			break
+		}
+	}
+
+	// var products []models.ProductCard
+	var orders []models.Order
+
+	for _, orderID := range orderIDs {
+
+		var order models.Order
+
+		filter := bson.M{"_id": orderID}
+
+		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				errMessage := fmt.Sprintf("order id %#v not found", orderID)
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		// productCard := CreateProdCard(product)
+
+		orders = append(orders, order)
+	}
+
+	return c.Status(http.StatusOK).JSON(orders)
 }

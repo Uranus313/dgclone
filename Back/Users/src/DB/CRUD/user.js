@@ -1,7 +1,7 @@
 import { UserModel } from "../models/user.js";
 import { comparePassword, hashPassword } from "../../functions/hashing.js";
 
-export async function saveUser(userCreate){
+export async function saveUser(userCreate) {
     const result = {};
     const user = new UserModel(userCreate);
     const response = await user.save();
@@ -9,40 +9,44 @@ export async function saveUser(userCreate){
     return result;
 }
 
-export async function getUsers(id , searchParams,limit , floor ,nameSearch , sort , desc){
+export async function getUsers(id, searchParams, limit, floor, nameSearch, sort, desc) {
     const result = {};
-    let sortOrder = (desc == true || desc == "true")? -1 : 1;
+    let sortOrder = (desc == true || desc == "true") ? -1 : 1;
 
-    if(id){
-        result.response = await UserModel.find({_id : id}).findOne();
-        if(result.response){
+    if (id) {
+        result.response = await UserModel.find({ _id: id }).findOne();
+        if (result.response) {
             result.response = result.response.toJSON();
             delete result.response.password;
         }
         return result;
-    }else{
+    } else {
         let data = null;
         let hasMore = false;
-        if(!limit){
+        if (!limit) {
             limit = 20;
         }
-        if(nameSearch && nameSearch != ''){
-            data = await UserModel.find({...searchParams,lastName:{
-                $regex: nameSearch,
-                $options: 'i'
-            } }).skip(floor).limit(limit).sort({[sort] : sortOrder} );
-            let count = await UserModel.countDocuments({...searchParams,lastName:{
-                $regex: nameSearch,
-                $options: 'i'
-            } });
+        if (nameSearch && nameSearch != '') {
+            data = await UserModel.find({
+                ...searchParams, lastName: {
+                    $regex: nameSearch,
+                    $options: 'i'
+                }
+            }).skip(floor).limit(limit).sort({ [sort]: sortOrder });
+            let count = await UserModel.countDocuments({
+                ...searchParams, lastName: {
+                    $regex: nameSearch,
+                    $options: 'i'
+                }
+            });
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
-        }else{
-            data = await UserModel.find(searchParams).skip(floor).limit(limit).sort({[sort] : sortOrder} );
+        } else {
+            data = await UserModel.find(searchParams).skip(floor).limit(limit).sort({ [sort]: sortOrder });
             let count = await UserModel.countDocuments(searchParams);
             // console.log(count);
             // console.log(limit+floor);
-            
+
             hasMore = count > (Number(limit) + Number(floor));
             console.log(hasMore)
         }
@@ -57,35 +61,35 @@ export async function getUsers(id , searchParams,limit , floor ,nameSearch , sor
         return result;
     }
 }
-export async function getUserCount(searchParams){
+export async function getUserCount(searchParams) {
     const result = {};
     let count = await UserModel.estimatedDocumentCount(searchParams);
     result.response = count;
     return result;
-}  
+}
 
-export async function logIn(email , phoneNumber , password){
+export async function logIn(email, phoneNumber, password) {
     const result = {};
     let user = null;
-    if (email){
-        user = await UserModel.find({email : email}).findOne();
-        if(!user){
+    if (email) {
+        user = await UserModel.find({ email: email }).findOne();
+        if (!user) {
             result.error = "no user with this email exists";
             return result;
         }
-    }else{
-        user = await UserModel.find({phoneNumber : phoneNumber}).findOne();
-        if(!user){
+    } else {
+        user = await UserModel.find({ phoneNumber: phoneNumber }).findOne();
+        if (!user) {
             result.error = "no user with this phoneNumber exists";
             return result;
         }
     }
-    if(!user.password){
+    if (!user.password) {
         result.error = "this user does not have a password";
         return result;
     }
-    const passwordCheck = await comparePassword(password , user.password);
-    if(!passwordCheck){
+    const passwordCheck = await comparePassword(password, user.password);
+    if (!passwordCheck) {
         result.error = "wrong password";
         return result;
     }
@@ -93,178 +97,190 @@ export async function logIn(email , phoneNumber , password){
     delete result.response.password;
     return result;
 }
-export async function deleteUser(id){
+export async function deleteUser(id) {
     const result = {};
-    result.response = await UserModel.deleteOne({_id : id});
+    result.response = await UserModel.deleteOne({ _id: id });
     return result;
 }
 
-export async function updateUser(id,userUpdate ){
+export async function updateUser(id, userUpdate) {
     const result = {};
-    if(userUpdate.password){
+    if (userUpdate.password) {
         userUpdate.password = await hashPassword(userUpdate.password);
     }
-    const response = await UserModel.findByIdAndUpdate(id,{$set :userUpdate},{new : true});
+    const response = await UserModel.findByIdAndUpdate(id, { $set: userUpdate }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    return(result);
+    return (result);
 }
-export async function addBoughtGiftCard(id,giftCardID ){
+export async function addBoughtGiftCard(id, giftCardID) {
     const result = {};
-    const response = await UserModel.findByIdAndUpdate(id,{$push :{boughtGiftCards : giftCardID}},{new : true});
+    const response = await UserModel.findByIdAndUpdate(id, { $push: { boughtGiftCards: giftCardID } }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    return(result);
+    return (result);
 }
-export async function addNotification(id,notification  ){
+export async function addNotification(id, notification) {
     const result = {};
-    const response = await UserModel.findByIdAndUpdate(id,{$push :{notifications : notification._id}},{new : true});
+    const response = await UserModel.findByIdAndUpdate(id, { $push: { notifications: notification._id } }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    const user = await UserModel.find({_id : id}).findOne();
+    const user = await UserModel.find({ _id: id }).findOne();
     delete notification.sellerID;
     delete notification.userID;
     delete notification.userType;
-    if(user.recentNotifications.length<2){
+    if (user.recentNotifications.length < 2) {
         user.recentNotifications.unshift(notification);
-    }else{
+    } else {
         user.recentNotifications[1] = user.recentNotifications[0];
         user.recentNotifications[0] = notification;
     }
     const response2 = await user.save();
     result.response = response2.toJSON();
-    return(result);
+    return (result);
 }
-export async function addreceivedGiftCard(id,giftCardID ){
+export async function addreceivedGiftCard(id, giftCardID) {
     const result = {};
-    const response = await UserModel.findByIdAndUpdate(id,{$push :{receivedGiftCards : giftCardID}},{new : true});
+    const response = await UserModel.findByIdAndUpdate(id, { $push: { receivedGiftCards: giftCardID } }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    return(result);
+    return (result);
 }
-export async function changeUserPassword(id,newPassword , oldPassword ){
+export async function changeUserPassword(id, newPassword, oldPassword) {
     const result = {};
-    const user = await UserModel.find({_id : id}).findOne();
-    if (user.password){
-        const answer = await comparePassword(oldPassword,user.password);
-        if(!answer){
+    const user = await UserModel.find({ _id: id }).findOne();
+    if (user.password) {
+        const answer = await comparePassword(oldPassword, user.password);
+        if (!answer) {
             result.error = "wrong password"
             return result;
         }
-    }else if (oldPassword){
+    } else if (oldPassword) {
         result.error = "wrong password"
         return result;
     }
     const hashedPassword = await hashPassword(newPassword);
-    const response = await UserModel.findByIdAndUpdate(id,{$set :{password : hashedPassword}},{new : true});
+    const response = await UserModel.findByIdAndUpdate(id, { $set: { password: hashedPassword } }, { new: true });
     result.response = response.toJSON();
     delete result.response.password;
-    return(result);
+    return (result);
 }
 
-export async function addcommentToList({commentID , userID}){
+export async function addcommentToList({ commentID, userID }) {
     const result = {};
     try {
-        const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
-            socialInteractions: commentID 
-         } }, { new: true });
-         if(!response){
+        const response = await UserModel.findByIdAndUpdate(userID, {
+            $push: {
+                socialInteractions: commentID
+            }
+        }, { new: true });
+        if (!response) {
             result.error = "user not found";
             return result
-         }
+        }
         result.response = response.toJSON();
     } catch (error) {
         console.log(error)
         result.error = error
     }
-    
+
     return (result);
 }
-export async function addOrderToCart({productID , userID}){
+export async function addOrderToCart({ orderID, userID }) {
     const result = {};
     try {
-        const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
-            shoppingCart: productID 
-         } }, { new: true });
-         if(!response){
+        const response = await UserModel.findByIdAndUpdate(userID, {
+            $push: {
+                shoppingCart: orderID
+            }
+        }, { new: true });
+        if (!response) {
             result.error = "user not found";
             return result
-         }
+        }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
     }
-    
+
     return (result);
 }
-export async function removeOrderFromCart({orderID , userID}){
+export async function removeOrderFromCart({ orderID, userID }) {
     const result = {};
     try {
-        const response = await UserModel.findByIdAndUpdate(userID, { $pull: { 
-            shoppingCart: orderID 
-         } }, { new: true });
-         if(!response){
+        const response = await UserModel.findByIdAndUpdate(userID, {
+            $pull: {
+                shoppingCart: orderID
+            }
+        }, { new: true });
+        if (!response) {
             result.error = "user not found";
             return result
-         }
+        }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
     }
-    
+
     return (result);
 }
 
 
 
-export async function deleteOrderFromCart({productID , userID}){
+export async function deleteOrderFromCart({ productID, userID }) {
     const result = {};
     try {
-        const response = await UserModel.findByIdAndUpdate(userID, { $pull: { 
-            shoppingCart: productID 
-         } }, { new: true });
-         if(!response){
+        const response = await UserModel.findByIdAndUpdate(userID, {
+            $pull: {
+                shoppingCart: productID
+            }
+        }, { new: true });
+        if (!response) {
             result.error = "user not found";
             return result
-         }
+        }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
     }
-    
+
     return (result);
 }
-export async function emptyTheCart( userID){
+export async function emptyTheCart(userID) {
     const result = {};
     try {
-        const response = await UserModel.findByIdAndUpdate(userID, { $set: { 
-            shoppingCart: [] 
-         } }, { new: true });
-         if(!response){
+        const response = await UserModel.findByIdAndUpdate(userID, {
+            $set: {
+                shoppingCart: []
+            }
+        }, { new: true });
+        if (!response) {
             result.error = "user not found";
             return result
-         }
+        }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
     }
-    
+
     return (result);
 }
-export async function addOrderHistoryToList({orderHistoryID , userID}){
+export async function addOrderHistoryToList({ orderHistoryID, userID }) {
     const result = {};
     try {
-        const response = await UserModel.findByIdAndUpdate(userID, { $push: { 
-            shoppingCart: orderHistoryID 
-         } }, { new: true });
-         if(!response){
+        const response = await UserModel.findByIdAndUpdate(userID, {
+            $push: {
+                shoppingCart: orderHistoryID
+            }
+        }, { new: true });
+        if (!response) {
             result.error = "user not found";
             return result
-         }
+        }
         result.response = response.toJSON();
     } catch (error) {
         result.error = error
     }
-    
+
     return (result);
 }
