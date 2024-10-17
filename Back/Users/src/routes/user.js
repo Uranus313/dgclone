@@ -7,7 +7,7 @@ import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUs
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
-import { changeWalletMoney, getWallets, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
+import { changeWalletMoney, getWallets, saveWallet, updateWallet, updateWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
 import { getNotifications, updateNotification } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
@@ -1260,8 +1260,33 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
         return;
     }
     try {
+        let totalPrice = await fetch(productURL + "/orderListTotalPrice", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "inner-secret": process.env.innerSecret
+            },
+            body: JSON.stringify(
+                {
+                    OrderList: req.user.shoppingCart
 
-        let result = await fetch(productURL + "/buyTheCart", {
+                })
+        });
+        const totalPriceJSON = await totalPrice.json()
+        if (!result.ok) {
+            res.status(400).send(totalPriceJSON);
+            res.body = totalPriceJSON;
+            next();
+            return;
+        }
+        const userWallet = await getWallets(req.user.walletID);
+        if(userWallet.money < totalPriceJSON.totalPrice){
+            res.status(400).send({error: "شما در کیف پول خود به اندازه کافی موجودی ندارید"});
+            res.body = {error: "شما در کیف پول خود به اندازه کافی موجودی ندارید"};
+            next();
+            return;
+        }
+        let result = await fetch(productURL + "/orderHistory", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1272,7 +1297,7 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
                     OrderList: req.user.shoppingCart,
                     UserID: req.user._id,
                     Address: req.body.address,
-                    TotalDisscount: req.body.discount
+                    DisscounCode: req.body.discount
 
                 })
         });
@@ -1303,7 +1328,12 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
             next();
             return;
         }
-
+        const updateWallet = await changeWalletMoney(req.user.walletID,totalPriceJSON.totalPrice);
+        for (let index = 0; index < resultJSON.orderHistorySellers.length; index++) {
+            const element = resultJSON.orderHistorySellers[index];
+            await changeWalletMoney(element.sellerID,element.income)
+            
+        }
         res.send(result.response);
         res.body = result.response;
         next();
@@ -1317,18 +1347,18 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
     next();
 });
 
-router.get("/test", async (req, res, next) => {
-    try {
+// router.get("/test", async (req, res, next) => {
+//     try {
 
-        console.log(req.query);
-        res.send("tested");
+//         console.log(req.query);
+//         res.send("tested");
 
-    } catch (err) {
-        console.log("Error", err);
-        res.body = { error: "internal server error" };
-        res.status(500).send({ error: "internal server error" });
-    }
-    next();
-});
+//     } catch (err) {
+//         console.log("Error", err);
+//         res.body = { error: "internal server error" };
+//         res.status(500).send({ error: "internal server error" });
+//     }
+//     next();
+// });
 
 export default router;
