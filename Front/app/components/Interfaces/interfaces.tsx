@@ -27,6 +27,7 @@ export interface SellerInfosOnProduct {
 
 export interface ProductVariant {
     _id: string,
+    category_id: string,
     seller_id: string,
     seller_title: string,
     seller_rating: number

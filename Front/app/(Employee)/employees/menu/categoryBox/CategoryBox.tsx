@@ -81,9 +81,9 @@ function CategoryBox() {
 
                     }
                 </div>
-                <form method="dialog" className="modal-backdrop" onClick={closeModal}>
+                <div className="modal-backdrop" onClick={closeModal}>
                     <button type="button">close</button>
-                </form>
+                </div>
             </dialog>
 
         </div>
