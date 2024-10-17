@@ -171,6 +171,8 @@ func main() {
 
 	app.Get("/products/order/userOrders", auth.AuthMiddleware([]string{"user"}), crud.GetOrdersByUserID)
 
+	app.Delete("/products/order", auth.AuthMiddleware([]string{"user"}), crud.DeleteOrder)
+
 	// -------------inner--------------
 
 	app.Get("/products/inner/ProductMapAssign", auth.InnerAuth, crud.InnerProductMapAssign)

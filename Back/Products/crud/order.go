@@ -548,3 +548,54 @@ func GetOrdersByUserID(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusOK).JSON(ordersList)
 }
+
+func DeleteOrder(c *fiber.Ctx) error {
+
+	orderIDString := c.Query("OrderID")
+
+	orderID, err := primitive.ObjectIDFromHex(orderIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching order id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	filter := bson.M{"_id": orderID}
+
+	var order models.Order
+
+	err = database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "order not found"})
+		}
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	deleteResult, err := database.OrderCollection.DeleteOne(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if deleteResult.DeletedCount == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "order not found"})
+	}
+
+	_, statusCode, err := InnerRequest(PATCH, "/shoppingCartDelete", nil, map[string]string{
+		"orderID": order.ID.Hex(),
+		"userID":  order.UserID.Hex(),
+	})
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(order)
+}
