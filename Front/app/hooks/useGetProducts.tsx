@@ -13,8 +13,8 @@ interface Props {
 }
 
 function useGetProducts({ limit, categoryID, pageParamm=0 , sort=true }: Props) {
-    // const {searchParams} = useQueryNext()
-    const searchParams = useSearchParams();
+    const {searchParams,pathname} = useQueryNext()
+    // const searchParams = useSearchParams();
     const [sortOrder,setSortOrder]=useState(searchParams.get("sortOrder"))
     // const {data:brands} = useGetBrands() 
     const [filterBrands,setFilterBrands] = useState('')
@@ -42,7 +42,7 @@ function useGetProducts({ limit, categoryID, pageParamm=0 , sort=true }: Props) 
 
 
     return useInfiniteQuery({
-        queryKey: ['product', sortOrder,brands],
+        queryKey: ['product', sortOrder,brands,pathname],
         initialPageParam: 1,
         queryFn: async ({ pageParam = 1 }) => {
             const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit * pageParamm}&CateID=${categoryID}${sort ? `&SortMethod=${sortOrder}` : ''}&${brands.length > 0 ? filterBrands :''}`, {

@@ -167,7 +167,7 @@ const NavBar = () => {
             </div>
 
             <p className="mx-4 text-grey-light">|</p>
-
+{/* 
             <Link href="/" className="ml-6 flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -185,9 +185,9 @@ const NavBar = () => {
               </svg>
 
               <p className="mx-2">شگفت انگیز</p>
-            </Link>
+            </Link> */}
 
-            <Link href="/" className="ml-6 flex items-center">
+            {/* <Link href="/" className="ml-6 flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -204,7 +204,7 @@ const NavBar = () => {
               </svg>
 
               <p className="mx-2">کارت هدیه</p>
-            </Link>
+            </Link> */}
 
             <Link href="/bestSellers" className="flex items-center">
               <svg
@@ -232,11 +232,11 @@ const NavBar = () => {
 
             <p className="mx-4 text-grey-light">|</p>
 
-            <Link href="/" className="ml-6 flex items-center">
+            {/* <Link href="/" className="ml-6 flex items-center">
               <p className="mx-2">ارتباط با ما</p>
-            </Link>
+            </Link> */}
 
-            <Link href="/" className="ml-6 flex items-center">
+            <Link href="/sellers/signIn" className="ml-6 flex items-center">
               <p className="mx-2">فروشنده شوید</p>
             </Link>
           </div>

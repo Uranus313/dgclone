@@ -606,6 +606,8 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 
 func AddVariantToSeller(c *fiber.Ctx) error {
 
+	seller := c.Locals("ent").(map[string]interface{})
+
 	prodIDString := c.Query("prodID")
 
 	prodID, err := primitive.ObjectIDFromHex(prodIDString)
@@ -614,9 +616,9 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
 	}
 
-	sellerIDString := c.Query("SellerID")
+	// sellerIDString := c.Query("SellerID")
 
-	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+	sellerID, err := primitive.ObjectIDFromHex(seller["_id"].(string))
 
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
@@ -648,16 +650,25 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 	for index, seller := range product.Sellers {
 		if seller.SellerID == sellerID {
 			sellerFound = true
-			for _, variant := range variants {
-				variant.ValidationState = models.PendingValidation
-				for _, quantity := range seller.SellerQuantity {
-					if variant.Color.ID == quantity.Color.ID {
-						errMessage := fmt.Sprintf("duplicate varient/color: %#v", variant.Color.Title)
+			// for _, variant := range variants {
+			// 	variant.ValidationState = models.PendingValidation
+			// 	for _, quantity := range seller.SellerQuantity {
+			// 		if variant.Color.ID == quantity.Color.ID {
+			// 			errMessage := fmt.Sprintf("duplicate varient/color: %#v", variant.Color.Title)
+			// 			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+			// 		}
+			// 	}
+			// 	product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
+			// }
+			for i, _ := range variants {
+				for j := i + 1; j < len(variants); j++ {
+					if variants[i].Color.ID == variants[j].Color.ID {
+						errMessage := fmt.Sprintf("duplicate varient/color: %#v", variants[i].Color.Title)
 						return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
 					}
 				}
-				product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
 			}
+			product.Sellers[index].SellerQuantity = variants
 			break
 		}
 	}
@@ -1191,7 +1202,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 	switch sortMethod {
 	case 1:
 		// findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
-		if len(brandFilters) == 0 {
+		if len(brandFilters) != 0 {
 			pipeline = mongo.Pipeline{
 				{{Key: "$addFields", Value: bson.D{
 					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1228,7 +1239,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 			}
 		}
 	case 2:
-		if len(brandFilters) == 0 {
+		if len(brandFilters) != 0 {
 			pipeline = mongo.Pipeline{
 				{{Key: "$addFields", Value: bson.D{
 					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1265,7 +1276,7 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 			}
 		}
 	case 3:
-		if len(brandFilters) == 0 {
+		if len(brandFilters) != 0 {
 			pipeline = mongo.Pipeline{
 				{{Key: "$addFields", Value: bson.D{
 					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
@@ -1757,4 +1768,48 @@ func ChangeSellerPrice(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "new price set succesfully"})
+}
+
+func GetProductInList(c *fiber.Ctx) error {
+
+	queryParams := c.Queries()
+
+	var productIDs []primitive.ObjectID
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("ProductIDs[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			productID, err := primitive.ObjectIDFromHex(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting product id": err.Error()})
+			}
+			productIDs = append(productIDs, productID)
+		} else {
+			break
+		}
+	}
+
+	var products []models.ProductCard
+
+	for _, productID := range productIDs {
+
+		var product models.Product
+
+		filter := bson.M{"_id": productID}
+
+		err := database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				errMessage := fmt.Sprintf("product id %#v not found", productID)
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		productCard := CreateProdCard(product)
+
+		products = append(products, productCard)
+	}
+
+	return c.Status(http.StatusOK).JSON(products)
 }

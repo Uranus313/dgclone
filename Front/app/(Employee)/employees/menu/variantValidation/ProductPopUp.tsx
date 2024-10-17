@@ -106,6 +106,8 @@ const ProductPopUp = ({ product }: Props) => {
                         </div>
 
                     </div>
+                    <Link className=' text-primary-color ' href={"/products/" + product.category_id + "/" + product._id + "/"}>دیدن صفحه محصول</Link>
+                       
                     <div className='flex justify-center'>
                         {user &&
                             <div>
