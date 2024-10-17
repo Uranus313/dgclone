@@ -16,7 +16,7 @@ function useGetOrders(query : Query){
     return useQuery({
         queryKey : ['orderList', query],
         queryFn : async () => {
-            const result = await fetch("https://localhost:8080/products/order"+`?limit=${query.limit}&offset=${query.floor}&SortMethod=${query.sort}&ProdTitle=${query.nameSearch}&OrderStates[0]=${query.state}`, {
+            const result = await fetch("https://localhost:8080/products/order"+`?limit=${query.limit}&offset=${query.floor}&SortMethod=${query.sort}&ProdTitle=${query.nameSearch}&OrderStates[0]=${query.state}`,{    
                 credentials: 'include'
             });
             const jsonResult = await result.json();

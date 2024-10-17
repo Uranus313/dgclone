@@ -7,7 +7,7 @@ import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUs
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
-import { changeWalletMoney, getWallets, saveWallet, updateWallet, updateWallet, updateWallet } from "../DB/CRUD/wallet.js";
+import { changeWalletMoney, getWallets, saveWallet,updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
 import { getNotifications, updateNotification } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";

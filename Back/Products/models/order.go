@@ -39,7 +39,7 @@ type Order struct {
 	Product     OrderProduct       `json:"product" bson:"product"`
 	Quantity    int                `json:"quantity" bson:"quantity"`
 	UserID      primitive.ObjectID `json:"user_id" bson:"user_id"`
-	Rate        int                `json:"rate,omitempty" bson:"rate,omitempty"`
+	Rate        float64             `json:"rate,omitempty" bson:"rate,omitempty"`
 	State       StateType          `json:"state" bson:"state"`
 	ReceiveDate time.Time          `json:"receive_date,omitempty" bson:"receive_date,omitempty"`
 	OrderDate   time.Time          `json:"order_date" bson:"order_date"`

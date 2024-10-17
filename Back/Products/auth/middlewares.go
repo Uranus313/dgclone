@@ -29,6 +29,8 @@ func AuthMiddleware(modes []string) fiber.Handler {
 
 		var modeApproved bool = false
 
+		fmt.Println("body:",body)
+		fmt.Println("\n\n\nstatus:"+body["status"].(string)+"-saal")
 		for _, mode := range modes {
 			if body["status"].(string) == mode {
 				modeApproved = true
