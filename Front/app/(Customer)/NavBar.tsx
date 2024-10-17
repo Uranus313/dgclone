@@ -162,7 +162,7 @@ const NavBar = () => {
                 </svg>
                 <p className="mx-2">دسته بندی</p>
               </Link>
-
+          
               {isCategory && <MegaMenu />}
             </div>
 

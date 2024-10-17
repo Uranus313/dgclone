@@ -197,6 +197,26 @@ export async function addOrderToCart({productID , userID}){
     
     return (result);
 }
+export async function removeOrderFromCart({orderID , userID}){
+    const result = {};
+    try {
+        const response = await UserModel.findByIdAndUpdate(userID, { $pull: { 
+            shoppingCart: orderID 
+         } }, { new: true });
+         if(!response){
+            result.error = "user not found";
+            return result
+         }
+        result.response = response.toJSON();
+    } catch (error) {
+        result.error = error
+    }
+    
+    return (result);
+}
+
+
+
 export async function deleteOrderFromCart({productID , userID}){
     const result = {};
     try {
