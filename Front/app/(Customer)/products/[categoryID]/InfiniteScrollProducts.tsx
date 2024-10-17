@@ -32,7 +32,7 @@ const InfiniteScrollProducts = ({categoryID ,sort, startFromBeg=1}:Props) => {
             </p>
             }
         >
-        <div className='grid grid-cols-3 mt-4 place-items-center'>
+        <div className='grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 mt-4 place-items-center'>
             {data?.pages.map((page , index)=>(
                 <React.Fragment key={index}>
                     {page?.products?.map(product=>(

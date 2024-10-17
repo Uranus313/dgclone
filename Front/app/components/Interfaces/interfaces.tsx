@@ -58,23 +58,22 @@ export interface Ticket {
 }
 
 export interface Order {
-    _id: string,
+    _id?: string,
     product: {
-        productID: string,
+        prod_id: string,
         price: number,
         color: Color,
-        garantee: string,
-        sellerid: string,
-        sellerTitle: string
+        garantee: {_id:string , title:string},
+        seller_id?: string,
         picture: string,
-        productTitle: string
+        title: string
     },
     quantity: number,
-    userid: string,
+    user_id?: string,
     rate?: number,
-    state: State,
-    ordersdate: string
-    recievedate: string
+    state?: State,
+    order_date?: string
+    receive_date?: string
 }
 
 

@@ -41,6 +41,32 @@ export const guaranteeOptions=[
 }
 
 
+async function UpdatePrice(price:number , prodID:string){
+
+    console.log(JSON.stringify(price))
+    try {
+      const response = await fetch(`https://localhost:8080/products/seller/setNewPrice?prodID=${prodID}&NewPrice=${price}`, {
+        credentials:'include',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const result = await response.json();
+      console.log('Success:', result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  
+  
+}
+
+
 interface Props{
     productCard:productSaleAnalyseCard
 }
@@ -74,7 +100,10 @@ const Step1 = ({productCard}:Props) => {
         <div className='flex gap-4 items-center'>
           <button className='p-3 mx-3 text-sm rounded-md  bg-primary-seller text-white' onClick={AddNewVarient}>ثبت تنوع جدید</button>
           <p className='mx-3'>قیمت</p>
-          <input type='number '  defaultValue={productPrice} ref={priceRef} className='w-1/2 p-2 rounded-lg border border-grey-border' placeholder={"قیمت"} />
+          <div className='grid sm:grid-cols-3 grid-cols-1 w-1/2'>
+            <input type='number '  defaultValue={productCard.sellerCart.price} ref={priceRef} className=' p-2 rounded-lg border  sm:col-span-2 border-grey-border' placeholder={"قیمت"} />
+            <button onClick={()=>{UpdatePrice(Number(priceRef.current?.value),productCard.productID)}}  className='p-3 mx-3 text-sm rounded-md border border-grey-dark'>بروزرسانی قیمت</button>
+          </div>
         </div>
         <div className='grid grid-cols-3 sm:grid-cols-5  gap-4 my-4 place-items-center bg-primary-bg p-5 rounded-md'>
           <p className='col-span-2 sm:block hidden'>عنوان کالا</p>

@@ -660,7 +660,7 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 			// 	}
 			// 	product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
 			// }
-			for i, _ := range variants {
+			for i := range variants {
 				for j := i + 1; j < len(variants); j++ {
 					if variants[i].Color.ID == variants[j].Color.ID {
 						errMessage := fmt.Sprintf("duplicate varient/color: %#v", variants[i].Color.Title)
@@ -1705,6 +1705,8 @@ func GetSellerProducts(c *fiber.Ctx) error {
 
 func ChangeSellerPrice(c *fiber.Ctx) error {
 
+	seller := c.Locals("ent").(map[string]interface{})
+
 	prodIDString := c.Query("prodID")
 
 	prodID, err := primitive.ObjectIDFromHex(prodIDString)
@@ -1713,9 +1715,9 @@ func ChangeSellerPrice(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
 	}
 
-	sellerIDString := c.Query("SellerID")
+	// sellerIDString := c.Query("SellerID")
 
-	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+	sellerID, err := primitive.ObjectIDFromHex(seller["_id"].(string))
 
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
