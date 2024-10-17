@@ -51,6 +51,7 @@ const OrderPopUp = ({ order }: Props) => {
         onSuccess: (savedUser) => {
             console.log(savedUser);
             queryClient.invalidateQueries({ queryKey: ["orderList"] });
+            closeModal();
         },
         onError: (error) => {
             console.log(error);
@@ -61,9 +62,9 @@ const OrderPopUp = ({ order }: Props) => {
     return (
         <div>
             <div onClick={openModal} className=" flex py-5 border-b-2 border-b-border-color-list text-center">
-                <p className="w-2/5 md:w-1/3">{order.product.productTitle}</p>
+                <p className="w-2/5 md:w-1/3">{order.product.title}</p>
                 <p className="w-2/5 md:w-1/3">{((order.rate && order.rate) || "-")}</p>
-                <p className="w-0 md:w-1/3 invisible md:visible">{order.ordersdate}</p>
+                <p className="w-0 md:w-1/3 invisible md:visible">{order.order_date}</p>
             </div>
 
             <dialog ref={dialogRef} className="modal break-all">
@@ -73,7 +74,7 @@ const OrderPopUp = ({ order }: Props) => {
                     <div className='block'>
                         <div className=' justify-between pb-2'>
                             <p>آیدی محصول :</p>
-                            <p>{order.product.productID}</p>
+                            <p>{order.product.prod_id}</p>
                         </div>
                         <div className='flex pb-2'>
                             <p className="pl-2"> رنگ :</p>
@@ -86,20 +87,20 @@ const OrderPopUp = ({ order }: Props) => {
 
                         <div className='flex pb-2'>
                             <p className="pl-2">  فروشنده :</p>
-                            <p>{order.product.sellerTitle}</p>
+                            <p>{order.product.seller_id}</p>
                         </div>
                         <div className=" flex pb-2">
                             <p className="pl-2 pr-4"> خریدار  :</p>
-                            <p>{(order.userid && order.userid) || "-"}</p>
+                            <p>{(order.user_id && order.user_id) || "-"}</p>
                         </div>
                         <div className=" flex pb-2">
                             <p className="pl-2"> تاریخ سفارش :</p>
 
-                            <p>{(order.ordersdate && order.ordersdate) || "-"}</p>
+                            <p>{(order.order_date && order.order_date) || "-"}</p>
                         </div>
                         <div className=" flex pb-2">
                             <p className="pl-2 pr-4"> تاریخ تحویل  :</p>
-                            <p>{(order.recievedate && order.recievedate) || "-"}</p>
+                            <p>{(order.receive_date && order.receive_date) || "-"}</p>
                         </div>
                         <div className=" flex pb-2">
                             <p className="pl-2 pr-4"> وضعیت  :</p>
@@ -109,30 +110,30 @@ const OrderPopUp = ({ order }: Props) => {
                     </div>
                     <div className="my-4 flex justify-center">
 
-                        <button className='btn btn-primary' type='button' onClick={() => {
+                        <button className='btn bg-purple-box mx-2' type='button' onClick={() => {
                             setState(4);
                             OrderState.mutate();
                         }}>برگشت خورده</button>
-                        <button className='btn btn-primary' type='button' onClick={() => {
+                        <button className='btn bg-purple-box mx-2' type='button' onClick={() => {
                             setState(1);
                             OrderState.mutate();
                         }}>تحویل داده</button>
-                        <button className='btn btn-primary' type='button' onClick={() => {
+                        <button className='btn bg-purple-box mx-2' type='button' onClick={() => {
                             setState(2);
                             OrderState.mutate();
                         }}> در انتظار</button>
 
                     </div>
                     <div className="my-4 flex justify-center">
-                        <button className='btn btn-error' type='button' onClick={() => {
+                        <button className='btn bg-purple-box mx-2' type='button' onClick={() => {
                             setState(5);
                             OrderState.mutate();
                         }}>در انبار</button>
-                        <button className='btn btn-error' type='button' onClick={() => {
+                        <button className='btn bg-purple-box mx-2' type='button' onClick={() => {
                             setState(3);
                             OrderState.mutate();
                         }}>کنسل شده</button>
-                        <button className='btn btn-warning mx-3' type='button' onClick={closeModal}>خروج</button>
+                        <button className='btn btn-warning mx-2' type='button' onClick={closeModal}>خروج</button>
                     </div>
 
 

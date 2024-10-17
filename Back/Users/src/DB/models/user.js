@@ -292,6 +292,13 @@ export function validateCreateWishList(data, wishLists) {
     })
     return schema.validateAsync(data);
 }
+
+export function validateIncreaseWallet(data) {
+    const schema = Joi.object({
+        amount: Joi.string().min(10000).max(1000000000).required()
+    })
+    return schema.validateAsync(data);
+}
 export function validateAddToWishList(data, wishLists) {
     const schema = Joi.object({
         title: Joi.string().min(1).max(100).external((title) => {

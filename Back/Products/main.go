@@ -65,9 +65,9 @@ func main() {
 
 	app.Get("/products/questions", auth.AuthMiddleware([]string{"user"}), crud.GetProductQuestions) // query params => limit, offset, ProdID
 
-	app.Get("/products/comments/pending", auth.AuthMiddleware([]string{"admin"}), crud.GetPendingComments) // query params => limit, offset
+	app.Get("/products/comments/pending", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetPendingComments) // query params => limit, offset
 
-	app.Patch("/products/validate-comments", auth.AuthMiddleware([]string{"admin"}), crud.UpdateCommentValidationState) // query params => CommentID, ValidationState -> {2: validated, 3: banned}
+	app.Patch("/products/validate-comments", auth.AuthMiddleware([]string{"admin","employee"}), crud.UpdateCommentValidationState) // query params => CommentID, ValidationState -> {2: validated, 3: banned}
 
 	// ------------products-------------
 
@@ -81,25 +81,25 @@ func main() {
 
 	app.Patch("/products/product/UpdateQuantity", auth.AuthMiddleware([]string{"user", "seller"}), crud.UpdateProdQuantity) // query params => ProductID, SellerID, Quantity, Color --unchecked
 
-	app.Delete("/products/product/:ProdID", auth.AuthMiddleware([]string{"admin"}), crud.DeleteProductByID)
+	app.Delete("/products/product/:ProdID", auth.AuthMiddleware([]string{"admin","employee"}), crud.DeleteProductByID)
 
-	app.Patch("/products/product", auth.AuthMiddleware([]string{"seller", "admin"}), crud.EditProduct) // (request body)
+	app.Patch("/products/product", auth.AuthMiddleware([]string{"seller", "admin","employee"}), crud.EditProduct) // (request body)
 
 	app.Get("/products/product", crud.InfiniteScrolProds) // query params => limit, offset, CateID
 
-	app.Get("/products/prodAndOrdersCount", auth.AuthMiddleware([]string{"admin"}), crud.GetProdsAndOrdersCount)
+	app.Get("/products/prodAndOrdersCount", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetProdsAndOrdersCount)
 
-	app.Get("/products/allProducts", auth.AuthMiddleware([]string{"admin"}), crud.GetAllProducts) //query params => limit, offset, SortMethod, prodTitle
+	app.Get("/products/allProducts", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetAllProducts) //query params => limit, offset, SortMethod, prodTitle
 
-	app.Get("/products/allPendingProducts", auth.AuthMiddleware([]string{"admin"}), crud.GetAllPendingProds) //query params => limit, offset
+	app.Get("/products/allPendingProducts", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetAllPendingProds) //query params => limit, offset
 
-	app.Patch("/products/validate-prods", auth.AuthMiddleware([]string{"admin"}), crud.UpdateProdValidationState) //query params => ProdID, ValidationState -> {2: validated, 3: banned}
+	app.Patch("/products/validate-prods", auth.AuthMiddleware([]string{"admin","employee"}), crud.UpdateProdValidationState) //query params => ProdID, ValidationState -> {2: validated, 3: banned}
 
 	app.Patch("/products/seller/addVariant", auth.AuthMiddleware([]string{"seller"}), crud.AddVariantToSeller) //query params => prodID, SellerID ... and body
 
-	app.Get("/products/seller/pendingVariants", auth.AuthMiddleware([]string{"admin"}), crud.GetAllPendingVariants) // query params => limit, offset
+	app.Get("/products/seller/pendingVariants", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetAllPendingVariants) // query params => limit, offset
 
-	app.Patch("/products/validate-variant", auth.AuthMiddleware([]string{"admin"}), crud.UpdateVariantValidationState) // query params => prodID, SellerID, ColorID, ValidationState -> {2: validated, 3: banned}
+	app.Patch("/products/validate-variant", auth.AuthMiddleware([]string{"admin","employee"}), crud.UpdateVariantValidationState) // query params => prodID, SellerID, ColorID, ValidationState -> {2: validated, 3: banned}
 
 	app.Get("/products/seller/allProds", auth.AuthMiddleware([]string{"seller"}), crud.GetSellerProducts)
 
@@ -110,17 +110,17 @@ func main() {
 	app.Get("/products/ordersInList", auth.AuthMiddleware([]string{"user", "seller"}), crud.GetOrdersInList)
 	// --------------category-----------------
 
-	app.Post("/products/category", auth.AuthMiddleware([]string{"admin"}), crud.AddCategory) // (request body)
+	app.Post("/products/category", auth.AuthMiddleware([]string{"admin","employee"}), crud.AddCategory) // (request body)
 
 	app.Get("/products/category", crud.GetAllCategories)
 
-	app.Get("/products/category/:CateID", auth.AuthMiddleware([]string{"seller", "admin"}), crud.GetCategoryByID)
+	app.Get("/products/category/:CateID", auth.AuthMiddleware([]string{"seller", "admin","employee"}), crud.GetCategoryByID)
 
-	app.Patch("/products/category/:CateID", auth.AuthMiddleware([]string{"admin"}), crud.EditCategory) // (request body)
+	app.Patch("/products/category/:CateID", auth.AuthMiddleware([]string{"admin","employee"}), crud.EditCategory) // (request body)
 
-	app.Get("products/layer1categories", auth.AuthMiddleware([]string{"admin"}), crud.GetFirstLayerCates)
+	app.Get("products/layer1categories", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetFirstLayerCates)
 
-	app.Get("products/categoryChildren/:CateID", auth.AuthMiddleware([]string{"admin"}), crud.GetCateChildren)
+	app.Get("products/categoryChildren/:CateID", auth.AuthMiddleware([]string{"admin","employee"}), crud.GetCateChildren)
 
 	// -------------brand---------------
 
