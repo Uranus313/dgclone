@@ -19,9 +19,9 @@ const MegaMenu = () => {
   return (
     <div 
              
-             style={{marginTop:"430px"}} className=" absolute  pl-20 shadow-md border-t-2 border-solid  border-grey-border  text-black flex bg-white"
+              className=" absolute top-24 pl-20 shadow-md border-t-2 border-solid  border-grey-border  text-black flex bg-white"
             >
-              <div className="bg-neutral-200 pt-3 border-l-2 border-grey-border">
+              <div className=" mt-5 bg-neutral-200 pt-3 border-l-2 border-grey-border">
                 {categories?.map((category, index) => (
                   <div
                     className={`py-5 pr-3 pl-10 w-full ${
