@@ -49,10 +49,20 @@ const VarientCard = ({ index, varient, update,product }: Props) => {
         })
     }, [color, guarantee, quantityRef])
 
+
+    useEffect(()=>{
+        if(varient.color.title!='' && varient.guarantee.title!=''){
+            setValueColor(varient.color.title)
+            setValueGuarantee(varient.guarantee.title)
+            
+        }
+    },[])
+    
+    console.log('varrr',varient)
     return (
-        <div className='grid grid-cols-5 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
-            <img className='w-20' src={product.picture} />
-            <p className='line-clamp-1 h-fit '>{product.title}</p>
+        <div className='grid sm:grid-cols-5 grid-cols-3 gap-4 my-4 border place-items-center border-grey-border py-4 rounded-lg overflow-x-hidden'>
+            <img className='w-20 sm:block hidden' src={product.picture} />
+            <p className='line-clamp-1 h-fit sm:block hidden'>{product.title}</p>
 
             <ModalButton title={valueColor} solid={false} id={'colorModal'+index} />
             <dialog id={"colorModal"+index} className="modal">

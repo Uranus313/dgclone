@@ -17,6 +17,29 @@ export const guaranteeOptions=[
 
  //if seller doesnt exist return the urban price otherwise returns that seller price
 
+ async function AddVarients(varients:Quantity[] , prodID:string) {
+  console.log(JSON.stringify(varients))
+  try {
+    const response = await fetch(`https://localhost:8080/products/seller/addVariant?prodID=${prodID}`, {
+      credentials:'include',
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(varients)
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    console.log('Success:', result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 
 interface Props{
     productCard:productSaleAnalyseCard
@@ -51,10 +74,10 @@ const Step1 = ({productCard}:Props) => {
         <div className='flex gap-4 items-center'>
           <button className='p-3 mx-3 text-sm rounded-md  bg-primary-seller text-white' onClick={AddNewVarient}>ثبت تنوع جدید</button>
           <p className='mx-3'>قیمت</p>
-          <input type='number'  defaultValue={productPrice} ref={priceRef} className=' p-2 rounded-lg border border-grey-border' placeholder={"قیمت"} />
+          <input type='number '  defaultValue={productPrice} ref={priceRef} className='w-1/2 p-2 rounded-lg border border-grey-border' placeholder={"قیمت"} />
         </div>
-        <div className='grid grid-cols-5  gap-4 my-4 place-items-center bg-primary-bg p-5 rounded-md'>
-          <p className='col-span-2'>عنوان کالا</p>
+        <div className='grid grid-cols-3 sm:grid-cols-5  gap-4 my-4 place-items-center bg-primary-bg p-5 rounded-md'>
+          <p className='col-span-2 sm:block hidden'>عنوان کالا</p>
           <p>رنگ</p>
           <p>تعداد</p>
           {/* <p>قیمت</p> */}
@@ -67,6 +90,15 @@ const Step1 = ({productCard}:Props) => {
              <VarientCard varient={varient} product={productCard} index={index} update={UpdateVarient}/>
             </div>
           ))}
+
+        </div>
+
+        <hr className='text-grey-border  my-2'></hr>
+        <div className='flex self-end'>
+          <form method="dialog" className=''>
+              <button className="px-6 py-2  my-3 rounded-md text-primary-seller bg-white w-fit border border-primary-seller " >بستن</button>
+          </form>
+          <button onClick={()=>{AddVarients(varients , productCard.productID)}} className='px-6 py-2 mx-2 my-3 rounded-md bg-primary-seller text-white w-fit '>بعدی</button>
 
         </div>
        

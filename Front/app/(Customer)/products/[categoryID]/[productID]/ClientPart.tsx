@@ -73,7 +73,7 @@ const ClientPart = ({product}:Props) => {
             <Gallery images={product.images} />
             
         </div>
-        <button onClick={AddToList} className='btn text-lg p-5 bg-black text-white'>giiii</button>
+        {/* <button onClick={AddToList} className='btn text-lg p-5 bg-black text-white'>giiii</button> */}
 
         <div className='col-span-8'>
             <h1 className='text-lg font-black'>{product.title}</h1>
