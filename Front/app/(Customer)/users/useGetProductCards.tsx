@@ -13,7 +13,7 @@ function useGetProductCards({categoryID}:Props){
         queryKey : ['productCards',categoryID],
         queryFn : async () => {
             console.log('2')
-            const result = await fetch(`https://dummyjson.com/users`, );
+            const result = await fetch(``, );
                            
             const jsonResult = await result.json();
             if(result.ok){

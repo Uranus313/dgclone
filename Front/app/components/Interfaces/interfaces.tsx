@@ -14,23 +14,31 @@ export enum shipmentMethod {
     option3 = 'o3',
 }
 
+export interface Quantity{
+   color: Color,
+   quantity: number,
+   guarantee: { title: string, _id: string },
+   validation_state?: number //1 pending 2 validated 3 banned
+}
+
 export interface SellerInfosOnProduct {
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    seller_quantity: { color: Color, quantity: number, guarantee: { title: string, _id: string }, validation_state: number }[], //1 pending 2 validated 3 banned
+    seller_quantity:Quantity[], //1 pending 2 validated 3 banned
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
-    discountId?: string,
+    discount_id?: string,
 
 }
 
 export interface ProductVariant {
     _id: string,
+    category_id: string,
     seller_id: string,
     seller_title: string,
     seller_rating: number
-    seller_quantity: { color: Color, quantity: number, guarantee: { title: string, _id: string }, validation_state: number }, //1 pending 2 validated 3 banned
+    seller_quantity:Quantity, 
     price: number,
     shipment_method?: number, //1 digi 2 warehouise
     discount_id?: string,
@@ -51,23 +59,22 @@ export interface Ticket {
 }
 
 export interface Order {
-    _id: string,
+    _id?: string,
     product: {
-        productID: string,
+        prod_id: string,
         price: number,
         color: Color,
-        garantee: string,
-        sellerid: string,
-        sellerTitle: string
+        garantee: {_id:string , title:string},
+        seller_id?: string,
         picture: string,
-        productTitle: string
+        title: string
     },
     quantity: number,
-    userid: string,
+    user_id?: string,
     rate?: number,
-    state: State,
-    ordersdate: string
-    recievedate: string
+    state?: State,
+    order_date?: string
+    receive_date?: string
 }
 
 
@@ -129,6 +136,7 @@ export interface User {
         method: "bankAccount" | "wallet";
         bankAccount: string | null | undefined;
     };
+    shoppingCart:string[];
     addresses: Address[];
 }
 
@@ -185,7 +193,7 @@ export interface ProductInterface {
     is_original: boolean,
     images: string[],
     dimentions: { length: number, width: number, height: number },
-    wieght_KG: number,
+    weight_KG: number,
     description?: string,
     validation_state: number
 
@@ -407,9 +415,11 @@ export interface SellerAddProdctCard {
     Picture: string,
     Title: string,
     Commission: number,
+    Price:number,
     UrbanPrice: number,//price that the first seller put
     SellerCount: number,
     ID: string
+    CategoryID:string
 }
 
 //#endregion
@@ -429,16 +439,23 @@ export interface productSaleAnalyseCard {
     productID: string,
     picture: string,
     productTitle: string,
-    productCategoryID: string,
-    productCategoryTitle: string,
-    saleValue: number,
-    saleCount: number,
-    visits: number
+    categoryID: string,
+    categoryTitle: string,
+    title:string
+    brand:string
+    state:number
+    varientCount:number
+    totalSellPrice:number
+    totalSellCount:number
+    viewCount:number
+    sellerCart:SellerInfosOnProduct
 }
 
 export interface Category {
     ID?: string,
+    _id: string,
     title: string,
+    Title: string,
     Childs?: Category[],
     Detail: detail[],
     CommisionPercentage: number,

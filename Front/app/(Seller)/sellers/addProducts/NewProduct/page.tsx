@@ -6,28 +6,7 @@ import ModalButton from '../ModalButton'
 import SearchableList from '@/app/components/SearchableList'
 
 
-const Brands : Brand[]=[
-  {
-    title:'اپل',
-    id:'1'
-  },
-  {
-    title:'سامسونگ',
-    id:'2'
-  },
-  {
-    title:'شیاومی',
-    id:'3'
-  },
-  {
-    title:'ایسوس',
-    id:'4'
-  },
-  {
-    title:'لنوو',
-    id:'5'
-  },
-]
+const Brands : Brand[]=[]
 
 const detailKeys=
       [

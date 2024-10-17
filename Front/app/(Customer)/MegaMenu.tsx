@@ -16,13 +16,12 @@ const MegaMenu = () => {
 
 
 
-
   return (
     <div 
              
-              className=" absolute pl-20 shadow-md border-t-2 border-solid  border-grey-border  text-black flex bg-white"
+              className=" absolute top-24 pl-20 shadow-md border-t-2 border-solid  border-grey-border  text-black flex bg-white"
             >
-              <div className="bg-neutral-200 pt-3 border-l-2 border-grey-border">
+              <div className=" mt-5 bg-neutral-200 pt-3 border-l-2 border-grey-border">
                 {categories?.map((category, index) => (
                   <div
                     className={`py-5 pr-3 pl-10 w-full ${
@@ -43,7 +42,7 @@ const MegaMenu = () => {
                 {categories && categories[selected].Childs?.map((category2) => {
                     return (
                       <div className="">
-                        <Link className="" href={`/products/${category2.ID}/?sortOrder=mostViewed`}>
+                        <Link className="" href={`/products/${category2.ID}/?sortOrder=1`}>
                           <p className="mb-2 border-r-4 pr-2 border-solid border-primary-color mt-3 font-bold hover:text-primary-color">
                             {category2?.Title}
                           </p>
@@ -52,7 +51,7 @@ const MegaMenu = () => {
                         {category2.Childs?.map((category3) => {
                             return (
                               <div className="py-2 text-sm text-grey-dark">
-                                <Link href={`/products/${category3.ID}/?sortOrder=mostViewed`}>
+                                <Link href={`/products/${category3.ID}/?sortOrder=1`}>
                                   <p className="hover:text-primary-color">{category3.Title}</p>
                                 </Link>
                               </div>

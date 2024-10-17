@@ -50,7 +50,7 @@ const ProductPopUp = ({ product }: Props) => {
     }
     const unbanProd = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
+            const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=2`, {
                 method: "PATCH",
                 credentials: 'include',
                 headers: {
@@ -79,7 +79,7 @@ const ProductPopUp = ({ product }: Props) => {
 
     const banProd = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
+            const result = await fetch("https://localhost:8080/products/validate-prods" + `?ProdID=${product._id}&ValidationState=3`, {
                 method: "PATCH",
                 credentials: 'include',
                 headers: {
@@ -178,7 +178,7 @@ const ProductPopUp = ({ product }: Props) => {
                         </div>
                         <div className=' flex pb-2'>
                             <p className="pl-2"> وزن  :</p>
-                            <p>{(product.wieght_KG && product.wieght_KG) || "-"}</p>
+                            <p>{(product.weight_KG && product.weight_KG) || "-"}</p>
                         </div>
                         <div className=' flex justify-between pb-2'>
                             <p>تاریخ اضافه شدن :</p>

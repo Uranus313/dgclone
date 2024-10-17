@@ -1,56 +1,59 @@
+'use client'
 import React from 'react'
 import ModalButton from '../addProducts/ModalButton'
 import { productSaleAnalyseCard } from '@/app/components/Interfaces/interfaces'
 import RadioOptions from './RadioOptions'
+import useGetSellerAnalyseProducts from '@/app/hooks/useGetSellerAnalyseProducts'
 
-const productsCard:productSaleAnalyseCard[]=[
-    {
-        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-        productCategoryID:'1',
-        productCategoryTitle:'لپتاپ',
-        productID:'3',
-        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-        saleCount:20,
-        saleValue:30000000,
-        visits:312,
+// const productsCard:productSaleAnalyseCard[]=[
+//     {
+//         picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//         productCategoryID:'1',
+//         productCategoryTitle:'لپتاپ',
+//         productID:'3',
+//         productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//         saleCount:20,
+//         saleValue:30000000,
+//         visits:312,
 
-    },
-    {
-        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-        productCategoryID:'1',
-        productCategoryTitle:'لپتاپ',
-        productID:'3',
-        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-        saleCount:20,
-        saleValue:30000000,
-        visits:312,
+//     },
+//     {
+//         picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//         productCategoryID:'1',
+//         productCategoryTitle:'لپتاپ',
+//         productID:'3',
+//         productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//         saleCount:20,
+//         saleValue:30000000,
+//         visits:312,
 
-    },
-    {
-        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-        productCategoryID:'1',
-        productCategoryTitle:'لپتاپ',
-        productID:'3',
-        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-        saleCount:20,
-        saleValue:30000000,
-        visits:312,
+//     },
+//     {
+//         picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//         productCategoryID:'1',
+//         productCategoryTitle:'لپتاپ',
+//         productID:'3',
+//         productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//         saleCount:20,
+//         saleValue:30000000,
+//         visits:312,
 
-    },
-    {
-        picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-        productCategoryID:'1',
-        productCategoryTitle:'لپتاپ',
-        productID:'3',
-        productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-        saleCount:20,
-        saleValue:30000000,
-        visits:312,
+//     },
+//     {
+//         picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
+//         productCategoryID:'1',
+//         productCategoryTitle:'لپتاپ',
+//         productID:'3',
+//         productTitle:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
+//         saleCount:20,
+//         saleValue:30000000,
+//         visits:312,
 
-    },
-]
+//     },
+// ]
 
 const SaleAnalyse = () => {
+  const {data:productsCard , isLoading} = useGetSellerAnalyseProducts()
   return (
 <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
         <h1 className='text-xl font-bold text-grey-dark'>فروش کالا</h1>
@@ -94,28 +97,29 @@ const SaleAnalyse = () => {
             </div>
         </div>
   
-        <div className='grid grid-cols-5 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
+        <div className='grid sm:grid-cols-5 grid-cols-3 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
         <p className=''>نام کالا</p>
-        <p>گروه کالایی</p>
+        <p className='sm:block hidden'>گروه کالایی</p>
         <p>مبلغ فروش </p>
-        <p>تعداد فروش</p>
+        <p className='sm:block hidden'>تعداد فروش</p>
         <p>تعداد بازدید</p>
         </div>
-        {productsCard.map(productCard=>(
-          <div className='grid grid-cols-5 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
+        {productsCard?.map(productCard=>(
+          <div className='grid sm:grid-cols-5 grid-cols-3 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
             <div className='grid grid-cols-2 place-items-center'>
               <img className='w-20 mx-2' src={productCard.picture}/>
               <div>
                 <p className='line-clamp-2 h-fit text-sm'>{productCard.productTitle}</p>
-                <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
+                <p className='bg-propBubble-bg md:block hidden text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
               </div>
             </div>
-            <p>{productCard.productCategoryTitle}</p>
-            <p>{productCard.saleValue}</p>
-            <p>{productCard.saleCount}</p>
-            <p>{productCard.visits}</p>
-          </div>
-        ))}
+            <p className='sm:block hidden'>{productCard.categoryTitle}</p>
+            <p>{productCard.totalSellPrice}</p>
+            <p className='sm:block hidden'>{productCard.totalSellCount}</p>
+            <p>{productCard.viewCount}</p>
+          </div> 
+        ))} 
+        {isLoading ? <span className="loading loading-dots loading-lg"></span> : ''}
       </div>
   )
 }

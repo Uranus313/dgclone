@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-import { ProductCardInterface } from '../Interfaces/interfaces'
+import { ProductCardInterface, SellerAddProdctCard } from '../Interfaces/interfaces'
 
 //#region 
 const BestSellerProducts:ProductCardInterface[] = [
@@ -111,25 +111,29 @@ const BestSellerProducts:ProductCardInterface[] = [
 
 
 interface Props{
-    filter:string;
     categoryID?:string;
     color?:string;
+    data: SellerAddProdctCard[]
 }
-const BestProducts = async({filter,categoryID='',color=''}:Props) => {
-  // const res = await fetch("http://localhost:8080/products/color")
-  // const categories  = await res.json()
-  // console.log(categories)
+
+
+// {"discount":{"_id":"670c3a531684af4970f7ff8b","prod":{"prod_id":"6701d1ba71d45cf3c74c3d4e","seller_id":"6701755968449eaadc51dc34","original_price":414,"category_id":"000000000000000000000000"},"new_price":0,"end_date":"2024-12-18T18:17:55Z"},"percenrage":100,"product":{"ID":"6701d1ba71d45cf3c74c3d4e","Title":"rerum","Price":390,"Picture":"https://dkstatics-public.digikala.com/digikala-products/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/format,webp/quality,q_80","DiscountID":"000000000000000000000000","SellerCount":2,"UrbanPrice":390,"Commission":0}}
+
+
+
+const BestProducts = async({data:BestSellerProducts,categoryID='',color=''}:Props) => {
+
   return (
     <div>
         <div className='grid-flow-col grid-rows-3 grid overflow-auto rounded-md mx-auto border-grey-border border-2 w-10/12 bg-white'>
-        {/* <h1>{categories}</h1> */}
+
             {BestSellerProducts.map((BestSeller , index)=>{
               console.log(categoryID)
-              return <Link className='w-72' href={'/product/'+BestSeller.id} key={BestSeller.id}>
+              return <Link className='w-72' href={'/products/'+BestSeller.CategoryID+"/"+BestSeller.ID} key={BestSeller.ID}>
                 <div className='flex items-center p-3' >
-                  <img width='70px' src={BestSeller.picture}/>
+                  <img width='70px' src={BestSeller.Picture}/>
                   <h1 className={`m-3 ${color===""?'text-primary-color':''}  font-extrabold text-3xl`} style={{color:color}}>{index+1}</h1>
-                  <h1 className=' line-clamp-2 text-sm font-thin text-grey-dark'>{BestSeller.title}</h1>
+                  <h1 className=' line-clamp-2 text-sm font-thin text-grey-dark'>{BestSeller.Title}</h1>
                   
                 </div>
                 <hr className='my-2 mx-auto text-grey-border w-3/4'></hr>

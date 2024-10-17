@@ -119,7 +119,7 @@ const SellersHome = () => {
 
 
   return (
-    <div className='grid bg-primary-bg grid-cols-8 gap-4 grid-rows-6 mt-8'>
+    <div className='grid bg-primary-bg lg:grid-cols-8 md:grid-cols-6 grid-cols-2 gap-4 grid-rows-6 mt-8'>
       <div className='bg-white col-span-2 row-span-3 text-black rounded-lg'><ProfileSide seller={seller}/></div>
       <div className='bg-white col-span-2 row-span-1 p-4 rounded-lg'>
         <div className='my-3 flex justify-between'>
@@ -134,14 +134,14 @@ const SellersHome = () => {
         <p className='text-xl'>{seller?.saleInfo?.income} تومان</p>
 
       </div>
-      <div className='bg-white col-span-2 row-span-1 p-4 rounded-lg'>
+      <div className='bg-white col-span-2 lg:row-span-1 md:row-span-2 row-span-1 p-4 rounded-lg'>
       <div className='my-3 flex justify-between'>
           <p className='text-lg'>تمام کالا ها</p>
           <Link href='/sellers/products' className='border rounded-md border-primary-seller px-5 py-2 text-primary-seller text-sm'>جزییات</Link>
         </div>
         <p className='text-lg'>{seller?.saleInfo?.productCount} کالا</p>
       </div>
-      <div className='bg-white col-span-3 row-span-2 p-4 rounded-lg'><OrderWidget seller={seller}/></div>
+      <div className='bg-white lg:col-span-3 col-span-2 row-span-2 p-4 rounded-lg'><OrderWidget seller={seller}/></div>
       <div className='bg-white col-span-3 row-span-2 p-4 rounded-lg'><SellChart data={seller?.recentSaleChart??[]}/></div>
     </div>
   )

@@ -1,5 +1,5 @@
 'use client'
-import { Color, ProductInterface, SellerInfosOnProduct } from '@/app/components/Interfaces/interfaces'
+import { Color, Order, ProductInterface, Quantity, SellerInfosOnProduct } from '@/app/components/Interfaces/interfaces'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import f from '../../../../assets/images/tomann.png'
@@ -13,43 +13,93 @@ const ClientPart = ({product}:Props) => {
     
     const jsonString = JSON.stringify(product);
     console.log('prod',jsonString , 'prod');
-    let ColorsWithSellers:{color:Color,sellers:SellerInfosOnProduct[]}[] = []
-    const [selectedColor , setSelectedColor] = useState(product?.sellers[0]?.seller_quantity[0]?.color ?? {hex:'#000000',title:'N/A',_id:'0'})
+    let ColorsWithSellers:{quantity:Quantity,sellers:SellerInfosOnProduct[]}[] = []
+    const [selectedQuantity , setSelectedQuantity] = useState(product?.sellers[0]?.seller_quantity[0])
     const [selectedSeller , setSelectedSeller] = useState<SellerInfosOnProduct>()
     
 
     product.sellers.forEach(seller => {
         seller.seller_quantity.forEach(colorQuantity=>{
             if (colorQuantity.quantity != 0 ){
-                const foundColor:{color:Color,sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.color.title === colorQuantity.color.title)
+                const foundColor:{quantity:Quantity,sellers:SellerInfosOnProduct[]}|undefined = ColorsWithSellers.find((item)=> item.quantity.color.title === colorQuantity.color.title)
 
                 if(foundColor){
                     foundColor.sellers.push(seller)
                 }
                 else{
-                    ColorsWithSellers.push({color:colorQuantity.color , sellers:[seller]})
+                    ColorsWithSellers.push({quantity:colorQuantity , sellers:[seller]})
                 }
             }
         })
     });
 
 
-    let otherSellersCount = (ColorsWithSellers.find(item => item.color === selectedColor)?.sellers.length ?? 0) - 1
+    let otherSellersCount = (ColorsWithSellers.find(item => item.quantity.color === selectedQuantity.color)?.sellers.length ?? 0) - 1
     useEffect(()=>{
-        const sellers = product.sellers.filter(seller=>seller.seller_quantity.some(color=>color.color==selectedColor))
+        const sellers = product.sellers.filter(seller=>seller.seller_quantity.some(color=>color.color==selectedQuantity.color))
         const bestSellerman = sellers.reduce((prevSeller, currentSeller) => {
             return currentSeller?.seller_rating > prevSeller?.seller_rating ? currentSeller : prevSeller;
         });
         setSelectedSeller(bestSellerman)
-    },[selectedColor])
+    },[selectedQuantity])
     
   console.log('len',otherSellersCount)
+
+  async function AddToList(){
+        try {
+          const response = await fetch('http://localhost:3005/users/user/addToFavoriteList', {
+            credentials:'include',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({productID:product._id})
+          });
+      
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+      
+          const result = await response.json();
+          console.log('Success:', result);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      
+  }
+
+
+
+  
+  async function AddOrder(order:Order){
+    try {
+      const response = await fetch('https://localhost:8080/products/order', {
+        credentials:'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const result = await response.json();
+      console.log('Success:', result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  
+}
   return (
     <div className='grid grid-cols-12 gap-4 overflow-hidden'>
         <div className='col-span-4'>
             <Gallery images={product.images} />
+            
         </div>
-
+        {/* <button onClick={AddToList} className='btn text-lg p-5 bg-black text-white'>giiii</button> */}
 
         <div className='col-span-8'>
             <h1 className='text-lg font-black'>{product.title}</h1>
@@ -69,7 +119,7 @@ const ClientPart = ({product}:Props) => {
                     <p className='text-xl mt-4 mb-3'>رنگ:</p>
                     <div className='flex'>    
                         {ColorsWithSellers.map((color)=>{
-                            return <button onClick={()=>setSelectedColor(color.color)} className={`${selectedColor == color.color ? 'border-primary-color border-4':'border-grey-dark'} h-10 w-10 ml-2 rounded-full  border`} style={{backgroundColor:color.color.hex}}></button>
+                            return <button onClick={()=>setSelectedQuantity(color.quantity)} className={`${selectedQuantity.color == color.quantity.color ? 'border-primary-color border-4':'border-grey-dark'} h-10 w-10 ml-2 rounded-full  border`} style={{backgroundColor:color.quantity.color.hex}}></button>
                         })}
                     </div>
 
@@ -132,7 +182,20 @@ const ClientPart = ({product}:Props) => {
                                 </svg>
                             </div>
                         </div>
-                        <button className='bg-primary-color text-white rounded-lg flex px-4 py-3 mt-4 w-full justify-center'>
+                        <button className='bg-primary-color text-white rounded-lg flex px-4 py-3 mt-4 w-full justify-center' onClick={()=>{AddOrder({
+                          product:{
+                            color:selectedQuantity.color,
+                            garantee:selectedQuantity.guarantee,
+                            picture:product.images[0],
+                            price:selectedSeller?.price??0,
+                            prod_id:product._id??'',
+                            title:product.title,
+                            seller_id:selectedSeller?.seller_id
+                          },
+                          quantity:1,
+                          rate:product.rating.rate,
+
+                        })}}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                             </svg>
@@ -144,7 +207,7 @@ const ClientPart = ({product}:Props) => {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-grey-dark">
                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                             </svg>
-                            <p className='text-grey-dark mx-2'>{selectedSeller?.seller_quantity.find(quantity=>quantity.color==selectedColor)?.guarantee.title}</p>
+                            <p className='text-grey-dark mx-2'>{selectedSeller?.seller_quantity.find(quantity=>quantity.color==selectedQuantity.color)?.guarantee.title}</p>
                         </div>
                     </div>
 
@@ -156,7 +219,7 @@ const ClientPart = ({product}:Props) => {
         {otherSellersCount > 0 && <div className='mt-20 col-span-full'>
             <SeeMore minItemsCount={3}>
   {[
-    ...(ColorsWithSellers.find(item => item.color === selectedColor)?.sellers || []).map(seller => (
+    ...(ColorsWithSellers.find(item => item.quantity.color === selectedQuantity.color)?.sellers || []).map(seller => (
       <div className='w-full border grid grid-cols-4 border-primary-color py-5 rounded-md mb-5' key={seller.seller_id}>
         <div className='flex items-center'>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-4">
@@ -176,7 +239,7 @@ const ClientPart = ({product}:Props) => {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 mx-2 ">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
           </svg>
-          <p className=''>{seller.seller_quantity.find(quantity=>quantity.color==selectedColor)?.guarantee.title}</p>
+          <p className=''>{seller.seller_quantity.find(quantity=>quantity.color==selectedQuantity.color)?.guarantee.title}</p>
         </div>
         <div className='flex items-center justify-center'>
           <p className='text-3xl'>{seller?.price}</p>

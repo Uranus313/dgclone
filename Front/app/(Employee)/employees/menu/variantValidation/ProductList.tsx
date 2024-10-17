@@ -13,8 +13,8 @@ const ProductList = () => {
   let [page, setPage] = useState<number>(0);
   let [search, setSearch] = useState<string | null>('');
   let searchRef = useRef<any>('');
-  let { data: products, error, isLoading } = useGetPendingVariants({sort:typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
-  
+  let { data: products, error, isLoading } = useGetPendingVariants({ sort: typeSort, floor: page * pageSize, limit: pageSize, nameSearch: search });
+
   function handleSearch() {
     console.log(searchRef.current.value.trim());
     setSearch(searchRef.current.value.trim());
@@ -28,12 +28,12 @@ const ProductList = () => {
         <input className='bg-primary-bg placeholder-neutral-700 px-6 py-2 rounded-md w-5/6' type="text" placeholder='جست و جو بر حسب نام و نام خانوادگی'
           ref={searchRef}
           onBlur={() => handleSearch()} />
-        </form>
+      </form>
       {isLoading ? <span className="loading loading-dots loading-lg"></span> :
-       
+
         <div className=' flex-col'>
-        <ul>
-            
+          <ul>
+
             {products?.products?.map((product, index) => {
               return (
                 <li key={index}>

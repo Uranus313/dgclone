@@ -285,9 +285,13 @@ const SellerPopUp = ({ seller }: Props) => {
         <div className="modal-box">
           {error && <p>{error}</p>}
           <h3 className="font-bold text-lg pb-2">
-            {((seller.storeInfo?.commercialName && seller.storeInfo?.commercialName || "") + " " + seller._id) || "-"}
+            {((seller.storeInfo?.commercialName && seller.storeInfo?.commercialName || "")) || "-"}
           </h3>
           <div className="block">
+            <div className=" flex pb-2">
+              <p className="pl-2">آیدی : </p>
+              <p>{seller._id}</p>
+            </div>
             <div className=" flex pb-2">
               <p className="pl-2">شماره تلفن : </p>
               <p>{(seller.phoneNumber && seller.phoneNumber) || "-"}</p>
@@ -296,25 +300,12 @@ const SellerPopUp = ({ seller }: Props) => {
               <p className="pl-2">امتیاز : </p>
               <p>{(seller.rating && seller.rating) || "-"}</p>
             </div>
-            <div className=" flex pb-2">
-              <p className="pl-2">آیدی : </p>
-              <p>{seller._id}</p>
-            </div>
             <div className=" flex-col ">
               <h3>مشخصات صاحب فروشگاه</h3>
               <div className=" flex pb-2">
                 <p className="pl-2">نام :</p>
                 {seller.storeOwner ? (
                   <p>{(seller.storeOwner.firstName && seller.storeOwner.firstName) || "-"}</p>
-                ) : (
-                  <p>-</p>
-                )}
-              </div>
-              <div className=" flex pb-2">
-                <p className="pl-2">نام خانوادگی :</p>
-                {seller.storeOwner ? (
-
-                  <p>{(seller.storeOwner.lastName && seller.storeOwner.lastName) || "-"}</p>
                 ) : (
                   <p>-</p>
                 )}
@@ -453,7 +444,7 @@ const SellerPopUp = ({ seller }: Props) => {
               </div>
               <div className=" flex-col pb-2">
                 <h5>روز های کاری فروشگاه :</h5>
-                {seller.storeInfo?.workDays.length!=0 ? (
+                {seller.storeInfo?.workDays.length != 0 ? (
                   <div>
                     {seller.storeInfo?.workDays.map((day, index) => (
                       <p key={index}>{day}</p>
@@ -467,7 +458,7 @@ const SellerPopUp = ({ seller }: Props) => {
               </div>
               <div className=" flex-col pb-2">
                 <h5>روز های تعطیل فروشگاه :</h5>
-                {seller.storeInfo?.offDays.length!=0 ? (
+                {seller.storeInfo?.offDays.length != 0 ? (
                   <div>
                     {seller.storeInfo?.offDays.map((day, index) => (
                       <p key={index}>{day}</p>

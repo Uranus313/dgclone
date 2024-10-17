@@ -64,7 +64,7 @@ function CommentBox() {
 
                                     {user.roleID.accessLevels &&
                                         <div>
-                                            {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "orderManage") ? (
+                                            {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "orderManage" || accessLevel.level === "shipmentManage") ? (
                                                 <OrderList />
                                             ) : (
                                                 <div>

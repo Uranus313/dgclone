@@ -32,7 +32,7 @@ function CardBox({ changeList }: Props) {
     return (
 
         <div className='w-9/12 text-white text-center pr-20' >
-            <div className='md:flex mt-10 md:mt-20' id="cardBox">
+            <div className='md:flex mt-10 md:mt-20'>
                 <div className='bg-primary-color flex-1 mx-5 rounded-md '>
                     <div className='flex'>
                         {isLoading ? <span className="loading loading-dots loading-lg"></span> :
@@ -90,12 +90,17 @@ function CardBox({ changeList }: Props) {
                         }
                         <div className='self-center px-3 '>
                             {isCountLoading && <span className="loading loading-dots loading-lg"></span>}
-                            {productAndOrderCount &&
-                                <div>
-                                    {productAndOrderCount?.orders_count && <p>{productAndOrderCount?.orders_count}</p>}
-                                    <p>سفارش ها</p>
-                                </div>
-                            }
+
+                            <div>
+                                {productAndOrderCount &&
+                                    <div>
+
+                                        {productAndOrderCount?.orders_count && <p>{productAndOrderCount?.orders_count}</p>}
+                                    </div>
+                                }
+                                <p>سفارش ها</p>
+                            </div>
+
                         </div>
                     </div>
                     <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {
@@ -116,7 +121,9 @@ function CardBox({ changeList }: Props) {
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
                             </svg>
                         }
+
                         <div className='self-center px-3'>
+                            
                             {isSellerCountLoading && <span className="loading loading-dots loading-lg"></span>}
                             {sellerCount?.count && <p>{sellerCount?.count}</p>}
                             <p> فروشندگان</p>
@@ -140,13 +147,18 @@ function CardBox({ changeList }: Props) {
                             </svg>
                         }
                         <div className='self-center px-3'>
-                            {productAndOrderCount &&
-                                <div>
-                                    {productAndOrderCount?.prods_count && <p>{productAndOrderCount?.prods_count}</p>}
-                                    <p> محصولات</p>
-                                </div>
+                        {isCountLoading && <span className="loading loading-dots loading-lg"></span>}
+                            <div>
+                                {productAndOrderCount &&
+                                    <div>
 
-                            }
+                                        {productAndOrderCount?.prods_count && <p>{productAndOrderCount?.prods_count}</p>}
+                                    </div>
+                                }
+                                <p> محصولات</p>
+                            </div>
+
+
                         </div>
                     </div>
                     <button className="rounded-b-md py-1.5 mt-1 w-full bg-button-box" onClick={(e) => {

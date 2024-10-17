@@ -35,13 +35,13 @@ const ProductList = ({ changeList }: Props) => {
 
 
   return (
-    <div className=' flex-col bg-white my-10 md:m-20 rounded-md'>
+    <div className=' flex-col bg-white my-10 md:m-10 rounded-md'>
       <form onSubmit={(e) => {
         e.preventDefault();
       }} className='border-b-2 shadow-md border-white p-7 px-13' >
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
           <option value="comments">کامنت ها</option>
-          <option value="products" selected>محصولات</option>
+          <option value="products" defaultChecked>محصولات</option>
 
         </select>
       </form>

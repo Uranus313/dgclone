@@ -69,7 +69,7 @@ func (d ValidationState) EnumIndex() int {
 type SellerCart struct {
 	SellerID       primitive.ObjectID `json:"seller_id" bson:"seller_id"`
 	SellerTitle    string             `json:"seller_title" bson:"seller_title"`
-	SellerRating   float32            `json:"seller_rating" bson:"seller_rating"`
+	SellerRating   float64            `json:"seller_rating" bson:"seller_rating"`
 	SellerQuantity []SellerQuantity   `json:"seller_quantity" bson:"seller_quantity"`
 	ShipmentMethod ShipmentMethod     `json:"shipment_method" bson:"shipment_method"`
 	DiscountID     primitive.ObjectID `json:"discount_id" bson:"discount_id"`
@@ -128,4 +128,5 @@ type ProductCard struct {
 	SellerCount int
 	UrbanPrice  int
 	Commission  int
+	CategoryID  primitive.ObjectID
 }

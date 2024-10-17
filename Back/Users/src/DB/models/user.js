@@ -83,15 +83,17 @@ const userSchema = new mongoose.Schema(
         },
         boughtGiftCards: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "giftCards" }] },
         receivedGiftCards: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "giftCards" }] },
-        orderHistories: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orderHistories" }] ,validate:{
-            validator : (value) => {
-                return value.length === new Set(value).size
-            },
-            message: "order Histories cannot contain duplicate values"
-        }  },
+        orderHistories: {
+            type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orderHistories" }], validate: {
+                validator: (value) => {
+                    return value.length === new Set(value).size
+                },
+                message: "order Histories cannot contain duplicate values"
+            }
+        },
         ratedSellers: [{
-            rate : {type: Number , max: 5 , min : 0 , required : true},
-            selledID : { type: mongoose.Schema.Types.ObjectId, ref: "sellers" }
+            rate: { type: Number, max: 5, min: 0, required: true },
+            selledID: { type: mongoose.Schema.Types.ObjectId, ref: "sellers" }
         }],
         socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
         favoriteList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] },
@@ -103,7 +105,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-userSchema.index({phoneNumber : 1 })
+userSchema.index({ phoneNumber: 1 })
 
 userSchema.virtual("status").get(() => {
     return "user";
@@ -139,11 +141,12 @@ export function validateUserlogInWithPhoneNumber(data) {
 export function validateLastVisitedPost(data) {
     const schema = Joi.object({
         productID: Joi.objectId().external(async (productID) => {
-            const result = await fetch(productURL+"/product/" + productID, {
-        method: "GET",
-        headers: {
-            "inner-secret": process.env.innerSecret
-        }});
+            const result = await fetch(productURL + "/product/" + productID, {
+                method: "GET",
+                headers: {
+                    "inner-secret": process.env.innerSecret
+                }
+            });
             const product = await result.json();
             if (!product._id) {
                 throw new Error("this product does not exists");
@@ -178,8 +181,8 @@ export function validateChangePhoneNumberVerify(data) {
                 throw new Error("an account with this phone number already exists");
             }
         }).required(),
-        mode : Joi.string().valid("change","logIn","signUp").required(),
-        verificationCode : Joi.string().length(6).required()
+        mode: Joi.string().valid("change", "logIn", "signUp").required(),
+        verificationCode: Joi.string().length(6).required()
     })
     return schema.validateAsync(data);
 }
@@ -207,7 +210,7 @@ export function validateChangeEmailVerify(data) {
                 throw new Error("an account with this email already exists");
             }
         }).required(),
-        verificationCode : Joi.string().length(6).required()
+        verificationCode: Joi.string().length(6).required()
     })
     return schema.validateAsync(data);
 }
@@ -319,11 +322,12 @@ export function validateAddToWishList(data, wishLists) {
                     })
                 }
             });
-            const result = await fetch(productURL+"/product/" + productID, {
-        method: "GET",
-        headers: {
-            "inner-secret": process.env.innerSecret
-        }});
+            const result = await fetch(productURL + "/product/" + productID, {
+                method: "GET",
+                headers: {
+                    "inner-secret": process.env.innerSecret
+                }
+            });
             const product = await result.json();
             if (!product._id) {
                 throw new Error("this product does not exists");
@@ -335,16 +339,21 @@ export function validateAddToWishList(data, wishLists) {
 export function validateAddToFavoriteList(data, favoriteList) {
     const schema = Joi.object({
         productID: Joi.objectId().external(async (productID) => {
+            console.log(favoriteList, productID)
             favoriteList.forEach(listProductID => {
                 if (listProductID == productID) {
                     throw new Error("this product is already in your favorite List");
                 }
             })
-            const result = await fetch(productURL+"/product/" + productID, {
-        method: "GET",
-        headers: {
-            "inner-secret": process.env.innerSecret
-        }});
+            console.log(productURL + "/product/" + productID)
+            console.log(process.env.innerSecret)
+            const result = await fetch(productURL + "/product/" + productID, {
+                method: "GET",
+                headers: {
+                    "inner-secret": process.env.innerSecret
+                }
+            });
+            console.log(result)
             const product = await result.json();
             if (!product._id) {
                 throw new Error("this product does not exists");
@@ -398,13 +407,13 @@ export function validatePostSellerRating(data) {
                 throw new Error("seller not found")
             }
         }).required(),
-        rate : Joi.number().max(5).min(0).required()
+        rate: Joi.number().max(5).min(0).required()
     })
     return schema.validateAsync(data);
 }
 export function validateBuyTheCart(data) {
     const schema = Joi.object({
-        
+
         address: Joi.object({
             country: Joi.string(),
             province: Joi.string().required(),
@@ -425,7 +434,7 @@ export function validateBuyTheCart(data) {
             }
             ).required(),
         }).required(),
-        discount : Joi.string().max(200)
+        discount: Joi.string().max(200)
     })
     return schema.validate(data);
 }

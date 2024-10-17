@@ -60,7 +60,7 @@ const CommentPopUp = ({ comment }: Props) => {
 
   const banComment = useMutation({
     mutationFn: async () => {
-      const result = await fetch("http://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=3`, {
+      const result = await fetch("https://localhost:8080/products/validate-comments" + `?CommentID=${comment._id}&ValidationState=3`, {
         method: "PATCH",
         credentials: 'include',
         headers: {
@@ -94,11 +94,11 @@ const CommentPopUp = ({ comment }: Props) => {
         <div className='w-full p-10 border-b-2 border-border'>
           <div className='flex pb-5'>
             <p className='text-text-color'>آی دی محصول : </p>
-            <p>{comment.productID}</p>
+            <p>{comment.product_id}</p>
             <p className='text-text-color'>آی دی کاربر : </p>
-            <p>{comment.user.userid}</p>
+            <p>{comment.user?.userid}</p>
             <p className='pr-20 pl-5 text-text-color'> تاریخ  : </p>
-            <p>{comment.dateSent}</p>
+            <p>{comment.date_sent?.toString()}</p>
             <p className='pr-20 pl-5 text-text-color'> نوع  : </p>
             {comment.comment_type == 1 && <p>عادی</p>}
             {comment.comment_type == 2 && <p>سوال</p>}

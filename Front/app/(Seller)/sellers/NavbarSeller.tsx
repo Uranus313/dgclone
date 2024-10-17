@@ -12,7 +12,7 @@ const NavBar = () => {
       
       <div id='collapsable' className= {`flex justify-between duration-500 transition-all`} >
         <div className="flex text-lg justify-between items-center w-6/12">
-            <p className="text-4xl mx-2 text-primary-seller font-Logo">Digimarket</p>
+            <Link href="/sellers" className="text-4xl mx-2 text-primary-seller font-Logo">Digimarket</Link>
             <div className="menu menu-horizontal px-1">
               <li>
                 <details>

@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func AuthMiddleware(mode string) fiber.Handler {
+func AuthMiddleware(modes []string) fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
 
@@ -27,7 +27,16 @@ func AuthMiddleware(mode string) fiber.Handler {
 			})
 		}
 
-		if body["status"].(string) != mode {
+		var modeApproved bool = false
+
+		for _, mode := range modes {
+			if body["status"].(string) == mode {
+				modeApproved = true
+				break
+			}
+		}
+
+		if !modeApproved {
 			return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "you do not have access to this method"})
 		}
 
@@ -44,6 +53,41 @@ func InnerAuth(c *fiber.Ctx) error {
 	}
 
 	return c.Next()
+}
+
+type AccessLevel struct {
+	level       string
+	writeAccess bool
+}
+
+func EmployeeAccessLevel(accessLevels []AccessLevel) fiber.Handler {
+
+	return func(c *fiber.Ctx) error {
+
+		ent := c.Locals("ent").(map[string]interface{})
+
+		if ent["status"].(string) != "employee" {
+			return c.Next()
+		}
+
+		for _, accessLevel := range accessLevels {
+			accessLevelFound := false
+			for _, employeeAccessLevel := range ent["roleID"].(map[string]interface{})["accessLevels"].([]map[string]interface{}) {
+				if accessLevel.level == employeeAccessLevel["level"].(string) {
+					if accessLevel.writeAccess != employeeAccessLevel["writeAccess"].(bool) {
+						return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "employee does not have write access to " + accessLevel.level})
+					}
+					accessLevelFound = true
+					break
+				}
+			}
+			if !accessLevelFound {
+				return c.Status(http.StatusForbidden).JSON(fiber.Map{"error": "employee does not have access to " + accessLevel.level})
+			}
+		}
+
+		return c.Next()
+	}
 }
 
 // func UserAuthMiddleware(c *fiber.Ctx) error {

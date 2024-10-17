@@ -19,6 +19,7 @@ const ProductPage = async({params:{productID}}:Props) => {
     return (
         <div className='p-5 m-10 bg-white rounded-lg'>
             {/* <h1>{temp.product} jjj</h1> */}
+
             <ClientPart product={product} />
             <div className='mt-20'>
                 <div className="collapse collapse-arrow  bg-propBubble-bg text-black mb-3 ">
@@ -29,7 +30,7 @@ const ProductPage = async({params:{productID}}:Props) => {
                     </div>
                     <div style={{ wordSpacing:'5px',lineHeight:'30px'}} 
                     className="collapse-content bg-white border-2 border-propBubble-bg">
-                        <p className='mt-5'>{product.description}</p>
+                        <p className='mt-5'>{product?.description}</p>
                     </div>
                 </div>
 

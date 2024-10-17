@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
+import CategoryList from "./CategoryList";
 
 
 
@@ -58,8 +59,7 @@ function CategoryBox() {
                                     {user.roleID.accessLevels &&
                                         <div>
                                             {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "categoryManage") ? (
-                                                // <CategoryList />
-                                                <p></p>
+                                                <CategoryList />
                                             ) : (
                                                 <div>
                                                     <p>خارج از سطح دسترسی</p>
@@ -81,9 +81,9 @@ function CategoryBox() {
 
                     }
                 </div>
-                <form method="dialog" className="modal-backdrop" onClick={closeModal}>
+                <div className="modal-backdrop" onClick={closeModal}>
                     <button type="button">close</button>
-                </form>
+                </div>
             </dialog>
 
         </div>

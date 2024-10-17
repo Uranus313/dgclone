@@ -11,6 +11,8 @@ import AddProductButton from './AddProductButton'
 import AddNew from './AddNew'
 import { useSearchParams } from 'next/navigation'
 import useGetProductCards from '@/app/(Customer)/users/useGetProductCards'
+import useGetProducts from '@/app/hooks/useGetProducts'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 
 // const productsCard:SellerAddProdctCard[]=[
@@ -68,11 +70,13 @@ import useGetProductCards from '@/app/(Customer)/users/useGetProductCards'
   }
   
   const AddProductList = () => { 
-     
-    const {data:res} = useGetProductCards()
-    const productsCard = res?.products
-    console.log(productsCard,'hi')
+    const {searchParams}= useQueryNext()
+    const category = searchParams.get("category")
+    const {data , error , isLoading , fetchNextPage , isFetchingNextPage } = useGetProducts({categoryID:category??'' , limit:10 , pageParamm:1 , sort:false})
     
+    const totalFetchedGames =
+    data?.pages.reduce((total, page) => total + page?.products?.length, 0) ||
+    0;
 
     return (
       <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
@@ -105,24 +109,38 @@ import useGetProductCards from '@/app/(Customer)/users/useGetProductCards'
         <p>قیمت مرجع</p>
         <p>تعداد فروشندگان</p>
         </div>
-        {productsCard && productsCard?.map(productCard=>(
-          <div className='grid grid-cols-5 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
-            <div className='grid grid-cols-2 place-items-center'>
-              <img className='w-20 mx-2' src={productCard.Picture}/>
-              <div>
-                <p className='line-clamp-2 h-fit text-md'>{productCard.Title}</p>
-                <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-xs'>{productCard.ID}</p>
-              </div>
-            </div>
-            <p>{productCard.Commission}</p>
-            <p>{productCard.UrbanPrice}</p>
-            <p>{productCard.SellerCount}</p>
-            <ModalButton id={`sellProduct`+productCard.ID} title='فروش همین کالا'/>
-
-            <SellProductPopup id={`sellProduct`+productCard.ID} productCard={productCard}/>
-            
-          </div>
+        <InfiniteScroll
+            dataLength={totalFetchedGames} //This is important field to render the next data
+            next={() => fetchNextPage()}
+            hasMore={data?.pages[data?.pages.length-1].hasMore??false}
+            loader={<span className="loading loading-dots loading-lg"></span>}
+            endMessage={
+            <p style={{ textAlign: "center" }}>
+                {!isLoading ?<b>رسیدی به تهش</b> : <span className="loading loading-dots loading-lg"></span>}
+            </p>
+            }
+        >
+        {data?.pages.map((page , index)=>(
+          <React.Fragment key={index}>
+            {page?.products?.map(productCard=>(
+              <div className='grid grid-cols-5 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
+                <div className='grid grid-cols-2 place-items-center'>
+                  <img className='w-20 mx-2' src={productCard.Picture}/>
+                  <div>
+                    <p className='line-clamp-2 h-fit text-md'>{productCard.Title}</p>
+                    <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-xs'>{productCard.ID}</p>
+                  </div>
+                </div>
+                <p>{productCard.Commission}</p>
+                <p>{productCard.UrbanPrice}</p>
+                <p>{productCard.SellerCount}</p>
+                <ModalButton id={`sellProduct`+productCard.ID} title='فروش همین کالا'/>
+                <SellProductPopup id={`sellProduct`+productCard.ID} productCard={productCard}/>
+                
+              </div>))}
+          </React.Fragment>
         ))}
+        </InfiniteScroll>
       </div>
     )
   }

@@ -135,6 +135,26 @@ func GetAllOrders(c *fiber.Ctx) error {
 
 	prodTitle := c.Query("ProdTitle", "")
 
+	queryParams := c.Queries()
+
+	var orderStates []int
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("OrderStates[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			orderState, err := strconv.Atoi(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting order state": err.Error()})
+			}
+			if orderState < 1 || orderState > 5 {
+				errMessage := fmt.Sprintf("order state %v is not valid", orderState)
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid order state entry - " + errMessage})
+			}
+			orderStates = append(orderStates, orderState)
+		} else {
+			break
+		}
+	}
+
 	/*
 		valid_sort_methods = {
 			1: "product title",
@@ -168,9 +188,12 @@ func GetAllOrders(c *fiber.Ctx) error {
 	var filter primitive.M
 
 	if prodTitle != "" {
-		filter = bson.M{"product.title": prodTitle}
+		filter = bson.M{
+			"product.title": prodTitle,
+			"state":         bson.M{"$in": orderStates},
+		}
 	} else {
-		filter = bson.M{}
+		filter = bson.M{"state": bson.M{"$in": orderStates}}
 	}
 
 	cursor, err := database.OrderCollection.Find(context.Background(), filter, findOpts)
@@ -382,9 +405,20 @@ func GetOrderListTotalPrice(c *fiber.Ctx) error {
 	})
 }
 
-func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (int, int, error) {
+type orderListPriceSeller struct {
+	sellerID primitive.ObjectID
+	income   int
+}
+
+type orderListPrice struct {
+	totalPrice int
+	sellers    []orderListPriceSeller
+}
+
+func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (orderListPrice, int, error) {
 
 	var totalPrice int = 0
+	var sellers []orderListPriceSeller
 
 	for _, orderID := range orderIDList {
 		var order models.Order
@@ -392,14 +426,22 @@ func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (int, int, e
 		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
-				return 0, http.StatusNotFound, err
+				return orderListPrice{}, http.StatusNotFound, err
 			}
-			return 0, http.StatusInternalServerError, err
+			return orderListPrice{}, http.StatusInternalServerError, err
 		}
-		totalPrice += order.Product.Price
+		totalPrice += order.Product.Price * order.Quantity
+		var seller = orderListPriceSeller{
+			sellerID: order.Product.SellerID,
+			income:   order.Product.Price * order.Quantity,
+		}
+		sellers = append(sellers, seller)
 	}
 
-	return totalPrice, http.StatusOK, nil
+	return orderListPrice{
+		totalPrice: totalPrice,
+		sellers:    sellers,
+	}, http.StatusOK, nil
 }
 
 func UpdateOrderState(c *fiber.Ctx) error {
@@ -426,11 +468,12 @@ func UpdateOrderState(c *fiber.Ctx) error {
 		})
 	}
 
-	if state == 2 || state < 1 || state > 5 {
+	if state < 1 || state > 5 {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": "invalid state",
 			"valid requests": fiber.Map{
 				"1": "delivered",
+				"2": "pending",
 				"3": "canceled",
 				"4": "returned",
 				"5": "recievedInWareHouse",
@@ -469,4 +512,90 @@ func UpdateOrderState(c *fiber.Ctx) error {
 	// }
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "order state updated succesfully"})
+}
+
+func GetOrdersByUserID(c *fiber.Ctx) error {
+
+	user := c.Locals("ent").(map[string]interface{})
+
+	var ordersList []models.Order
+
+	userID, err := primitive.ObjectIDFromHex(user["_id"].(string))
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	filter := bson.M{"user_id": userID}
+
+	cursor, err := database.OrderCollection.Find(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching from orders collection",
+			"error":   err.Error(),
+		})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &ordersList); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching decoding cursor",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(ordersList)
+}
+
+func DeleteOrder(c *fiber.Ctx) error {
+
+	orderIDString := c.Query("OrderID")
+
+	orderID, err := primitive.ObjectIDFromHex(orderIDString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "error while fetching order id from params",
+			"error":   err.Error(),
+		})
+	}
+
+	filter := bson.M{"_id": orderID}
+
+	var order models.Order
+
+	err = database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "order not found"})
+		}
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	deleteResult, err := database.OrderCollection.DeleteOne(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if deleteResult.DeletedCount == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "order not found"})
+	}
+
+	_, statusCode, err := InnerRequest(PATCH, "/shoppingCartDelete", nil, map[string]string{
+		"orderID": order.ID.Hex(),
+		"userID":  order.UserID.Hex(),
+	})
+
+	if err != nil {
+		return c.Status(statusCode).JSON(fiber.Map{
+			"message": "Inner API Error",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(order)
 }

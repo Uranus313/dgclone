@@ -1,18 +1,51 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Brand, ProductInterface, SellerAddProdctCard } from "../components/Interfaces/interfaces";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import useQueryNext from "./useQueryNext";
+import useGetBrands from "./useGetBrands";
+import { useSearchParams } from "next/navigation";
 
 interface Props {
     limit: number,
     categoryID: string
+    pageParamm?:number
+    sort?:boolean
 }
 
-function useGetProducts({ limit, categoryID }: Props) {
+function useGetProducts({ limit, categoryID, pageParamm=0 , sort=true }: Props) {
+    const {searchParams,pathname} = useQueryNext()
+    // const searchParams = useSearchParams();
+    const [sortOrder,setSortOrder]=useState(searchParams.get("sortOrder"))
+    // const {data:brands} = useGetBrands() 
+    const [filterBrands,setFilterBrands] = useState('')
+    const paramsArray = Array.from(searchParams.entries());
+    const brands:string[] = [];
+
+    paramsArray.forEach(([key, value]) => {
+        if (key.startsWith('brand[') && key.endsWith(']')) {
+        brands.push(value);
+        }
+    });
+
+
+    useEffect(()=>{
+        setSortOrder(searchParams.get('sortOrder'))
+  
+    },[searchParams.get('sortOrder')])
+
+    useEffect(()=>{
+        console.log('brandss',brands)
+        console.log('kkkkk',)
+        const temp = brands.map((brand, index) => `brandFilters[${index}]=${brand}`).join("&")
+        setFilterBrands(temp)
+    },[searchParams])
+
+
     return useInfiniteQuery({
-        queryKey: ['product', categoryID],
+        queryKey: ['product', sortOrder,brands,pathname],
         initialPageParam: 1,
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit}&&CateID=${categoryID}`, {
+            const result = await fetch(`https://localhost:8080/products/product/?limit=${limit}&offset=${pageParam * limit - limit * pageParamm}&CateID=${categoryID}${sort ? `&SortMethod=${sortOrder}` : ''}&${brands.length > 0 ? filterBrands :''}`, {
                 credentials: 'include'
             });
 

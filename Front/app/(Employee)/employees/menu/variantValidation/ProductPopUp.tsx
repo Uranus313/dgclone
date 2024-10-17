@@ -60,7 +60,7 @@ const ProductPopUp = ({ product }: Props) => {
 
     const banProduct = useMutation({
         mutationFn: async () => {
-            const result = await fetch("http://localhost:8080/products/validate-variant" + `?prodID=${product._id}&SellerID=${product.seller_id}&ColorID=${product.seller_quantity.color._id}&ValidationState=3`, {
+            const result = await fetch("https://localhost:8080/products/validate-variant" + `?prodID=${product._id}&SellerID=${product.seller_id}&ColorID=${product.seller_quantity.color._id}&ValidationState=3`, {
                 method: "PATCH",
                 credentials: 'include',
                 headers: {
@@ -106,6 +106,8 @@ const ProductPopUp = ({ product }: Props) => {
                         </div>
 
                     </div>
+                    <Link className=' text-primary-color ' href={"/products/" + product.category_id + "/" + product._id + "/"}>دیدن صفحه محصول</Link>
+                       
                     <div className='flex justify-center'>
                         {user &&
                             <div>

@@ -397,16 +397,23 @@ func InnerAddOrderHistory(c *fiber.Ctx) error {
 	// orderHistory.OrderHistoryDate = time.Now()
 	// orderHistory.State = models.Pending
 
-	discountCodeValue, statusCode, err := UpdateUserDiscountCode(reqBody.DisscountCode, reqBody.UserID)
+	var discountCodeValue int = 0
 
-	if err != nil {
-		return c.Status(statusCode).JSON(fiber.Map{
-			"message": "problem with the disscount code",
-			"error":   err.Error(),
-		})
+	if reqBody.DisscountCode != "" {
+		var statusCode int
+		var err error
+		discountCodeValue, statusCode, err = UpdateUserDiscountCode(reqBody.DisscountCode, reqBody.UserID)
+
+		if err != nil {
+			return c.Status(statusCode).JSON(fiber.Map{
+				"message": "problem with the disscount code",
+				"error":   err.Error(),
+			})
+		}
+
 	}
 
-	totalPrice, statusCode, err := CalculateTotalOrderListPrice(reqBody.OrdersList)
+	orderListPrice, statusCode, err := CalculateTotalOrderListPrice(reqBody.OrdersList)
 
 	if err != nil {
 		return c.Status(statusCode).JSON(fiber.Map{
@@ -420,7 +427,7 @@ func InnerAddOrderHistory(c *fiber.Ctx) error {
 		OrdersList:       reqBody.OrdersList,
 		OrderHistoryDate: time.Now(),
 		State:            models.Pending,
-		TotalPrice:       totalPrice,
+		TotalPrice:       orderListPrice.totalPrice,
 		TotalDisscount:   discountCodeValue,
 		Address:          reqBody.Address,
 	}
@@ -448,8 +455,10 @@ func InnerAddOrderHistory(c *fiber.Ctx) error {
 	// }
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"message":        "order history added susscesfully",
-		"orderHistoryID": orderHistory.ID,
+		"message":             "order history added susscesfully",
+		"orderHistoryID":      orderHistory.ID,
+		"orderHistorySellers": orderListPrice.sellers,
+		"totalPrice":          orderListPrice.totalPrice,
 	})
 }
 
@@ -486,9 +495,11 @@ func InnerRequest(
 	}
 
 	req.Header.Add("inner-secret", auth.InnerPass)
+	query := req.URL.Query()
 	for key, value := range queryParams {
-		req.Header.Add(key, value)
+		query.Add(key, value)
 	}
+	req.URL.RawQuery = query.Encode()
 
 	res, err := http.DefaultClient.Do(req)
 

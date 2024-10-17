@@ -55,13 +55,9 @@ const AddComment = ({productID , type }: Props) => {
           <textarea ref={content} className='resize-none border-2 rounded-md w-full h-full p-2 mt-5 border-grey-border' placeholder='پاسخ'></textarea>
           <button className='w-full  bg-primary-color text-white py-3 rounded-md my-5' onClick={()=>{AddCommentRequest(
              {
-                comment_type:0,
+                comment_type:1,
                 product_id:productID,
-                user_id:user?._id,
                 content:content.current?.value,
-                'likes&disslikes':[],
-                date_sent:new Date(),
-                validation_state:0,
             }
           )
           }}>ثبت کامنت</button>

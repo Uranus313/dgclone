@@ -1,4 +1,5 @@
-import { ProductCardSeller, SellerAddProdctCard, StateProduct } from '@/app/components/Interfaces/interfaces'
+'use client'
+import { ProductCardSeller, productSaleAnalyseCard, SellerAddProdctCard, StateProduct } from '@/app/components/Interfaces/interfaces'
 import ProductCard from '@/app/components/ProductCar/ProductCard'
 import { updateQueries } from '@/app/Functions/ServerFunctions'
 import useQueryNext from '@/app/hooks/useQueryNext'
@@ -12,49 +13,7 @@ import Step1 from '../addProducts/list/step1'
 import AddVarient from './AddVarient'
 import EditProduct from './EditProduct'
 import AddNew from '../addProducts/list/AddNew'
-
-const productsCard:ProductCardSeller[]=[
-//   {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'55',
-//   brand:'Asus',
-//   state:StateProduct.accepted,
-//   varientCount:2,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدلSSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'58',
-//   brand:'Asus',
-//   state:StateProduct.accepted,
-//   varientCount:1,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'56',
-//   brand:'Asus',
-//   state:StateProduct.inCheckingOrder,
-//   varientCount:1,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// {
-//   title:'لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 F1504VA-NJ821-i5 1335U-16GB DDR4-512GB SSD-TN - کاستوم شده',
-//   categoryTitle:'لپتاپ',
-//   categoryID:'2',
-//   productID:'57',
-//   brand:'Asus',
-//   state:StateProduct.rejected,
-//   varientCount:1,
-//   picture:'https://dkstatics-public.digikala.com/digikala-products/8479fd06b020790ab474a7b6b66b3ca4b646fd63_1713796697.jpg',
-// },
-// ]
+import useGetSellerProducts from '@/app/hooks/useGetSellerProducts'
 
 
 interface Filterables{
@@ -70,15 +29,16 @@ const filterables:Filterables={
   brands:["اپل","ایسوس","لنوو"]
 }
 
-const Products = async() => {  
+const Products = () => {  
 
   //server
-  const res = await fetch("https://localhost:8080/products/seller/allProds")
-  const productsCard:SellerAddProdctCard[]  = await res.json()
-
+  // const res = await fetch("https://localhost:8080/products/seller/allProds",{credentials:'include'})
+  // const productsCard = await res.json()
+  const {data:productsCard} = useGetSellerProducts()
   return (
     <div className='bg-white mt-10 rounded-lg border border-grey-border p-5'>
       <h1 className='text-xl font-bold text-grey-dark'>مدیریت کالا ها</h1>
+      {/* <h1>{JSON.stringify(productsCard)}</h1> */}
       <div className='py-5'>
         <label className="input w-full input-bordered flex items-center gap-2">
           <input type="text" className="grow " placeholder=" جستجو بر اساس نام یا شناسه ی کالا " />
@@ -97,13 +57,13 @@ const Products = async() => {
         </label>
       </div>
       <div className='flex gap-3 mb border-b border-grey-border pb-5'>
-        <div className='flex items-center mt-2 text-primary-seller'>
+        {/* <div className='flex items-center mt-2 text-primary-seller'>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
           </svg>
           <p className='mx-1'>فیلتر ها</p>
-        </div>
-        <div className="dropdown">
+        </div> */}
+        {/* <div className="dropdown">
           <div tabIndex={0} role="button" className="bg-primary-bg border border-primary-seller text-primary-seller rounded-xl px-4 py-2 m-1 text-sm ">گروه کالایی</div>
           <div tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
             {filterables.categories.map((category,index)=>(
@@ -111,9 +71,9 @@ const Products = async() => {
 
             ))}
           </div>
-        </div>
+        </div> */}
 
-        <div className="dropdown">
+        {/* <div className="dropdown">
           <div tabIndex={0} role="button" className="bg-primary-bg border border-primary-seller text-primary-seller rounded-xl px-4 py-2 m-1 text-sm">برند کالا</div>
           <div tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
             {filterables.brands.map((brand,index)=>(
@@ -121,58 +81,57 @@ const Products = async() => {
 
             ))}
           </div>
-        </div>
+        </div> */}
 
-        <div className="dropdown">
+        {/* <div className="dropdown">
           <div tabIndex={0} role="button" className="bg-primary-bg border border-primary-seller text-primary-seller rounded-xl px-4 py-2 m-1 text-sm">وضعیت تایید</div>
           <div tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
             <Checkbox index={0} id={StateProduct.accepted} title={StateProduct.accepted} query='state' />
             <Checkbox index={1} id={StateProduct.inCheckingOrder} title={StateProduct.inCheckingOrder} query='state' />
             <Checkbox index={2} id={StateProduct.rejected} title={StateProduct.rejected} query='state' />
           </div>
-        </div>
+        </div> */}
         
 
       </div>
 
-      <div className='grid grid-cols-7 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
+      <div className='grid md:grid-cols-6 grid-cols-3 sm:grid-cols-4 place-items-center gap-4 my-4 bg-primary-bg py-3 rounded-md'>
       <p className=''>عنوان کالا</p>
-      <p>گروه کالایی</p>
-      <p>برند کالا</p>
-      <p>وضعیت</p>
+      <p className='hidden md:block'>گروه کالایی</p>
+      <p className='hidden md:block'>برند کالا</p>
+      <p className='hidden sm:block'>وضعیت</p>
       <p>تعداد تنوع</p>
       </div>
-      {productsCard.map(productCard=>(
-        <div className='grid grid-cols-7 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
+      {productsCard?.map(productCard=>(
+        <div className='grid md:grid-cols-6 sm:grid-cols-4  grid-cols-3 place-items-center gap-4 my-4 border border-grey-border py-4 rounded-lg;'>
           <div className='grid grid-cols-2 place-items-center'>
-            <img className='w-20 mx-2' src={productCard.Picture}/>
+            <img className='w-20 mx-2' src={productCard.picture}/>
             <div>
-              <p className='line-clamp-2 h-fit text-sm'>{productCard.Title}</p>
-              <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p>
+              <p className='line-clamp-2 h-fit text-md text-end'>{productCard.title}</p>
+              {/* <p className='bg-propBubble-bg text-grey-dark my-2 w-fit px-2 py-1 rounded-full text-sm'>{productCard.productID}</p> */}
             </div>
           </div>
-          <FilterButton id={productCard.CategoryID} query='category' title={productCard.categoryTitle} />
-          <FilterButton id={productCard.brand} query='brand' title={productCard.brand} />
+          <p className='line-clamp-2 h-fit text-md text-end hidden md:block'>{productCard.categoryTitle}</p>
+          <p className='line-clamp-2 h-fit text-md text-end hidden md:block'>{productCard.brand}</p>
           <p>{productCard.state}</p>
-          <p>{productCard.varientCount}</p>
-
-          {productCard.state==StateProduct.accepted &&
-          <div className='flex gap-4 col-span-2'>
+          <p className='hidden sm:block'>{productCard.varientCount}</p>
+          {productCard.state==2 &&
+          <div className='flex gap-4 '>
             <ModalButton noMargin={true} additionalCss='bg-primary-seller text-white rounded-md px-4 py-2' title='مدیریت تنوع' id='addNewVarient'/>
 
-            <ModalButton noMargin={true} additionalCss='border border-grey-border rounded-md px-4 py-2 bg-white  rounded-md px-4 py-2' title='ویرایش کالا' id='addNewProduct'/>
+            {/* <ModalButton noMargin={true} additionalCss='border border-grey-border rounded-md px-4 py-2 bg-white  rounded-md px-4 py-2' title='ویرایش کالا' id='addNewProduct'/> */}
             <Link href='' className=''>
               <p></p>
             </Link>
             
 
-                
-              <AddVarient productID={productCard.productID}/>
+              
+              <AddVarient productCard={productCard}/>
               <AddNew productID={productCard.productID}/>
           </div>
           }
         </div>
-      ))}
+       ))}
     </div>
   )
 }

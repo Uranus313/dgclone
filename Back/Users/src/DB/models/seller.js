@@ -18,8 +18,8 @@ const sellerSchema = new mongoose.Schema(
         },
         isCompelete: Boolean,
         isVerified: Boolean,
-        rateCount : {type: Number , required: true , default: 0},
-        rateSum : {type: Number , required: true , default: 0},
+        rateCount: { type: Number, required: true, default: 0 },
+        rateSum: { type: Number, required: true, default: 0 },
         phoneNumber: { type: String, required: true },
         entityType: {
             type: String, enum: ["individual", "legal"],
@@ -157,12 +157,14 @@ const sellerSchema = new mongoose.Schema(
                 }
             }]
         },
-        productList: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }] , validate:{
-            validator : (value) => {
-                return value.length === new Set(value).size
-            },
-            message: "Product list cannot contain duplicate values"
-        } },
+        productList: {
+            type: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }], validate: {
+                validator: (value) => {
+                    return value.length === new Set(value).size
+                },
+                message: "Product list cannot contain duplicate values"
+            }
+        },
         // saleHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
         // orderHistories :  { type :[{type : mongoose.Schema.Types.ObjectId , ref: "orderHistories" }]},
         // socialInteractions: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
@@ -178,11 +180,14 @@ const sellerSchema = new mongoose.Schema(
 sellerSchema.virtual("status").get(() => {
     return "seller";
 });
-sellerSchema.virtual("rate").get(function(){
+sellerSchema.virtual("rate").get(function () {
+    if (this.rateCount == 0) {
+        return 0
+    }
     return this.rateSum / this.rateCount;
 }
 );
-sellerSchema.index({isVerified : 1,phoneNumber : 1 })
+sellerSchema.index({ isVerified: 1, phoneNumber: 1 })
 
 
 sellerSchema.set('toJSON', { virtuals: true });
@@ -227,7 +232,7 @@ export function validateChangeEmailVerify(data) {
                 throw new Error("an account with this email already exists");
             }
         }).required(),
-        verificationCode : Joi.string().length(6).required()
+        verificationCode: Joi.string().length(6).required()
     })
     return schema.validateAsync(data);
 }
@@ -299,7 +304,7 @@ export function validateSellerChangeinfo(data, sellerID) {
                         $options: 'i'
                     }
                 }).findOne();
-                console.log(seller._id);
+                // console.log(seller._id);
                 console.log(sellerID);
                 if (seller && seller._id.toString() != sellerID.toString()) {
                     throw new Error("an store with this commercialName already exists");
@@ -394,8 +399,8 @@ export function validateChangePhoneNumberVerify(data) {
                 throw new Error("an account with this phone number already exists");
             }
         }).required(),
-        mode : Joi.string().valid("change","logIn","signUp").required(),
-        verificationCode : Joi.string().length(6).required()
+        mode: Joi.string().valid("change", "logIn", "signUp").required(),
+        verificationCode: Joi.string().length(6).required()
     })
     return schema.validateAsync(data);
 }
