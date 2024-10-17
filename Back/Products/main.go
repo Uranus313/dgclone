@@ -40,6 +40,7 @@ func main() {
 	// fakerdata.ModProds()
 	// fakerdata.ModComms()
 	// fakerdata.ModBrand()
+	// fakerdata.InsertDummyGuarantee()
 
 	app := fiber.New()
 
@@ -104,6 +105,8 @@ func main() {
 
 	app.Patch("/products/seller/setNewPrice", auth.AuthMiddleware([]string{"seller"}), crud.ChangeSellerPrice) // query params => prodID, SellerID, NewPrice
 
+	app.Get("/products/product/productsInList", auth.AuthMiddleware([]string{"user", "seller"}), crud.GetProductInList)
+
 	// --------------category-----------------
 
 	app.Post("/products/category", auth.AuthMiddleware([]string{"admin"}), crud.AddCategory) // (request body)
@@ -120,17 +123,17 @@ func main() {
 
 	// -------------brand---------------
 
-	app.Post("/products/brand", auth.AuthMiddleware([]string{"admin"}), crud.AddBrand) // (request body)
+	app.Post("/products/brand", auth.AuthMiddleware([]string{"admin", "employee"}), crud.AddBrand) // (request body)
 
-	app.Get("/products/brand/:BrandID", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetBrandByID)
+	app.Get("/products/brand/:BrandID", crud.GetBrandByID)
 
-	app.Delete("/products/brand/:BrandID", auth.AuthMiddleware([]string{"admin"}), crud.DeleteBrandByID)
+	app.Delete("/products/brand/:BrandID", auth.AuthMiddleware([]string{"admin", "employee"}), crud.DeleteBrandByID)
 
-	app.Get("/products/brand", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetAllBrands)
+	app.Get("/products/brand", crud.GetAllBrands)
 
 	// ------------discount code-----------
 
-	app.Post("/products/discountcode", auth.AuthMiddleware([]string{"admin"}), crud.AddDiscountCode) // (request body)
+	app.Post("/products/discountcode", auth.AuthMiddleware([]string{"admin", "employee"}), crud.AddDiscountCode) // (request body)
 
 	app.Get("/products/discountcode", auth.AuthMiddleware([]string{"user"}), crud.CheckUserDiscountCode) // query params => DCode, UserID
 
@@ -142,15 +145,15 @@ func main() {
 
 	// -------------colors---------------
 
-	app.Post("/products/color", auth.AuthMiddleware([]string{"admin"}), crud.AddColor) // (request body)
+	app.Post("/products/color", auth.AuthMiddleware([]string{"admin", "employee"}), crud.AddColor) // (request body)
 
-	app.Get("products/color", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetAllColors)
+	app.Get("products/color", crud.GetAllColors)
 
 	// -------------guarantees---------------
 
-	app.Post("/products/guarantee", auth.AuthMiddleware([]string{"seller", "admin"}), crud.AddGuarantee) // (request body)
+	app.Post("/products/guarantee", auth.AuthMiddleware([]string{"seller", "admin", "employee"}), crud.AddGuarantee) // (request body)
 
-	app.Get("products/guarantee", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetAllGuarantee)
+	app.Get("products/guarantee", auth.AuthMiddleware([]string{"user", "seller", "admin", "employee"}), crud.GetAllGuarantee)
 
 	// -------------orders--------------
 
@@ -158,13 +161,15 @@ func main() {
 
 	app.Get("/products/order/orderhistory/:OHID", auth.AuthMiddleware([]string{"user"}), crud.GetOrdersInOrdersHistory)
 
-	app.Get("/products/order/sellerIncomeChart", auth.AuthMiddleware([]string{"admin"}), crud.SellerIncomeChart) // query params => SellerID, sDateHistory
+	app.Get("/products/order/sellerIncomeChart", auth.AuthMiddleware([]string{"admin", "employee"}), crud.SellerIncomeChart) // query params => SellerID, sDateHistory
 
-	app.Get("/products/order", auth.AuthMiddleware([]string{"admin"}), crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle, OrderStates[]
+	app.Get("/products/order", auth.AuthMiddleware([]string{"admin", "employee"}), crud.GetAllOrders) // query params => limit, offset, SortMethod, ProdTitle, OrderStates[]
 
-	app.Post("products/order/orderListTotalPrice", auth.AuthMiddleware([]string{"user", "seller", "admin"}), crud.GetOrderListTotalPrice)
+	app.Post("products/order/orderListTotalPrice", auth.AuthMiddleware([]string{"user", "seller", "admin", "employee"}), crud.GetOrderListTotalPrice)
 
-	app.Patch("/products/order", auth.AuthMiddleware([]string{"admin"}), crud.UpdateOrderState) // query params => OrderID, State
+	app.Patch("/products/order", auth.AuthMiddleware([]string{"admin", "employee"}), crud.UpdateOrderState) // query params => OrderID, State
+
+	app.Get("/products/order/userOrders", auth.AuthMiddleware([]string{"user"}), crud.GetOrdersByUserID)
 
 	// -------------inner--------------
 
@@ -174,11 +179,13 @@ func main() {
 
 	app.Get("/products/inner/orderHistory/:orderHistoryID", auth.InnerAuth, crud.InnerGetOrderHistoryByID)
 
-	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetOrderByID)
+	app.Get("/products/inner/product/:ProdID", auth.InnerAuth, crud.InnerGetProductByID)
 
 	app.Get("/products/inner/sellerSaleInfo/:SellerID", auth.InnerAuth, crud.InnerSellerBS)
 
 	app.Post("/products/inner/orderHistory", auth.InnerAuth, crud.InnerAddOrderHistory)
+
+	app.Get("/products/inner/orderListTotalPrice", auth.InnerAuth, crud.GetOrderListTotalPrice)
 
 	app.Get("/test", func(c *fiber.Ctx) error {
 		queries := c.Queries()

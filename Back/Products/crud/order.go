@@ -405,9 +405,20 @@ func GetOrderListTotalPrice(c *fiber.Ctx) error {
 	})
 }
 
-func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (int, int, error) {
+type orderListPriceSeller struct {
+	sellerID primitive.ObjectID
+	income   int
+}
+
+type orderListPrice struct {
+	totalPrice int
+	sellers    []orderListPriceSeller
+}
+
+func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (orderListPrice, int, error) {
 
 	var totalPrice int = 0
+	var sellers []orderListPriceSeller
 
 	for _, orderID := range orderIDList {
 		var order models.Order
@@ -415,14 +426,22 @@ func CalculateTotalOrderListPrice(orderIDList []primitive.ObjectID) (int, int, e
 		err := database.OrderCollection.FindOne(context.Background(), filter).Decode(&order)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
-				return 0, http.StatusNotFound, err
+				return orderListPrice{}, http.StatusNotFound, err
 			}
-			return 0, http.StatusInternalServerError, err
+			return orderListPrice{}, http.StatusInternalServerError, err
 		}
-		totalPrice += order.Product.Price
+		totalPrice += order.Product.Price * order.Quantity
+		var seller = orderListPriceSeller{
+			sellerID: order.Product.SellerID,
+			income:   order.Product.Price * order.Quantity,
+		}
+		sellers = append(sellers, seller)
 	}
 
-	return totalPrice, http.StatusOK, nil
+	return orderListPrice{
+		totalPrice: totalPrice,
+		sellers:    sellers,
+	}, http.StatusOK, nil
 }
 
 func UpdateOrderState(c *fiber.Ctx) error {
@@ -493,4 +512,39 @@ func UpdateOrderState(c *fiber.Ctx) error {
 	// }
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "order state updated succesfully"})
+}
+
+func GetOrdersByUserID(c *fiber.Ctx) error {
+
+	user := c.Locals("ent").(map[string]interface{})
+
+	var ordersList []models.Order
+
+	userID, err := primitive.ObjectIDFromHex(user["_id"].(string))
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	filter := bson.M{"user_id": userID}
+
+	cursor, err := database.OrderCollection.Find(context.Background(), filter)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching from orders collection",
+			"error":   err.Error(),
+		})
+	}
+
+	defer cursor.Close(context.Background())
+
+	if err := cursor.All(context.Background(), &ordersList); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error while fetching decoding cursor",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(ordersList)
 }

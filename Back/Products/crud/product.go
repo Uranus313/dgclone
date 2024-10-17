@@ -606,6 +606,8 @@ func AddSellerToProduct(c *fiber.Ctx) error {
 
 func AddVariantToSeller(c *fiber.Ctx) error {
 
+	seller := c.Locals("ent").(map[string]interface{})
+
 	prodIDString := c.Query("prodID")
 
 	prodID, err := primitive.ObjectIDFromHex(prodIDString)
@@ -614,9 +616,9 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching product id from query": err.Error()})
 	}
 
-	sellerIDString := c.Query("SellerID")
+	// sellerIDString := c.Query("SellerID")
 
-	sellerID, err := primitive.ObjectIDFromHex(sellerIDString)
+	sellerID, err := primitive.ObjectIDFromHex(seller["_id"].(string))
 
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching seller id from query": err.Error()})
@@ -648,16 +650,25 @@ func AddVariantToSeller(c *fiber.Ctx) error {
 	for index, seller := range product.Sellers {
 		if seller.SellerID == sellerID {
 			sellerFound = true
-			for _, variant := range variants {
-				variant.ValidationState = models.PendingValidation
-				for _, quantity := range seller.SellerQuantity {
-					if variant.Color.ID == quantity.Color.ID {
-						errMessage := fmt.Sprintf("duplicate varient/color: %#v", variant.Color.Title)
+			// for _, variant := range variants {
+			// 	variant.ValidationState = models.PendingValidation
+			// 	for _, quantity := range seller.SellerQuantity {
+			// 		if variant.Color.ID == quantity.Color.ID {
+			// 			errMessage := fmt.Sprintf("duplicate varient/color: %#v", variant.Color.Title)
+			// 			return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+			// 		}
+			// 	}
+			// 	product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
+			// }
+			for i, _ := range variants {
+				for j := i + 1; j < len(variants); j++ {
+					if variants[i].Color.ID == variants[j].Color.ID {
+						errMessage := fmt.Sprintf("duplicate varient/color: %#v", variants[i].Color.Title)
 						return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
 					}
 				}
-				product.Sellers[index].SellerQuantity = append(product.Sellers[index].SellerQuantity, variant)
 			}
+			product.Sellers[index].SellerQuantity = variants
 			break
 		}
 	}
@@ -1111,6 +1122,34 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching sort method from query": err.Error()})
 	}
 
+	minPriceFilterString := c.Query("MinPriceFilter", "0")
+
+	minPriceFilter, err := strconv.Atoi(minPriceFilterString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching min price from query": err.Error()})
+	}
+
+	maxPriceFilterString := c.Query("MaxPriceFilter", "99999999999")
+
+	maxPriceFilter, err := strconv.Atoi(maxPriceFilterString)
+
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while fetching max price from query": err.Error()})
+	}
+
+	isAvailableString := c.Query("IsAvailable", "false")
+
+	var isAvailable bool
+
+	if isAvailableString == "false" {
+		isAvailable = false
+	} else if isAvailableString == "true" {
+		isAvailable = true
+	} else {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": `invalid "IsAvailable" entry`})
+	}
+
 	/*
 		valid_sort_methods = {
 			1: "most visited",
@@ -1150,44 +1189,167 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		})
 	}
 
-	findOptions := options.Find()
+	// findOptions := options.Find()
 
-	findOptions.SetLimit(int64(limit))
-	findOptions.SetSkip(int64(offset))
+	// findOptions.SetLimit(int64(limit))
+	// findOptions.SetSkip(int64(offset))
 
 	var pipeline mongo.Pipeline
 
+	fmt.Println("cate id list:", cateIDs)
+	fmt.Println("bramd id list:", brandFilters)
+
 	switch sortMethod {
 	case 1:
-		findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
+		// findOptions.SetSort(bson.D{{Key: "visit_count", Value: -1}})
+		if len(brandFilters) != 0 {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "visit_count", Value: -1},
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
+		} else {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "visit_count", Value: -1},
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
+		}
 	case 2:
-		pipeline = mongo.Pipeline{
-			{{Key: "$match", Value: bson.D{
-				// {Key: "category_id", Value: cateID},
-				{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
-			}}},
-			{{Key: "$addFields", Value: bson.D{
-				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
-			}}},
-			{{Key: "$sort", Value: bson.D{
-				{Key: "minPrice", Value: 1}, // Ascending order
-			}}},
+		if len(brandFilters) != 0 {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "minPrice", Value: 1}, // Ascending order
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
+		} else {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "minPrice", Value: 1}, // Ascending order
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
 		}
 	case 3:
-		pipeline = mongo.Pipeline{
-			{{Key: "$match", Value: bson.D{
-				// {Key: "category_id", Value: cateID},
-				{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
-			}}},
-			{{Key: "$addFields", Value: bson.D{
-				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
-			}}},
-			{{Key: "$sort", Value: bson.D{
-				{Key: "minPrice", Value: -1}, // Descending order
-			}}},
+		if len(brandFilters) != 0 {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "minPrice", Value: -1}, // Descending order
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
+		} else {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "minPrice", Value: -1}, // Descending order
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
 		}
 	case 4:
-		findOptions.SetSort(bson.D{{Key: "date_added", Value: -1}})
+		// findOptions.SetSort(bson.D{{Key: "date_added", Value: -1}})
+		if len(brandFilters) == 0 {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "date_added", Value: -1},
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
+		} else {
+			pipeline = mongo.Pipeline{
+				{{Key: "$addFields", Value: bson.D{
+					{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+				}}},
+				{{Key: "$sort", Value: bson.D{
+					{Key: "date_added", Value: -1},
+				}}},
+				{{Key: "$match", Value: bson.D{
+					// {Key: "category_id", Value: cateID},
+					{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+					{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+					{Key: "brand_id", Value: bson.D{{Key: "$in", Value: brandFilters}}},
+				}}},
+				{{Key: "$limit", Value: limit}},
+				{{Key: "$skip", Value: offset}},
+			}
+		}
 	default:
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid Sort Method",
@@ -1200,21 +1362,24 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 		})
 	}
 
-	var cursor *mongo.Cursor
-	var filter = bson.M{}
+	// var cursor *mongo.Cursor
+	// var filter = bson.M{}
 
-	if sortMethod == 1 || sortMethod == 4 {
+	// if sortMethod == 1 || sortMethod == 4 {
 
-		filter["category_id"] = bson.M{"$in": cateIDs}
+	// 	filter["category_id"] = bson.M{"$in": cateIDs}
 
-		if len(brandFilters) != 0 {
-			filter["brand_id"] = bson.M{"$in": brandFilters}
-		}
+	// 	if len(brandFilters) != 0 {
+	// 		filter["brand_id"] = bson.M{"$in": brandFilters}
+	// 	}
 
-		cursor, err = database.ProductCollection.Find(context.Background(), filter, findOptions)
-	} else {
-		cursor, err = database.ProductCollection.Aggregate(context.Background(), pipeline)
-	}
+	// 	// filter[""]
+
+	// 	cursor, err = database.ProductCollection.Find(context.Background(), filter, findOptions)
+	// } else {
+	// 	cursor, err = database.ProductCollection.Aggregate(context.Background(), pipeline)
+	// }
+	cursor, err := database.ProductCollection.Aggregate(context.Background(), pipeline)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching from database": err.Error()})
@@ -1236,19 +1401,52 @@ func InfiniteScrolProds(c *fiber.Ctx) error {
 				"error":   err.Error(),
 			})
 		}
-
-		var productCard models.ProductCard = CreateProdCard(product)
-
-		product_list = append(product_list, productCard)
+		if isAvailable {
+			prodIsAvailable := false
+			for _, prodSeller := range product.Sellers {
+				for _, sellerQuantity := range prodSeller.SellerQuantity {
+					if sellerQuantity.Quantity > 0 {
+						prodIsAvailable = true
+						break
+					}
+				}
+			}
+			if prodIsAvailable {
+				var productCard models.ProductCard = CreateProdCard(product)
+				product_list = append(product_list, productCard)
+			}
+		} else {
+			var productCard models.ProductCard = CreateProdCard(product)
+			product_list = append(product_list, productCard)
+		}
 	}
 
 	var hasMore bool = false
 
 	if len(product_list) == limit {
 
-		findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+		// findOptions.SetSkip(int64(limit) + int64(offset)).SetLimit(1)
+
+		pipeline = mongo.Pipeline{
+			{{Key: "$addFields", Value: bson.D{
+				{Key: "minPrice", Value: bson.D{{Key: "$min", Value: "$sellers.price"}}},
+			}}},
+			{{Key: "$sort", Value: bson.D{
+				{Key: "date_added", Value: -1},
+			}}},
+			{{Key: "$match", Value: bson.D{
+				// {Key: "category_id", Value: cateID},
+				{Key: "category_id", Value: bson.D{{Key: "$in", Value: cateIDs}}},
+				{Key: "minPrice", Value: bson.D{{Key: "$gt", Value: minPriceFilter}}},
+				{Key: "minPrice", Value: bson.D{{Key: "$lt", Value: maxPriceFilter}}},
+			}}},
+			{{Key: "$limit", Value: 1}},
+			{{Key: "$skip", Value: limit + offset}},
+		}
+
 		var nextDocs []models.Product
-		nextDocsCursor, err := database.ProductCollection.Find(context.Background(), filter, findOptions)
+		// nextDocsCursor, err := database.ProductCollection.Find(context.Background(), filter, findOptions)
+		nextDocsCursor, err := database.ProductCollection.Aggregate(context.Background(), pipeline)
 
 		if err != nil {
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error while fetching products from database:": err.Error()})
@@ -1570,4 +1768,48 @@ func ChangeSellerPrice(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "new price set succesfully"})
+}
+
+func GetProductInList(c *fiber.Ctx) error {
+
+	queryParams := c.Queries()
+
+	var productIDs []primitive.ObjectID
+	for i := 0; ; i++ {
+		key := fmt.Sprintf("ProductIDs[%d]", i)
+		if value, ok := queryParams[key]; ok {
+			productID, err := primitive.ObjectIDFromHex(value)
+			if err != nil {
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error while converting product id": err.Error()})
+			}
+			productIDs = append(productIDs, productID)
+		} else {
+			break
+		}
+	}
+
+	var products []models.ProductCard
+
+	for _, productID := range productIDs {
+
+		var product models.Product
+
+		filter := bson.M{"_id": productID}
+
+		err := database.ProductCollection.FindOne(context.Background(), filter).Decode(&product)
+
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				errMessage := fmt.Sprintf("product id %#v not found", productID)
+				return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": errMessage})
+			}
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		productCard := CreateProdCard(product)
+
+		products = append(products, productCard)
+	}
+
+	return c.Status(http.StatusOK).JSON(products)
 }

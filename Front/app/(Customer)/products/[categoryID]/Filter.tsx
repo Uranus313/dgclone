@@ -5,6 +5,8 @@ import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams,  } fr
 import useDebounce from '@/app/hooks/useDebounce';
 import { updateQueries } from '@/app/Functions/ServerFunctions';
 import useQueryNext from '@/app/hooks/useQueryNext';
+import useGetColors from '@/app/hooks/useGetColors';
+import useGetBrands from '@/app/hooks/useGetBrands';
 
 
 interface FilterInterface{
@@ -41,7 +43,8 @@ const Filter = () => {
 
 //   const pathname = usePathname()
   
-  
+  const {data:colors}=useGetColors()
+  const {data:brands}=useGetBrands()
   const [minVal, setMinVal] = useState<number>(filtersRes.priceRange.min);
   const [maxVal, setMaxVal] = useState<number>(filtersRes.priceRange.max);
   
@@ -105,7 +108,7 @@ const Filter = () => {
             <hr className='text-grey-border w-10/12 text-center'></hr>
         </div>
 
-        {filtersRes.filters.map((filter)=>(                   
+        {/* {filtersRes.filters.map((filter)=>(                   
             <div className="collapse collapse-arrow join-item ">
                 <input type="checkbox" name="my-accordion-4"  />
                 <div className="collapse-title text-xl font-medium">{filter.title}</div>
@@ -124,7 +127,44 @@ const Filter = () => {
                 </div>
                 <hr className='text-grey-border w-10/12 text-center'></hr>
             </div> 
-        ))}
+        ))} */}
+
+            <div className="collapse collapse-arrow join-item ">
+                <input type="checkbox" name="my-accordion-4"  />
+                <div className="collapse-title text-xl font-medium">رنگ</div>
+                <div className="collapse-content">
+                    {<div>
+                        {colors?.map((option ,index)=>(
+                            <label className="label cursor-pointer">
+                                 <div style={{backgroundColor:option.hex , height:'30px',width:'30px'}} className='border border-grey-dark rounded-sm'></div>
+                                {/* : <span className="label-text text-black">{option}</span>} */}
+                                <input type="checkbox" className="checkbox border-2 border-primary-color [--chkbg:theme(colors.primary-color)] [--chkfg:white] checked:border-primary-color" 
+                                    onChange={(e)=>{e.target.checked? updateQueries({dicts:[{param:`color[${index}]`,value:option._id??''}] , searchParams:searchParams}) : handleRemoveQueryParam(`color[${index}]`)}}/>
+                            </label>
+                        ))}
+                    </div>}
+                </div>
+                <hr className='text-grey-border w-10/12 text-center'></hr>
+            </div> 
+
+
+            <div className="collapse collapse-arrow join-item ">
+                <input type="checkbox" name="my-accordion-4"  />
+                <div className="collapse-title text-xl font-medium">برند</div>
+                <div className="collapse-content">
+                    {<div>
+                        {brands?.map((option ,index)=>(
+                            <label className="label cursor-pointer">
+                                 {/* <div style={{backgroundColor:option.hex , height:'30px',width:'30px'}} className='border border-grey-dark rounded-sm'></div> */}
+                                <span className="label-text text-black">{option.title}</span>
+                                <input type="checkbox" className="checkbox border-2 border-primary-color [--chkbg:theme(colors.primary-color)] [--chkfg:white] checked:border-primary-color" 
+                                    onChange={(e)=>{e.target.checked? updateQueries({dicts:[{param:`brand[${index}]`,value:option._id??''}] , searchParams:searchParams}) : handleRemoveQueryParam(`brand[${index}]`)}}/>
+                            </label>
+                        ))}
+                    </div>}
+                </div>
+                <hr className='text-grey-border w-10/12 text-center'></hr>
+            </div> 
     </div>
   )
 }
