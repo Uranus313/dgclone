@@ -66,7 +66,7 @@ function MenuSideBar( {wallet , isWalletLoading} : Props){
                     </li>
                     <li><Link href={"/"}>سفارشات</Link></li>
                     <li><Link href={"/"}>لیست های من</Link></li>
-                    <li><Link href={"/"}>نظرات و سوالات</Link></li>
+                    <li><Link href={"/users/menu/addMoney"}>افزایش اعتبار</Link></li>
                     <li><Link href={"/users/menu/changeAddress"}>آدرس ها</Link></li>
                     <li><Link href={"/users/menu/giftCard"}>کارت های هدیه</Link></li>
                     <li><Link href={"/users/menu/notifications"}>اعلان ها</Link></li>
