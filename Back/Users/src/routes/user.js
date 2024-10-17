@@ -2,7 +2,7 @@ import express from "express"
 import { auth } from "../authorization/auth.js";
 import validateId from "../functions/validateId.js";
 import _ from "lodash";
-import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify, validatePostSellerRating, validateBuyTheCart } from "../DB/models/user.js";
+import { validateAddress, validateAddToFavoriteList, validateAddToWishList, validateChangePassword, validateCreateWishList, validateLastVisitedPost, validateUserChangeinfo, validateUserLogIn, validateUserPost, validateChangeEmail, validateChangeEmailVerify, validateUserChangePhoneNumber, validateUserlogInWithPhoneNumber, validateChangePhoneNumberVerify, validatePostSellerRating, validateBuyTheCart, validateIncreaseWallet } from "../DB/models/user.js";
 import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUserPassword, deleteOrderFromCart, emptyTheCart, getUsers, logIn, saveUser, updateUser } from "../DB/CRUD/user.js";
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
@@ -1315,5 +1315,37 @@ router.post("/buyTheCart",(req, res, next) => auth(req, res, next, ["user"]), as
     }
     next();
 });
+router.post("/increaseWallet", (req, res, next) => auth(req, res, next, ["user"]), async (req, res, next) => {
+    try {
+        await validateIncreaseWallet(req.body, req.user.wishLists);
+    } catch (error) {
+        console.log(error)
+        if (error.details) {
+            res.status(400).send({ error: error.details[0].message });
+            res.body = { error: error.details[0].message };
+        } else {
+            res.status(400).send({ error: error.message });
+            res.body = { error: error.message };
+        }
+        next();
+        return;
+    }
+    try {
+        const result = await changeWalletMoney(req.user.walletID,req.body.amount );
 
+        if (result.error) {
+            res.status(400).send({ error: result.error });
+            res.body = { error: result.error };
+            next();
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (err) {
+        console.log("Error", err);
+        res.body = { error: "internal server error" };
+        res.status(500).send({ error: "internal server error" });
+    }
+    next();
+});
 export default router;
