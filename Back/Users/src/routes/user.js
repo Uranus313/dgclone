@@ -7,7 +7,7 @@ import { addBoughtGiftCard, addOrderHistoryToList, addreceivedGiftCard, changeUs
 import { GiftCardModel, validateGiftCardPost, validateGiftCardUse } from "../DB/models/giftCard.js";
 import { getBoughtGiftCards, getGiftCards, getReceivedGiftCards, saveGiftCard, updateGiftCard } from "../DB/CRUD/giftCard.js";
 import { generateRandomString } from "../functions/randomString.js";
-import { changeWalletMoney, getWallets, saveWallet,updateWallet } from "../DB/CRUD/wallet.js";
+import { changeWalletMoney, getWallets, saveWallet, updateWallet } from "../DB/CRUD/wallet.js";
 import { getAllUserTransactions, saveTransaction } from "../DB/CRUD/transaction.js";
 import { getNotifications, updateNotification } from "../DB/CRUD/notification.js";
 import jwt from "jsonwebtoken";
@@ -1280,9 +1280,9 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
             return;
         }
         const userWallet = await getWallets(req.user.walletID);
-        if(userWallet.money < totalPriceJSON.totalPrice){
-            res.status(400).send({error: "شما در کیف پول خود به اندازه کافی موجودی ندارید"});
-            res.body = {error: "شما در کیف پول خود به اندازه کافی موجودی ندارید"};
+        if (userWallet.money < totalPriceJSON.totalPrice) {
+            res.status(400).send({ error: "شما در کیف پول خود به اندازه کافی موجودی ندارید" });
+            res.body = { error: "شما در کیف پول خود به اندازه کافی موجودی ندارید" };
             next();
             return;
         }
@@ -1297,7 +1297,7 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
                     OrderList: req.user.shoppingCart,
                     UserID: req.user._id,
                     Address: req.body.address,
-                    DisscounCode: req.body.discount
+                    DisscounCode: req.body.discount || ""
 
                 })
         });
@@ -1328,11 +1328,11 @@ router.post("/buyTheCart", (req, res, next) => auth(req, res, next, ["user"]), a
             next();
             return;
         }
-        const updateWallet = await changeWalletMoney(req.user.walletID,totalPriceJSON.totalPrice);
+        const updateWallet = await changeWalletMoney(req.user.walletID, totalPriceJSON.totalPrice);
         for (let index = 0; index < resultJSON.orderHistorySellers.length; index++) {
             const element = resultJSON.orderHistorySellers[index];
-            await changeWalletMoney(element.sellerID,element.income)
-            
+            await changeWalletMoney(element.sellerID, element.income)
+
         }
         res.send(result.response);
         res.body = result.response;
@@ -1376,7 +1376,7 @@ router.post("/increaseWallet", (req, res, next) => auth(req, res, next, ["user"]
         return;
     }
     try {
-        const result = await changeWalletMoney(req.user.walletID,req.body.amount );
+        const result = await changeWalletMoney(req.user.walletID, req.body.amount);
 
         if (result.error) {
             res.status(400).send({ error: result.error });
