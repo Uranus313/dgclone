@@ -41,7 +41,7 @@ const ProductList = ({ changeList }: Props) => {
       }} className='border-b-2 shadow-md border-white p-7 px-13' >
         <select onChange={(e) => { changeList(e.target.value) }} className='bg-white ml-16 text-black'>
           <option value="comments">کامنت ها</option>
-          <option value="products" defaultChecked>محصولات</option>
+          <option value="products" selected>محصولات</option>
 
         </select>
       </form>

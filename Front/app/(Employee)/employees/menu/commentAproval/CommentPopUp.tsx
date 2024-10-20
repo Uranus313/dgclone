@@ -89,22 +89,20 @@ const CommentPopUp = ({ comment }: Props) => {
 
 
   return (
-    <div>
+    <div className="text-right">
       {comment.validation_state == 1 &&
         <div className='w-full p-10 border-b-2 border-border'>
-          <div className='flex pb-5'>
+          <div className=' pb-5'>
             <p className='text-text-color'>آی دی محصول : </p>
             <p>{comment.product_id}</p>
-            <p className='text-text-color'>آی دی کاربر : </p>
-            <p>{comment.user?.userid}</p>
-            <p className='pr-20 pl-5 text-text-color'> تاریخ  : </p>
+            <p className=' pl-5 text-text-color text-right'> تاریخ  : </p>
             <p>{comment.date_sent?.toString()}</p>
-            <p className='pr-20 pl-5 text-text-color'> نوع  : </p>
+            <p className=' pl-5 text-text-color text-right'> نوع  : </p>
             {comment.comment_type == 1 && <p>عادی</p>}
             {comment.comment_type == 2 && <p>سوال</p>}
             {comment.comment_type == 3 && <p>جواب</p>}
           </div>
-          <p className='pb-5 line-clamp-3 m-5 break-all'>پیام : {comment.content}</p>
+          <p className='pb-5 line-clamp-3 break-all text-right'>پیام : {comment.content}</p>
           <button className='text-primary-color py-5 pb-8 w-full text-right'>بیشتر</button>
           {user &&
             <div>
@@ -116,10 +114,10 @@ const CommentPopUp = ({ comment }: Props) => {
                       {user.roleID.accessLevels.some(accessLevel => accessLevel.level === "commentManage" && accessLevel.writeAccess === true) &&
 
                         <div>
-                          <button onClick={() => unbanComment.mutate()} className='text-green-box border-green-box border-2 py-5 pb-8 mx-3'>
+                          <button onClick={() => unbanComment.mutate()} className='text-green-box border-green-box rounded-md border-2 p-3 mx-3'>
                             تایید
                           </button>
-                          <button onClick={() => banComment.mutate()} className='text-red-box border-red-box border-2 py-5 pb-8'>
+                          <button onClick={() => banComment.mutate()} className='text-red-box border-red-box rounded-md border-2 p-3'>
                             رد
                           </button>
                         </div>

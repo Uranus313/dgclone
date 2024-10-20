@@ -13,14 +13,14 @@ const Category1LayerPopUp = ({ category }: Props) => {
     let { data: categories, isLoading } = useGetChildCategory(category._id);
 
     return (
-        <div className="border-b-2 border-b-border-color-list w-full pt-6 pb-8 px-16">
+        <div className="border-b-2 border-b-border-color-list w-full pt-6 pb-8 px-8">
             <div className="flex">
                 <AddCategoryPopUp cateId={category._id} size="38px" color="#b94b94" hasDetail={false} picNum={false} />
                 <button className='pb-1' onClick={() => setIsOpen(!isOpen)}>{category.title}</button>
             </div>
 
             {isOpen && (
-                <div className="pt-2 md:px-16">
+                <div className="pt-2 ">
                     {isLoading ? (
                         <span className="loading loading-dots loading-lg"></span>
                     ) : (

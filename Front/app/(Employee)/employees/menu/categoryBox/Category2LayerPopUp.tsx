@@ -28,7 +28,7 @@ const Category2LayerPopUp = ({ category }: Props) => {
                         <div className='flex-col'>
                             <ul>
                                 {categories && categories.map((category: Category, index: React.Key | null | undefined) => (
-                                    <li key={index} className="border-b-2 border-b-border-color-list py-4 px-8">
+                                    <li key={index} className="border-b-2 border-b-border-color-list py-4">
                                         <p className="pr-1 pb-2.5">{category.title}</p>
                                     </li>
                                 ))}

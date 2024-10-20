@@ -90,7 +90,7 @@ const OrderPopUp = ({ order }: Props) => {
                             <p>{order.product.seller_id}</p>
                         </div>
                         <div className=" flex pb-2">
-                            <p className="pl-2 pr-4"> خریدار  :</p>
+                            <p className="pl-2"> خریدار  :</p>
                             <p>{(order.user_id && order.user_id) || "-"}</p>
                         </div>
                         <div className=" flex pb-2">
@@ -99,11 +99,11 @@ const OrderPopUp = ({ order }: Props) => {
                             <p>{(order.order_date && order.order_date) || "-"}</p>
                         </div>
                         <div className=" flex pb-2">
-                            <p className="pl-2 pr-4"> تاریخ تحویل  :</p>
+                            <p className="pl-2"> تاریخ تحویل  :</p>
                             <p>{(order.receive_date && order.receive_date) || "-"}</p>
                         </div>
                         <div className=" flex pb-2">
-                            <p className="pl-2 pr-4"> وضعیت  :</p>
+                            <p className="pl-2"> وضعیت  :</p>
                             <p>{(order.state && order.state) || "-"}</p>
                         </div>
 
